@@ -1,0 +1,376 @@
+/**
+ * HTML5 ✰ Boilerplate
+ */
+
+html, body, div, span, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp,
+small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+
+blockquote, q { quotes: none; }
+
+blockquote:before, blockquote:after,
+q:before, q:after { content: ""; content: none; }
+
+ins { background-color: #ff9; color: #000; text-decoration: none; }
+
+mark { background-color: #ff9; color: #000; font-style: italic; font-weight: bold; }
+
+del { text-decoration: line-through; }
+
+abbr[title], dfn[title] { border-bottom: 1px dotted; cursor: help; }
+
+table { border-collapse: collapse; border-spacing: 0; }
+
+hr { display: block; height: 1px; border: 0; border-top: 1px solid #ccc; margin: 1em 0; padding: 0; }
+
+input, select { vertical-align: middle; }
+
+body { font:13px/1.231 sans-serif; *font-size:small; } /* Hack retained to preserve specificity */
+select, input, textarea, button { font:99% sans-serif; }
+
+pre, code, kbd, samp { font-family: monospace, sans-serif; }
+html { overflow-y: scroll; }
+a:hover, a:active { outline: none; }
+ul, ol { margin-left: 2em; }
+ol { list-style-type: decimal; }
+nav ul, nav li { margin: 0; list-style:none; list-style-image: none; }
+small { font-size: 85%; }
+strong, th { font-weight: bold; }
+td { vertical-align: top; }
+
+sub, sup { font-size: 75%; line-height: 0; position: relative; }
+sup { top: -0.5em; }
+sub { bottom: -0.25em; }
+
+pre {
+  white-space: pre; white-space: pre-wrap; word-wrap: break-word;
+  padding: 15px;
+}
+
+textarea { overflow: auto; }
+.ie6 legend, .ie7 legend { margin-left: -7px; } 
+input[type="radio"] { vertical-align: text-bottom; }
+input[type="checkbox"] { vertical-align: bottom; }
+.ie7 input[type="checkbox"] { vertical-align: baseline; }
+.ie6 input { vertical-align: text-bottom; }
+
+label, input[type="button"], input[type="submit"], input[type="image"], button { cursor: pointer; }
+button, input, select, textarea { margin: 0; }
+
+input:valid, textarea:valid   {  }
+input:invalid, textarea:invalid {
+   border-radius: 1px; 
+   -moz-box-shadow: 0px 0px 5px red; 
+   -webkit-box-shadow: 0px 0px 5px red; 
+   box-shadow: 0px 0px 5px red;
+}
+.no-boxshadow input:invalid, .no-boxshadow textarea:invalid { background-color: #f0dddd; }
+
+::-moz-selection { background: #ec6175; color:#fff; text-shadow: none; }
+::selection { background:#ec6175; color:#fff; text-shadow: none; }
+
+a:link { -webkit-tap-highlight-color: #ec6175; }
+
+button {  width: auto; overflow: visible; }
+.ie7 img { -ms-interpolation-mode: bicubic; }
+
+/******************************/
+/* Here we go for the styling */
+/******************************/
+
+body, select, input, textarea {
+  color: #444;
+}
+h1, h2, h3, h4, h5, h6 { font-weight: bold; }
+
+a, a:active, a:visited { color: #607890; }
+a:hover { color: #036; }
+
+#container {
+ max-width: 920px;
+ margin: 0 auto;
+}
+
+header h1 {
+  width: 50%;
+  min-width: 200px; /* We don't want the logo too tiny on mobile devices */
+  margin: 10% auto;
+  background: url('img/logo.png') top center no-repeat;
+  }
+  /* Make the logo scale */
+  header img { width: 100%; }
+nav {
+  width: 100%;
+  overflow: hidden;
+  position: relative;  
+  background-color: #e0e0e0;
+  border-top: 1px solid #b1b1b1;
+  border-bottom: 1px solid #b1b1b1;
+  -moz-box-shadow: 0 2px 6px #ccc;
+  -webkit-box-shadow: 0 2px 6px #ccc;
+  box-shadow: 0 2px 6px #ccc; 
+  }
+#navButtonLeft, #navButtonRight {
+  position: absolute;
+  z-index:10;
+  top: 1px;
+  left:0;
+  display: block;
+  width: 40px;
+  height: 72px;
+  background: url('../img/nav-button-left.png') top center no-repeat;
+  }
+#navButtonRight { 
+  top: 1px;
+  right: 0;
+  left: auto;
+  background: url('../img/nav-button-right.png') top center no-repeat;
+  }
+
+#query {
+  position: relative;
+}
+#query input[type=text] {
+  width: 78%;
+  padding-right: 11%;
+  padding-left: 1%;
+  margin: 1em auto;
+  height: 2.2em;
+  border: 1px #CCC solid;
+  display: block;
+  box-shadow: 0px 0px 2px 2px rgba(99,99,99,0.2); 
+}
+#query input[type=submit] {
+  display: block;
+  position:absolute;
+  top: 2px;
+  right: 5%;
+  height: 2.2em;
+  border: 1px #CCC solid;
+  width: 10%;
+  background-color: #e0e0e0;
+}
+#query input[type=submit]:hover {
+  background-color: #838383;
+  color: #fff;
+}
+nav ul {
+
+  padding: 0 20px;
+  height: 70px;
+  width: 430px; /* 430 + 2*20 = 470 <= real width of our menu */
+
+  }
+  nav li {
+    display: inline-block;
+    margin: 8px 7px;
+    }
+    nav ul a {
+      display: block;
+      cursor: pointer;
+      width: 46px;
+      height: 46px;
+      padding: 4px;
+      -moz-border-radius: 3px;
+      border-radius: 3px;
+      background-color: #585858;
+      background-image: -webkit-gradient(linear, left top, left bottom, from(#b5b5b5), to(#575757)); 
+      background-image: -webkit-linear-gradient(top, #b5b5b5, #575757); 
+      background-image:    -moz-linear-gradient(top, #b5b5b5, #575757); 
+      background-image:     -ms-linear-gradient(top, #b5b5b5, #575757); 
+      background-image:      -o-linear-gradient(top, #b5b5b5, #575757); 
+      background-image:         linear-gradient(top, #b5b5b5, #575757); /* standard, but currently unimplemented */
+      -moz-box-shadow: 0 1px 2px #444;
+      -webkit-box-shadow: 0 1px 2px #444;
+      box-shadow: 0 1px 2px #444; 
+      }
+    nav a:hover {
+      background-color: #727272;
+      background-image: -webkit-gradient(linear, left top, left bottom, from(#b5b5b5), to(#727272)); 
+      background-image: -webkit-linear-gradient(top, #b5b5b5, #727272); 
+      background-image:    -moz-linear-gradient(top, #b5b5b5, #727272); 
+      background-image:     -ms-linear-gradient(top, #b5b5b5, #727272); 
+      background-image:      -o-linear-gradient(top, #b5b5b5, #727272); 
+      background-image:         linear-gradient(top, #b5b5b5, #727272);
+      }
+    nav a:active, .active a { /* .active is used to visually reflect the active item */
+      background-color: #494949;
+      background-image: -webkit-gradient(linear, left top, left bottom, from(#494949), to(#838383)); 
+      background-image: -webkit-linear-gradient(top, #494949, #838383); 
+      background-image:    -moz-linear-gradient(top, #494949, #838383); 
+      background-image:     -ms-linear-gradient(top, #494949, #838383); 
+      background-image:      -o-linear-gradient(top, #494949, #838383); 
+      background-image:         linear-gradient(top, #494949, #838383);
+      }
+      nav a img { width: 46px; height: 46px; }
+
+.uploading a { background-color: red; background-image: none; }
+.ready a { background-color: green; background-image:none; }
+
+.panel { background-color: #f1f1f1; width: 100%; display:none; }
+.panel.visible { display: block; }
+  .panel .instruction { text-align: center; margin: 4px; padding: 10px; }
+  .panel .instruction:after {
+    content: 'OR';
+    color: #ec6175;
+    font-weight: bold;
+    text-align: center;
+    display: block;
+    width: 100%;
+    border-bottom: 1px #ccc solid;
+    margin-top: 1em;
+    }
+  .panel .instruction:last-of-type:after { content:''; border:none; }
+    .panel button { 
+      display: inline; 
+      color: white; 
+      background: #494949; 
+      border: 1px #898989 solid;
+      -moz-border-radius: 3px;
+      border-radius: 3px;      
+      background-image: -webkit-gradient(linear, left top, left bottom, from(#b5b5b5), to(#575757)); 
+      background-image: -webkit-linear-gradient(top, #b5b5b5, #575757); 
+      background-image:    -moz-linear-gradient(top, #b5b5b5, #575757); 
+      background-image:     -ms-linear-gradient(top, #b5b5b5, #575757); 
+      background-image:      -o-linear-gradient(top, #b5b5b5, #575757); 
+      background-image:         linear-gradient(top, #b5b5b5, #575757); 
+      }
+    .panel button:active {
+      background-color: #494949;
+      background-image: -webkit-gradient(linear, left top, left bottom, from(#494949), to(#838383)); 
+      background-image: -webkit-linear-gradient(top, #494949, #838383); 
+      background-image:    -moz-linear-gradient(top, #494949, #838383); 
+      background-image:     -ms-linear-gradient(top, #494949, #838383); 
+      background-image:      -o-linear-gradient(top, #494949, #838383); 
+      background-image:         linear-gradient(top, #494949, #838383);
+      }
+  .panel footer {
+    border-top: 1px solid #aeaeae;
+    border-bottom: 1px solid #aeaeae;
+    background-color: #d3d3d3;
+    text-align: center;
+    color: #686868;
+    margin-top: -5px;
+  }
+footer { 
+  font-style: italic; 
+  color: #888; 
+  text-align: center; 
+  border-top: 1px #ccc solid; 
+  padding: 3px; 
+  margin-top: 20px;
+  }
+/**
+ * Non-semantic helper classes
+ */
+
+/* For image replacement */
+.ir { 
+  display: block; 
+  text-indent: -999em; 
+  overflow: hidden; 
+  background-repeat: no-repeat; 
+  text-align: left; 
+  direction: ltr; 
+  }
+
+/* Hide for both screenreaders and browsers */
+.hidden { display: none; visibility: hidden; }
+
+/* Hide only visually, but have it available for screenreaders: by Jon Neal.
+  www.webaim.org/techniques/css/invisiblecontent/  &  j.mp/visuallyhidden */
+.visuallyhidden { 
+  border: 0; 
+  clip: rect(0 0 0 0); 
+  height: 1px; 
+  margin: -1px; 
+  overflow: hidden; 
+  padding: 0; 
+  position: absolute; 
+  width: 1px; 
+  }
+
+/* Extends the .visuallyhidden class to allow the element to be focusable when navigated to via the keyboard */
+.visuallyhidden.focusable:active,
+.visuallyhidden.focusable:focus { 
+  clip: auto; 
+  height: auto; 
+  margin: 0; 
+  overflow: visible; 
+  position: static; 
+  width: auto; 
+  }
+
+/* Hide visually and from screenreaders, but maintain layout */
+.invisible { visibility: hidden; }
+
+.clearfix:before, .clearfix:after { content: "\0020"; display: block; height: 0; overflow: hidden; }
+.clearfix:after { clear: both; }
+.clearfix { zoom: 1; }
+
+
+
+/**
+ * Media queries for responsive design.
+ *
+ * These follow after primary styles so they will successfully override.
+ */
+
+@media all and (orientation:portrait) {
+  /* Style adjustments for portrait mode goes here */
+
+}
+
+@media all and (orientation:landscape) {
+  /* Style adjustments for landscape mode goes here */
+
+}
+
+/* Grade-A Mobile Browsers (Opera Mobile, Mobile Safari, Android Chrome)
+   consider this: www.cloudfour.com/css-media-query-for-mobile-is-fools-gold/ */
+@media screen and (max-device-width: 480px) {
+
+
+  /* Uncomment if you don't want iOS and WinMobile to mobile-optimize the text for you: j.mp/textsizeadjust */
+  /* html { -webkit-text-size-adjust:none; -ms-text-size-adjust:none; } */
+}
+
+
+/**
+ * Print styles.
+ *
+ * Inlined to avoid required HTTP connection: www.phpied.com/delay-loading-your-print-css/
+ */
+@media print {
+  * { background: transparent !important; color: black !important; text-shadow: none !important; filter:none !important;
+  -ms-filter: none !important; } /* Black prints faster: sanbeiji.com/archives/953 */
+  a, a:visited { color: #444 !important; text-decoration: underline; }
+  a[href]:after { content: " (" attr(href) ")"; }
+  abbr[title]:after { content: " (" attr(title) ")"; }
+  .ir a:after, a[href^="javascript:"]:after, a[href^="#"]:after { content: ""; }  /* Don't show links for images, or javascript/internal links */
+  pre, blockquote { border: 1px solid #999; page-break-inside: avoid; }
+  thead { display: table-header-group; } /* css-discuss.incutio.com/wiki/Printing_Tables */
+  tr, img { page-break-inside: avoid; }
+  @page { margin: 0.5cm; }
+  p, h2, h3 { orphans: 3; widows: 3; }
+  h2, h3{ page-break-after: avoid; }
+}
+
