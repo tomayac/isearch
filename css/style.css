@@ -107,6 +107,7 @@ a:hover { color: #036; }
 #container {
  max-width: 920px;
  margin: 0 auto;
+ position: relative; 
 }
 
 header h1 {
@@ -115,8 +116,8 @@ header h1 {
   margin: 10% auto;
   background: url('img/logo.png') top center no-repeat;
   }
-  /* Make the logo scale */
-  header img { width: 100%; }
+/* Make the logo scale */
+header img { width: 100%; }
 nav {
   width: 100%;
   overflow: hidden;
@@ -227,49 +228,49 @@ nav ul {
 
 .panel { background-color: #f1f1f1; width: 100%; display:none; }
 .panel.visible { display: block; }
-  .panel .instruction { text-align: center; margin: 4px; padding: 10px; }
-  .panel .instruction:after {
-    content: 'OR';
-    color: #ec6175;
-    font-weight: bold;
-    text-align: center;
-    display: block;
-    width: 100%;
-    border-bottom: 1px #ccc solid;
-    margin-top: 1em;
-    }
-  .panel .instruction:last-of-type:after { content:''; border:none; }
-    .panel button { 
-      display: inline; 
-      color: white; 
-      background: #494949; 
-      border: 1px #898989 solid;
-      -moz-border-radius: 3px;
-      border-radius: 3px;      
-      background-image: -webkit-gradient(linear, left top, left bottom, from(#b5b5b5), to(#575757)); 
-      background-image: -webkit-linear-gradient(top, #b5b5b5, #575757); 
-      background-image:    -moz-linear-gradient(top, #b5b5b5, #575757); 
-      background-image:     -ms-linear-gradient(top, #b5b5b5, #575757); 
-      background-image:      -o-linear-gradient(top, #b5b5b5, #575757); 
-      background-image:         linear-gradient(top, #b5b5b5, #575757); 
-      }
-    .panel button:active {
-      background-color: #494949;
-      background-image: -webkit-gradient(linear, left top, left bottom, from(#494949), to(#838383)); 
-      background-image: -webkit-linear-gradient(top, #494949, #838383); 
-      background-image:    -moz-linear-gradient(top, #494949, #838383); 
-      background-image:     -ms-linear-gradient(top, #494949, #838383); 
-      background-image:      -o-linear-gradient(top, #494949, #838383); 
-      background-image:         linear-gradient(top, #494949, #838383);
-      }
-  .panel footer {
-    border-top: 1px solid #aeaeae;
-    border-bottom: 1px solid #aeaeae;
-    background-color: #d3d3d3;
-    text-align: center;
-    color: #686868;
-    margin-top: -5px;
+.panel .instruction { text-align: center; margin: 4px; padding: 10px; }
+.panel .instruction:after {
+  content: 'OR';
+  color: #ec6175;
+  font-weight: bold;
+  text-align: center;
+  display: block;
+  width: 100%;
+  border-bottom: 1px #ccc solid;
+  margin-top: 1em;
   }
+.panel .instruction:last-of-type:after { content:''; border:none; }
+.panel button { 
+  display: inline; 
+  color: white; 
+  background: #494949; 
+  border: 1px #898989 solid;
+  -moz-border-radius: 3px;
+  border-radius: 3px;      
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#b5b5b5), to(#575757)); 
+  background-image: -webkit-linear-gradient(top, #b5b5b5, #575757); 
+  background-image:    -moz-linear-gradient(top, #b5b5b5, #575757); 
+  background-image:     -ms-linear-gradient(top, #b5b5b5, #575757); 
+  background-image:      -o-linear-gradient(top, #b5b5b5, #575757); 
+  background-image:         linear-gradient(top, #b5b5b5, #575757); 
+  }
+.panel button:active {
+  background-color: #494949;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#494949), to(#838383)); 
+  background-image: -webkit-linear-gradient(top, #494949, #838383); 
+  background-image:    -moz-linear-gradient(top, #494949, #838383); 
+  background-image:     -ms-linear-gradient(top, #494949, #838383); 
+  background-image:      -o-linear-gradient(top, #494949, #838383); 
+  background-image:         linear-gradient(top, #494949, #838383);
+  }
+.panel footer {
+  border-top: 1px solid #aeaeae;
+  border-bottom: 1px solid #aeaeae;
+  background-color: #d3d3d3;
+  text-align: center;
+  color: #686868;
+  margin-top: -5px;
+}
 footer { 
   font-style: italic; 
   color: #888; 
@@ -278,6 +279,15 @@ footer {
   padding: 3px; 
   margin-top: 20px;
   }
+
+/**
+ * Style for the results page
+ */
+.results aside {
+  padding: 5px;
+  background-color: #CCC;
+}
+
 /**
  * Non-semantic helper classes
  */
@@ -330,34 +340,56 @@ footer {
 
 /**
  * Media queries for responsive design.
- *
- * These follow after primary styles so they will successfully override.
  */
 
+/*480px ______________________________*/
+@media only screen and (min-width: 480px) {
+  .results #flash-container {
+    width: 70%;
+  }
+  .results aside {
+    width: 25%;
+
+    position: absolute;
+    top:70px;
+    right: 10px;
+  }
+}
+
+/*768px ______________________________ */
+@media only screen and (min-width: 768px) {
+
+}
+
+/*992px ______________________________ */
+@media only screen and (min-width: 992px) {
+
+}
+
+/*1382px _____________________________ */
+@media only screen and (min-width: 1382px) {
+
+}
+
+/*2x _________________________________ */
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
+
+
+}
+
+/*Portrait ___________________________ */
 @media all and (orientation:portrait) {
-  /* Style adjustments for portrait mode goes here */
 
 }
 
+/*Landscape __________________________ */
 @media all and (orientation:landscape) {
-  /* Style adjustments for landscape mode goes here */
 
-}
-
-/* Grade-A Mobile Browsers (Opera Mobile, Mobile Safari, Android Chrome)
-   consider this: www.cloudfour.com/css-media-query-for-mobile-is-fools-gold/ */
-@media screen and (max-device-width: 480px) {
-
-
-  /* Uncomment if you don't want iOS and WinMobile to mobile-optimize the text for you: j.mp/textsizeadjust */
-  /* html { -webkit-text-size-adjust:none; -ms-text-size-adjust:none; } */
 }
 
 
 /**
  * Print styles.
- *
- * Inlined to avoid required HTTP connection: www.phpied.com/delay-loading-your-print-css/
  */
 @media print {
   * { background: transparent !important; color: black !important; text-shadow: none !important; filter:none !important;

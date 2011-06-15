@@ -8,9 +8,9 @@
 
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-  <title>Welcome. This is the future of search. Yay!</title>
+  <title>Your results Sir!</title>
   <meta name="description" 
-        content="iSearch project is a multi-modal search engine.">
+        content="I-SEARCH -- a unIfied framework for multi-modal SEARCH.">
   <meta name="author" content="iSearch project members">
   
   <meta name="HandheldFriendly" content="True">
@@ -35,6 +35,8 @@
   
   <!-- Mobile IE allows us to activate ClearType technology for smoothing fonts for easy reading -->
   <meta http-equiv="cleartype" content="on"/>
+
+  <!-- Our main stylesheet -->
   <link rel="stylesheet" href="css/style.css?v=2"/>
 
   <!-- Modernizr at the top. Rest at the bottom for better perf. -->
@@ -42,7 +44,7 @@
   
 </head>
 
-<body>
+<body class="results">
 
   <div id="container">
     
@@ -70,7 +72,7 @@
         <input type="submit" name="submit" id="query-submit" value=">" />
       </form>
 			<img id="loadingDiv" src="img/ajax-loader.gif" alt="loading..."
-      style="display: none;"/>			
+      style="display: none; margin: 50px auto; "/>			
 			<div id="flash-container">
 				<object type="application/x-shockwave-flash" 
           data="http://vision.iti.gr/sotiris/isearch/demo.swf" 
@@ -103,11 +105,6 @@
 
   <!-- for mobile debugging -->
   <!-- <script src="https://getfirebug.com/firebug-lite.js"></script> -->
-
-  <!--[if lt IE 7 ]>
-    <script src="js/libs/dd_belatedpng.js"></script>
-    <script>DD_belatedPNG.fix("img, .png_bg"); // Fix any <img> or .png_bg bg-images. Also, please read goo.gl/mZiyb </script>
-  <![endif]-->
 
   <!--No need for GA right now. But maybe later...who knows?!-->
   <!-- <script> -->
