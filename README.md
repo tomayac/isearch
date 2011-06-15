@@ -12,4 +12,11 @@ Some info:
   now.
 - TODO: change the favicon (oh...I see a debate emerging here!)
 
+Important note: when downloaded (e.g, on your desktop), you must add the
+location to the "trusted locations" to make the Flash object behave properly.
+You can do that by right-clicking on a Flash animation/movie/panel, then "Global Settings", then select
+the "Advanced" tab. Under "Developer Tools" section, you'll find "Trusted Location Settings". 
+This will give you the possibility to add a folder of your computer as
+"trusted".
+
 Have fun!
