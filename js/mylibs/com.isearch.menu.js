@@ -138,3 +138,15 @@ com.isearch.menu.attachTextEvents = function() {
 
   });
 }
+
+/*
+ * Menu behaviour when the query is submitted
+ */
+com.isearch.menu.collapse = function() {
+  $(".query-composition").hide();  
+  $("header h1").hide();
+}
+
+com.isearch.menu.retrieveQuery = function() {
+  return queryString = $("#query-field").val() ;
+}

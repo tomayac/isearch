@@ -53,10 +53,10 @@
       
       <form id="query" action="#" method="post">
         <input type="text" name="query" id="query-field" />
-        <input type="submit" name="submit" id="submit-query" value=">" />
+        <input type="submit" name="submit" id="query-submit" value=">" />
       </form>
       
-      <nav>
+      <nav class="query-composition">
         <ul>
           <li data-mode="sound">
             <a>
@@ -139,23 +139,19 @@
       &copy; 2011 iSearch Project - All rights reserved
     </footer>
   </div>
-
-
+  
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.js"></script>
   <script>window.jQuery || document.write("<script src='js/libs/jquery-1.5.1.min.js'>\x3C/script>")</script>
 
   <!-- <script src="js/mylibs/helper.js"></script> -->
+  <!-- <script src="js/plugins.js"></script> -->
   <script src="js/mylibs/com.isearch.menu.js"></script>
- 
-  <script src="js/plugins.js"></script>
-  <script src="js/script.js"></script>
+  <script src="js/mylibs/com.isearch.results.js"></script>
+  <script src="js/libs/swfobject.js"></script>
+  
+  <script src="js/main.js"></script>
 
   <!-- <script src="https://getfirebug.com/firebug-lite.js"></script> -->
-
-  <!--[if lt IE 7 ]>
-    <script src="js/libs/dd_belatedpng.js"></script>
-    <script>DD_belatedPNG.fix("img, .png_bg"); // Fix any <img> or .png_bg bg-images. Also, please read goo.gl/mZiyb </script>
-  <![endif]-->
 
   <!--No need for GA right now. But maybe later...who knows?!-->
   <!-- <script> -->

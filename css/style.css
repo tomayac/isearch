@@ -287,7 +287,9 @@ footer {
   padding: 5px;
   background-color: #CCC;
 }
-
+.results #flash-container {
+  margin-top: 38px;
+}
 /**
  * Non-semantic helper classes
  */
@@ -344,6 +346,10 @@ footer {
 
 /*480px ______________________________*/
 @media only screen and (min-width: 480px) {
+}
+
+/*768px ______________________________ */
+@media only screen and (min-width: 768px) {
   .results #flash-container {
     width: 70%;
   }
@@ -354,11 +360,6 @@ footer {
     top:70px;
     right: 10px;
   }
-}
-
-/*768px ______________________________ */
-@media only screen and (min-width: 768px) {
-
 }
 
 /*992px ______________________________ */

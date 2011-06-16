@@ -2,11 +2,7 @@
 
 $(document).ready(function(){
   
-  //Hide Url bar in iOS
-  //MBP.hideUrlBar();  
-  
-  //Create the splash screen on iPad & iPhone
-  //new MBP.splash();
+  //Resizing of the menu on load and when window resizes
   var iMenu = com.isearch.menu
   iMenu.adjust();
 
@@ -14,6 +10,7 @@ $(document).ready(function(){
     iMenu.adjust();
   });
 
+  //Behaviour of the menu (panels, etc)
   $('nav li').click(function(){
     console.log('hop, li clicked');
     var clickedListItem = $(this);
@@ -26,11 +23,29 @@ $(document).ready(function(){
       clickedListItem.addClass('active');
     }
   });
-
+  
+  //Close button of the panel
   $('.panel footer a').click(function(){
     $('.panel').slideUp(200);
   });
 
+  //Page behaviour when the query is submitted
+  $( "#query-submit").click(function (e) {
+    
+    //prevent the page to reload
+    e.preventDefault() ;
+   
+    //Collapses the menu
+    com.isearch.menu.collapse();
+
+    var query = com.isearch.menu.retrieveQuery();
+    if (query) {
+      com.isearch.results.display(query);
+    } else {
+      alert('woops! No query!');
+    }
+    return false;
+  });
 });
 
 
