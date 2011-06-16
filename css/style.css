@@ -146,6 +146,14 @@ nav {
   background: url('../img/nav-button-right.png') top center no-repeat;
   }
 
+#settings {
+  padding: 5px;
+  background-color: #444;
+  color: white;
+  text-align: right;
+}
+#settings a { color: white; display: block; }
+
 #query {
   position: relative;
 }
@@ -174,54 +182,52 @@ nav {
   color: #fff;
 }
 nav ul {
-
   padding: 0 20px;
   height: 70px;
   width: 430px; /* 430 + 2*20 = 470 <= real width of our menu */
-
-  }
-  nav li {
-    display: inline-block;
-    margin: 8px 7px;
-    }
-    nav ul a {
-      display: block;
-      cursor: pointer;
-      width: 46px;
-      height: 46px;
-      padding: 4px;
-      -moz-border-radius: 3px;
-      border-radius: 3px;
-      background-color: #585858;
-      background-image: -webkit-gradient(linear, left top, left bottom, from(#b5b5b5), to(#575757)); 
-      background-image: -webkit-linear-gradient(top, #b5b5b5, #575757); 
-      background-image:    -moz-linear-gradient(top, #b5b5b5, #575757); 
-      background-image:     -ms-linear-gradient(top, #b5b5b5, #575757); 
-      background-image:      -o-linear-gradient(top, #b5b5b5, #575757); 
-      background-image:         linear-gradient(top, #b5b5b5, #575757); /* standard, but currently unimplemented */
-      -moz-box-shadow: 0 1px 2px #444;
-      -webkit-box-shadow: 0 1px 2px #444;
-      box-shadow: 0 1px 2px #444; 
-      }
-    nav a:hover {
-      background-color: #727272;
-      background-image: -webkit-gradient(linear, left top, left bottom, from(#b5b5b5), to(#727272)); 
-      background-image: -webkit-linear-gradient(top, #b5b5b5, #727272); 
-      background-image:    -moz-linear-gradient(top, #b5b5b5, #727272); 
-      background-image:     -ms-linear-gradient(top, #b5b5b5, #727272); 
-      background-image:      -o-linear-gradient(top, #b5b5b5, #727272); 
-      background-image:         linear-gradient(top, #b5b5b5, #727272);
-      }
-    nav a:active, .active a { /* .active is used to visually reflect the active item */
-      background-color: #494949;
-      background-image: -webkit-gradient(linear, left top, left bottom, from(#494949), to(#838383)); 
-      background-image: -webkit-linear-gradient(top, #494949, #838383); 
-      background-image:    -moz-linear-gradient(top, #494949, #838383); 
-      background-image:     -ms-linear-gradient(top, #494949, #838383); 
-      background-image:      -o-linear-gradient(top, #494949, #838383); 
-      background-image:         linear-gradient(top, #494949, #838383);
-      }
-      nav a img { width: 46px; height: 46px; }
+}
+nav li {
+  display: inline-block;
+  margin: 8px 7px;
+}
+nav ul a {
+  display: block;
+  cursor: pointer;
+  width: 46px;
+  height: 46px;
+  padding: 4px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  background-color: #585858;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#b5b5b5), to(#575757)); 
+  background-image: -webkit-linear-gradient(top, #b5b5b5, #575757); 
+  background-image:    -moz-linear-gradient(top, #b5b5b5, #575757); 
+  background-image:     -ms-linear-gradient(top, #b5b5b5, #575757); 
+  background-image:      -o-linear-gradient(top, #b5b5b5, #575757); 
+  background-image:         linear-gradient(top, #b5b5b5, #575757); /* standard, but currently unimplemented */
+  -moz-box-shadow: 0 1px 2px #444;
+  -webkit-box-shadow: 0 1px 2px #444;
+  box-shadow: 0 1px 2px #444; 
+}
+nav a:hover {
+  background-color: #727272;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#b5b5b5), to(#727272)); 
+  background-image: -webkit-linear-gradient(top, #b5b5b5, #727272); 
+  background-image:    -moz-linear-gradient(top, #b5b5b5, #727272); 
+  background-image:     -ms-linear-gradient(top, #b5b5b5, #727272); 
+  background-image:      -o-linear-gradient(top, #b5b5b5, #727272); 
+  background-image:         linear-gradient(top, #b5b5b5, #727272);
+}
+nav a:active, .active a { /* .active is used to visually reflect the active item */
+  background-color: #494949;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#494949), to(#838383)); 
+  background-image: -webkit-linear-gradient(top, #494949, #838383); 
+  background-image:    -moz-linear-gradient(top, #494949, #838383); 
+  background-image:     -ms-linear-gradient(top, #494949, #838383); 
+  background-image:      -o-linear-gradient(top, #494949, #838383); 
+  background-image:         linear-gradient(top, #494949, #838383);
+}
+nav a img { width: 46px; height: 46px; }
 
 .uploading a { background-color: red; background-image: none; }
 .ready a { background-color: green; background-image:none; }
@@ -290,6 +296,12 @@ footer {
 .results #flash-container {
   margin-top: 38px;
 }
+#restart {
+  text-align: right;
+  display: block;
+  padding-right: 5%;
+}
+
 /**
  * Non-semantic helper classes
  */

@@ -145,6 +145,11 @@ com.isearch.menu.attachTextEvents = function() {
 com.isearch.menu.collapse = function() {
   $(".query-composition").hide();  
   $("header h1").hide();
+  $(document.createElement('a'))
+      .html('Restart from scratch')
+      .attr('href','')
+      .attr('id','restart')
+      .insertAfter('#query');
 }
 
 com.isearch.menu.retrieveQuery = function() {
