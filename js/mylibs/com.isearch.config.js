@@ -10,7 +10,7 @@ if (!com.isearch) {
 } else if (typeof com.isearch != "object") {
   throw new Error("com.isearch already exists and is not an object");
 }
-if (com.isearch.results) {
+if (com.isearch.config) {
   throw new Error("com.isearch.config already exists");
 }
 com.isearch.config = {
