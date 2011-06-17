@@ -16,20 +16,15 @@ if (com.isearch.menu) {
 com.isearch.menu = {};
 com.isearch.menu.hasNav = false;
 
-//Config
-var config = {};
-config.SLIDE_UP_ANIMATION_TIME = 200;
-config.SLIDE_DOWN_ANIMATION_TIME = 200;
-config.MENU_WIDTH = 470; //cf ../../css/style.css for explanations
 
 com.isearch.menu.reset = function() {
-    $('.panel').slideUp(config.SLIDE_UP_ANIMATION_TIME);
+    $('.panel').slideUp(com.isearch.config.slideUpAnimationTime);
     $('nav li').removeClass('active');
 }
 
 com.isearch.menu.adjust = function() {
   console.log('entered adjust function');
-  var menuWidth = config.MENU_WIDTH;
+  var menuWidth = com.isearch.config.menuWidth;
   com.isearch.menu.overflow = menuWidth - document.width;
   //console.log('document.width: ' + document.width + '| menuWidth: ' + menuWidth);
   if (document.width < menuWidth) {
@@ -99,12 +94,12 @@ com.isearch.menu.getRequestedMode = function(jQueryObject) {
 }
 
 com.isearch.menu.showPanel = function(mode) {
-  $('.' + mode).slideDown(config.SLIDE_DOWN_ANIMATION_TIME);
+  $('.' + mode).slideDown(com.isearch.config.slideDownAnimationTime);
   com.isearch.menu.attachEvents(mode);
 }
 
 com.isearch.menu.hidePanels = function() {
-  $('.panel').slideUp(config.SLIDE_UP_ANIMATION_TIME);
+  $('.panel').slideUp(com.isearch.config.slideUpAnimationTime);
 }
 
 com.isearch.menu.attachEvents = function(mode) {

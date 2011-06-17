@@ -14,7 +14,12 @@ if (com.isearch.results) {
   throw new Error("com.isearch.config already exists");
 }
 com.isearch.config = {
-  
+ 
+  //Menu parameters
+  slideUpAnimationTime: 200,
+  slideDownAnimationTime: 200,
+  menuWidth: 470, //cf style.css for more explanations
+
   //Query parameters
   maxNumResults: 100, 
   clusters0: 5,

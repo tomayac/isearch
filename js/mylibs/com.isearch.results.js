@@ -1,5 +1,4 @@
 //That JS will take care of the results interactions & visualizations
-//TODO: refactoring the code in a clean, obj-oriented way
 
 //Namespace
 var com;
