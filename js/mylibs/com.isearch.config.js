@@ -29,7 +29,7 @@ com.isearch.config = {
   
   //Visualization parameters
   visualizationMethod: "tmap", //tmap, htree or hpan
-  iconSize: 32, //16, 32, 48, 64
+  iconSize: 64, //16, 32, 48, 64
 
   //Misc
   flashLoadedTimeout: 1500, //wait until flash obj is loaded
@@ -37,11 +37,39 @@ com.isearch.config = {
   //Global set function
   set: function(key, value) {
     if(com.isearch.config.hasOwnProperty(key)) {
-      com.isearch.config.key = value;
+      com.isearch.config[key] = value;
       return true;
     } else {
       return false;
     }
   }
 };
+
+com.isearch.config.initUI = function() {
+  
+  $settingsPanel = $("#settings-panel");
+  $settingsPanel.hide();
+  $("#settings a").click(function(){
+    $settingsPanel.toggle();
+  });
+
+  //Initialize the form with the default values
+  $settingsPanel.find("#max-num-results")
+      .val(com.isearch.config.maxNumResults);
+  $settingsPanel.find("#icon-size option[value=" + com.isearch.config.iconSize + "]")
+      .attr('selected','selected');
+
+  //Listen to button click to change settings
+  $settingsPanel.find('#update-settings').click(function(){
+    com.isearch.config.set('maxNumResults', 
+      $settingsPanel.find("#max-num-results").val()
+    );
+    com.isearch.config.set('iconSize', 
+      $settingsPanel.find("#icon-size option:selected").val()
+    );
+    return false;
+  });
+  
+
+}
 

@@ -6,11 +6,15 @@ $(document).ready(function(){
   var iMenu = com.isearch.menu
   iMenu.adjust();
   
-  $("#settings-panel").hide();
-
   $(window).resize(function(){
     iMenu.adjust();
-  });
+  }); 
+  
+  //Initializes the settings panel
+  com.isearch.config.initUI();
+ 
+  //Initializes the tagging system
+  com.isearch.tags.init();
 
   //Behaviour of the menu (panels, etc)
   $('nav li').click(function(){
@@ -26,10 +30,6 @@ $(document).ready(function(){
     }
   });
 
-  $("#settings a").click(function(){
-    $("#settings-panel").toggle();
-  });
-  
   //Close button of the panel
   $('.panel footer a').click(function(){
     $('.panel').slideUp(200);

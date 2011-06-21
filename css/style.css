@@ -158,6 +158,7 @@ nav {
   border-bottom: 1px #999 solid;
   color: white;
   padding: 10px;
+  display: none;
 }
 #settings-panel label, #settings-panel input, #settings-panel button, #settings-panel select{
   display: block;
@@ -294,6 +295,11 @@ nav a img { width: 46px; height: 46px; }
   text-align: center;
   color: #686868;
   margin-top: -5px;
+}
+.tags {
+  width: 70%;
+  margin: 2em auto;
+  text-align: center;
 }
 footer { 
   font-style: italic; 
