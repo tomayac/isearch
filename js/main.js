@@ -5,6 +5,8 @@ $(document).ready(function(){
   //Resizing of the menu on load and when window resizes
   var iMenu = com.isearch.menu
   iMenu.adjust();
+  
+  $("#settings-panel").hide();
 
   $(window).resize(function(){
     iMenu.adjust();
@@ -22,6 +24,10 @@ $(document).ready(function(){
       iMenu.showPanel(requestedMode);
       clickedListItem.addClass('active');
     }
+  });
+
+  $("#settings a").click(function(){
+    $("#settings-panel").toggle();
   });
   
   //Close button of the panel

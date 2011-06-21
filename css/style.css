@@ -128,7 +128,7 @@ nav {
   -moz-box-shadow: 0 2px 6px #ccc;
   -webkit-box-shadow: 0 2px 6px #ccc;
   box-shadow: 0 2px 6px #ccc; 
-  }
+}
 #navButtonLeft, #navButtonRight {
   position: absolute;
   z-index:10;
@@ -138,13 +138,13 @@ nav {
   width: 40px;
   height: 72px;
   background: url('../img/nav-button-left.png') top center no-repeat;
-  }
+}
 #navButtonRight { 
   top: 1px;
   right: 0;
   left: auto;
   background: url('../img/nav-button-right.png') top center no-repeat;
-  }
+}
 
 #settings {
   padding: 5px;
@@ -153,6 +153,24 @@ nav {
   text-align: right;
 }
 #settings a { color: white; display: block; }
+#settings-panel {
+  background-color: #666;
+  border-bottom: 1px #999 solid;
+  color: white;
+  padding: 10px;
+}
+#settings-panel label, #settings-panel input, #settings-panel button, #settings-panel select{
+  display: block;
+}
+#settings-panel button {
+  padding: 0.5em 0.35em;
+  margin-top: 0.5em;
+}
+#settings-panel input, #settings-panel select {
+  padding: 0.2em;
+  margin-bottom: 1em;
+  border-bottom: 1px solid #ccc;
+}
 
 #query {
   position: relative;
