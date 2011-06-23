@@ -29,7 +29,7 @@ com.isearch.tags.init = function() {
   $(".tags a").click(function() {
     var tagText = $(this).text();
     var query = $('#query-field').val();
-    $('#query-field').val(query + ' ' + tagText);
+    $("#query-field").tokenInput('add',{id: tagText,name: tagText})    
   });
 
 }

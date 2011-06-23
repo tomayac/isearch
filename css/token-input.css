@@ -56,7 +56,10 @@ li.token-input-token-isearch span {
     font-weight: bold;
     cursor: pointer;
 }
-
+li.token-input-token-isearch p img{
+    vertical-align: middle;
+    margin-top: -3px;
+}
 li.token-input-selected-token-isearch {
     background-color: #666;
     border: 1px solid #444;
@@ -79,7 +82,7 @@ div.token-input-dropdown-isearch {
     border-right: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
     cursor: default;
-    z-index: 1;
+    z-index: 99;
 }
 
 div.token-input-dropdown-isearch p {

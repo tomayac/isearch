@@ -106,9 +106,13 @@ com.isearch.menu.attachEvents = function(mode) {
   if (mode === 'text') {
     com.isearch.menu.attachTextEvents();
   } else if (mode === 'geolocation') {
+    com.isearch.menu.attachGeolocationEvents();
   } else if (mode === '3d') {
+    com.isearch.menu.attach3dEvents();
   } else if (mode === 'picture') {
+    com.isearch.menu.attachPictureEvents();
   } else if (mode === 'sound') { 
+    com.isearch.menu.attachSoundEvents();
   } else {
     console.warn('Couldn\'t attach the event for mode ' + mode);
     return;
@@ -124,11 +128,85 @@ com.isearch.menu.attachTextEvents = function() {
     
     var textIcon = $('nav li[data-mode="text"]')
     textIcon.addClass('uploading');
-
-    var searchQuery = $('.panel.text input').val();
+    
+    var textBox = $('.panel.text input');
+    var searchQuery = textBox.val();
     console.log('Search term is ' + searchQuery);
     
-    textIcon.removeClass('uploading').addClass('ready');
+    //Transfer the query to the main field via tokenInput 
+    $("#query-field").tokenInput('add',{id:searchQuery,name:searchQuery});
+    //Remove the "uploading style" | Note: this won't be visible, hopefully
+    textIcon.removeClass('uploading');
+    //Empty the text field of the panel
+    textBox.val('');
+    
+    com.isearch.menu.reset();
+  });
+}
+
+com.isearch.menu.attachGeolocationEvents = function() {
+  $('.panel.geolocation button').click(function(){
+    console.log('Button geolocation pressed');
+    
+    var pictureIcon = $('nav li[data-mode="geolocation"]')
+    pictureIcon.addClass('uploading');
+    
+    //N.B: COMPLETELY FAKE!! 
+    $("#query-field").tokenInput('add',{id:"geo",name:"<img src='img/fake/fake-geolocation.jpg'/>"});
+    //Remove the "uploading style" | Note: this won't be visible, hopefully
+    pictureIcon.removeClass('uploading');
+    
+    com.isearch.menu.reset();
+
+  });
+}
+
+com.isearch.menu.attach3dEvents = function() {
+  $('.panel.3d button').click(function(){
+    console.log('Button 3d pressed');
+    
+    var pictureIcon = $('nav li[data-mode="3d"]')
+    pictureIcon.addClass('uploading');
+    
+    //N.B: COMPLETELY FAKE!! 
+    $("#query-field").tokenInput('add',{id:"3d",name:"<img src='img/fake/fake-3d.jpg'/>"});
+    //Remove the "uploading style" | Note: this won't be visible, hopefully
+    pictureIcon.removeClass('uploading');
+    
+    com.isearch.menu.reset();
+
+  });
+}
+
+com.isearch.menu.attachPictureEvents = function() {
+  $('.panel.picture button.shoot').click(function(){
+    console.log('Button "Shoot picture" pressed');
+    
+    var pictureIcon = $('nav li[data-mode="picture"]')
+    pictureIcon.addClass('uploading');
+    
+    //N.B: COMPLETELY FAKE!! 
+    $("#query-field").tokenInput('add',{id:"cat",name:"<img src='img/fake/fake-picture.jpg'/>"});
+    //Remove the "uploading style" | Note: this won't be visible, hopefully
+    pictureIcon.removeClass('uploading');
+    
+    com.isearch.menu.reset();
+
+  });
+}
+
+com.isearch.menu.attachSoundEvents = function() {
+  $('.panel.sound button').click(function(){
+    console.log('Button in sound panel pressed');
+    
+    var pictureIcon = $('nav li[data-mode="sound"]')
+    pictureIcon.addClass('uploading');
+    
+    //N.B: COMPLETELY FAKE!! 
+    $("#query-field").tokenInput('add',{id:"sound",name:"<img src='img/fake/fake-sound.jpg'/>"});
+    //Remove the "uploading style" | Note: this won't be visible, hopefully
+    pictureIcon.removeClass('uploading');
+    
     com.isearch.menu.reset();
 
   });

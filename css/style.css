@@ -176,6 +176,7 @@ nav {
 #query {
   position: relative;
 }
+/* old search box styles */
 /* #query input[type=text] { */
 /*   width: 78%; */
 /*   padding-right: 11%; */
@@ -189,7 +190,7 @@ nav {
 #query input[type=submit] {
   display: block;
   position:absolute;
-  top: 2px;
+  top: 3px;
   right: 5%;
   height: 2.2em;
   border: 1px #CCC solid;
