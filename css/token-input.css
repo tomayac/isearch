@@ -76,6 +76,7 @@ li.token-input-input-token-isearch {
 div.token-input-dropdown-isearch {
     position: absolute;
     width: 73%;
+    max-width: 827px; /* max size of the query field */ 
     background-color: #fff;
     overflow: hidden;
     border-left: 1px solid #ccc;

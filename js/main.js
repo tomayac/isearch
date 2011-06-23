@@ -57,14 +57,19 @@ $(document).ready(function(){
     
     //prevent the page to reload
     e.preventDefault() ;
-   
-    //Collapses the menu
-    com.isearch.menu.collapse();
+    
+    var query = com.isearch.menu.retrieveQuery(); 
+    console.log('searching for query ' + query);   
+    if (query) { 
+      //Collapses the menu
+      com.isearch.menu.collapse();
+      
+      //Remove the tags
+      $(".tags").hide();
 
-    var query = com.isearch.menu.retrieveQuery();
-    if (query) {
-      console.log('searching for query ' + query); 
+
       com.isearch.results.display(query);
+
     } else {
       alert('woops! No query!');
     }
