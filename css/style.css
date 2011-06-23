@@ -176,16 +176,16 @@ nav {
 #query {
   position: relative;
 }
-#query input[type=text] {
-  width: 78%;
-  padding-right: 11%;
-  padding-left: 1%;
-  margin: 1em auto;
-  height: 2.2em;
-  border: 1px #CCC solid;
-  display: block;
-  box-shadow: 0px 0px 2px 2px rgba(99,99,99,0.2); 
-}
+/* #query input[type=text] { */
+/*   width: 78%; */
+/*   padding-right: 11%; */
+/*   padding-left: 1%; */
+/*   margin: 1em auto; */
+/*   height: 2.2em; */
+/*   border: 1px #CCC solid; */
+/*   display: block; */
+/*   box-shadow: 0px 0px 2px 2px rgba(99,99,99,0.2);  */
+/* } */
 #query input[type=submit] {
   display: block;
   position:absolute;
