@@ -298,6 +298,15 @@ nav a img { width: 46px; height: 46px; }
   color: #686868;
   margin-top: -5px;
 }
+.panel.sketch canvas {
+  display: block;
+  width: 70%;
+  height: 270px;
+  max-width: 400px;
+  background: white;
+  margin: 10px auto;
+  border: 1px #CCC solid;
+}
 .tags {
   width: 70%;
   margin: 2em auto;

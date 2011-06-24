@@ -88,6 +88,11 @@
               <img src="img/icon-isearch-picture.png" alt="Picture" />
             </a>
           </li>
+          <li data-mode="sketch">
+            <a>
+              <img src="img/icon-isearch-sketch.png" alt="Sketch" />
+            </a>
+          </li>
           <li data-mode="3d">
             <a>
               <img src="img/icon-isearch-3d.png" alt="3D" />
@@ -131,6 +136,24 @@
         </p>
         <footer><a href="#">close</a></footer>
       </section>
+
+      <section class="panel sketch">
+        <p class="instruction">
+          Grab your sketch and drop it here
+        </p>
+        <p class="instruction">
+          Upload your sketch with this button: <button class="upload">Upload</button>
+        </p>
+        <p class="instruction">
+          Draw something directly below
+          <canvas id="sketch">
+            Erm...too bad. Your browser doesn't support the canvas element.
+            Switch to a better one please! :)
+          </canvas>
+        </p>
+        <footer><a href="#">close</a></footer>
+      </section>
+
       <section class="panel 3d">
         <p class="instruction">
           Drag'n'drop one of your 3D model here
