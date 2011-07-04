@@ -6,9 +6,11 @@ $(document).ready(function(){
   var iMenu = com.isearch.menu
   iMenu.adjust();
   
-  $(window).resize(function(){
-    iMenu.adjust();
-  }); 
+  var resizeTimer;
+  $(window).resize(function() {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(iMenu.adjust, 200);
+  });
   
   //Initializes the settings panel
   com.isearch.config.initUI();

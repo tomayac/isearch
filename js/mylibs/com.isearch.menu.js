@@ -24,6 +24,12 @@ com.isearch.menu.reset = function() {
 
 com.isearch.menu.adjust = function() {
   console.log('entered adjust function');
+  
+  //Fix canvas width and height in HTML
+  //(it appears that CSS is not enough)
+  //See http://www.whatwg.org/specs/web-apps/current-work/multipage/the-canvas-element.html#attr-canvas-width for more info
+  com.isearch.menu.fixCanvas();
+
   var menuWidth = com.isearch.config.menuWidth;
   com.isearch.menu.overflow = menuWidth - document.width;
   //console.log('document.width: ' + document.width + '| menuWidth: ' + menuWidth);
@@ -58,6 +64,22 @@ com.isearch.menu.removeControls = function() {
     $('nav>a').remove();
     com.isearch.menu.hasNav = false;
   }  
+}
+
+com.isearch.menu.fixCanvas = function() {
+  
+  var formWidth = $("#query").width();
+  var $canvas = $("#sketch"); 
+
+  canvasComputedWidth = Math.floor(0.7 * formWidth);
+  if (canvasComputedWidth < 400) {
+    $canvas.attr('width',canvasComputedWidth);
+    $canvas.attr('height',270);
+  } else {
+    $canvas.attr('width',400);
+    $canvas.attr('height',270);
+    console.log("width to 400 and height to 270");
+  }
 }
 
 com.isearch.menu.shift = function(direction, amount) {
@@ -111,6 +133,8 @@ com.isearch.menu.attachEvents = function(mode) {
     com.isearch.menu.attach3dEvents();
   } else if (mode === 'picture') {
     com.isearch.menu.attachPictureEvents();
+  } else if (mode === 'sketch') {
+    com.isearch.menu.attachSketchEvents();
   } else if (mode === 'sound') { 
     com.isearch.menu.attachSoundEvents();
   } else {
@@ -179,7 +203,7 @@ com.isearch.menu.attach3dEvents = function() {
 }
 
 com.isearch.menu.attachPictureEvents = function() {
-  $('.panel.picture button.shoot').click(function(){
+  $('.panel.picture button.shoot, .panel.picture button.upload').click(function(){
     console.log('Button "Shoot picture" pressed');
     
     var pictureIcon = $('nav li[data-mode="picture"]')
@@ -194,7 +218,40 @@ com.isearch.menu.attachPictureEvents = function() {
 
   });
 }
+com.isearch.menu.attachSketchEvents = function() {
 
+    UIIFace.initialize({gestureHint:true});
+		
+		UIIFace.registerEvent('sketch','sketch', function(event, pen) {
+			//console.dir(pen);
+			var canvas = $('#sketch')[0];
+      var context = canvas.getContext('2d');   
+			
+			context.strokeStyle ='rgba('+pen.color+',.3)';
+      context.lineWidth = pen.size; 
+      context.beginPath();
+      context.moveTo(pen.oldX, pen.oldY);
+      context.lineTo(pen.x, pen.y);
+      context.closePath();
+      context.stroke(); 
+		});
+
+  
+  $('.panel.sketch button.done').click(function(){
+    console.log('Button "sketch done" pressed');
+    
+    var sketchIcon = $('nav li[data-mode="sketch"]')
+    sketchIcon.addClass('uploading');
+    
+    //N.B: COMPLETELY FAKE!! 
+    $("#query-field").tokenInput('add',{id:"cat",name:"<img src='img/fake/fake-sketch.jpg'/>"});
+    //Remove the "uploading style" | Note: this won't be visible, hopefully
+    sketchIcon.removeClass('uploading');
+    
+    com.isearch.menu.reset();
+
+  });
+}
 com.isearch.menu.attachSoundEvents = function() {
   $('.panel.sound button').click(function(){
     console.log('Button in sound panel pressed');
