@@ -15,7 +15,8 @@ if (com.isearch.menu) {
 }
 com.isearch.menu = {};
 com.isearch.menu.hasNav = false;
-
+com.isearch.menu.attachedModes = []; //Stock the attached events 
+                                //(we don't want to attch them each time a panel is displayed)
 
 com.isearch.menu.reset = function() {
     $('.panel').slideUp(com.isearch.config.slideUpAnimationTime);
@@ -125,22 +126,31 @@ com.isearch.menu.hidePanels = function() {
 }
 
 com.isearch.menu.attachEvents = function(mode) {
-  if (mode === 'text') {
+
+  if (mode === 'text' && !com.isearch.menu.isAttached('text')) {
     com.isearch.menu.attachTextEvents();
-  } else if (mode === 'geolocation') {
+  } else if (mode === 'geolocation' && !com.isearch.menu.isAttached('geolocation')) {
     com.isearch.menu.attachGeolocationEvents();
-  } else if (mode === '3d') {
+  } else if (mode === '3d' && !com.isearch.menu.isAttached('3d')) {
     com.isearch.menu.attach3dEvents();
-  } else if (mode === 'picture') {
+  } else if (mode === 'picture' && !com.isearch.menu.isAttached('picture')) {
     com.isearch.menu.attachPictureEvents();
-  } else if (mode === 'sketch') {
+  } else if (mode === 'sketch' && !com.isearch.menu.isAttached('sketch')) {
     com.isearch.menu.attachSketchEvents();
-  } else if (mode === 'sound') { 
+  } else if (mode === 'sound' && !com.isearch.menu.isAttached('sound')) { 
     com.isearch.menu.attachSoundEvents();
   } else {
-    console.warn('Couldn\'t attach the event for mode ' + mode);
+    console.log('Didn\'t attach the event for mode ' + mode);
     return;
   }
+}
+
+com.isearch.menu.isAttached = function(mode) {
+  //is a mode attached to the menu? (i.e events bound)
+  if($.inArray(mode, com.isearch.menu.attachedModes) === -1) {
+    return false;
+  }
+  return true;
 }
 
 com.isearch.menu.attachTextEvents = function() {
@@ -165,6 +175,7 @@ com.isearch.menu.attachTextEvents = function() {
     textBox.val('');
     
     com.isearch.menu.reset();
+    com.isearch.menu.attachedModes.push('text');
   });
 }
 
@@ -181,6 +192,7 @@ com.isearch.menu.attachGeolocationEvents = function() {
     pictureIcon.removeClass('uploading');
     
     com.isearch.menu.reset();
+    com.isearch.menu.attachedModes.push('geolocation');
 
   });
 }
@@ -198,6 +210,7 @@ com.isearch.menu.attach3dEvents = function() {
     pictureIcon.removeClass('uploading');
     
     com.isearch.menu.reset();
+    com.isearch.menu.attachedModes.push('3d');
 
   });
 }
@@ -215,6 +228,7 @@ com.isearch.menu.attachPictureEvents = function() {
     pictureIcon.removeClass('uploading');
     
     com.isearch.menu.reset();
+    com.isearch.menu.attachedModes.push('picture');
 
   });
 }
@@ -249,6 +263,7 @@ com.isearch.menu.attachSketchEvents = function() {
     sketchIcon.removeClass('uploading');
     
     com.isearch.menu.reset();
+    com.isearch.menu.attachedModes.push('sketch');
 
   });
 }
@@ -265,6 +280,7 @@ com.isearch.menu.attachSoundEvents = function() {
     pictureIcon.removeClass('uploading');
     
     com.isearch.menu.reset();
+    com.isearch.menu.attachedModes.push('sound');
 
   });
 }
