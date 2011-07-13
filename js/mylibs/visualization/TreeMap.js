@@ -131,7 +131,7 @@ p.makeLabel = function(container, node, level)
 	}
 	else
 	{
-		box2.style.background = "url('images/plus_button.png') no-repeat center" ;
+		box2.style.background = "url('img/plus_button.png') no-repeat center" ;
 		box2.onclick = function(e) { 
 			that.history.push(node) ; 
 			that.redraw(node, 0) ; 
