@@ -189,11 +189,7 @@ p.draw = function(treeNode, rect, level)
 	}
 	else
 		subRect = rect.shrink(0) ;
-	  console.log('SubRect coming next');
-	  console.log(subRect);
-	//if ( subRect !== null )
-		//	this.draw( node, subRect, level +1 );
-	console.log(rect);
+	 
 	this.divideDisplayArea(treeNode.children, subRect) ;
 	
 	for(var i=0 ; i<treeNode.children.length ; i++ )
@@ -221,7 +217,7 @@ p.draw = function(treeNode, rect, level)
 		
 		this.draw(node, rect, level+1) ;
 		
-		box.onmouseover = function(e) { this.style.border = "1px solid #ab2011" ; }
+		box.onmouseover = function(e) { this.style.border = "1px solid #00f" ; }
 		box.onmouseout = function(e) { this.style.border = "1px solid #444" ; }
 			//label.onclick = this.createCallback( "onBoxClick", node, box, true );
 	}

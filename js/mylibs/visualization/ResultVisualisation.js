@@ -34,7 +34,6 @@ p.redraw = function(method, options)
 	}
 	else if ( method == "tmap" )
 	{
-	  console.log('Will insert a widget treemap');
 		this.widget = new TreeMap(this.results, this.element, options) ;  
 	}
 	else if ( method == "htree" )

@@ -7,6 +7,9 @@ ThumbContainer = function(containerDiv, data, options) {
 		
 	if ( options.onClick )
 		this.onClick = options.onClick ;
+		
+	if ( options.mode )
+		this.mode = options.mode ;
 	
 	this.containerDiv = containerDiv ;
 	
@@ -24,6 +27,16 @@ ThumbContainer = function(containerDiv, data, options) {
 
 var p = ThumbContainer.prototype;
 
+ThumbContainer.GRID_MODE = 0 ;
+ThumbContainer.TRANS_MODE = 1 ;
+
+ThumbContainer.NAV_FIXED = 0 ;
+ThumbContainer.NAV_HOVER = 1 ;
+ThumbContainer.NAV_HIDDEN = 2 ;
+
+ThumbContainer.margin = 4 ;
+ThumbContainer.navBarSize = 32 ;
+
 p.containerDiv = null ;
 p.thumbs = null ;
 p.canvas = null ;
@@ -39,6 +52,12 @@ p.offsetX = 0 ;
 p.offsetY = 0 ;
 p.tooltipPending = false ;
 p.thumbSize = Thumbnail.size ;
+p.mode = ThumbContainer.GRID_MODE ;
+p.offset = 0 ;
+p.pageCount = 0 ;
+p.navMode = ThumbContainer.NAV_FIXED ;
+p.navBar = null ;
+
 
 ThumbContainer.zoomScales = [0.25, 0.5, 1.0, 1.5, 2.0, 3.0, 4.0] ;
   
@@ -54,6 +73,28 @@ p.createCanvas = function()
 	
 	this.canvas.addEventListener("mousedown", function(e) { obj.handleMouseClick(e) ; }, true);
 	this.canvas.addEventListener("mousemove", function(e) { obj.handleMouseMove(e) ; }, true);
+	
+	// add navigation bar
+	if ( this.mode == ThumbContainer.GRID_MODE && this.navMode != ThumbContainer.NAV_HIDDEN ) {
+		this.navBar = $("<div/>", { "class": "thumb-container-nav-bar", 
+					  css: { 	"position": "absolute", 
+								"width": "100%", 
+								"height": ThumbContainer.navBarSize,
+								"display": ( this.navMode == ThumbContainer.NAV_HOVER ) ? "none" : "block",
+								"overflow": "hidden",
+								"opacity": 0.8,
+								"background-color": "white",
+								"bottom": 0
+							} 
+					}).
+		appendTo($(this.containerDiv)) ;
+	}
+	
+/*	var that = this ;
+	$(window).bind("orientationchange resize",function(e) {
+		that.draw() ;
+	}) ;
+*/	
 }
 
 p.populate = function(data) {
@@ -80,14 +121,85 @@ p.populate = function(data) {
 	
 }
 
+p.redrawNavBar = function(page, maxPage)
+{
+	if ( maxPage == 1 ) return ;
+	// Show pager
+	
+	var nav = '', prev = '', next = '', first = '', last = '' ;
+	var delta = 1 ;
+	
+	var min_surplus = (page <= delta) ? (delta - page + 1) : 0;
+    var max_surplus = (page >= (maxPage - delta)) ?
+                      (page - (maxPage - delta)) : 0;
+    
+    var start =  Math.max(page - delta - max_surplus, 1) ;
+    var end = Math.min(page + delta + min_surplus, maxPage) ;
+    	
+	if ( start > 1 ) nav += '<li>...</li>' ;
+	
+	for( var p = start; p <= end; p++ )
+	{
+		if ( p == page ) nav += '<li class="pager-current first">' + page + '</li> '; // no need to create a link to current page
+		else {
+			//$url = str_replace('%%page%%', $p, $urlTemplate) ;
+			nav += '<li class="pager-item"><a title="Go to page ' + p + '" id="page-' + p + '" href="#">' + p + '</a></li>';
+		}
+	}
+	
+	if ( page > 1 ) 
+	{
+		p = page - 1 ;
+	//	$url_prev = str_replace('%%page%%', $p, $urlTemplate) ;
+	//	$url_first = str_replace('%%page%%', '1', $urlTemplate) ;
+		prev =  '<li class="pager-previous"><a title="Previous page" id="page-' + p + '" href="#">&lt;</a></li>';
+		first = '<li class="pager-first first"><a title="First page" id="page-' + p + '" href="#">&lt;&lt;</a></li>';
+	}
+	else
+	{
+		prev  = '&nbsp;'; // we're on page one, don't print previous link
+		first = '&nbsp;'; // nor the first page link
+	}
+
+	if ( page < maxPage )
+	{
+		p = page + 1 ;
+		//$url_next = str_replace('%%page%%', $p, $urlTemplate) ;
+		//$url_last = str_replace('%%page%%', $maxPage, $urlTemplate) ;
+		next = '<li class="pager-next"><a title="Next page" id="page-' + p + '" href="#">&gt</a></li>';
+		last = '<li class="pager-last last"><a title="Last page" id="page-' + maxPage +'" href="#">&gt;&gt;</a></li>';
+	}
+	else
+	{
+		next = '&nbsp;'; // we're on the last page, don't print next link
+		last = '&nbsp;'; // nor the last page link
+	}
+
+	if ( end < maxPage ) nav += '<li>...</li>' ;
+		
+	// print the navigation link
+	$(this.navBar).html('<ul class="pager" >' + first + prev + nav + next + last + '</ul>') ;
+	var oo = $(this.canvas).offset() ;
+	var top = this.canvas.height - ThumbContainer.navBarSize ;
+	
+//	$(this.navBar).css('top', top ) ;
+	
+	var that = this ;
+	$('ul.pager a', this.navBar).bind( "click", function() {
+		var page = this.id.substr(5) ;
+		that.offset = that.pageCount * (page - 1) ;
+		that.draw() ;
+	}) ;
+}
+
 p.resize = function(e) {
 	console.log(e) ;
 }
 
 p.draw = function() {
 
-	var cw = $(this.containerDiv).width() - 10 ;
-	var ch = $(this.containerDiv).height() - 10;
+	var cw = $(this.containerDiv).width()  ;
+	var ch = $(this.containerDiv).height() ;
 	
 	this.origWidth = this.canvas.width = cw ;
 	this.origHeight = this.canvas.height = ch ;
@@ -99,37 +211,87 @@ p.redraw = function(contentWidth, contentHeight)
 {
 	this.ctx.clearRect(0, 0, contentWidth, contentHeight);
 	
-	var lmanager = new LabelManager(contentWidth, contentHeight) ;	
-		 
-	var sz = this.thumbSize  ;
-	
-	for( var i=0 ; i<this.thumbs.length ; i++ )
+	if ( this.mode == ThumbContainer.GRID_MODE )
 	{
-		var item = this.thumbs[i] ;
+		// compute layout
 		
-		lmanager.addLabelGraphic(i, item.qx * contentWidth, item.qy * contentHeight, sz, sz) ;
-	}
-		 		
-	var res = lmanager.solve() ;
-	
-	for( i = 0 ; i<this.thumbs.length ; i++ )
-	{
-		var item = this.thumbs[i] ;
-		item.hide() ;
-	}	 
+		var m = ThumbContainer.margin ;
+		var of = this.thumbSize + m ;
+		
+		var sh = ( this.navMode != ThumbContainer.NAV_HIDDEN ) ? (contentHeight - ThumbContainer.navBarSize - m ) : contentHeight - m ;
+		var sw = contentWidth - m ;
+		
+		var nc = Math.floor(sw/of) ;
+		var nr = Math.floor(sh/of) ;
+		this.pageCount = nr * nc ;
+		this.offset = this.pageCount * Math.floor(this.offset / this.pageCount) ;
+		
+		if ( this.pageCount == 0 ) return ;
+		
+		var x = m, y = m ;
+		var r = 0, c = 0 ;
+		
+		for( var i=this.offset ; i<Math.min(this.offset + this.pageCount, this.thumbs.length) ; i++ )
+		{
+			var item = this.thumbs[i] ;
+					
+			item.show(this.ctx, x, y) ;
+			
+			c++ ;
+			if ( c == nc ) { 
+				r++ ; 
+				x = m ; 
+				y += of ;
+				c = 0 ;
+			}
+			else 
+				x += of ;
 				
-	for( i = 0 ; i<res.length ; i++ )
-	{
-		var q = res[i] ;
-		var index = q.index ;
+			if ( r == nr ) break ;
+		}
 		
-		var item = this.thumbs[index] ;
+		if ( this.navMode != ThumbContainer.NAV_HIDDEN )
+		{
+			var page = Math.floor(this.offset/this.pageCount) ;
+			var maxPage = Math.floor(this.thumbs.length/this.pageCount) ;
+			this.redrawNavBar(page+1, maxPage) ;
+		}
+	
+	}
+	else
+	{
+		var lmanager = new LabelManager(contentWidth, contentHeight) ;	
+		 
+		var sz = this.thumbSize  ;
+	
+		for( var i=0 ; i<this.thumbs.length ; i++ )
+		{
+			var item = this.thumbs[i] ;
+		
+			lmanager.addLabelGraphic(i, item.qx * contentWidth, item.qy * contentHeight, sz, sz) ;
+		}
+		 		
+		var res = lmanager.solve() ;
+	
+		for( i = 0 ; i<this.thumbs.length ; i++ )
+		{
+			var item = this.thumbs[i] ;
+			item.hide() ;
+		}	 
+				
+		for( i = 0 ; i<res.length ; i++ )
+		{
+			var q = res[i] ;
+			var index = q.index ;
+		
+			var item = this.thumbs[index] ;
 		
 			
-		item.show(this.ctx, q.x, q.y) ;
-	}
+			item.show(this.ctx, q.x, q.y) ;
+		}
 	
-	delete lmanager ;
+		delete lmanager ;
+	}
 }
 
 p.getPosition = function(event)
@@ -193,7 +355,24 @@ p.handleMouseMove = function(event)
 {
 	var pos = this.getPosition(event) ;
 	
+	if ( this.mode == ThumbContainer.GRID_MODE && this.navMode == ThumbContainer.NAV_HOVER )
+	{
+		if ( pos.y > this.canvas.height - ThumbContainer.navBarSize )
+		{
+			if ( this.hoverItem && this.onMouseOut )
+			{
+				this.onMouseOut(this.hoverItem) ;
+				this.hoverItem = null ;
+				return ;
+			}
+			$(this.navBar).show() ;
+			return ;
+		}
+		
+		$(this.navBar).hide() ;
+	}
 	// if inside current hover item there is nothing to do
+	
 	
 	if ( this.hoverItem && inBBox( pos.x, pos.y, this.hoverItem ) ) return ;
 	
