@@ -69,7 +69,7 @@ $(document).ready(function(){
       //Remove the tags
       $(".tags").hide();
 
-
+      //Displays the results
       com.isearch.results.display(query);
 
     } else {

@@ -18,44 +18,34 @@ if (com.isearch.results) {
 com.isearch.results = {};
 
 com.isearch.results.display = function(query){
-  com.isearch.results.injectFlashObject();
+  com.isearch.results.init();
   com.isearch.results.fetch(query);
   com.isearch.results.attachEvents();
 }
 
-com.isearch.results.injectFlashObject = function() {
-  //Inject the Flash object for the results visualization in the DOMElement
+com.isearch.results.init = function() {
   
-  var flashContainer = $( document.createElement('div') )
-                       .attr('id','flash-results')
-                       .html('Here goes the visualization')
-                       .appendTo('#main');
-
-  var swfLoaded = false ;
-  var swfObj = null ;
-  var lastResult = null ;
-  var searchForm ;
-
-  function outputStatus(e) {
-    if (e.success) {
-      com.isearch.flashResults = e.ref;
-      console.log(com.isearch.flashResults);
-    }
+  //TODO: remove lastResult since we have a var in the namespace for that
+  var lastResult, res ;  
+  
+  function redraw() {
+  	vis.draw(res, "#hpanel", visOptions) ;
   }
 
-  var flashVars = { testVar: "value" };
-  var params = {
-    allowFullScreen: "true",
-    allowScriptAccess: "always",
-    wmode: "transparent"
-  };
-        
-  var attrs = {} ;
-  swfobject.embedSWF( "demo.swf", 
-                      "flash-results", 
-                      "100%", "600", 
-                      "10.2.0", "playerProductInstall.swf", 
-                      flashVars, params, attrs, outputStatus );
+  
+
+    /*
+  	$(window).bind("orientationchange resize",function(e) {
+  		fixGeometry() ;
+  		hpanel.resultsPanel.resize() ;
+  	}) ;
+  	*/
+
+
+  	$("#results-page").bind("pageshow", function(e) {
+  		redraw() ;
+  	}) ;
+
 }
 
 com.isearch.results.attachEvents = function() {
@@ -116,26 +106,47 @@ com.isearch.results.fetch = function(query) {
       "out": "json"
     },
     success: function(data) {
+      
       console.log(data)
+      //Let's save the data in a safer place
       com.isearch.jsonData = data;
-
-      //IMPORTANT: setTimeout is a dirty hack I put here. 
-      //It's just to wait till the Flash obj is really loaded.      
-      //More on this here: http://stackoverflow.com/questions/1436722/problem-accessing-externalinterface-exposed-method-in-google-chrome
-      if (com.isearch.flashResults) {
-        window.setTimeout(com.isearch.results.visualize, com.isearch.config.flashLoadedTimeout);
-      } else {
-        alert('Flash object is not loaded');
-      }
+      
+      //...and visualize it
+      com.isearch.results.visualize();
     }
   }); 
 }
 
 com.isearch.results.visualize = function() {
-  com.isearch.flashResults.visualiseResults(
-      com.isearch.jsonData, 
-      com.isearch.config.visualizationMethod, 
-      {"iconSize": com.isearch.config.iconSize}
-  );
-}
+  
+  var res = new SearchResults(com.isearch.jsonData) ;
+  var vis = new ResultsVisualiser ;
+  
+  //Create the container for visualization
+  var visualizationContainer = $('<div />')
+      .attr('id', 'visualization-container')
+      .appendTo('#main');
+      //.css('width','900px')
+      //.css('height','600px');
+  var loader = $('<img />')
+      .attr('src', 'img/ajax-loader.gif')
+      .appendTo('#visualization-container');
+  
+  var visOptions = { 
+    method: com.isearch.config.visualizationMethod, 
+    onItemClick: com.isearch.results.showItem, 
+    thumbSize: com.isearch.config.iconSize 
+  };
+  console.log('Will draw in 1 line');
+  vis.draw(res, "#visualization-container", visOptions) ;
 
+}
+com.isearch.results.showItem = function(item) {
+  
+	var container = $("#preview-page #image-container") ;
+	container.empty() ;
+
+	$("<img/>", { "width": "90%" }).appendTo(container).attr("src", item.contentUrl) ;
+	$("<div/>").appendTo(container).html("<p>" + item.tooltip + "</p>") ;
+
+}
