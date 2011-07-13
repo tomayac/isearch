@@ -52,16 +52,24 @@
 
     <label for="icon-size">Icon size</label>
     <select id="icon-size">
+      <option value="16">16</option>
       <option value="32">32</option>
-      <option value="48">48</option>
       <option value="64">64</option>
+      <option value="64">128</option>
+    </select>
+    
+    <label for="visualization-method">Visualization Method</label>
+    <select id="visualization-method">
+      <option value="tmap">Tree Map</option>
+      <option value="htree">Hyperbolic Tree</option>
+      <option value="hpanel">Hierarchy Panls</option>
     </select>
 
     <button id="update-settings">Update the settings!</button>
   </form>
 </div>
 <div id="settings">
-  <a href="#">Settings...</a>
+  <a href="#">Open/Close Settings Panel</a>
 </div>
   <div id="container">
     <header>

@@ -50,7 +50,7 @@ com.isearch.config.initUI = function() {
   $settingsPanel = $("#settings-panel");
   $settingsPanel.hide();
   $("#settings a").click(function(){
-    $settingsPanel.toggle();
+    $settingsPanel.toggle(200);
   });
 
   //Initialize the form with the default values
@@ -58,7 +58,9 @@ com.isearch.config.initUI = function() {
       .val(com.isearch.config.maxNumResults);
   $settingsPanel.find("#icon-size option[value=" + com.isearch.config.iconSize + "]")
       .attr('selected','selected');
-
+  $settingsPanel.find("#icon-size option[value=" + com.isearch.config.visualizationMethod + "]")
+      .attr('selected','selected');
+      
   //Listen to button click to change settings
   $settingsPanel.find('#update-settings').click(function(){
     com.isearch.config.set('maxNumResults', 
@@ -67,6 +69,15 @@ com.isearch.config.initUI = function() {
     com.isearch.config.set('iconSize', 
       $settingsPanel.find("#icon-size option:selected").val()
     );
+    com.isearch.config.set('visualizationMethod', 
+      $settingsPanel.find("#visualization-method option:selected").val()
+    );
+    
+    //Notify the user that their action has been successful -- close the panel
+    $settingsPanel.hide(200);
+    
+    
+    //Prevents the form submit to trigger a page reload
     return false;
   });
   

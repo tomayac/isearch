@@ -25,26 +25,13 @@ com.isearch.results.display = function(query){
 
 com.isearch.results.init = function() {
   
-  //TODO: remove lastResult since we have a var in the namespace for that
-  var lastResult, res ;  
-  
   function redraw() {
   	vis.draw(res, "#hpanel", visOptions) ;
   }
 
-  
-
-    /*
-  	$(window).bind("orientationchange resize",function(e) {
-  		fixGeometry() ;
-  		hpanel.resultsPanel.resize() ;
-  	}) ;
-  	*/
-
-
-  	$("#results-page").bind("pageshow", function(e) {
-  		redraw() ;
-  	}) ;
+	$("#results-page").bind("pageshow", function(e) {
+		redraw() ;
+	}) ;
 
 }
 
