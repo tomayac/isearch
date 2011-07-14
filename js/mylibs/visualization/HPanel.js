@@ -13,23 +13,9 @@ HPanel = function( searchResults, containerDiv, options )
 		
 	if ( options.onItemClick )
 		this.thumbOptions.onClick = options.onItemClick ;
-	
-	var that = this ;
+				
+	this.createLayout() ;
 			
-	var accordion = UI.accordionCreate([
-		{	id: "hpanel-groups", name: "Groups", collapsed: false  },
-		{ 	id: "hpanel-results", name: "Results", collapsed: true, 
-			onExpand: function() {
-		//fixGeometry() ;
-				that.resultsPanel.draw() ;
-			}
-		}]) ;
-		
-	this.clustersInnerDiv = $("#hpanel-groups", accordion) ;
-	this.resultsInnerDiv = $("#hpanel-results", accordion) ;
-
-	$(accordion).appendTo(containerDiv) ;
-		
 	this.populatePanels() ;
 }
    
@@ -58,6 +44,35 @@ p.setOptions = function(options)
 	this.resultsPanel.draw() ;
 
 }
+
+p.createLayout = function()
+{
+	var groups = $('<div/>', { "class": "slide-panel-container" }).appendTo(this.containerDiv)  ; 
+	this.clustersInnerDiv = $('<div/>', {id: "hpanel-groups", css: { height: "180px", "display": "none"}}).appendTo(groups) ;
+	var slideButtonContainer = $('<p/>', {"class": "slide-panel"}).appendTo(groups) ;
+	var slideButton = $('<a/>', { text: "Groups", href: '#', "class": "slide-panel-button"}).appendTo(slideButtonContainer) ;
+	
+	var results = $('<div>', { id: "hpanel-results", css: { width: "100%", height: $(this.containerDiv).height() - $(groups).height()  }}).appendTo(this.containerDiv) ;
+	
+	var that = this ;
+	slideButton.click(function(){
+		$('#hpanel-results').hide() ;
+		$('#hpanel-groups').slideToggle("fast", function() {
+			var height = $(that.containerDiv).height() - $(groups).height() ;
+			$('#hpanel-results').height(height) ;
+			that.resultsPanel = new ThumbContainer($('#hpanel-results'), that.icons, that.thumbOptions ) ;
+			that.resultsPanel.draw() ;
+			$('#hpanel-results').show() ;
+		});
+	//	$('#hpanel-groups').toggle();
+		$(this).toggleClass("active"); 
+		
+		return false;
+	});
+
+	this.resultsInnerDiv = results ;
+
+}
 		
 p.populatePanels = function()
 {
@@ -66,7 +81,7 @@ p.populatePanels = function()
 	var _this = this ;
 			
 	if ( this.hierarchy.length > 1 ) 
-		groupIcons.push({url: "images/arrow_back.png", cluster: -1, clicked: function() { _this.groupClicked(-1); } }) ;
+		groupIcons.push({url: "img/arrow_back.png", cluster: -1, clicked: function() { _this.groupClicked(-1); } }) ;
 	
 	for(var c=0 ; c < this.currentCluster.children.length ; c++ )
 	{
@@ -105,6 +120,8 @@ p.populatePanels = function()
 	
 	
 	this.resultsPanel = new ThumbContainer($('#hpanel-results'), this.icons, this.thumbOptions) ;
+	
+	this.resultsPanel.draw() ;
 
 }
 

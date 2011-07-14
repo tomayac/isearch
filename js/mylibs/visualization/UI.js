@@ -13,7 +13,7 @@ var p = UI.prototype;
 // onExpand: callback to call when an element is expanded
 // returns the outer dom element. 
 
-
+/*
 UI.accordionCreate = function(items)
 {	
 	var outerDiv = $("<div/>", { "data-role": "collapsible-set" }) ;
@@ -42,7 +42,7 @@ UI.accordionToggle = function(itemId)
 	else
 		$(ele).trigger("collapse") ;
 }		
-
+*/
 UI.showPage = function(title, callBack)
 {
 	$('#popup-page h1').text(title) ;

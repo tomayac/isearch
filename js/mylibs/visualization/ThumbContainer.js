@@ -37,6 +37,7 @@ ThumbContainer.NAV_HIDDEN = 2 ;
 ThumbContainer.margin = 4 ;
 ThumbContainer.navBarSize = 32 ;
 
+
 p.containerDiv = null ;
 p.thumbs = null ;
 p.canvas = null ;
@@ -82,8 +83,7 @@ p.createCanvas = function()
 								"height": ThumbContainer.navBarSize,
 								"display": ( this.navMode == ThumbContainer.NAV_HOVER ) ? "none" : "block",
 								"overflow": "hidden",
-								"opacity": 0.8,
-								"background-color": "white",
+								"padding" : "4px",
 								"bottom": 0
 							} 
 					}).
@@ -121,7 +121,7 @@ p.populate = function(data) {
 	
 }
 
-p.redrawNavBar = function(page, maxPage)
+p.redrawNavBar = function(page, maxPage, width)
 {
 	if ( maxPage == 1 ) return ;
 	// Show pager
@@ -147,6 +147,7 @@ p.redrawNavBar = function(page, maxPage)
 		}
 	}
 	
+		
 	if ( page > 1 ) 
 	{
 		p = page - 1 ;
@@ -177,10 +178,9 @@ p.redrawNavBar = function(page, maxPage)
 
 	if ( end < maxPage ) nav += '<li>...</li>' ;
 		
+	if ( width < 200 ) { nav = first = last = '' ; }
 	// print the navigation link
 	$(this.navBar).html('<ul class="pager" >' + first + prev + nav + next + last + '</ul>') ;
-	var oo = $(this.canvas).offset() ;
-	var top = this.canvas.height - ThumbContainer.navBarSize ;
 	
 //	$(this.navBar).css('top', top ) ;
 	
@@ -253,8 +253,8 @@ p.redraw = function(contentWidth, contentHeight)
 		if ( this.navMode != ThumbContainer.NAV_HIDDEN )
 		{
 			var page = Math.floor(this.offset/this.pageCount) ;
-			var maxPage = Math.floor(this.thumbs.length/this.pageCount) ;
-			this.redrawNavBar(page+1, maxPage) ;
+			var maxPage = Math.ceil(this.thumbs.length/this.pageCount) ;
+			this.redrawNavBar(page+1, maxPage, contentWidth) ;
 		}
 	
 	}
@@ -397,29 +397,55 @@ p.handleMouseMove = function(event)
 
 p.doShowTooltip = function(item) 
 {
+	// find the upper left corner of the thumbnail in window coordinates
+	
 	var offset = $(this.canvas).offset() ;
-	var posx = item.x + offset.left + this.thumbSize ;
-	var posy = item.y + offset.top + this.thumbSize ;
+	var posx = item.x + offset.left ;
+	var posy = item.y + offset.top  ;
 	
 	var ele = $(".tooltip") ;
+	var tooltip ;
 	
 	if ( ele.length == 0 )
 	{
 		var tooltip = jQuery(document.createElement('div'))
 					 .addClass("tooltip")
-					 .css("left", posx)
-					 .css("top", posy)
-                     .html("<p>" + item.tooltip + "</p>")
-					 .fadeIn('fast') 
-					 .appendTo('body') ;
+				     .html("<p>" + item.tooltip + "</p>").
+					appendTo('body');
+	
 	}
 	else
-		ele.css("left", posx)
-					 .css("top", posy)
-                     .html("<p>" + item.tooltip + "</p>")
-					 .fadeIn('fast')  ;
-					 
+	{
+		tooltip = ele ;
+		ele.html("<p>" + item.tooltip + "</p>") ;
+	}			
+
+    var ttw = tooltip.outerWidth() ;
+	var tth = tooltip.outerHeight() ;
+	var ww = $(window).width() + $(window).scrollLeft();
+	var wh = $(window).height() + $(window).scrollTop() ;
+	var ts = this.thumbSize ;
+		
+	if ( posx + ts + ttw < ww )
+	{
+		tooltip.css("left", posx + ts)
+	}
+	else 
+	{
+		tooltip.css("left", ww-ttw-2)
+	}
 	
+	if ( posy + ts + tth < wh  )
+	{
+		tooltip.css("top", posy + ts)
+	}
+	else 
+	{
+		tooltip.css("top", wh-tth-2)
+		
+	}
+	
+	tooltip.fadeIn('fast') ;
 	//console.log(item.id) ;
 }
 

@@ -1,27 +1,20 @@
 TreeMap = function(searchResults, container, options) {
-	
-	//Comtains the String used in the jQuery selector
 	this.container = container ;
 	
 	this.thumbOptions = {  } ;
 	
-	if (options.thumbSize) {
+	if ( options.thumbSize )
 		this.thumbOptions.thumbSize = options.thumbSize ;
-	}
-	
-	if (options.onItemClick) {
+		
+	if ( options.onItemClick )
 		this.thumbOptions.onClick = options.onItemClick ;
-	}
-	
+		
 	this.tree = {} ;
 	this.history = [this.tree] ;
 	
-	//Contains the JSON data
 	this.searchResults = searchResults ;
-  this.makeTree(this.tree, searchResults.clusters) ;
+    this.makeTree(this.tree, searchResults.clusters) ;
 	
-	console.log('state of "this.tree" at the end of makeTree function: ');
-	console.log(this.tree);
 	this.redraw(this.tree, 0) ;
 	
 }
@@ -35,7 +28,7 @@ p.history = null ;
 p.thumbOptions = null ;
 
 TreeMap.HORIZONTAL = 0 ;
-TreeMap.VERTICAL = 1 ;
+TreeMap.VERTIICAL = 1 ;
 
 
 p.setOptions = function(options)
@@ -56,13 +49,10 @@ TreeMap.sortOnArea = function(a, b)
 
 p.redraw = function(root, level)
 {
-	var $container = $(this.container);
-	$container.empty();
+	$(this.container).empty() ;
+	var w = $(this.container).width() ;
+	var h = $(this.container).height() ;
 	
-	console.log($container);
-	var w = $container.width() ;
-	var h = $container.height() ;
-	console.log('Drawing a treemap of level + ' + level + ' in a container of size '+ w + 'x' + h );
 	this.draw(root, new Rectangle(0, 0, w, h), level) ;
 }
 
@@ -111,7 +101,7 @@ p.makeLabel = function(container, node, level)
 	box1.style.textAlign = "center" ;
 	box1.innerHTML = node.label ;
 	
-	box1.style.background = "url('img/bg1.png') repeat-x scroll left bottom #ccc" ;
+	box1.style.background = "url('img/bg1.png') repeat-x scroll left bottom #FFFFFF" ;
 	
 	var box2 = document.createElement( "div" );
 	box2.style.position = "absolute" ;
@@ -148,21 +138,14 @@ p.makeLabel = function(container, node, level)
 	
 p.draw = function(treeNode, rect, level)
 {
-  console.log(this.container);
-	console.log('Entered the draw function');
-	console.log(treeNode);
-	console.log(rect);
-	console.log(level);
 	
-  var border = 1 ;
+   	var border = 1 ;
 	var margin = 0 ;
   
 	var subRect ;
-	console.log('this.tree: ');
-	console.log(this.tree);
+	
 	if ( treeNode.children.length > 0 && treeNode != this.tree)
 	{
-	  
 		var label = document.createElement( "div" );
 		label.style.position = "absolute";
 		label.style.left = rect.x + (border + margin) + "px";
@@ -181,15 +164,16 @@ p.draw = function(treeNode, rect, level)
 		label.onmouseout = function(e) { this.style.border = "" ; }
 		
 		$(this.container).append( label );	
-    console.log('container: is coming')
-    console.log(this.container);
+
 		subRect = rect.shrink( 20 );
-		
 	
 	}
 	else
 		subRect = rect.shrink(0) ;
-	 
+	
+	//if ( subRect !== null )
+		//	this.draw( node, subRect, level +1 );
+		
 	this.divideDisplayArea(treeNode.children, subRect) ;
 	
 	for(var i=0 ; i<treeNode.children.length ; i++ )
@@ -217,7 +201,7 @@ p.draw = function(treeNode, rect, level)
 		
 		this.draw(node, rect, level+1) ;
 		
-		box.onmouseover = function(e) { this.style.border = "1px solid #00f" ; }
+		box.onmouseover = function(e) { this.style.border = "1px solid blue" ; }
 		box.onmouseout = function(e) { this.style.border = "1px solid #444" ; }
 			//label.onclick = this.createCallback( "onBoxClick", node, box, true );
 	}
@@ -253,8 +237,6 @@ p.splitFairly = function( nodes )
 
 p.divideDisplayArea = function( facades, destRectangle )
 {	
-  console.log('Trying to divide the display area');
-  console.log(facades);
 	// Check for boundary conditions
 	if( facades.length === 0 ) return;
 
@@ -274,15 +256,16 @@ p.divideDisplayArea = function( facades, destRectangle )
 	var leftSum = this.sumValues( halves.left ),
 		rightSum = this.sumValues( halves.right ),
 		totalSum = leftSum + rightSum;
-	console.log('total sum: '+ totalSum);
 
 	// Degenerate case:  All size-zero entries.
-	if( leftSum + rightSum <= 0 ) {
+	if( leftSum + rightSum <= 0 )
+	{
 		midPoint = 0;
 		orientation = TreeMap.HORIZONTAL;
 	} else {
-	  console.log('orientation: ' + orientation);
-		if( destRectangle.isWide() ) {
+		
+		if( destRectangle.isWide() )
+		{
 			orientation = TreeMap.HORIZONTAL;
 			midPoint = Math.round( ( leftSum * destRectangle.width ) / totalSum );
 		} else {
@@ -301,11 +284,9 @@ p.divideDisplayArea = function( facades, destRectangle )
 	
 	if( orientation == TreeMap.HORIZONTAL )
 	{
-	  console.log('Building horizontal treemap');
 		this.divideDisplayArea( halves.left, new Rectangle( destRectangle.x, destRectangle.y, midPoint, destRectangle.height ) );
 		this.divideDisplayArea( halves.right, new Rectangle( destRectangle.x + midPoint, destRectangle.y, destRectangle.width - midPoint, destRectangle.height ) );
 	} else {
-	  console.log('Building other (vertical) treemap');
 		this.divideDisplayArea( halves.left, new Rectangle( destRectangle.x, destRectangle.y, destRectangle.width, midPoint ) );
 		this.divideDisplayArea( halves.right, new Rectangle( destRectangle.x, destRectangle.y + midPoint, destRectangle.width, destRectangle.height - midPoint ) );
 	}
