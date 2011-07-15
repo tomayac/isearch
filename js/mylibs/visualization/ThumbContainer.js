@@ -147,7 +147,8 @@ p.redrawNavBar = function(page, maxPage, width)
 		}
 	}
 
-
+	
+		
 	if ( page > 1 ) 
 	{
 		p = page - 1 ;
@@ -178,10 +179,11 @@ p.redrawNavBar = function(page, maxPage, width)
 
 	if ( end < maxPage ) nav += '<li>...</li>' ;
 
+		
 	if ( width < 200 ) { nav = first = last = '' ; }
 	// print the navigation link
 	$(this.navBar).html('<ul class="pager" >' + first + prev + nav + next + last + '</ul>') ;
-
+	
 //	$(this.navBar).css('top', top ) ;
 
 	var that = this ;
@@ -402,7 +404,7 @@ p.doShowTooltip = function(item)
 	var offset = $(this.canvas).offset() ;
 	var posx = item.x + offset.left ;
 	var posy = item.y + offset.top  ;
-
+	
 	var ele = $(".tooltip") ;
 	var tooltip ;
 
@@ -412,7 +414,6 @@ p.doShowTooltip = function(item)
 					 .addClass("tooltip")
 				     .html("<p>" + item.tooltip + "</p>").
 					appendTo('body');
-
 	}
 	else
 	{
@@ -442,9 +443,9 @@ p.doShowTooltip = function(item)
 	else 
 	{
 		tooltip.css("top", wh-tth-2)
-
+		
 	}
-
+	
 	tooltip.fadeIn('fast') ;
 	//console.log(item.id) ;
 }

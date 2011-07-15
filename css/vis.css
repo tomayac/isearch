@@ -96,17 +96,17 @@
 
 .clearboth { 	clear: both ; }
 
-.pager {  position: absolute; clear: both;   text-align: center; margin: 5px; padding: 0px;}
+.pager {   position: absolute; clear: both;   text-align: center; margin: 5px; padding: 0px;}
 
 .pager li { display: inline; list-style-type: none;   margin: 0; padding: 2px; }
 
-.pager li.pager-current {  background-color: #D9DBCD; border: 1px solid #266996; color: #333333; margin: 0 4px; padding: 4px; font-weight: bold;}
+.pager li.pager-current {  background-color: #D9DBCD; border: 1px solid #266996; color: #333333; margin: 0 4px; padding: 4px; font-size: 0.8em; font-weight: bold;}
 
 .pager .pager-first, .pager .pager-next, .pager .pager-previous, .pager .pager-item, .pager .pager-last {   background-color: #FDFFEF;
     border: 1px solid #266996;  margin: 0 4px;  padding: 4px;
 }
 
-.pager a { color: #27638C; font-weight: bold; padding: 4px; text-decoration: none; }
+.pager a { color: #27638C; font-weight: bold; font-size: 0.8em; padding: 0px; text-decoration: none; }
 
 /* jQuery UI theming */
 .ui-widget { font-size: 0.9em/*{fsDefault}*/; }
@@ -830,23 +830,32 @@ overflow: auto
 	color: black;
 }
 
-.vbox {
-	display: -webkit-box;
-	-webkit-box-orient: vertical;
-	-webkit-box-align: stretch;
- 
-	display: -moz-box;
-	-moz-box-orient: vertical;
-	-moz-box-align: stretch;
- 
-	display: box;
-	box-orient: vertical;
-	box-align: stretch;
+.slide-panel-container {
+
+	
 }
- 
-.vbox > * {
-	-webkit-box-flex: 0;
-	-moz-box-flex: 0;
-	box-flex: 0;
+.slide-panel {
+	margin: 0;
+	padding: 0;
+	border-top: solid 2px #422410;
+/*	background: url(../img/btn-slide.gif) no-repeat center top; */
+	
+}
+.slide-panel-button {
+	background: #a7a7a7 url(../img/arrow-square.gif) no-repeat right -54px;	
+	text-align: center;
+	width: 144px;
+	height: 24px;
+	padding: 0 10px 0 0;
+	margin: 0 auto;
 	display: block;
+	font: normal 120%/100% Arial, Helvetica, sans-serif;
+	color: #fff;
+	text-decoration: none;
+	-moz-border-radius: 0 0 12px 12px;
+	border-radius: 0 0 12px 12px;
+	border: 1px solid #777;
+}
+.active {
+	background-position: right 2px;
 }
