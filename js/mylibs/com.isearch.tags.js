@@ -1,35 +1,25 @@
-//Namespace
-var com;
-if (!com) {
-  com = {};
-} else if (typeof com != "object") {
-  throw new Error("com already exists and is not an object");
-}
-if (!com.isearch) {
-  com.isearch = {}
-} else if (typeof com.isearch != "object") {
-  throw new Error("com.isearch already exists and is not an object");
-}
-if (com.isearch.tags) {
-  throw new Error("com.isearch.tags already exists");
-}
+/*
+* Class to represent the user tags
+*/
 
-com.isearch.tags = {}
+define("mylibs/com.isearch.tags", function(){
+  var init = function() {
 
-com.isearch.tags.init = function() {
+    //Formatting of the tags
+    $('.tags a').each(function() {
+      var $thisTag = $(this);
+      var fontSize = $thisTag.attr('data-rank');
+      $thisTag.css('font-size', fontSize + 'em');
+    });
+
+    $(".tags a").click(function() {
+      var tagText = $(this).text();
+      var query = $('#query-field').val();
+      $("#query-field").tokenInput('add',{id: tagText,name: tagText})    
+    });
+  };
   
-  //Formatting of the tags
-  $('.tags a').each(function() {
-    var $thisTag = $(this);
-    var fontSize = $thisTag.attr('data-rank');
-    console.log(fontSize);
-    $thisTag.css('font-size', fontSize + 'em');
-  });
-  
-  $(".tags a").click(function() {
-    var tagText = $(this).text();
-    var query = $('#query-field').val();
-    $("#query-field").tokenInput('add',{id: tagText,name: tagText})    
-  });
-
-}
+  return {
+    init: init
+  };
+});

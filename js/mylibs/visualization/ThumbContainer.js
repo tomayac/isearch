@@ -1,28 +1,28 @@
 ThumbContainer = function(containerDiv, data, options) {
-	
+
 	$(containerDiv).empty() ;
-	
+
 	if ( options.thumbSize )
 		this.thumbSize = options.thumbSize ;
-		
+
 	if ( options.onClick )
 		this.onClick = options.onClick ;
-		
+
 	if ( options.mode )
 		this.mode = options.mode ;
-	
+
 	this.containerDiv = containerDiv ;
-	
+
 	this.createCanvas() ;
-	
+
 	this.onMouseOver = this.showTooltip ;
 	this.onMouseOut = this.hideTooltip ;
-	
+
 	this.thumbs = [] ;
 	this.populate(data);
-	
-	
-	
+
+
+
 }
 
 var p = ThumbContainer.prototype;
@@ -36,6 +36,7 @@ ThumbContainer.NAV_HIDDEN = 2 ;
 
 ThumbContainer.margin = 4 ;
 ThumbContainer.navBarSize = 32 ;
+
 
 p.containerDiv = null ;
 p.thumbs = null ;
@@ -64,16 +65,16 @@ ThumbContainer.zoomScales = [0.25, 0.5, 1.0, 1.5, 2.0, 3.0, 4.0] ;
 p.createCanvas = function()
 {
 	var obj = this ;
-	
+
 	$(this.containerDiv).empty() ;
-	
+
 	this.canvas = $("<canvas/>").appendTo(this.containerDiv).get(0) ;
-		
+
 	this.ctx = this.canvas.getContext("2d");
-	
+
 	this.canvas.addEventListener("mousedown", function(e) { obj.handleMouseClick(e) ; }, true);
 	this.canvas.addEventListener("mousemove", function(e) { obj.handleMouseMove(e) ; }, true);
-	
+
 	// add navigation bar
 	if ( this.mode == ThumbContainer.GRID_MODE && this.navMode != ThumbContainer.NAV_HIDDEN ) {
 		this.navBar = $("<div/>", { "class": "thumb-container-nav-bar", 
@@ -82,14 +83,13 @@ p.createCanvas = function()
 								"height": ThumbContainer.navBarSize,
 								"display": ( this.navMode == ThumbContainer.NAV_HOVER ) ? "none" : "block",
 								"overflow": "hidden",
-								"opacity": 0.8,
-								"background-color": "white",
+								"padding" : "4px",
 								"bottom": 0
 							} 
 					}).
 		appendTo($(this.containerDiv)) ;
 	}
-	
+
 /*	var that = this ;
 	$(window).bind("orientationchange resize",function(e) {
 		that.draw() ;
@@ -98,7 +98,7 @@ p.createCanvas = function()
 }
 
 p.populate = function(data) {
-	
+
 	var thumbs = this.thumbs ;
 
 	for( var i=0 ; i<data.length ; i++ )
@@ -118,17 +118,17 @@ p.populate = function(data) {
 		thumb.lon = data[i].doc.lon ;
 		thumbs.push(thumb) ;
 	} ;
-	
+
 }
 
-p.redrawNavBar = function(page, maxPage)
+p.redrawNavBar = function(page, maxPage, width)
 {
 	if ( maxPage == 1 ) return ;
 	// Show pager
-	
+
 	var nav = '', prev = '', next = '', first = '', last = '' ;
 	var delta = 1 ;
-	
+
 	var min_surplus = (page <= delta) ? (delta - page + 1) : 0;
     var max_surplus = (page >= (maxPage - delta)) ?
                       (page - (maxPage - delta)) : 0;
@@ -137,7 +137,7 @@ p.redrawNavBar = function(page, maxPage)
     var end = Math.min(page + delta + min_surplus, maxPage) ;
     	
 	if ( start > 1 ) nav += '<li>...</li>' ;
-	
+
 	for( var p = start; p <= end; p++ )
 	{
 		if ( p == page ) nav += '<li class="pager-current first">' + page + '</li> '; // no need to create a link to current page
@@ -146,7 +146,8 @@ p.redrawNavBar = function(page, maxPage)
 			nav += '<li class="pager-item"><a title="Go to page ' + p + '" id="page-' + p + '" href="#">' + p + '</a></li>';
 		}
 	}
-	
+
+
 	if ( page > 1 ) 
 	{
 		p = page - 1 ;
@@ -176,14 +177,13 @@ p.redrawNavBar = function(page, maxPage)
 	}
 
 	if ( end < maxPage ) nav += '<li>...</li>' ;
-		
+
+	if ( width < 200 ) { nav = first = last = '' ; }
 	// print the navigation link
 	$(this.navBar).html('<ul class="pager" >' + first + prev + nav + next + last + '</ul>') ;
-	var oo = $(this.canvas).offset() ;
-	var top = this.canvas.height - ThumbContainer.navBarSize ;
-	
+
 //	$(this.navBar).css('top', top ) ;
-	
+
 	var that = this ;
 	$('ul.pager a', this.navBar).bind( "click", function() {
 		var page = this.id.substr(5) ;
@@ -200,43 +200,43 @@ p.draw = function() {
 
 	var cw = $(this.containerDiv).width()  ;
 	var ch = $(this.containerDiv).height() ;
-	
+
 	this.origWidth = this.canvas.width = cw ;
 	this.origHeight = this.canvas.height = ch ;
-		
+
 	this.redraw(cw, ch) ;
 }
 
 p.redraw = function(contentWidth, contentHeight)
 {
 	this.ctx.clearRect(0, 0, contentWidth, contentHeight);
-	
+
 	if ( this.mode == ThumbContainer.GRID_MODE )
 	{
 		// compute layout
-		
+
 		var m = ThumbContainer.margin ;
 		var of = this.thumbSize + m ;
-		
+
 		var sh = ( this.navMode != ThumbContainer.NAV_HIDDEN ) ? (contentHeight - ThumbContainer.navBarSize - m ) : contentHeight - m ;
 		var sw = contentWidth - m ;
-		
+
 		var nc = Math.floor(sw/of) ;
 		var nr = Math.floor(sh/of) ;
 		this.pageCount = nr * nc ;
 		this.offset = this.pageCount * Math.floor(this.offset / this.pageCount) ;
-		
+
 		if ( this.pageCount == 0 ) return ;
-		
+
 		var x = m, y = m ;
 		var r = 0, c = 0 ;
-		
+
 		for( var i=this.offset ; i<Math.min(this.offset + this.pageCount, this.thumbs.length) ; i++ )
 		{
 			var item = this.thumbs[i] ;
-					
+
 			item.show(this.ctx, x, y) ;
-			
+
 			c++ ;
 			if ( c == nc ) { 
 				r++ ; 
@@ -246,50 +246,50 @@ p.redraw = function(contentWidth, contentHeight)
 			}
 			else 
 				x += of ;
-				
+
 			if ( r == nr ) break ;
 		}
-		
+
 		if ( this.navMode != ThumbContainer.NAV_HIDDEN )
 		{
 			var page = Math.floor(this.offset/this.pageCount) ;
-			var maxPage = Math.floor(this.thumbs.length/this.pageCount) ;
-			this.redrawNavBar(page+1, maxPage) ;
+			var maxPage = Math.ceil(this.thumbs.length/this.pageCount) ;
+			this.redrawNavBar(page+1, maxPage, contentWidth) ;
 		}
-	
+
 	}
 	else
 	{
 		var lmanager = new LabelManager(contentWidth, contentHeight) ;	
-		 
+
 		var sz = this.thumbSize  ;
-	
+
 		for( var i=0 ; i<this.thumbs.length ; i++ )
 		{
 			var item = this.thumbs[i] ;
-		
+
 			lmanager.addLabelGraphic(i, item.qx * contentWidth, item.qy * contentHeight, sz, sz) ;
 		}
-		 		
+
 		var res = lmanager.solve() ;
-	
+
 		for( i = 0 ; i<this.thumbs.length ; i++ )
 		{
 			var item = this.thumbs[i] ;
 			item.hide() ;
 		}	 
-				
+
 		for( i = 0 ; i<res.length ; i++ )
 		{
 			var q = res[i] ;
 			var index = q.index ;
-		
+
 			var item = this.thumbs[index] ;
-		
-			
+
+
 			item.show(this.ctx, q.x, q.y) ;
 		}
-	
+
 		delete lmanager ;
 	}
 }
@@ -320,7 +320,7 @@ p.getPosition = function(event)
 function inBBox(x, y, item)
 {
 	return ( x >= item.x && x < item.x + item.size && y >= item.y && y < item.y + item.size )
-	
+
 }
 
 p.hitTest = function(x, y)
@@ -328,11 +328,11 @@ p.hitTest = function(x, y)
 	for( var i=0 ; i<this.thumbs.length ; i++ )
 	{
 		var item = this.thumbs[i] ;
-		
+
 		if ( item.visible == false ) continue ;
-		 			
+
 		if ( inBBox(x, y, item) ) return item ;
-				
+
 	}
 
 	return null ;
@@ -342,9 +342,9 @@ p.hitTest = function(x, y)
 p.handleMouseClick = function(event)
 {
 	var pos = this.getPosition(event) ;
-	
+
 	var item = this.hitTest(pos.x, pos.y) ;
-	
+
 	if ( item && this.onClick ) {
 		this.hideTooltip() ;
 		this.onClick(item) ;
@@ -354,7 +354,7 @@ p.handleMouseClick = function(event)
 p.handleMouseMove = function(event)
 {
 	var pos = this.getPosition(event) ;
-	
+
 	if ( this.mode == ThumbContainer.GRID_MODE && this.navMode == ThumbContainer.NAV_HOVER )
 	{
 		if ( pos.y > this.canvas.height - ThumbContainer.navBarSize )
@@ -368,64 +368,90 @@ p.handleMouseMove = function(event)
 			$(this.navBar).show() ;
 			return ;
 		}
-		
+
 		$(this.navBar).hide() ;
 	}
 	// if inside current hover item there is nothing to do
-	
-	
+
+
 	if ( this.hoverItem && inBBox( pos.x, pos.y, this.hoverItem ) ) return ;
-	
+
 	var item = this.hitTest(pos.x, pos.y) ;
-		
+
 	if ( item && this.hoverItem == null && this.onMouseOver )
 	{
 		this.hoverItem = item ;
 		this.onMouseOver(item) ;
 		return ;
 	}
-	
+
 	if ( this.hoverItem && this.onMouseOut )
 	{
 		this.onMouseOut(this.hoverItem) ;
 		this.hoverItem = null ;
 		return ;
 	}
-	
-	
+
+
 }
 
 p.doShowTooltip = function(item) 
 {
+	// find the upper left corner of the thumbnail in window coordinates
+
 	var offset = $(this.canvas).offset() ;
-	var posx = item.x + offset.left + this.thumbSize ;
-	var posy = item.y + offset.top + this.thumbSize ;
-	
+	var posx = item.x + offset.left ;
+	var posy = item.y + offset.top  ;
+
 	var ele = $(".tooltip") ;
-	
+	var tooltip ;
+
 	if ( ele.length == 0 )
 	{
 		var tooltip = jQuery(document.createElement('div'))
 					 .addClass("tooltip")
-					 .css("left", posx)
-					 .css("top", posy)
-                     .html("<p>" + item.tooltip + "</p>")
-					 .fadeIn('fast') 
-					 .appendTo('body') ;
+				     .html("<p>" + item.tooltip + "</p>").
+					appendTo('body');
+
 	}
 	else
-		ele.css("left", posx)
-					 .css("top", posy)
-                     .html("<p>" + item.tooltip + "</p>")
-					 .fadeIn('fast')  ;
-					 
-	
+	{
+		tooltip = ele ;
+		ele.html("<p>" + item.tooltip + "</p>") ;
+	}			
+
+    var ttw = tooltip.outerWidth() ;
+	var tth = tooltip.outerHeight() ;
+	var ww = $(window).width() + $(window).scrollLeft();
+	var wh = $(window).height() + $(window).scrollTop() ;
+	var ts = this.thumbSize ;
+
+	if ( posx + ts + ttw < ww )
+	{
+		tooltip.css("left", posx + ts)
+	}
+	else 
+	{
+		tooltip.css("left", ww-ttw-2)
+	}
+
+	if ( posy + ts + tth < wh  )
+	{
+		tooltip.css("top", posy + ts)
+	}
+	else 
+	{
+		tooltip.css("top", wh-tth-2)
+
+	}
+
+	tooltip.fadeIn('fast') ;
 	//console.log(item.id) ;
 }
 
 p.showTooltip = function(item)
 {
-					 
+
 	var obj = this ;
 	this.tooltipPending = true ;
 	setTimeout( function() { 
@@ -448,10 +474,10 @@ p.doResize = function()
    	var oldHeight = this.canvas.height ;
         
 	this.createCanvas() ;
-	
+
     this.canvas.width = this.origWidth * ThumbContainer.zoomScales[this.currentZoomScale]  ;
     this.canvas.height = this.origHeight * ThumbContainer.zoomScales[this.currentZoomScale];
-	
+
 	this.redraw(this.canvas.width, this.canvas.height) ;
         	
  //   var scaleFactor = (this.canvas.width - this.origWidth)/(oldWidth - this.origWidth);
@@ -501,7 +527,7 @@ p.doResize = function()
         	this.autoLayout = false ;
         		
   */
-	
+
         	
 }
         
@@ -525,7 +551,7 @@ p.zoomOut = function()
 p.resize = function()
 {
 	this.createCanvas() ;
-		
+
 	this.draw() ;
 }
 
@@ -533,11 +559,11 @@ p.resize = function()
 p.showMap = function()
 {
 	var markerImages = [];
-	
+
 	for( var i=0 ; i<this.thumbs.length ; i++ )
 	{
 		var data = this.thumbs[i] ;
-		
+
 		var lat = data.lat ;
 		var lon = data.lon ;
 		var thumb = data.url ;
@@ -545,10 +571,10 @@ p.showMap = function()
 		var docid = data.id ;
 		var tooltip = data.tooltip ;
 		var contentUrl = data.contentUrl ;
-		
+
 		markerImages.push({ "lat": lat, "lon": lon, "icon": thumb, "desc": tooltip }) ;
 	}
-	
+
 	var mainMap = new GoogleMap("map-view", [ 
 				{ type: 'markers', data: markerImages, name: 'Images',
 						minzoom: 4}

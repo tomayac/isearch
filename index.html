@@ -201,55 +201,26 @@
     </div>
 
     <footer>
-      &copy; 2011 iSearch Project - All rights reserved - testing post hook...
+      &copy; 2011 iSearch Project - All rights reserved
     </footer>
   </div>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
+  <script>window.jQuery || document.write("<script src='js/libs/jquery-1.6.2.min.js'>\x3C/script>")</script>
   
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.js"></script>
-  <script>window.jQuery || document.write("<script src='js/libs/jquery-1.5.1.min.js'>\x3C/script>")</script>
+  <!-- All the script dependancies will be managed with requireJS
+       More info? Check http://requirejs.org -->
+  <script src="js/libs/require.js"></script>
+  <script>
+    require(
+        {baseUrl: "./js/"},
+        ["main"],
+        function(main) {
+          main.start();
+        }
+    );
+  </script>
 
-  <!-- <script src="js/mylibs/helper.js"></script> -->
-  <!-- <script src="js/plugins.js"></script> -->
-	<script type="text/javascript" src="js/libs/jquery.hasEventListener.min.js"></script>  
-  <script src="js/mylibs/com.isearch.config.js"></script>
-  <script src="js/mylibs/com.isearch.menu.js"></script>
-  <script src="js/mylibs/com.isearch.uiiface.js"></script>
-  <script src="js/mylibs/com.isearch.tags.js"></script>
-  <script src="js/mylibs/com.isearch.results.js"></script>
-  <script src="js/libs/swfobject.js"></script>
-  <script src="js/libs/jquery.tokeninput.js"></script>
-
-  <!-- TODO: Reduce the number of loaded scripts!! -->
-  <!-- Scripts for results visualization -->
-  <script src="js/mylibs/visualization/gmap.js"></script>
-
-  <script src="js/mylibs/visualization/layout/Feature.js"></script>
-  <script src="js/mylibs/visualization/layout/CandidateIndex.js"></script>
-  <script src="js/mylibs/visualization/layout/Candidate.js"></script>
-  <script src="js/mylibs/visualization/layout/Extent.js"></script>
-  <script src="js/mylibs/visualization/layout/LabelManager.js"></script>
-
-  <!-- Seems this script is missing | Commenting it out until we find it -->
-  <!-- <script src="js/mylibs/visualization/ResultPreview.js"></script> -->
-  <script src="js/mylibs/visualization/GroupBox.js"></script>
-  <script src="js/mylibs/visualization/SearchResults.js"></script>
-  <script src="js/mylibs/visualization/Thumbnail.js"></script> 
-  <script src="js/mylibs/visualization/ThumbContainer.js"></script>
-  <script src="js/mylibs/visualization/HPanel.js"></script>
-
-  <script src="js/mylibs/visualization/Rectangle.js"></script>
-  <script src="js/mylibs/visualization/TreeMap.js"></script>
-
-  <script src="js/mylibs/visualization/Complex.js"></script>
-  <script src="js/mylibs/visualization/HPoint.js"></script>
-  <script src="js/mylibs/visualization/Tween.js"></script>
-  <script src="js/mylibs/visualization/HyperGraph.js"></script>
-  <script src="js/mylibs/visualization/HyperbolicTree.js"></script>
-
-  <script src="js/mylibs/visualization/ResultVisualisation.js"></script>
-  
-  <!-- Main script-->
-  <script src="js/main.js"></script>
 
   <!-- <script src="https://getfirebug.com/firebug-lite.js"></script> -->
 

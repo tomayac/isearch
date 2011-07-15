@@ -1,4 +1,4 @@
- /**
+/**
   * Construct a rectangle, with either zero or four arguments
   * @constructor
   * @param {number} x X coordinate of this rectangle

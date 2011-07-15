@@ -1,5 +1,4 @@
 
-
 IconContainer = function(data, canvasDiv) {
    this.parseXML(data);
    
