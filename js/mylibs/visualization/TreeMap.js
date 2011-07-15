@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 define("mylibs/visualization/treeMap", function(){
   
   TreeMap = function(searchResults, container, options) {
