@@ -60,23 +60,10 @@ define("main",
             clickedListItem.addClass('active');
           }
         });
-
-        // Behaviour of text field -- tokenizer
-        $("#query-field").tokenInput([
-                      {id: 7, name: "Enzo"},
-                      {id: 11, name: "Ferrari"},
-                      {id: 13, name: "Wonderful car"},
-                      {id: 17, name: "Harley Davidson"},
-                      {id: 19, name: "cars"},
-                      {id: 23, name: "pleasure"},
-                      {id: 29, name: "delight"},
-                      {id: 31, name: "Italian"},
-                      {id: 37, name: "red"},
-                      {id: 41, name: "Absolute best"},
-                      {id: "Cow", name: "Cow"},
-                      {id: 47, name: "Nature"}
-                  ], {theme: "isearch"});
-
+        
+        //Get tokens and load them as autosuggestion for the user
+        var tokens = tags.getTokens();
+        $("#query-field").tokenInput(tokens, {theme: "isearch"});
 
         //Close button of the panel
         $('.panel footer a').click(function(){

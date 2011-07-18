@@ -20,11 +20,11 @@
 */
 
 define("mylibs/visualization/visualizer", 
-    ["mylibs/visualization/TreeMap","mylibs/visualization/HyperbolicTree", "mylibs/visualization/HPanel", "mylibs/visualization/gmap", "mylibs/visualization/layout/Feature","mylibs/visualization/layout/CandidateIndex", 
+    ["mylibs/visualization/TreeMap","mylibs/visualization/HyperbolicTree", "mylibs/visualization/UI", "mylibs/visualization/HPanel", "mylibs/visualization/gmap", "mylibs/visualization/layout/Feature","mylibs/visualization/layout/CandidateIndex", 
     "mylibs/visualization/layout/Candidate", "mylibs/visualization/layout/Extent", "mylibs/visualization/layout/LabelManager",
     "mylibs/visualization/GroupBox", "mylibs/visualization/Thumbnail", "mylibs/visualization/ThumbContainer", "mylibs/visualization/Rectangle",
     "mylibs/visualization/Complex", "mylibs/visualization/HPoint", "mylibs/visualization/Tween", "mylibs/visualization/HyperGraph"], 
-    function(treeMap, hyperbolicTree, hPanel) {
+    function(treeMap, hyperbolicTree, ui, hPanel) {
   
   var widget = null;
   var results = null;
