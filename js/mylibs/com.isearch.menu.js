@@ -287,7 +287,16 @@ define("mylibs/com.isearch.menu",
     };
 
     var retrieveQuery = function() {
-      return queryString = $("#query-field").val();
+      
+      //Retrieve the tokenized query
+      var queryString = $("#query-field").val();
+      //Check if the user has enter something which is not tokenized yet
+      var remainingInput = $(".token-input-list-isearch li input").val();
+      //Tokenize remaining input
+      if (remainingInput) {
+        $("#query-field").tokenInput('add',{id:remainingInput,name:remainingInput});
+      }
+      return queryString + remainingInput;
     };
     
     

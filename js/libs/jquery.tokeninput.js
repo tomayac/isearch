@@ -237,6 +237,9 @@ $.TokenList = function (input, url_or_data, settings) {
                     break;
 
                 case KEY.TAB:
+                  var tagValue = input_box.val();
+                  add_token({id: tagValue, name: tagValue});
+                  break;
                 case KEY.ENTER:
                 case KEY.NUMPAD_ENTER:
                 case KEY.COMMA:
