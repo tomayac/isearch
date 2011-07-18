@@ -1,4 +1,4 @@
-define("mylibs/visualization/treeMap", function(){
+define("mylibs/visualization/TreeMap", function(){
   
   TreeMap = function(searchResults, container, options) {
   	this.container = container ;

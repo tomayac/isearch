@@ -20,7 +20,7 @@
 */
 
 define("mylibs/visualization/visualizer", 
-    ["mylibs/visualization/treeMap","mylibs/visualization/hyperbolicTree", "mylibs/visualization/hPanel", "mylibs/visualization/gmap", "mylibs/visualization/layout/Feature","mylibs/visualization/layout/CandidateIndex", 
+    ["mylibs/visualization/TreeMap","mylibs/visualization/HyperbolicTree", "mylibs/visualization/HPanel", "mylibs/visualization/gmap", "mylibs/visualization/layout/Feature","mylibs/visualization/layout/CandidateIndex", 
     "mylibs/visualization/layout/Candidate", "mylibs/visualization/layout/Extent", "mylibs/visualization/layout/LabelManager",
     "mylibs/visualization/GroupBox", "mylibs/visualization/Thumbnail", "mylibs/visualization/ThumbContainer", "mylibs/visualization/Rectangle",
     "mylibs/visualization/Complex", "mylibs/visualization/HPoint", "mylibs/visualization/Tween", "mylibs/visualization/HyperGraph"], 

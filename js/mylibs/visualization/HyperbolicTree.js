@@ -1,4 +1,4 @@
-define("mylibs/visualization/hyperbolicTree", function(){
+define("mylibs/visualization/HyperbolicTree", function(){
   
   Point = function(x, y) {
   	this.x = x ;

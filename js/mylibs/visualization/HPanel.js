@@ -1,4 +1,4 @@
-define("mylibs/visualization/hPanel", function(){
+define("mylibs/visualization/HPanel", function(){
   
   
   HPanel = function( searchResults, containerDiv, options )
