@@ -11,7 +11,7 @@
 (function ($) {
 // Default settings
 var DEFAULT_SETTINGS = {
-    hintText: "Type in a search term",
+    hintText: "Type your query, or use the icons below for more power...",
     noResultsText: "No results",
     searchingText: "Searching...",
     deleteText: "&times;",
