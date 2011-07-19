@@ -3,8 +3,7 @@ ThumbContainer = function(containerDiv, data, options) {
 	$(containerDiv).empty() ;
 
 	if ( options.thumbSize )
-		this.thumbSize = options.thumbSize ;
-
+		this.thumbSize = +options.thumbSize ;
 	if ( options.onClick )
 		this.onClick = options.onClick ;
 
