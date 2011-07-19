@@ -47,30 +47,32 @@ p.setOptions = function(options)
 
 p.createLayout = function()
 {
-	var groups = $('<div/>', { "class": "slide-panel-container" }).appendTo(this.containerDiv)  ; 
-	this.clustersInnerDiv = $('<div/>', {id: "hpanel-groups", css: { height: "180px", "display": "none"}}).appendTo(groups) ;
-	var slideButtonContainer = $('<p/>', {"class": "slide-panel"}).appendTo(groups) ;
-	var slideButton = $('<a/>', { text: "Groups", href: '#', "class": "slide-panel-button"}).appendTo(slideButtonContainer) ;
+	var results = $('<div>', { id: "hpanel-results", css: { width: "100%", position: "absolute", top: 40, height: $(this.containerDiv).height() - 40 }}).appendTo(this.containerDiv) ;
 	
-	var results = $('<div>', { id: "hpanel-results", css: { width: "100%", height: $(this.containerDiv).height() - $(groups).height()  }}).appendTo(this.containerDiv) ;
+	this.resultsInnerDiv = results ;
+	
+	this.groups = $('<div/>', { "class": '{ title: "Groups"}' }).appendTo(this.containerDiv) ;
+	this.clustersInnerDiv = $('<div/>', {id: "hpanel-groups", css: { height: "180px"}}).appendTo(this.groups) ;
 	
 	var that = this ;
-	slideButton.click(function(){
-		$('#hpanel-results').hide() ;
-		$('#hpanel-groups').slideToggle("fast", function() {
-			var height = $(that.containerDiv).height() - $(groups).height() ;
-			$('#hpanel-results').height(height) ;
-			that.resultsPanel = new ThumbContainer($('#hpanel-results'), that.icons, that.thumbOptions ) ;
-			that.resultsPanel.draw() ;
-			$('#hpanel-results').show() ;
-		});
-	//	$('#hpanel-groups').toggle();
-		$(this).toggleClass("active"); 
-		
-		return false;
-	});
-
-	this.resultsInnerDiv = results ;
+	
+	$(this.groups).buildMbExtruder({
+          positionFixed:false,
+          width: $(this.containerDiv).width(),
+          sensibility:100,
+          position:"top", // left, right, bottom
+          flapDim:100,
+          textOrientation:"bt", // or "tb" (top-bottom or bottom-top)
+          onExtOpen:function(){},
+          onExtContentLoad:function(){
+		  },
+          onExtClose:function(){},
+          hidePanelsOnClose:true,
+          autoCloseTime:500, // 0=never
+          slideTimer:300
+     });
+	
+	
 
 }
 		
@@ -147,8 +149,6 @@ p.groupClicked = function(cluster)
 	}
 			
 	this.populatePanels() ;
-	
-	UI.accordionToggle("hpanel-results") ;
 	
 	if ( this.onClick ) this.onClick(this.currentCluster) ;
 		

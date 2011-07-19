@@ -19,7 +19,7 @@
 
 .thumbnail #picture { 
 	width: 120px; 
-	height: 120px; 
+	height: 120px;
 	padding: 5px; 
 	margin: 0px; 
 	margin-bottom: 5px; 
@@ -830,32 +830,40 @@ overflow: auto
 	color: black;
 }
 
-.slide-panel-container {
+.extruder{position:fixed;cursor:default;background:url("../img/extruder_blank.png");}
+.extruder .header{height:27px;}
+.extruder .content{display:none;background:#cfcfcf;}
+.extruder.open .content{-moz-box-shadow:2px 0 5px #999999;-webkit-box-shadow:2px 0 5px #999999;box-shadow:2px 0 5px #999999;}
+.extruder .footer{display:none;height:10px;background:#000000;-moz-border-radius:0 0 8px 8px;-webkit-border-top-left-radius:0;-webkit-border-top-right-radius:0;-webkit-border-bottom-left-radius:8px;-webkit-border-bottom-right-radius:8px;border-top-left-radius:0;border-top-right-radius:0;border-bottom-left-radius:8px;border-bottom-right-radius:8px;-moz-box-shadow:2px 0 5px #999999;-webkit-box-shadow:2px 0 5px #999999;box-shadow:2px 0 5px #999999;}
+.extruder.top .flap{color:#ffffff;font:18px/28px Arial,Helvetica,sans-serif;text-align:center;display:block;margin:auto;padding:0 5px 5px 5px;height:30px;width:180px;background:#000000;cursor:pointer;-moz-border-radius:0 0 8px 8px;-webkit-border-top-left-radius:0;-webkit-border-top-right-radius:0;-webkit-border-bottom-left-radius:8px;-webkit-border-bottom-right-radius:8px;border-top-left-radius:0;border-top-right-radius:0;border-bottom-left-radius:8px;border-bottom-right-radius:8px;-moz-box-shadow:2px 0 5px #999999;-webkit-box-shadow:2px 0 5px #999999;box-shadow:2px 0 5px #999999;text-shadow:2px 2px 2px #333333;}
+.extruder.top .content{-moz-border-radius:0 0 8px 8px;-webkit-border-top-left-radius:0;-webkit-border-top-right-radius:0;-webkit-border-bottom-left-radius:8px;-webkit-border-bottom-right-radius:8px;border-top-left-radius:0;border-top-right-radius:0;border-bottom-left-radius:8px;border-bottom-right-radius:8px;}
+.extruder.bottom .flap{position:relative;color:white;font:18px/28px Arial,Helvetica,sans-serif;text-align:center;display:block;margin:auto;margin-top:1px;padding:0 5px 5px 5px;height:30px;width:180px;background:#000000;cursor:pointer;-moz-border-radius:8px 8px 0 0;-webkit-border-top-left-radius:8px;-webkit-border-top-right-radius:8px;-webkit-border-bottom-left-radius:0;-webkit-border-bottom-right-radius:0;border-top-left-radius:8px;border-top-right-radius:8px;border-bottom-left-radius:0;border-bottom-right-radius:0;text-shadow:2px 2px 2px #333333;-moz-box-shadow:2px 0 5px #999999;-webkit-box-shadow:2px 0 5px #999999;box-shadow:2px 0 5px #999999;}
+.extruder.bottom .footer{-moz-border-radius:8px 8px 0 0;-webkit-border-top-left-radius:8px;-webkit-border-top-right-radius:8px;-webkit-border-bottom-left-radius:0;-webkit-border-bottom-right-radius:0;border-top-left-radius:8px;border-top-right-radius:8px;border-bottom-left-radius:0;border-bottom-right-radius:0;position:relative;margin-top:-5px;}
+.extruder.bottom .content{-moz-border-radius:8px 8px 0 0;-webkit-border-top-left-radius:8px;-webkit-border-top-right-radius:8px;-webkit-border-bottom-left-radius:0;-webkit-border-bottom-right-radius:0;border-top-left-radius:8px;border-top-right-radius:8px;border-bottom-left-radius:0;border-bottom-right-radius:0;}
+.extruder.bottom .ext_wrapper{bottom:0;}
+.extruder.left{height:100%;background:url("../img/extruder_blank.png");}
+.extruder.left.open .content{-moz-box-shadow:2px 0 5px #999999;-webkit-box-shadow:2px 0 5px #999999;box-shadow:2px 0 5px #999999;}
+.extruder.left .content{border-right:3px solid #000000;}
+.extruder.left .ext_wrapper{height:100%;}
+.extruder.left .footer{display:none;}
+.extruder.left .flap{font-size:18px;color:white;top:0;padding:10px 0 10px 10px;margin-right:-37px;background:#000000;width:30px;position:absolute;right:0;-moz-border-radius:0 8px 0 8px;-webkit-border-top-left-radius:0;-webkit-border-top-right-radius:8px;-webkit-border-bottom-left-radius:0;-webkit-border-bottom-right-radius:8px;border-top-left-radius:0;border-top-right-radius:8px;border-bottom-left-radius:0;border-bottom-right-radius:8px;-moz-box-shadow:2px 0 5px #999999;-webkit-box-shadow:2px 0 5px #999999;box-shadow:2px 0 5px #999999;}
+.extruder.left .flap .flapLabel{background:#000000;}
+.extruder.right{height:100%;background:url("../img/extruder_blank.png");}
+.extruder.right .content{border-left:3px solid #000000;}
+.extruder.right.open .content{-moz-box-shadow:-2px 0 5px #999999;-webkit-box-shadow:-2px 0 5px #999999;box-shadow:-2px 0 5px #999999;}
+.extruder.right .ext_wrapper{height:100%;right:0;}
+.extruder.right .footer{display:none;}
+.extruder.right .flap{font-size:18px;color:white;top:0;padding:10px 0 10px 10px;background:#000000;width:30px;position:absolute;left:-37px;-moz-border-radius:8px 0 8px 0;-webkit-border-top-left-radius:8px;-webkit-border-top-right-radius:0;-webkit-border-bottom-left-radius:8px;-webkit-border-bottom-right-radius:0;border-top-left-radius:8px;border-top-right-radius:0;border-bottom-left-radius:8px;border-bottom-right-radius:0;-moz-box-shadow:-2px 0 5px #999999;-webkit-box-shadow:-2px 0 5px #999999;box-shadow:-2px 0 5px #999999;}
+.extruder.right .flap .flapLabel{background:#000000;}
 
-	
+.left_nav_arrow {
+	background-image: url('../img/arrow-left.png') ;	
+	background-repeat: no-repeat ;
+	background-position: center center;
 }
-.slide-panel {
-	margin: 0;
-	padding: 0;
-	border-top: solid 2px #422410;
-/*	background: url(../img/btn-slide.gif) no-repeat center top; */
-	
-}
-.slide-panel-button {
-	background: #a7a7a7 url(../img/arrow-square.gif) no-repeat right -54px;	
-	text-align: center;
-	width: 144px;
-	height: 24px;
-	padding: 0 10px 0 0;
-	margin: 0 auto;
-	display: block;
-	font: normal 120%/100% Arial, Helvetica, sans-serif;
-	color: #fff;
-	text-decoration: none;
-	-moz-border-radius: 0 0 12px 12px;
-	border-radius: 0 0 12px 12px;
-	border: 1px solid #777;
-}
-.active {
-	background-position: right 2px;
+
+.right_nav_arrow {
+	background-image: url('../img/arrow-right.png') ;	
+	background-repeat: no-repeat ;
+	background-position: center center;
 }
