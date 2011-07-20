@@ -19,10 +19,7 @@ ThumbContainer = function(containerDiv, data, options) {
 
 	this.thumbs = [] ;	
 	this.populate(data);	
-
-
-
-}	
+};	
 
 var p = ThumbContainer.prototype;	
 
@@ -94,7 +91,7 @@ p.createCanvas = function()
 		that.draw() ;	
 	}) ;	
 */		
-}	
+};
 
 p.populate = function(data) {	
 
@@ -118,7 +115,7 @@ p.populate = function(data) {
 		thumbs.push(thumb) ;	
 	} ;	
 
-}	
+};	
 
 p.redrawNavBar = function(page, maxPage, width)	
 {	
@@ -191,11 +188,11 @@ p.redrawNavBar = function(page, maxPage, width)
 		that.offset = that.pageCount * (page - 1) ;	
 		that.draw() ;	
 	}) ;	
-}	
+};	
 
 p.resize = function(e) {	
 	console.log(e) ;	
-}	
+};	
 
 p.draw = function() {	
 
@@ -206,7 +203,7 @@ p.draw = function() {
 	this.origHeight = this.canvas.height = ch ;	
 
 	this.redraw(cw, ch) ;	
-}	
+};	
 
 p.redraw = function(contentWidth, contentHeight)	
 {	
@@ -293,7 +290,7 @@ p.redraw = function(contentWidth, contentHeight)
 
 		delete lmanager ;	
 	}	
-}	
+};	
 
 p.getPosition = function(event)	
 {	
@@ -316,7 +313,7 @@ p.getPosition = function(event)
    y -= $(canvas).offset().top;	
 		
 	return {"x": x, "y": y} ;	
-}	
+};	
 
 function inBBox(x, y, item)	
 {	
@@ -338,7 +335,7 @@ p.hitTest = function(x, y)
 
 	return null ;	
 
-}	
+};	
 
 p.handleMouseClick = function(event)	
 {	
@@ -350,7 +347,7 @@ p.handleMouseClick = function(event)
 		this.hideTooltip() ;	
 		this.onClick(item) ;	
 	}	
-}	
+};	
 
 p.handleMouseMove = function(event)	
 {	
@@ -394,7 +391,7 @@ p.handleMouseMove = function(event)
 	}	
 
 
-}	
+};	
 
 p.doShowTooltip = function(item) 	
 {	
@@ -447,7 +444,7 @@ p.doShowTooltip = function(item)
 		
 	tooltip.fadeIn('fast') ;	
 	//console.log(item.id) ;	
-}	
+};	
 
 p.showTooltip = function(item)	
 {	
@@ -458,14 +455,14 @@ p.showTooltip = function(item)
 		if ( obj.hoverItem == item && obj.tooltipPending ) obj.doShowTooltip(item) ;	
 	}, 500) ;	
 
-}	
+};	
 
 p.hideTooltip = function(item) 	
 {	
 	this.tooltipPending = false ;	
 	$(".tooltip").hide() ;	
 
-}	
+};	
 
 p.doResize = function()	
 {	
@@ -529,7 +526,7 @@ p.doResize = function()
   */	
 
 				
-}	
+};	
 			
 p.zoomIn  = function()	
 {	
@@ -538,7 +535,7 @@ p.zoomIn  = function()
 			
 				
 	this.doResize() ;		
-}	
+};	
 			
 p.zoomOut = function()	
 {	
@@ -546,14 +543,14 @@ p.zoomOut = function()
 	this.currentZoomScale --  ;	
  	
 	this.doResize() ;	
-}	
+};	
 
 p.resize = function()	
 {	
 	this.createCanvas() ;	
 
 	this.draw() ;	
-}	
+};	
 
 
 p.showMap = function()	
@@ -579,6 +576,6 @@ p.showMap = function()
 				{ type: 'markers', data: markerImages, name: 'Images',	
 						minzoom: 4}	
 				]) ;	
-}	
+};	
 	
 	

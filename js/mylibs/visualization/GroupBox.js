@@ -1,22 +1,18 @@
-GroupBox = function( container, items )
-{
+GroupBox = function( container, items ) {
 	this.init(container, items) ;
-	
-}
+};
 
 GroupBox.thumbSize = 128 ;
 GroupBox.thumbSpacing = 10 ;
 GroupBox.navFixed = true ;
-
    
 var p = GroupBox.prototype;   
 
 p.thumbs = null ;
 p.offset = 0 ;
 
+p.init = function( container, items ) {
 
-p.init = function( container, items )
-{
 	$(container).empty() ;
 	
 	this.offset = 0 ;
@@ -140,4 +136,4 @@ p.init = function( container, items )
 		
 	}
 
-}
+};

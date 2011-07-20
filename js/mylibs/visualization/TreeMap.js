@@ -24,7 +24,7 @@ define("mylibs/visualization/TreeMap",
 		  this.makeTree(this.tree, searchResults.clusters) ;
 
 		this.redraw(this.tree, 0) ;
-	}
+	};
 
 	var p = TreeMap.prototype;
 
@@ -38,33 +38,29 @@ define("mylibs/visualization/TreeMap",
 	TreeMap.VERTIICAL = 1 ;
 
 
-	p.setOptions = function(options)
-	{
+	p.setOptions = function(options) {
 		if ( options.thumbSize )
 		{
-			this.thumbOptions.thumbSize = options.thumbSize ;
+			this.thumbOptions.thumbSize = +options.thumbSize ;
 		}
 
 		this.redraw(this.tree, 0) ;
+	};
 
-	}
-
-	TreeMap.sortOnArea = function(a, b)
-	{
+	TreeMap.sortOnArea = function(a, b)	{
 		return b.area - a.area ;
-	}
+	};
 
-	p.redraw = function(root, level)
-	{
+	p.redraw = function(root, level) {
 		$(this.container).empty() ;
 		var w = $(this.container).width() ;
 		var h = $(this.container).height() ;
 
 		this.draw(root, new Rectangle(0, 0, w, h), level) ;
-	}
+	};
 
-	p.makeTree = function(treeNode, clusters)
-	{
+	p.makeTree = function(treeNode, clusters) {
+	
 		var clusters = clusters.children ;
 
 		treeNode.children = [] ;
@@ -95,10 +91,10 @@ define("mylibs/visualization/TreeMap",
 
 		// sort based on area
 		treeNode.children.sort(TreeMap.sortOnArea) ;
-	}
+	};
 
-	p.makeLabel = function(container, node, level)
-	{
+	p.makeLabel = function(container, node, level)	{
+	
 		var that = this ;
 		var box1 = document.createElement( "div" );
 		box1.style.position = "absolute" ;
@@ -124,7 +120,7 @@ define("mylibs/visualization/TreeMap",
 				that.history.pop() ; 
 				var pnode = that.history[that.history.length-1] ; 
 				that.redraw(pnode, level) ; 
-			}
+			};
 		}
 		else
 		{
@@ -132,17 +128,16 @@ define("mylibs/visualization/TreeMap",
 			box2.onclick = function(e) { 
 				that.history.push(node) ; 
 				that.redraw(node, 0) ; 
-			}
+			};
 		}
 
 		var box3 = document.createElement( "div" );
 
 		container.appendChild(box1) ;
 		container.appendChild(box2) ;
-	}
+	};
 
-	p.draw = function(treeNode, rect, level)
-	{
+	p.draw = function(treeNode, rect, level) {
 
 		var border = 1 ;
 		var margin = 0 ;
@@ -210,10 +205,10 @@ define("mylibs/visualization/TreeMap",
 			box.onmouseout = function(e) { this.style.border = "1px solid #444" ; }
 				//label.onclick = this.createCallback( "onBoxClick", node, box, true );
 		}
-	}
+	};
 
-	p.splitFairly = function( nodes )
-	{
+	p.splitFairly = function( nodes ) {
+	
 		var midPoint = 0;
 
 		if( this.sumValues( nodes ) === 0 )
@@ -237,8 +232,8 @@ define("mylibs/visualization/TreeMap",
 		};
 	};
 
-	p.divideDisplayArea = function( facades, destRectangle )
-	{	
+	p.divideDisplayArea = function( facades, destRectangle ) {
+	
 		// Check for boundary conditions
 		if( facades.length === 0 ) return;
 

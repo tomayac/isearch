@@ -1,17 +1,17 @@
 HPoint = function(re, im) {	
 	this.real = re ;	
 	this.imag = im ;	
-}	
+};	
 
 var p = HPoint.prototype = new Complex ;	
 
 p.x = function() {	
 	return this.real ;	
-}	
+};	
 			
 p.y = function() {	
 	return this.imag ;	
-}	
+};	
 			
 p.moebius = function(theta, c)	
 {	
@@ -22,4 +22,4 @@ p.moebius = function(theta, c)
 	var denProd = Complex.mult(den,  Complex.conj(den)).real ;	
 	var res =  Complex.cmult(Complex.mult(num,  numProd), 1.0 / denProd) ;	
 	return new HPoint(res.real, res.imag) ;	
-}		
+};		

@@ -2,7 +2,7 @@ Thumbnail = function(url, size) {
    this.url = url ;	
    this.image = new Image ;	
    this.size = size ;	
-}	
+};	
 
 var p = Thumbnail.prototype;	
 
@@ -41,12 +41,12 @@ p.show = function(ctx, x, y) {
 	}	
 	else this.drawImage(ctx) ;	
 		
-}	
+};	
 
 p.loadCallback = function(ctx) {	
 	this.loaded = true ;	
 	this.drawImage(ctx) ;	
-}	
+};	
 
 p.drawImage = function(ctx)	
 {	
@@ -84,9 +84,9 @@ p.drawImage = function(ctx)
 		dstw - 2*Thumbnail.margin, dsth - 2*Thumbnail.margin) ;	
 		
 	ctx.drawImage(this.image, this.x + (dstw2 - thumbw)/2 + extra, this.y + (dsth2 - thumbh)/2 + extra, thumbw, thumbh) ;	
-}	
+};	
 
 
 p.hide = function() {	
 	this.visible = false ;	
-}	
+};	

@@ -1,7 +1,7 @@
 UI = function(  )	
 {	
 		
-}	
+};	
    	
 var p = UI.prototype;   	
 
@@ -53,4 +53,4 @@ UI.showPage = function(title, callBack)
 		
 	$.mobile.changePage("#popup-page") ;	
 
-}	
+};	

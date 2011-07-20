@@ -7,12 +7,12 @@ define("mylibs/visualization/HyperbolicTree",
 		"mylibs/visualization/Thumbnail",
 		"mylibs/visualization/ThumbContainer",
 		"mylibs/visualization/Tween"
-	],	function(){
+	],	function() {
   
 	Point = function(x, y) {
 		this.x = x ;
 		this.y = y ;
-	}	 
+	};	 
 
 
 	HyperbolicTree = function(searchResults, container, options) {
@@ -35,7 +35,7 @@ define("mylibs/visualization/HyperbolicTree",
 		this.graph.saveState() ;
 
 		this.draw(0) ;
-	}
+	};
 
 	var p = HyperbolicTree.prototype;
 
@@ -48,16 +48,13 @@ define("mylibs/visualization/HyperbolicTree",
 
 	HyperbolicTree.iconSize = 64 ;
 
-	p.setOptions = function(options)
-	{
-		if ( options.thumbSize )
-		{
+	p.setOptions = function(options) {
+		if ( options.thumbSize ) {
 			this.thumbOptions.thumbSize = options.thumbSize ;
 		}
-	}
+	};
 
-	p.createCanvas = function()
-	{
+	p.createCanvas = function()	{
 		var obj = this ;
 
 		$(this.container).empty() ;
@@ -87,10 +84,9 @@ define("mylibs/visualization/HyperbolicTree",
 
 		this.canvas.addEventListener("click", function(e) { obj.handleMouseClick(e) ; }, false);
 	  //	this.canvas.addEventListener("dblclick", function(e) { obj.handleMouseDoubleClick(e) ; }, false);
-	}
+	};
 
-	p.getPosition = function(event)
-	{
+	p.getPosition = function(event)	{
 		var x = new Number();
 		var y = new Number();
 		var canvas = this.canvas ;
@@ -110,10 +106,9 @@ define("mylibs/visualization/HyperbolicTree",
 		y -= $(canvas).offset().top;
 
 		return {"x": x, "y": y} ;
-	}
+	};
 
-	p.globalToLocal = function(pt)
-	{
+	p.globalToLocal = function(pt)	{
 		var cw = this.canvas.width  ;
 		var ch = this.canvas.height ;
 		var x, y ;
@@ -137,10 +132,9 @@ define("mylibs/visualization/HyperbolicTree",
 		}
 
 		return new Point(x, y) ;
-	}
+	};
 
-	p.handleMouseClick = function(e)
-	{
+	p.handleMouseClick = function(e) {
 		var pt = this.getPosition(e) ;
 
 		var lp = this.globalToLocal(pt) ;
@@ -166,43 +160,35 @@ define("mylibs/visualization/HyperbolicTree",
 
 		}
 
-	}
+	};
 
-	p.onImageClicked = function(idx)
-	{
+	p.onImageClicked = function(idx) {
 		var that = this ;
 		UI.showPage("Cluster View", function(ele) {
 			var icons = new ThumbContainer(ele, that.graph.icons[idx], that.thumbOptions) ;
 			icons.draw() ;
 		}) ;
+	};
 
-	}
 
-
-	p.onTweenUpdate = function(value)
-	{
+	p.onTweenUpdate = function(value) {
 		this.draw(value, true) ;
-	}
+	};
 
 	p.onTweenEnd = function(val) {
 		this.draw(val, false) ;      
-	}
+	};
 
 	p.onResize = function(event) {
-
 		this.createCanvas() ;
-
 		this.draw(0) ;
-	}
+	};
 
-
-	p.drawNode = function(node)
-	{
+	p.drawNode = function(node)	{
 		node.show(this.ctx, node.pos.x(), node.pos.y()) ;
-	}
+	};
 
-	p.draw = function(t, fast) 
-	{
+	p.draw = function(t, fast) 	{
 		if ( fast == undefined ) fast = false ;
 
 		var w = this.canvas.width ;
@@ -223,28 +209,24 @@ define("mylibs/visualization/HyperbolicTree",
 
 		this.drawEdges() ;
 		if ( !fast ) this.drawNodes() ;
-	}
+	};
 
-	p.translateTo = function(at)
-	{
+	p.translateTo = function(at) {
 		this.graph.saveState() ;
 		var at_ = new HPoint(at.x(), -at.y());
 		this.graph.transform(new HPoint(1, 0), at_) ;
-	}
+	};
 
-	p.drawArc = function(centerX, centerY, startAngle, endAngle, radius, direction)
-	{
+	p.drawArc = function(centerX, centerY, startAngle, endAngle, radius, direction)	{
 		this.ctx.beginPath() ;
 		this.ctx.arc(centerX, centerY, radius, startAngle, endAngle, ( direction < 0 ) ? true: false) ;
 		this.ctx.stroke() ;
-	}
+	};
 
-	p.drawArcTroughTwoPoints = function(p1, p2)
-	{
+	p.drawArcTroughTwoPoints = function(p1, p2)	{
 		var cx, cy, ratio, radius, a, b ;
 
 		var aDen = p1.x()*p2.y() - p1.y()*p2.x() ;
-
 
 		if ( Math.abs(aDen) < 1.0e-5 ) 
 		{
@@ -273,10 +255,9 @@ define("mylibs/visualization/HyperbolicTree",
 			this.drawArc(cx, cy, angleBegin, angleEnd, ratio, -sign) ;
 
 		}
-	}
+	};
 
-	p.drawEdges = function()
-	{
+	p.drawEdges = function() {
 		this.graph.clearState() ;
 
 		for(var i =0 ; i< this.graph.nodes.length ; i++ ) 
@@ -301,10 +282,9 @@ define("mylibs/visualization/HyperbolicTree",
 					}
 				}
 		}		
-	}
+	};
 
-	p.computeNodes = function(t)
-	{
+	p.computeNodes = function(t) {
 		for(var i =0 ; i<this.graph.nodes.length  ; i++ )
 		{
 			var node = this.graph.nodes[i] ;
@@ -315,17 +295,16 @@ define("mylibs/visualization/HyperbolicTree",
 			node.pos = new HPoint(x, y) ;
 
 		}
-	}
+	};
 
-	p.drawNodes = function()
-	{
+	p.drawNodes = function() {
 		for(var i =0 ; i<this.graph.nodes.length  ; i++ )
 		{
 			var node = this.graph.nodes[i] ;
 
 			this.drawNode(node) ;
 		}
-	}
+	};
 
 	HyperbolicTree.correctAngle = function(relTo, dot, angle) {
     			if (dot.x() >= relTo.x() && dot.y() >= relTo.y()) return angle;
@@ -333,10 +312,9 @@ define("mylibs/visualization/HyperbolicTree",
     			if (dot.x() <= relTo.x() && dot.y() <= relTo.y()) return (Math.PI + angle);
     			if (dot.x() >= relTo.x() && dot.y() <= relTo.y()) return (Math.PI*2 - angle);
     			return 0.0 ;
-	} 
+	} ;
 
-	HyperbolicTree.calculateDirection = function(angleBegin, angleEnd) 
-	{
+	HyperbolicTree.calculateDirection = function(angleBegin, angleEnd) {
 		if( angleBegin < angleEnd ) 
 		{
 			if ( angleBegin + Math.PI > angleEnd ) return -1 ;
@@ -347,7 +325,7 @@ define("mylibs/visualization/HyperbolicTree",
 			if ( angleEnd + Math.PI > angleBegin ) return 1 ;
 			else return -1 ;
 		}
-	}
+	};
   
 	return {
 		create: function(searchResults, container, options) {

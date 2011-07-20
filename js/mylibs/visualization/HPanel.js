@@ -7,65 +7,63 @@ define("mylibs/visualization/HPanel",
 	], function(){
   
   
-  HPanel = function( searchResults, containerDiv, options )
-  {
-  	this.searchResults = searchResults ;
-  	this.currentCluster = searchResults.clusters ;
-  	this.hierarchy = [searchResults.clusters] ;
+	HPanel = function( searchResults, containerDiv, options ) {
+		this.searchResults = searchResults ;
+		this.currentCluster = searchResults.clusters ;
+		this.hierarchy = [searchResults.clusters] ;
 
-  	this.containerDiv = containerDiv ;
+		this.containerDiv = containerDiv ;
 
-  	this.thumbOptions = {  } ;
+		this.thumbOptions = {  } ;
 
-  	if ( options.thumbSize )
-  		this.thumbOptions.thumbSize = +options.thumbSize ;
+		if ( options.thumbSize )
+			this.thumbOptions.thumbSize = +options.thumbSize ;
 
-  	if ( options.onItemClick )
-  		this.thumbOptions.onClick = options.onItemClick ;
+		if ( options.onItemClick )
+			this.thumbOptions.onClick = options.onItemClick ;
 
-  	this.createLayout() ;
+		this.createLayout() ;
 
-  	this.populatePanels() ;
-  }
+		this.populatePanels() ;
+	};
 
-  var p = HPanel.prototype;   
+	var p = HPanel.prototype;   
 
-  p.clustersPanel = null;
-  p.resultsPanel = null ;
-  p.currentLevel = 0 ;
-  p.currentCluster = null ;
-  p.SearchResults = null ;
-  p.hierarchy = null ;
-  p.icons = null ;
-  p.thumbOptions = null ;
+	p.clustersPanel = null;
+	p.resultsPanel = null ;
+	p.currentLevel = 0 ;
+	p.currentCluster = null ;
+	p.searchResults = null ;
+	p.hierarchy = null ;
+	p.icons = null ;
+	p.thumbOptions = null ;
 
-  p.containerDiv = null ;
-  p.onClick = null ;
+	p.containerDiv = null ;
+	p.onClick = null ;
 
-  p.setOptions = function(options)
-  {
-  	if ( options.thumbSize )
-  	{
-  		this.thumbOptions.thumbSize = options.thumbSize ;
-  	}
+	p.setOptions = function(options) {
+		if ( options.thumbSize )
+		{
+			this.thumbOptions.thumbSize = +options.thumbSize ;
+		}
 
-  	this.resultsPanel = new ThumbContainer($('#hpanel-results'), this.icons, this.thumbOptions ) ;
-  	this.resultsPanel.draw() ;
+		this.resultsPanel = new ThumbContainer($('#hpanel-results'), this.icons, this.thumbOptions ) ;
+		this.resultsPanel.draw() ;
 
-  }
+	};
 
-  p.createLayout = function()
-  {
-  	var results = $('<div>', { id: "hpanel-results", css: { width: "100%", position: "absolute", top: 40, height: $(this.containerDiv).height() - 40 }}).appendTo(this.containerDiv) ;
+	p.createLayout = function()  {
+		
+		var results = $('<div>', { id: "hpanel-results", css: { width: "100%", position: "absolute", top: 40, height: $(this.containerDiv).height() - 40 }}).appendTo(this.containerDiv) ;
 
-  	this.resultsInnerDiv = results ;
+		this.resultsInnerDiv = results ;
 
-  	this.groups = $('<div/>', { "class": '{ title: "Groups"}' }).appendTo(this.containerDiv) ;
-  	this.clustersInnerDiv = $('<div/>', {id: "hpanel-groups", css: { height: "180px"}}).appendTo(this.groups) ;
+		this.groups = $('<div/>', { "class": '{ title: "Groups"}' }).appendTo(this.containerDiv) ;
+		this.clustersInnerDiv = $('<div/>', {id: "hpanel-groups", css: { height: "180px"}}).appendTo(this.groups) ;
 
-  	var that = this ;
+		var that = this ;
 
-  	$(this.groups).buildMbExtruder({
+		$(this.groups).buildMbExtruder({
             positionFixed:false,
             width: $(this.containerDiv).width(),
             sensibility:100,
@@ -73,99 +71,89 @@ define("mylibs/visualization/HPanel",
             flapDim:100,
             textOrientation:"bt", // or "tb" (top-bottom or bottom-top)
             onExtOpen:function(){},
-            onExtContentLoad:function(){
-  		  },
+            onExtContentLoad:function(){},
             onExtClose:function(){},
             hidePanelsOnClose:true,
             autoCloseTime:500, // 0=never
             slideTimer:300
        });
+	};
 
+	p.populatePanels = function()  {
+  	
+		var groupIcons = [] ;
+		var _this = this ;
 
+		if ( this.hierarchy.length > 1 ) 
+			groupIcons.push({url: "img/arrow_back.png", cluster: -1, clicked: function() { _this.groupClicked(-1); } }) ;
 
-  }
+		for(var c=0 ; c < this.currentCluster.children.length ; c++ )
+		{
+			var cluster = this.currentCluster.children[c] ;
 
-  p.populatePanels = function()
-  {
-  	var groupIcons = [] ;
+			var idx = cluster.nodes[0].idx ;
+			var doc = this.searchResults.docs[idx] ;
 
-  	var _this = this ;
+			var thumbUrl = doc.thumbUrl ;
 
-  	if ( this.hierarchy.length > 1 ) 
-  		groupIcons.push({url: "img/arrow_back.png", cluster: -1, clicked: function() { _this.groupClicked(-1); } }) ;
+			groupIcons.push({url: thumbUrl, cluster: c, clicked: 
+				(function(item) {
+						 // that returns our function 
+						 return function() {
+							_this.groupClicked(item) ;
+						 };
+					  })(c)
+					}) ;
+		}
 
-  	for(var c=0 ; c < this.currentCluster.children.length ; c++ )
-  	{
-  		var cluster = this.currentCluster.children[c] ;
+		this.clustersPanel = new GroupBox($('#hpanel-groups'), groupIcons) ;
 
-  		var idx = cluster.nodes[0].idx ;
-  		var doc = this.searchResults.docs[idx] ;
+		this.icons = [] ;
 
-      	var thumbUrl = doc.thumbUrl ;
+		for(var j=0 ; j<this.currentCluster.nodes.length ; j++)
+		{
+			var idx = this.currentCluster.nodes[j].idx ;
+			var docx = this.searchResults.docs[idx] ;
 
-      	groupIcons.push({url: thumbUrl, cluster: c, clicked: 
-  		    (function(item) {
-                     // that returns our function 
-                     return function() {
-  						_this.groupClicked(item) ;
-                     };
-                  })(c)
-  				}) ;
-   	}
+			var x = this.currentCluster.nodes[j].x ;
+			var y = this.currentCluster.nodes[j].y ;
 
-  	this.clustersPanel = new GroupBox($('#hpanel-groups'), groupIcons) ;
+			var obj = { "doc": docx, "x": x, "y": y} ;
+			this.icons.push(obj) ;
+		}
 
-  	this.icons = [] ;
+		this.resultsPanel = new ThumbContainer($('#hpanel-results'), this.icons, this.thumbOptions) ;
 
-  	for(var j=0 ; j<this.currentCluster.nodes.length ; j++)
-  	{
-  		var idx = this.currentCluster.nodes[j].idx ;
-  		var docx = this.searchResults.docs[idx] ;
+		this.resultsPanel.draw() ;
+	};
 
-  		var x = this.currentCluster.nodes[j].x ;
-  		var y = this.currentCluster.nodes[j].y ;
+	p.init = function(clustersDiv, resultsDiv)  {
 
-  		var obj = { "doc": docx, "x": x, "y": y} ;
-  		this.icons.push(obj) ;
-  	}
+		this.populatePanels() ;
 
+	};
 
-  	this.resultsPanel = new ThumbContainer($('#hpanel-results'), this.icons, this.thumbOptions) ;
+	p.groupClicked = function(cluster) { 
+		if ( cluster >= 0 )
+		{		
+			this.currentCluster = this.currentCluster.children[cluster] ;
 
-  	this.resultsPanel.draw() ;
+			this.hierarchy.push(this.currentCluster) ;
+		}
+		else
+		{
+			this.hierarchy.pop() ;
+			this.currentCluster = this.hierarchy[this.hierarchy.length - 1] ;
+		}
 
-  }
+		this.populatePanels() ;
 
-  p.init = function(clustersDiv, resultsDiv)
-  {
-
-  	this.populatePanels() ;
-
-  }
-
-  p.groupClicked = function(cluster)
-  { 
-  	if ( cluster >= 0 )
-  	{		
-  		this.currentCluster = this.currentCluster.children[cluster] ;
-
-  		this.hierarchy.push(this.currentCluster) ;
-  	}
-  	else
-  	{
-  		this.hierarchy.pop() ;
-  		this.currentCluster = this.hierarchy[this.hierarchy.length - 1] ;
-  	}
-
-  	this.populatePanels() ;
-
-  	if ( this.onClick ) this.onClick(this.currentCluster) ;
-
-  }
+		if ( this.onClick ) this.onClick(this.currentCluster) ;
+	};
   
-  return {
-    create: function(searchResults, containerDiv, options) {
-      return new HPanel(searchResults, containerDiv, options);
-    }
-  }
+	return {
+		create: function(searchResults, containerDiv, options) {
+					return new HPanel(searchResults, containerDiv, options);
+			}
+	};
 });

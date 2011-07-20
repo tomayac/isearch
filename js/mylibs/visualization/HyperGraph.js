@@ -17,7 +17,7 @@ GraphNode = function(id, info, url) {
 	this.px = 0 ;	
 	this.py = 0 ;	
 		
-}	
+};	
 
 var p = GraphNode.prototype ;	
 
@@ -36,12 +36,12 @@ p.show = function(ctx, x, y) {
 	}	
 	else this.drawImage(ctx, x, y) ;	
 		
-}	
+};	
 
 p.loadCallback = function(ctx, x, y) {	
 	this.loaded = true ;	
 	this.drawImage(ctx, x, y) ;	
-}	
+};	
 
 p.drawImage = function(ctx, x, y)	
 {	
@@ -70,7 +70,7 @@ p.drawImage = function(ctx, x, y)
 	this.py = y ;	
 		
 	ctx.drawImage(this.image, x - thumbw/2, y - thumbh/2, thumbw, thumbh) ;	
-}	
+};	
 
 HyperGraph = function(res)	
 {	
@@ -78,7 +78,7 @@ HyperGraph = function(res)
 	this.icons = [] ;	
 	this.createNodes(res.docs, res.clusters, null) ;	
 	this.calculatePositions() ;	
-}	
+};	
 
 var p = HyperGraph.prototype ;	
 
@@ -129,7 +129,7 @@ p.createNodes = function(docs, c, parent)
 	{	
 		this.createNodes(docs, c.children[i], gnode) ;	
 	}	
-}	
+};	
 			
 
 		
@@ -142,7 +142,7 @@ p.transform = function(theta, c)
 		node.posEnd = node.posEnd.moebius(theta, c) ;	
 		node.radius = Complex.norm(node.posEnd.moebius(theta, new HPoint(node.radius, 1))) ;	
 	}	
-}	
+};	
 			
 p.clearState = function()	
 {	
@@ -151,7 +151,7 @@ p.clearState = function()
 		var node = this.nodes[i] ;	
 		node.drawn = false ;	
 	}	
-}	
+};	
 			
 p.saveState = function()	
 {	
@@ -160,7 +160,7 @@ p.saveState = function()
 		var node = this.nodes[i] ;	
 		node.posStart = node.posEnd ;	
 	}	
-}	
+};	
 		
 		
 p.calculatePositions = function()	
@@ -179,7 +179,7 @@ p.calculatePositions = function()
 	this.calculateChildrenPosition(queue);	
 
 	this.saveState() ;	
-}	
+};	
 			
 p.calculateChildrenPosition = function(queue)	
 {		 	
@@ -246,4 +246,4 @@ p.calculateChildrenPosition = function(queue)
 		}	
 		queue.shift() ;	
 	}	
-}	
+};	
