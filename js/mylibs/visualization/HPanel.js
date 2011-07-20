@@ -1,4 +1,10 @@
-define("mylibs/visualization/HPanel", function(){
+define("mylibs/visualization/HPanel", 
+	[	
+		"mylibs/visualization/gmap",	
+		"mylibs/visualization/Thumbnail",
+		"mylibs/visualization/ThumbContainer",
+		"mylibs/visualization/GroupBox"
+	], function(){
   
   
   HPanel = function( searchResults, containerDiv, options )
@@ -12,7 +18,7 @@ define("mylibs/visualization/HPanel", function(){
   	this.thumbOptions = {  } ;
 
   	if ( options.thumbSize )
-  		this.thumbOptions.thumbSize = options.thumbSize ;
+  		this.thumbOptions.thumbSize = +options.thumbSize ;
 
   	if ( options.onItemClick )
   		this.thumbOptions.onClick = options.onItemClick ;

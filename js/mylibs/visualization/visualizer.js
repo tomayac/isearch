@@ -20,43 +20,43 @@
 */
 
 define("mylibs/visualization/visualizer", 
-    ["mylibs/visualization/TreeMap","mylibs/visualization/HyperbolicTree", "mylibs/visualization/UI", "mylibs/visualization/HPanel", "mylibs/visualization/gmap", "mylibs/visualization/layout/Feature","mylibs/visualization/layout/CandidateIndex", 
-    "mylibs/visualization/layout/Candidate", "mylibs/visualization/layout/Extent", "mylibs/visualization/layout/LabelManager",
-    "mylibs/visualization/GroupBox", "mylibs/visualization/Thumbnail", "mylibs/visualization/ThumbContainer", "mylibs/visualization/Rectangle",
-    "mylibs/visualization/Complex", "mylibs/visualization/HPoint", "mylibs/visualization/Tween", "mylibs/visualization/HyperGraph"], 
-    function(treeMap, hyperbolicTree, ui, hPanel) {
+    [	"mylibs/visualization/UI", 	
+		"mylibs/visualization/TreeMap",
+		"mylibs/visualization/HyperbolicTree", 
+		"mylibs/visualization/HPanel" ], 
+    function(ui, treeMap, hyperbolicTree, hPanel) {
   
-  var widget = null;
-  var results = null;
-  var element = null;
+	var widget = null;
+	var results = null;
+	var element = null;
 
-  var draw = function(res, ele, options) {
-  	results = res ;
-  	element = ele ;
+	var draw = function(res, ele, options) {
+		results = res ;
+		element = ele ;
 
-  	redraw(options.method, options) ;
-  };
+		redraw(options.method, options) ;
+	};
 
-  var setOptions = function(options) {
-  	if (options.method) {
-  		redraw(options.method, options);
-		} else {
-  		widget.setOptions(options) ;
-    }
-  };
+	var setOptions = function(options) {
+		if (options.method) {
+			redraw(options.method, options);
+			} else {
+			widget.setOptions(options) ;
+		}
+	};
 
-  var redraw = function(method, options) {
+	var redraw = function(method, options) {
   	
-  	//Let's empty the DOM element first
-  	$(element).empty() ;
+		//Let's empty the DOM element first
+		$(element).empty() ;
 
-  	if (method == "hpanel") {
-      widget = hPanel.create(results, element, options) ;
-  	} else if (method == "tmap") {
-      widget = treeMap.create(results, element, options) ;  
-    } else if (method == "htree") {
-      widget = hyperbolicTree.create(results, element, options) ;
-  	}
+		if (method == "hpanel") {
+		  widget = hPanel.create(results, element, options) ;
+		} else if (method == "tmap") {
+		  widget = treeMap.create(results, element, options) ;  
+		} else if (method == "htree") {
+		  widget = hyperbolicTree.create(results, element, options) ;
+		}
   };
 
   return {
