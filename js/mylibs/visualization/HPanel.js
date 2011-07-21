@@ -72,27 +72,25 @@ define("mylibs/visualization/HPanel",
 
 		this.resultsInnerDiv = results ;
 
-		this.groups = $('<div/>', { "class": '{ title: "Groups"}' }).appendTo(this.containerDiv) ;
-		this.clustersInnerDiv = $('<div/>', {id: "hpanel-groups", css: { height: "180px"}}).appendTo(this.groups) ;
-
-		var that = this ;
-
-		$(this.groups).buildMbExtruder({
-            positionFixed:false,
-            width: $(this.containerDiv).width(),
-            sensibility:100,
-            position:"top", // left, right, bottom
-            flapDim:100,
-            textOrientation:"bt", // or "tb" (top-bottom or bottom-top)
-            onExtOpen:function(){},
-            onExtContentLoad:function(){},
-            onExtClose:function(){},
-            hidePanelsOnClose:true,
-            autoCloseTime:500, // 0=never
-            slideTimer:300
-       });
+		this.groups = $('<div/>').appendTo(this.containerDiv) ;
+		var button = $('<a/>', { text: "Groups"}).appendTo(this.groups) ;
+		
+		this.clustersInnerDiv = $('<div/>', {id: "hpanel-groups", 
+			css: { 	"display": "none", 
+					height: "180px"
+				}}).appendTo(this.groups) ;
+	
+	
+		button.button({icons: {
+						secondary: "ui-icon-triangle-1-s"
+					}}) ;
+	
+		button.click(function() {
+			$('.ui-button-icon-secondary', button).toggleClass("ui-icon-triangle-1-s ui-icon-triangle-1-n") ;
+			$("#hpanel-groups").slideToggle('medium');
+		});
 	};
-
+	
 	p.populatePanels = function()  {
   	
 		var groupIcons = [] ;

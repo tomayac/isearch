@@ -868,6 +868,12 @@ overflow: auto
 	background-position: center center;
 }
 
+#hpanel-groups {
+	position:relative; 
+	background-color: #afafaf;
+	z-index: 10000; 
+}
+
 .formitem {
 	display: inline;
 }
