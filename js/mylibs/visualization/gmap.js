@@ -2,7 +2,7 @@ MarkerLayer = function(markers_) {
 
 	this.markers = markers_ ;
 
-}
+};
 
 var p = MarkerLayer.prototype ;
 	
@@ -11,13 +11,13 @@ p.setVisible = function ( visible ) {
 	{
 		this.markers[i].setVisible(visible) ;
 	}
-}
+};
 
 p.updateVisibility = function( zoom, minZoom, maxZoom ) 
 {
 	if ( zoom >= minZoom && zoom <= maxZoom ) this.setVisible(true) ;
 	else this.setVisible(false) ;
-}
+};
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -29,7 +29,7 @@ GoogleMap = function(mapDiv, layers_) {
 	this.visibleInfoWindow = null ;
 	
 	this.initMap(mapDiv, layers_) ;
-}
+};
 
 var p = GoogleMap.prototype ;
 
@@ -64,7 +64,7 @@ p.updateLayerVisibility = function(layer) {
 	
 	if ( layer.type == "markers" && layer.markers )
 		layer.markers.updateVisibility(zoom, minZoom, maxZoom) ;
-}
+};
 		
 p.checkFinished = function() {
 	for( var i=0 ; i<this.layers.length ; i++ )
@@ -85,7 +85,7 @@ p.UpdateLayerListMenu = function() {
 	}
 	
 	$(".gmap-control-drop-down-menu ul").html(html) ;
-}
+};
 	
 	
 p.CreateLayersControl = function (controlDiv) {
@@ -142,7 +142,7 @@ p.CreateLayersControl = function (controlDiv) {
 
 		}) ;
 	}); 
-}
+};
 
 p.addLayers = function(_layers)
 {
@@ -265,10 +265,7 @@ p.initMap = function(mapDiv, _layers) {
 		
 	map.controls[google.maps.ControlPosition.TOP_RIGHT].push(layersControlDiv);
 		
-	google.maps.event.addDomListener(layersControlDiv, 'click', function() {
-			
-	});
-
+	google.maps.event.addDomListener(layersControlDiv, 'click', function() {});
 		
 	var layers = this.layers ;
 		
@@ -278,5 +275,5 @@ p.initMap = function(mapDiv, _layers) {
 		} 
 	) ;
 	
-}
+};
 	
