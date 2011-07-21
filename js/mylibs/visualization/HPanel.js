@@ -1,9 +1,14 @@
 define("mylibs/visualization/HPanel", 
 	[	
-		"mylibs/visualization/gmap",	
-		"mylibs/visualization/Thumbnail",
-		"mylibs/visualization/ThumbContainer",
-		"mylibs/visualization/GroupBox"
+		"order!js/mylibs/visualization/gmap.js",	
+		"order!js/mylibs/visualization/layout/Extent.js",
+		"order!js/mylibs/visualization/layout/Candidate.js",
+		"order!js/mylibs/visualization/layout/Feature.js",
+		"order!js/mylibs/visualization/layout/CandidateIndex.js",
+		"order!js/mylibs/visualization/layout/LabelManager.js",
+		"order!js/mylibs/visualization/Thumbnail.js",
+		"order!js/mylibs/visualization/ThumbContainer.js",
+		"order!js/mylibs/visualization/GroupBox.js"
 	], function(){
   
   
@@ -21,6 +26,12 @@ define("mylibs/visualization/HPanel",
 
 		if ( options.onItemClick )
 			this.thumbOptions.onClick = options.onItemClick ;
+			
+		if ( options.thumbSize )
+			this.thumbOptions.thumbSize = +options.thumbSize ;
+
+		if ( options.iconArrange )
+			this.thumbOptions.iconArrange = options.iconArrange ;
 
 		this.createLayout() ;
 
@@ -43,9 +54,10 @@ define("mylibs/visualization/HPanel",
 
 	p.setOptions = function(options) {
 		if ( options.thumbSize )
-		{
 			this.thumbOptions.thumbSize = +options.thumbSize ;
-		}
+		if ( options.iconArrange )
+			this.thumbOptions.iconArrange = options.iconArrange ;
+		
 
 		this.resultsPanel = new ThumbContainer($('#hpanel-results'), this.icons, this.thumbOptions ) ;
 		this.resultsPanel.draw() ;
@@ -53,6 +65,8 @@ define("mylibs/visualization/HPanel",
 	};
 
 	p.createLayout = function()  {
+		
+		$(this.containerDiv).empty() ;
 		
 		var results = $('<div>', { id: "hpanel-results", css: { width: "100%", position: "absolute", top: 40, height: $(this.containerDiv).height() - 40 }}).appendTo(this.containerDiv) ;
 

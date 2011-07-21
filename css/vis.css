@@ -867,3 +867,7 @@ overflow: auto
 	background-repeat: no-repeat ;
 	background-position: center center;
 }
+
+.formitem {
+	display: inline;
+}

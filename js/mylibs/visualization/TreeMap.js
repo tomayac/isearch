@@ -1,9 +1,14 @@
 define("mylibs/visualization/TreeMap", 
 	[
-		"mylibs/visualization/gmap",	
-		"mylibs/visualization/Thumbnail",	
-		"mylibs/visualization/ThumbContainer",
-		"mylibs/visualization/Rectangle"
+		"order!js/mylibs/visualization/gmap.js",	
+		"order!js/mylibs/visualization/Thumbnail.js",	
+		"order!js/mylibs/visualization/layout/Extent.js",
+		"order!js/mylibs/visualization/layout/Candidate.js",
+		"order!js/mylibs/visualization/layout/Feature.js",
+		"order!js/mylibs/visualization/layout/CandidateIndex.js",
+		"order!js/mylibs/visualization/layout/LabelManager.js",
+		"order!js/mylibs/visualization/ThumbContainer.js",
+		"order!js/mylibs/visualization/Rectangle.js"
 	],	function(){
   
 	TreeMap = function(searchResults, container, options) {
@@ -16,12 +21,15 @@ define("mylibs/visualization/TreeMap",
 
 		if ( options.onItemClick )
 			this.thumbOptions.onClick = options.onItemClick ;
+			
+		if ( options.iconArrange )
+			this.thumbOptions.iconArrange = options.iconArrange ;
 
 		this.tree = {} ;
 		this.history = [this.tree] ;
 
 		this.searchResults = searchResults ;
-		  this.makeTree(this.tree, searchResults.clusters) ;
+		this.makeTree(this.tree, searchResults.clusters) ;
 
 		this.redraw(this.tree, 0) ;
 	};
@@ -33,6 +41,7 @@ define("mylibs/visualization/TreeMap",
 	p.searchResults = null ;
 	p.history = null ;
 	p.thumbOptions = null ;
+	p.level = 0 ;
 
 	TreeMap.HORIZONTAL = 0 ;
 	TreeMap.VERTIICAL = 1 ;
@@ -40,11 +49,14 @@ define("mylibs/visualization/TreeMap",
 
 	p.setOptions = function(options) {
 		if ( options.thumbSize )
-		{
 			this.thumbOptions.thumbSize = +options.thumbSize ;
-		}
+		if ( options.iconArrange )
+			this.thumbOptions.iconArrange = options.iconArrange ;
 
 		this.redraw(this.tree, 0) ;
+		
+		var pnode = this.history[this.history.length-1] ; 
+		this.redraw(pnode, this.level) ; 
 	};
 
 	TreeMap.sortOnArea = function(a, b)	{
@@ -55,6 +67,8 @@ define("mylibs/visualization/TreeMap",
 		$(this.container).empty() ;
 		var w = $(this.container).width() ;
 		var h = $(this.container).height() ;
+		
+		this.level = level ;
 
 		this.draw(root, new Rectangle(0, 0, w, h), level) ;
 	};
@@ -127,7 +141,7 @@ define("mylibs/visualization/TreeMap",
 			box2.style.background = "url('img/plus_button.png') no-repeat center" ;
 			box2.onclick = function(e) { 
 				that.history.push(node) ; 
-				that.redraw(node, 0) ; 
+				that.redraw(node, level-1) ; 
 			};
 		}
 

@@ -17,7 +17,7 @@ define("mylibs/com.isearch.results",
     //Is this function useful?!
     
     function redraw() {
-    	vis.draw(res, "#hpanel", visOptions) ;
+    	vis.draw(res, "#hpanel", config.constants.visOptions) ;
     }
 
   	$("#results-page").bind("pageshow", function(e) {
@@ -93,7 +93,7 @@ define("mylibs/com.isearch.results",
       thumbSize: config.constants.iconSize 
     };
     console.log('Will draw in 1 line');
-    visualizer.draw(results, "#visualization-container", visOptions) ;
+    visualizer.draw(results, "#visualization-container", config.constants.visOptions) ;
   };
   
   var showItem = function(item) {

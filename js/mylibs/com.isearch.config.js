@@ -15,8 +15,12 @@ define("mylibs/com.isearch.config",
       outFormat: "out",
 
       //Visualization parameters
-      visualizationMethod: "tmap", //tmap, htree or hpan
-      iconSize: 64 //16, 32, 48, 64
+	  
+	  visOptions: {
+		method: "tmap", //tmap, htree or hpan
+		thumbSize: 64, //16, 32, 48, 64
+		iconArrange: "grid"
+		}
     };
     
 
@@ -42,9 +46,9 @@ define("mylibs/com.isearch.config",
       //Initialize the form with the default values
       $settingsPanel.find("#max-num-results")
           .val(constants.maxNumResults);
-      $settingsPanel.find("#icon-size option[value=" + constants.iconSize + "]")
+      $settingsPanel.find("#icon-size option[value=" + constants.visOptions.thumbSize + "]")
           .attr('selected','selected');
-      $settingsPanel.find("#icon-size option[value=" + constants.visualizationMethod + "]")
+      $settingsPanel.find("#icon-size option[value=" + constants.visOptions.method + "]")
           .attr('selected','selected');
 
       //Listen to button click to change settings
@@ -52,10 +56,10 @@ define("mylibs/com.isearch.config",
         set('maxNumResults', 
           $settingsPanel.find("#max-num-results").val()
         );
-        set('iconSize', 
+        set('visOptions.thumbSize', 
           $settingsPanel.find("#icon-size option:selected").val()
         );
-        set('visualizationMethod', 
+        set('visOptions.method', 
           $settingsPanel.find("#visualization-method option:selected").val()
         );
 

@@ -6,10 +6,10 @@ ThumbContainer = function(containerDiv, data, options) {
 		this.thumbSize = +options.thumbSize ;	
 	if ( options.onClick )	
 		this.onClick = options.onClick ;	
-
-	if ( options.mode )	
-		this.mode = options.mode ;	
-
+	if ( options.iconArrange )	
+	{
+		this.mode = ( options.iconArrange == "grid" ) ? ThumbContainer.GRID_MODE : ThumbContainer.TRANS_MODE ;	
+	}
 	this.containerDiv = containerDiv ;	
 
 	this.createCanvas() ;	
@@ -58,8 +58,8 @@ p.navBar = null ;
 
 ThumbContainer.zoomScales = [0.25, 0.5, 1.0, 1.5, 2.0, 3.0, 4.0] ;	
   	
-p.createCanvas = function()	
-{	
+p.createCanvas = function()	{	
+	
 	var obj = this ;	
 
 	$(this.containerDiv).empty() ;	

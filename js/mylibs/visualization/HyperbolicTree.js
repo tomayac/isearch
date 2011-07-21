@@ -1,12 +1,17 @@
 define("mylibs/visualization/HyperbolicTree", 
 	[	
-		"mylibs/visualization/Complex",
-		"mylibs/visualization/HPoint",	
-		"mylibs/visualization/HyperGraph",
-		"mylibs/visualization/gmap",	
-		"mylibs/visualization/Thumbnail",
-		"mylibs/visualization/ThumbContainer",
-		"mylibs/visualization/Tween"
+		"order!js/mylibs/visualization/Complex.js",
+		"order!js/mylibs/visualization/HPoint.js",	
+		"order!js/mylibs/visualization/HyperGraph.js",
+		"order!js/mylibs/visualization/gmap.js",	
+		"order!js/mylibs/visualization/layout/Extent.js",
+		"order!js/mylibs/visualization/layout/Candidate.js",
+		"order!js/mylibs/visualization/layout/Feature.js",
+		"order!js/mylibs/visualization/layout/CandidateIndex.js",
+		"order!js/mylibs/visualization/layout/LabelManager.js",
+		"order!js/mylibs/visualization/Thumbnail.js",
+		"order!js/mylibs/visualization/ThumbContainer.js",
+		"order!js/mylibs/visualization/Tween.js"
 	],	function() {
   
 	Point = function(x, y) {
@@ -26,6 +31,9 @@ define("mylibs/visualization/HyperbolicTree",
 
 		if ( options.onItemClick )
 			this.thumbOptions.onClick = options.onItemClick ;
+			
+		if ( options.iconArrange )
+			this.thumbOptions.iconArrange = options.iconArrange ;
 
 		this.graph = new HyperGraph(searchResults) ;
 
@@ -49,9 +57,11 @@ define("mylibs/visualization/HyperbolicTree",
 	HyperbolicTree.iconSize = 64 ;
 
 	p.setOptions = function(options) {
-		if ( options.thumbSize ) {
+		if ( options.thumbSize ) 
 			this.thumbOptions.thumbSize = options.thumbSize ;
-		}
+		if ( options.iconArrange ) 
+			this.thumbOptions.iconArrange = options.iconArrange ;
+		
 	};
 
 	p.createCanvas = function()	{
