@@ -133,6 +133,13 @@ define("mylibs/visualization/visualizer",
 		} else if (method == "htree") {
 		  widget = hyperbolicTree.create(results, visPane, options) ;
 		}
+		else if ( method == "classic" ) {
+			// for the moment just reuse hpanel with group navigation
+			var opt = {} ;
+			for (var i in options) opt[i] = options[i] ;
+        	opt.showGroups = false ;
+			widget = hPanel.create(results, visPane, opt) ;
+		}
   };
 
   return {

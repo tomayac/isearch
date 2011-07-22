@@ -1,12 +1,12 @@
 define("mylibs/visualization/TreeMap", 
 	[
 		"order!js/mylibs/visualization/gmap.js",	
-		"order!js/mylibs/visualization/Thumbnail.js",	
 		"order!js/mylibs/visualization/layout/Extent.js",
 		"order!js/mylibs/visualization/layout/Candidate.js",
 		"order!js/mylibs/visualization/layout/Feature.js",
 		"order!js/mylibs/visualization/layout/CandidateIndex.js",
 		"order!js/mylibs/visualization/layout/LabelManager.js",
+		"order!js/mylibs/visualization/Thumbnail.js",	
 		"order!js/mylibs/visualization/ThumbContainer.js",
 		"order!js/mylibs/visualization/Rectangle.js"
 	],	function(){

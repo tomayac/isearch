@@ -4,6 +4,7 @@ GroupBox = function( container, items ) {
 
 GroupBox.thumbSize = 128 ;
 GroupBox.thumbSpacing = 10 ;
+GroupBox.thumbPadding = 8 ;
 GroupBox.navFixed = true ;
    
 var p = GroupBox.prototype;   
@@ -49,23 +50,7 @@ p.init = function( container, items ) {
 	}}).appendTo( container ) ;
 		
 	var that = this ;
-	/*	
-	$(leftArrow).hover(	function() { 
-		if ( scrollWidth + that.offset > outer.width() ) {
-			$(this).addClass("left_nav_arrow") ; 
-		}
-	},	function() {
-			$(this).removeClass("left_nav_arrow") ; 
-	}) ;
-			
-	$(rightArrow).hover(	function() { 
-		if ( that.offset < 0 ) {
-			$(this).addClass("right_nav_arrow") ; 
-		}
-	},	function() {
-		$(this).removeClass("right_nav_arrow") ; 
-	}) ;
-		*/
+	
 		
 	$(outer).mousemove(function(e) {
 		var position = $(this).offset().left;
@@ -110,9 +95,7 @@ p.init = function( container, items ) {
 	for(var i=0 ; i<items.length ; i++ )
 	{
 		var item = items[i] ;
-		var thumb_ = new Thumbnail(item.url, GroupBox.thumbSize) ;
-		
-		
+				
 		var link = $("<a/>", {
 			href: "javascript:void(0)",
 			click: item.clicked,
@@ -121,18 +104,16 @@ p.init = function( container, items ) {
 		).appendTo(thumbBox) ;
 		
 		
-		var thumb = $("<div/>", { width: GroupBox.thumbSize, height: GroupBox.thumbSize} ) ;
-		$(thumb).appendTo(link) ;
+		var thumbOuter = $("<div/>", { "class": "thumbnail", css: { width: GroupBox.thumbSize, height: GroupBox.thumbSize}} ) ;
+		$(thumbOuter).appendTo(link) ;
 		
-		var pic = $("<canvas/>").appendTo(thumb) ;
-		
-		pic.width = pic.height = GroupBox.thumbSize ;
-		
-		var ctx = $(pic).get(0).getContext("2d");
-		
-		thumb_.show(ctx, 0, 0) ;
-		
-		this.thumbs.push(thumb_) ;
+		var thumb = $("<div/>", { css: { width: GroupBox.thumbSize - 2*GroupBox.thumbPadding, 
+			height: GroupBox.thumbSize - 2*GroupBox.thumbPadding, 
+			"margin-top": GroupBox.thumbPadding,
+			"margin-left": GroupBox.thumbPadding			} }).appendTo(thumbOuter) ;
+		thumb.thumb(item.url) ;
+				
+	
 		
 	}
 

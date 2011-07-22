@@ -9,6 +9,7 @@ define("mylibs/visualization/HPanel",
 		"order!js/mylibs/visualization/Thumbnail.js",
 		"order!js/mylibs/visualization/ThumbContainer.js",
 		"order!js/mylibs/visualization/GroupBox.js"
+	
 	], function(){
   
   
@@ -32,6 +33,10 @@ define("mylibs/visualization/HPanel",
 
 		if ( options.iconArrange )
 			this.thumbOptions.iconArrange = options.iconArrange ;
+			
+		if ( options.hasOwnProperty("showGroups") )
+			this.showGroups = options.showGroups ;
+		
 
 		this.createLayout() ;
 
@@ -48,6 +53,7 @@ define("mylibs/visualization/HPanel",
 	p.hierarchy = null ;
 	p.icons = null ;
 	p.thumbOptions = null ;
+	p.showGroups = true ;
 
 	p.containerDiv = null ;
 	p.onClick = null ;
@@ -68,27 +74,31 @@ define("mylibs/visualization/HPanel",
 		
 		$(this.containerDiv).empty() ;
 		
-		var results = $('<div>', { id: "hpanel-results", css: { width: "100%", position: "absolute", top: 40, height: $(this.containerDiv).height() - 40 }}).appendTo(this.containerDiv) ;
-
+		var extra = ( this.showGroups ) ? 40 : 0 ;
+		var results = $('<div>', { id: "hpanel-results", css: { width: "100%", position: "absolute", top: extra, height: $(this.containerDiv).height() - extra }}).appendTo(this.containerDiv) ;
+		
 		this.resultsInnerDiv = results ;
 
-		this.groups = $('<div/>').appendTo(this.containerDiv) ;
-		var button = $('<a/>', { text: "Groups"}).appendTo(this.groups) ;
+		if ( this.showGroups )
+		{
+			this.groups = $('<div/>').appendTo(this.containerDiv) ;
+			var button = $('<a/>', { text: "Groups"}).appendTo(this.groups) ;
 		
-		this.clustersInnerDiv = $('<div/>', {id: "hpanel-groups", 
-			css: { 	"display": "none", 
-					height: "180px"
-				}}).appendTo(this.groups) ;
+			this.clustersInnerDiv = $('<div/>', {id: "hpanel-groups", 
+				css: { 	"display": "none", 
+						height: "180px"
+					}}).appendTo(this.groups) ;
 	
 	
-		button.button({icons: {
+			button.button({icons: {
 						secondary: "ui-icon-triangle-1-s"
 					}}) ;
 	
-		button.click(function() {
-			$('.ui-button-icon-secondary', button).toggleClass("ui-icon-triangle-1-s ui-icon-triangle-1-n") ;
-			$("#hpanel-groups").slideToggle('medium');
-		});
+			button.click(function() {
+				$('.ui-button-icon-secondary', button).toggleClass("ui-icon-triangle-1-s ui-icon-triangle-1-n") ;
+				$("#hpanel-groups").slideToggle('medium');
+			});
+		}
 	};
 	
 	p.populatePanels = function()  {
@@ -96,6 +106,7 @@ define("mylibs/visualization/HPanel",
 		var groupIcons = [] ;
 		var _this = this ;
 
+		if ( this.showGroups ) {
 		if ( this.hierarchy.length > 1 ) 
 			groupIcons.push({url: "img/arrow_back.png", cluster: -1, clicked: function() { _this.groupClicked(-1); } }) ;
 
@@ -119,7 +130,7 @@ define("mylibs/visualization/HPanel",
 		}
 
 		this.clustersPanel = new GroupBox($('#hpanel-groups'), groupIcons) ;
-
+		}
 		this.icons = [] ;
 
 		for(var j=0 ; j<this.currentCluster.nodes.length ; j++)
