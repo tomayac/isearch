@@ -67,38 +67,14 @@ define("mylibs/visualization/dataParser", function(){
 
   	for (var i=0 ; i<data.documentList.length ; i++ ) {
   		var doc = data.documentList[i] ;
-
-  		var docid = doc.id ;
-  		var score = doc.score ;
-  		var thumbUrl = doc.thumb.url ;
-  		var contentUrl = doc.content.url ;
-  		var desc = doc.desc ;
-
-  		var pos = doc.position ;
-
-  		if ( pos != undefined )
-  		{
-  			lat = pos.lat ;
-  			lon = pos.lon ;
-  		}
-
-  		docs.push(
-  			{
-  				"id": docid, 
-  				"thumbUrl": thumbUrl, 
-  				"desc": desc,
-  				"contentUrl": contentUrl,
-  				"score": score,
-  				"lat": lat,
-  				"lon": lon
-  			}) ;
-
+  		docs.push(doc) ;
   	}
 
-  	parseClustersJSON(data.clusters, clusters) ;
+	if ( data.clusters )
+		parseClustersJSON(data.clusters[0], clusters) ;
 
   };
-
+/*
   var parseClustersXML = function(data, cluster) {
     
     if (data.length == 0) {
@@ -130,7 +106,7 @@ define("mylibs/visualization/dataParser", function(){
       cluster.children.push(child) ;
     }) ; 
   };
-
+*/
   var parseClustersJSON = function(data, cluster) {
     
     if (data == undefined) {
@@ -153,6 +129,8 @@ define("mylibs/visualization/dataParser", function(){
 
   		cluster.nodes.push(obj) ;
   	}
+	
+	if ( !data.children ) return ;
 
   	for(var i=0 ; i<data.children.length ; i++ ) {
   		var child = data.children[i]; 

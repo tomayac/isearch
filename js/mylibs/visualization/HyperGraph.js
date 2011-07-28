@@ -97,7 +97,8 @@ p.createNodes = function(docs, c, parent)
 		var doc = docs[c.nodes[0].idx] ;	
 																			
 		var img = new Image ; 	
-		var thumbUrl = doc.thumbUrl ;	
+				
+		var thumbUrl = ThumbContainer.selectThumbUrl(doc) ;	
 									
 		var arr = [] ;	
 					

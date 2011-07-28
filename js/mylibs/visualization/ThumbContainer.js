@@ -164,6 +164,37 @@ p.draw = function() {
 	this.redraw(cw, ch) ;	
 };	
 
+ThumbContainer.selectThumbUrl = function(doc)
+{
+	for( var i=0 ; i<doc.media.length ; i++ )
+	{
+		var mediaType = doc.media[i] ;
+		if ( mediaType.type == "ImageType" )
+		{
+			if ( mediaType.previews && mediaType.previews.length > 0 )
+				return mediaType.previews[0].url ;
+		}
+	}
+	
+	return null ;
+} ;
+
+ThumbContainer.selectTooltipText = function(doc)
+{
+	for( var i=0 ; i<doc.media.length ; i++ )
+	{
+		var mediaType = doc.media[i] ;
+		if ( mediaType.type == "Text" )
+		{
+			if ( mediaType.text )
+				return mediaType.text ;
+		}
+	}
+	
+	return null ;
+
+} ;
+
 p.createThumbnail = function(i, x, y)
 {
 	var item = this.thumbs[i] ;
@@ -173,7 +204,7 @@ p.createThumbnail = function(i, x, y)
 	var imgOut = $('<div/>', { "class": "thumbnail", id: "thumb-" + i, css: {  overflow: "auto", position: "absolute", width: this.thumbSize, height: this.thumbSize, left: x, top: y } }).appendTo(this.containerDiv) ;
 	var img = $('<div/>', { css: { position: "absolute", left: tm, right: tm, top: tm, bottom: tm }  }).appendTo(imgOut) ;
 	
-	img.thumb(item.doc.thumbUrl) ;
+	img.thumb(ThumbContainer.selectThumbUrl(item.doc)) ;
 	item.img = imgOut ;
 			
 	var obj = this ;
@@ -189,6 +220,7 @@ p.createThumbnail = function(i, x, y)
 		if ( obj.onClick ) obj.onClick(item) ;
 	}) ;
 }
+
 p.redraw = function(contentWidth, contentHeight)	
 {	
 	$('.thumbnail', this.containerDiv).empty() ;
@@ -290,18 +322,20 @@ p.doShowTooltip = function(item)
 		
 	var ele = $(".tooltip") ;	
 	var tooltip ;	
+	
+	var desc = ThumbContainer.selectTooltipText(thumb.doc) ;
 
 	if ( ele.length == 0 )	
 	{	
 		var tooltip = jQuery(document.createElement('div'))	
 					 .addClass("tooltip")	
-					 .html("<p>" + thumb.doc.desc + "</p>").	
+					 .html("<p>" + desc + "</p>").	
 					appendTo('body');	
 	}	
 	else	
 	{	
 		tooltip = ele ;	
-		ele.html("<p>" + thumb.doc.desc + "</p>") ;	
+		ele.html("<p>" + desc + "</p>") ;	
 	}				
 
 	var ttw = tooltip.outerWidth() ;	
