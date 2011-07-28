@@ -117,7 +117,7 @@ define("mylibs/visualization/HPanel",
 			var idx = cluster.nodes[0].idx ;
 			var doc = this.searchResults.docs[idx] ;
 
-			var thumbUrl = doc.thumbUrl ;
+			var thumbUrl = ThumbContainer.selectThumbUrl(doc) ;
 
 			groupIcons.push({url: thumbUrl, cluster: c, clicked: 
 				(function(item) {
