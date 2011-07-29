@@ -45,12 +45,10 @@ define("mylibs/com.isearch.results",
 
   var fetch = function(query) {
 
-    //var urlToFetch = com.isearch.results.createQueryUrl(query);
     //var urlToFetch = "http://vision.iti.gr:8080/fcgi-bin/indexer.exe";
 	var urlToFetch = "http://vision.iti.gr/sotiris/isearch/fetch.php";
 
     $.ajax({
-      //recovering of the XML via YQL to go over the same-origin policy
       url: urlToFetch ,
       type: "GET",
       dataType: "jsonp",
