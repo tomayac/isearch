@@ -19,7 +19,7 @@ define("mylibs/visualization/dataParser", function(){
     };
     
   };
-  
+  /*
   var parseXML = function(xmlStr) {
 
   	var xmlDoc = jQuery.parseXML( xmlStr ), xml = $( xmlDoc );
@@ -62,6 +62,7 @@ define("mylibs/visualization/dataParser", function(){
   	parseClustersXML(xml.find("searchResults").children("cluster"), clusters) ;
 
   };
+  */
 
   var parseJSON = function(data) {
 
