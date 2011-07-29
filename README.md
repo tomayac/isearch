@@ -48,8 +48,10 @@ Let's also embrace the use of **module pattern**. Example:
 
 ##Other matters:
  
-Do we choose to use the HTML5 History API?
-If yes, we need to build the application around it (load state from URL is not trivial in our case)
+The "fake server" needs to be manually uploaded each time it is changed.
+Right now, the URL to access the static RUCoD returned is http://www.osmoz2009.com/isearch
+
+Maybe I'll put some parameters later on to alter the behaviour.
 
 
 Have fun!
