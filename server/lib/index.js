@@ -37,7 +37,7 @@ http.createServer(function (request, response) {
 	    file.serve(request, response, function (err, res) {
 	    	if (err) {
 	    		if (err.status === 404) { // If the file wasn't found
-	    			fileServer.serveFile('/404.html', request, response);
+	    			file.serveFile('/404.html', request, response);
 	            }
 	            console.log("> Error serving " + request.url + " - " + err.message);
 	            response.writeHead(err.status, err.headers);
