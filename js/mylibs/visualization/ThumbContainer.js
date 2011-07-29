@@ -34,6 +34,9 @@ ThumbContainer.margin = 4 ;
 ThumbContainer.navBarSize = 32 ;	
 ThumbContainer.thumbMargin = 4 ;
 
+ThumbContainer.menuItems = [ { text: "Google Map", icon: "world-icon-small", onClick: function(ctx) { ctx.showMap() ; }},
+							 { text: " Time line", icon: "clock-icon-small", onClick: null}
+						] ;
 
 p.containerDiv = null ;	
 p.thumbs = null ;	
@@ -55,6 +58,7 @@ p.offset = 0 ;
 p.pageCount = 0 ;	
 p.navMode = ThumbContainer.NAV_FIXED ;	
 p.navBar = null ;	
+p.menuBar = null ;
 
 
 ThumbContainer.zoomScales = [0.25, 0.5, 1.0, 1.5, 2.0, 3.0, 4.0] ;	
@@ -79,6 +83,40 @@ p.createCanvas = function()	{
 					}).	
 		appendTo($(this.containerDiv)) ;	
 	}	
+	
+	if ( ThumbContainer.menuItems.length > 0 ) 
+	{
+		var mb = $("<div/>", { 	
+					  css: { 	"position": "absolute", 	
+								"width": 20, 	
+								"height": ThumbContainer.menuItems.length * 36,	
+								"display": "none" ,	
+								"overflow": "hidden",	
+								"padding" : "4px",	
+								"top": "10%",	
+								"right" : 0,
+								"z-index": 100
+							} 	
+					}).
+			appendTo($(this.containerDiv)) ;
+		
+		
+		var that = this ;
+		for( var i=0 ; i<ThumbContainer.menuItems.length ; i++ )
+		{
+			var  btn = $("<button/>", { text: ThumbContainer.menuItems[i].text } ).appendTo(mb) ;
+			btn.button( { icons: {	primary: ThumbContainer.menuItems[i].icon }, text: false } ) ;
+			btn.click( (function(item) { 
+							return function() { item.onClick(that) ; } 
+						})( ThumbContainer.menuItems[i]) ) ;
+		}
+	
+		
+		$(this.containerDiv).hover(function() { mb.toggle() ; }) ;
+		
+		this.menuBar = mb ;
+	
+	}
 };
 
 
@@ -484,21 +522,34 @@ p.showMap = function()
 	{	
 		var data = this.thumbs[i] ;	
 
-		var lat = data.lat ;	
-		var lon = data.lon ;	
-		var thumb = data.url ;	
-		var desc = data.desc ;	
-		var docid = data.id ;	
-		var tooltip = data.tooltip ;	
-		var contentUrl = data.contentUrl ;	
-
-		markerImages.push({ "lat": lat, "lon": lon, "icon": thumb, "desc": tooltip }) ;	
+		if ( data.doc.hasOwnProperty("rw") && data.doc.rw )
+		{
+			if ( data.doc.rw.hasOwnProperty("pos") )
+			{
+				var lat = data.doc.rw.pos.coords.lat ;
+				var lon = data.doc.rw.pos.coords.lon ;
+				var thumb = ThumbContainer.selectThumbUrl(data.doc) ;
+				var tooltip = ThumbContainer.selectTooltipText(data.doc) ;
+				
+				markerImages.push({ "lat": lat, "lon": lon, "icon": thumb, "desc": tooltip }) ;	
+			}
+		}
 	}	
+	
+	var mapDialog = $('<div/>', { title: "Geographic location of documents"}).appendTo('body') ;
 
-	var mainMap = new GoogleMap("map-view", [ 	
+	mapDialog.dialog({
+			width: "600",
+			height: "400",
+			modal: true,
+			open: function(e, ui) {
+				var mainMap = new GoogleMap($(this).get(0), [ 	
 				{ type: 'markers', data: markerImages, name: 'Images',	
 						minzoom: 4}	
-				]) ;	
+				]) ;
+			}				
+	});
+	
 };	
 	
 	

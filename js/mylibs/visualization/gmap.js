@@ -94,7 +94,7 @@ p.CreateLayersControl = function (controlDiv) {
 	var layers = this.layers ;
 	var obj = this ;
 
-	var html = '<div class="gmaps-control"><div class="gmaps-control-dropdown">Επίπεδα<img style="position: absolute; right: 4px; top: 4px; display: block;" src="http://maps.gstatic.com/intl/en_us/mapfiles/down-arrow.gif"></div></div>' ;
+	var html = '<div class="gmaps-control"><div class="gmaps-control-dropdown">Layers<img style="position: absolute; right: 4px; top: 4px; display: block;" src="http://maps.gstatic.com/intl/en_us/mapfiles/down-arrow.gif"></div></div>' ;
 
 	html += '<div class="gmap-control-drop-down-menu"><ul>' ;
 	
@@ -251,7 +251,7 @@ p.initMap = function(mapDiv, _layers) {
 		}	 
 	};
 	
-   	var map = this.map = new google.maps.Map(document.getElementById(mapDiv), options);
+   	var map = this.map = new google.maps.Map(mapDiv, options);
 		
 	this.addLayers(_layers) ;
 		

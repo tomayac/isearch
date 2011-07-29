@@ -147,6 +147,71 @@ function xml2json($data)
 		}
 		
 		$docObj['media'] = $media ;
+		
+		$rw = array() ;
+		
+		$rwInfoList = $docElement->getElementsByTagName("RealWorldInfo") ;
+		
+		if ( $rwInfoList->length > 0 )
+		{
+			$rwInfo = $rwInfoList->item(0) ;
+			
+			$sposElements = $rwInfo->getElementsByTagName("CircleByCenterPoint") ;
+			
+			if ( $sposElements->length > 0 )
+			{
+				$sp = $sposElements->item(0) ;
+								
+				$rw['pos'] = array() ;
+				
+						
+				foreach ( $sp->childNodes as $ce )
+				{
+								
+					if ( $ce->nodeName == "pos" )
+					{
+						$coords = array() ;
+						$latlon = preg_split("/[\s]+/", $ce->firstChild->nodeValue)  ;
+						
+						$coords['lat'] = $latlon[0] ;
+						$coords['lon'] = $latlon[1] ;
+						
+						$rw['pos']['coords'] = $coords ;
+					}
+					else if ( $ce->nodeName == "radius" )
+					{
+						$rw['pos']['radius'] = $ce->firstChild->nodeValue ;
+					}
+				}		
+			}
+
+			$dtElements = $rwInfo->getElementsByTagName("DateTime") ;
+			
+			if ( $dtElements->length > 0 )
+			{
+				$dtEle = $dtElements->item(0) ;
+				
+				$rw['time'] = array() ;
+				
+				foreach ( $dtEle->childNodes as $ce )
+				{
+					if ( $ce->nodeName == "Date" )
+					{
+						$rw['time']['dateTime'] = $ce->firstChild->nodeValue ;
+					}
+					else if ( $ce->nodeName == "Length" )
+					{
+						$rw['time']['duration'] = $ce->firstChild->nodeValue ;
+					}
+				}		
+			
+
+
+			}
+		}
+		
+		if ( !empty($rw) ) $docObj['rw'] = $rw ;
+		
 		$res['documentList'][] = $docObj ;
 		
 	}	

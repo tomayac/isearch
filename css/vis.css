@@ -871,3 +871,15 @@ overflow: auto
 .formitem {
 	display: inline;
 }
+
+.world-icon-small {
+	background-image: url('../img/world-icon-16.png') !important;
+	width: 16px ;
+	height: 16px ;
+}
+
+.clock-icon-small {
+	background-image: url('../img/clock-icon-16.png') !important;
+	width: 16px ;
+	height: 16px ;
+}
