@@ -6,6 +6,7 @@ var http      = require('http'),
     port      = 80;
     host      = '194.94.204.39';
 
+// Nodules module reloading    
 require.reloadable(function(){
     guiserver = require('./guiserver');
 });
@@ -22,7 +23,7 @@ http.createServer(function (request, response) {
 	    var reqpath = url.parse(request.url).pathname; 
 	       
 		//
-	    //I-SEARCH GUI specific handler
+	    // I-SEARCH GUI specific handler
 	    //
 	    if(reqpath.search(/\/server/i) == 0) {
 	    	
