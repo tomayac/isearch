@@ -1,6 +1,6 @@
 var http      = require('http'),
     url       = require('url'),
-    util      = require('util'),
+    //util      = require('util'),
     fileserve = require('node-static'),
     guiserve  = require('./guiserver'),
     port      = 80;
@@ -13,9 +13,7 @@ require.reloadable(function(){
 //
 // Create a node-static server to serve the current directory
 //
-var file = new(fileserve.Server)('/var/www/isearch');
-
- console.log(util.inspect(guiserver,true,null));    
+var file = new(fileserve.Server)('/var/www/isearch');   
 
 http.createServer(function (request, response) {     
 	
@@ -29,8 +27,9 @@ http.createServer(function (request, response) {
 	    if(reqpath.search(/\/server/i) == 0) {
 	    	
 	    	guiserver.handle(request, response);
-	    	
-	    } else {
+	    } 
+	    // Go on, if guiserver couldn't handle the request
+	    if(response.statusCode === 404) {
 	    
 			if(request.url === '/') {
 			    request.url += 'index.html';	    
