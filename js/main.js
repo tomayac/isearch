@@ -22,8 +22,7 @@ if(typeof console == "undefined") {
 }
 
 define("main",
-    ["mylibs/com.isearch.menu", "mylibs/com.isearch.config", 
-    "mylibs/com.isearch.tags", "mylibs/com.isearch.results", 
+    ["mylibs/menu", "mylibs/config", "mylibs/tags", "mylibs/results", 
     "libs/jquery.tokeninput"],
     function(menu, config, tags, results) {
 

@@ -1,7 +1,7 @@
 //That JS will take care of the results interactions & visualizations
 
-define("mylibs/com.isearch.results", 
-    ["mylibs/com.isearch.config","mylibs/visualization/dataParser", "mylibs/visualization/visualizer"],
+define("mylibs/results", 
+    ["mylibs/config","mylibs/visualization/dataParser", "mylibs/visualization/visualizer"],
     function(config, dataParser, visualizer){
   
   //Private variable to hold the results
@@ -45,20 +45,24 @@ define("mylibs/com.isearch.results",
 
   var fetch = function(query) {
 
-    //var urlToFetch = "http://vision.iti.gr:8080/fcgi-bin/indexer.exe";
-	var urlToFetch = "http://vision.iti.gr/sotiris/isearch/fetch.php";
-
+  //var urlToFetch = "http://vision.iti.gr:8080/fcgi-bin/indexer.exe";
+	//var urlToFetch = "http://vision.iti.gr/sotiris/isearch/fetch.php";
+  var urlToFetch = "http://www.osmoz2009.com/isearch/";
     $.ajax({
+      crossDomain: true,
       url: urlToFetch ,
       type: "GET",
       dataType: "jsonp",
       data: {
-        "q": query, 
-        "total": 100, 
-        "cls": "5,3", 
-        "tr": "lle", 
-        "out": "json",
-		"index": "furniture"
+        "format": "json"
+        
+        //Note: we now have a fix JSON returned. no need to pass the query
+        //"q": query, 
+        //"total": 100, 
+        //"cls": "5,3", 
+        //"tr": "lle", 
+        //"out": "json",
+        //"index": "furniture"
       },
       success: function(data) {
 
