@@ -11,7 +11,7 @@ this.handle = function(request, response)  {
 		
 		var body = "You called a server procedure of I-SEARCH. It is treated as a test.";
 		
-		response.writeHead(200,"OK",{ 'Content-Length': body.byteLength(),
+		response.writeHead(200,"OK",{ 'Content-Length': Buffer.byteLength(body,'utf8'),
 			                          'Content-Type'  : 'text/plain' });
 		
 		response.write(body);

@@ -42,7 +42,7 @@ http.createServer(function (request, response) {
 		    		console.log("> Error serving " + request.url + " - " + err.message);
 		    		
 		    		if (err.status == 404) { // If the file wasn't found
-		    			file.serveFile('/404.html', request, response);
+		    			file.serveFile('/404.html', 200, {}, request, response);
 		            } else {
 			            response.writeHead(err.status, err.headers);
 			            response.write("There was an unspecified error while processing your request.");	
