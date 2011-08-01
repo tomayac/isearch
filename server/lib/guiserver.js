@@ -7,7 +7,7 @@ this.handle = function(request, response)  {
     
 	var reqpath = url.parse(request.url).pathname; 
 	
-	if(reqpath.search(/parse/i) == 0) {
+	if(reqpath.search(/\/server\/parse/i) == 0) {
 		
 		var body = "You called a server procedure of I-SEARCH. It is treated as a test.";
 		
@@ -16,10 +16,11 @@ this.handle = function(request, response)  {
 		
 		response.write(body);
 		response.end();
+		
+		return false;
 	}
-	else {
-		//the requested function was not found
-		response.statusCode = 404;
-	}
+	
+	//the requested function was not found, so tell the calling process that the request still needs handling
+	return true;
     
 };
