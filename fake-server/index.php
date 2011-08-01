@@ -72,14 +72,13 @@ if ($format == "xml") {
   header('Content-Type: application/json; charset=utf-8');
   ob_clean();
   flush();
+  
+  //Echoes the callback parameter. That's the way we can do cross-domain JSON
+  echo $_GET['callback'];
+  echo '(';
   //Read and echo back the file where the JSON is stored
   readfile('./rucod.json');
-  
-  //if ($jsondata) {
-  //  echo $jsonData;
-  //} else {
-  //  echo "Problem reading a file. Woops.";
-  //}
+  echo ');';
   
 } else {
   echo "Error. The format parameter entered does not match \"json\" or \"xml\"";

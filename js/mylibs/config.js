@@ -1,4 +1,4 @@
-define("mylibs/com.isearch.config",
+define("mylibs/config",
   function() {
     
     var constants = {

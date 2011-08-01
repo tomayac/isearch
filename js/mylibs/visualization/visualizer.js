@@ -22,7 +22,7 @@
 define("mylibs/visualization/visualizer", 
     [	"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js",
 		"order!js/mylibs/visualization/UI.js", 	
-		"mylibs/com.isearch.config",
+		"mylibs/config",
 		"mylibs/visualization/TreeMap",
 		"mylibs/visualization/HyperbolicTree", 
 		"mylibs/visualization/HPanel" ], 
