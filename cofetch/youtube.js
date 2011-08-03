@@ -9,6 +9,7 @@ var methods = {
         this.exit('No arguments were given to the Youtube job');
       }
       var query = this.options.args[0];
+      var results = this.options.args[1]
       
       var maxResults = 10;
       var youtubeURL = "https://gdata.youtube.com/feeds/api/videos?"
@@ -41,13 +42,9 @@ var methods = {
           }
         };
 
-
         var youtubeResponse = JSON.parse(data);
         var videos = youtubeResponse['feed']['entry'];
-        
-        //Declaration of the results array
-        var results = [];
-        
+                
         var i;
         var result;
         //let's loop through the array of videos
@@ -73,9 +70,18 @@ var methods = {
           results.push(result);
         }
         
-        this.emit(results);
+        //Exit the Job without returning anything
+        //The "results" array is already filled in
+        this.emit();
+        
       });
     }
 }
 
-exports.job = new nodeio.Job({timeout:10}, methods);
+//Creates the job
+var job = new nodeio.Job({timeout:10}, methods);
+
+//Exposes it publicly
+exports.fetch = function(query, results, callback) {
+  nodeio.start(job, {args: [query, results]}, callback);
+}
