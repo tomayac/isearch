@@ -594,10 +594,20 @@ RWML File
 
 */
 
+var utils = require('util'),
+    nodeio = require('node.io'),
+    flickr = require('./flickr');
+    //youtube = require('./youtube'),
+    //sound = require('./freesound'),
+    //weather = require('./weather');
 
-$(function(){
-  //Let's work :)
-});
+//Get the 3D Model from http://gdv.fh-erfurt.de/modeldb/?mode=json
+var modelname = 'Two Dolphins';    
+var result = new Array;
+
+flickr.fetch(modelname, result);
+
+console.log(result);
 
 
 
