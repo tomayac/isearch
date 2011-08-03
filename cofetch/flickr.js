@@ -6,7 +6,7 @@ var FlickrAPI= require('flickrnode').FlickrAPI,
     sys= require('sys'),
     flickr = new FlickrAPI('5226908fe75b3dae6290f60162a501d5', 'cc06237000c66b6c');
 
-this.fetch(query, result) {
+this.fetch = function(query, result) {
 	
 	var photoInfo = new Array;
 	var licenses = [
