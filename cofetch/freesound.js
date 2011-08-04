@@ -67,7 +67,7 @@ var methods = {
               "Extension": soundData.type,
               "Licence": "CC", 
               "LicenceURL": soundData.license,
-              //"Author": soundData.user.username,
+              "Author": soundData.user.username,
               "Date": soundData.created,
               "Size": "",
               "URL": soundData.url,
@@ -83,16 +83,8 @@ var methods = {
               //Exit the job if we're done, i.e Array full
               that.emit();
             }
-          });
-          
-          
-          
+          }); 
         }
-        
-        //Exit the Job without returning anything
-        //The "results" array is already filled in
-        
-        
       });
     }
 }
