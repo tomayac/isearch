@@ -19,7 +19,7 @@ var methods = {
 			var apiKey = '5226908fe75b3dae6290f60162a501d5';
 			var maxResults = 30;
 			
-			var getPhotoInfo = function(photoId, result, apiKey, context) {
+			var getPhotoInfo = function(err, photoId, result, apiKey, context) {
 				var infoURL = "http://api.flickr.com/services/rest/?"
 					+ 'method=flickr.photos.getInfo'
 					+ '&api_key=' + apiKey
@@ -51,7 +51,7 @@ var methods = {
 				});
 			};  
 
-			var getPhotoSizes = function(photoId, result, apiKey, context) {
+			var getPhotoSizes = function(err, photoId, result, apiKey, context) {
 				var sizesURL = "http://api.flickr.com/services/rest/?"
 					+ 'method=flickr.photos.getSizes'
 					+ '&api_key=' + apiKey
@@ -103,6 +103,7 @@ var methods = {
 					for (i=0;i<photos.length;i++) {
 						
 						result = {
+							"ID": photos[i]['id'],
 							"Type": "ImageType",
 							"Name": photos[i]['title'],
 							"Tags": [],
@@ -119,17 +120,16 @@ var methods = {
 							"Weather": {}
 						};
 						
-						step(
-							getPhotoInfo(photos[i]['id'],result,apiKey,this),
-							getPhotoSizes(err,photos[i]['id'],result,apiKey)
-						);
-						
 						results.push(result);
 					}
 				});
 			};
+			step(
+				searchImages(query,maxResults,apiKey,this),
+				getPhotoInfo(err,photos[i]['id'],result,apiKey),
+				getPhotoSizes(err,photos[i]['id'],result,apiKey)
+			);
 			
-			searchImages(query,maxResults,apiKey,this);
 			
 			//Exit the Job without returning anything
 		    //The "results" array is already filled in
