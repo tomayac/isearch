@@ -605,9 +605,10 @@ var utils = require('util'),
 var modelname = 'Two Dolphins';    
 var result = new Array;
 
-result = flickr.fetch(modelname);
+flickr.fetch(modelname,result,function(error, data) {
+	console.log(result);
+});
 
-console.log(result);
 
 
 

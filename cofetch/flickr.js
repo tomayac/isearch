@@ -142,7 +142,7 @@ var job = new nodeio.Job({timeout:10}, methods);
 //Exposes it publicly
 exports.fetch = function(query, results, callback) {
 	nodeio.start(job, {args: [query, results]}, callback);
-}
+};
 /*
 var FlickrAPI= require('flickrnode').FlickrAPI,
     sys= require('sys'),
