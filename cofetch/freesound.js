@@ -40,7 +40,7 @@ var methods = {
         var i;
         var result;
         var soundID;
-        var soundData
+        var soundData;
         var detailsURL;
         //let's loop through the array of videos
         for (i=0;i<5;i++) {
@@ -67,7 +67,7 @@ var methods = {
               "Extension": soundData.type,
               "Licence": "CC", 
               "LicenceURL": soundData.license,
-              //"Author": soundData.user.username,
+              "Author": soundData.user.username,
               "Date": soundData.created,
               "Size": "",
               "URL": soundData.url,
@@ -83,16 +83,8 @@ var methods = {
               //Exit the job if we're done, i.e Array full
               that.emit();
             }
-          });
-          
-          
-          
+          }); 
         }
-        
-        //Exit the Job without returning anything
-        //The "results" array is already filled in
-        
-        
       });
     }
 }
