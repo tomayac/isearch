@@ -22,14 +22,14 @@ this.fetch = function(query) {
 	                   { "name": "United States Government Work", "url": "http://www.usa.gov/copyright.shtml" }
 	               ];
 	
-	flickr.photos.search({text:q},  function(error, results) {
+	flickr.photos.search({text:q,per_page:30},  function(error, results) {
 		if(error){
 	      return {'code':100,'body':'Whoops, something went wrong. Try that again.'};
 	    }else{
 	      
 	      var end = false;	
 	      // Store photoIDs. Note: These come back in reverse chronological order.
-	      for (var x=0; x < 50; x++) {
+	      for (var x=0; x < photos.photo.length; x++) {
 	        photoInfo.push({
 	          'Type':'ImageType',	
 	          'Name':'',
@@ -53,7 +53,7 @@ this.fetch = function(query) {
 	      // Loop so that we keep track of the photo order
 	      for (var x=0; x < photoInfo.length; x++) {
 
-	        flickr.photos.getSizes(photoInfo[x].id, x, function(error2, sizes, idx){
+	        flickr.photos.getSizes(photos.photo[x].id, x, function(error2, sizes, idx){
 				// Populate array at a specific location, because results come back as fast as possible (not in order)
 				if(!error2){
 					var sizecount = sizes.size.length;
@@ -65,7 +65,7 @@ this.fetch = function(query) {
 	        });
 	        
 	        //Get taken date, tags etc.
-	        flickr.photos.getInfo(photoInfo[x].id, '', function(error3, info, idx) {
+	        flickr.photos.getInfo(photos.photo[x].id, '', function(error3, info, idx) {
 	        	if(!error3){
 		            photoInfo[idx].Name = info.title;
 		            photoInfo[idx].Author = info.owner.realname || info.owner.username;
@@ -80,7 +80,7 @@ this.fetch = function(query) {
 		            	tags.push(info.tags.tag[t]._content);
 		            }
 		            photoInfo[idx].Tags = tags;
-		            
+		            console.log(photoInfo);
 		            if(x == (photoInfo.length-1)) {
 		            	end = true;
 		            }
