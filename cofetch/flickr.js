@@ -90,7 +90,7 @@ this.fetch = function(query) {
 	      }; // for
 	      
 	      if(end) {
-	    	  return = {'code':200, 'body':photoInfo};
+	    	  return {'code':200, 'body':photoInfo};
 	      }
 	    } // else
 	});
