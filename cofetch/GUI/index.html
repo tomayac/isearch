@@ -23,9 +23,9 @@
       <h1>Content-Object and RUCoD creation. The smart way.</h1>
       <nav>
         <ul>
-          <li><a href="">Previous</a></li>
-          <li><a href="">Next</a></li>
-          <li><a href="">Save and Next</a></li>
+          <li><a id="previous" href="">Previous</a></li>
+          <li><a id="next" href="">Next</a></li>
+          <li><a href="save">Save and Next</a></li>
         </ul>
       </nav>
     </header>
@@ -54,42 +54,40 @@
         
         <fieldset>
           <legend>3D Item</legend>
+                    
+          <img src="http://gdv.fh-erfurt.de/modeldb/media/model/BulueMarlin0.jpg" id="threed-preview" />
           
-          <button>Change</button>
+          <label for="threed-name">Name: </label>
+          <input type="text" name="threed-name" value="" id="threed-name" class="title" />
           
-          <img src="http://gdv.fh-erfurt.de/modeldb/media/model/BulueMarlin0.jpg" id="3d-preview" />
+          <label for="threed-tags">Tags: </label>
+          <input type="text" name="threed-tags" value="" id="threed-tags"/>
           
-          <label for="3d-name">Name: </label>
-          <input type="text" name="3d-name" value="" id="3d-name" class="title" />
+          <label for="threed-extension">Extension: </label>
+          <input type="text" name="threed-extension" value="" id="threed-extension" />
           
-          <label for="3d-tags">Tags: </label>
-          <input type="text" name="3d-tags" value="" id="3d-tags"/>
+          <label for="threed-license">License: </label>
+          <input type="text" name="threed-license" value="" id="threed-license" />
           
-          <label for="3d-extension">Extension: </label>
-          <input type="text" name="3d-extension" value="" id="3d-extension" />
+          <label for="threed-licenseURL">License URL: </label>
+          <input type="text" name="threed-licenseURL" value="" id="threed-licenseURL" />
           
-          <label for="3d-license">License: </label>
-          <input type="text" name="3d-license" value="" id="3d-license" />
+          <label for="threed-author">Author: </label>
+          <input type="text" name="threed-author" value="" id="threed-author" />
           
-          <label for="3d-license">License URL: </label>
-          <input type="text" name="3d-license" value="" id="3d-license" />
+          <label for="threed-date">Date: </label><input type="text" name="threed-date" value="" id="threed-date" />
           
-          <label for="3d-author">Author: </label>
-          <input type="text" name="3d-author" value="" id="3d-author" />
+          <label for="threed-size">Size: </label>
+          <input type="text" name="threed-size" value="" id="threed-size" />
           
-          <label for="3d-date">Date: </label><input type="text" name="3d-date" value="" id="3d-date" />
+          <label for="threed-url">URL: </label>
+          <input type="text" name="threed-url" value="" id="threed-url" />
           
-          <label for="3d-size">Size: </label>
-          <input type="text" name="3d-size" value="" id="3d-size" />
-          
-          <label for="3d-url">URL: </label>
-          <input type="text" name="3d-url" value="" id="3d-url" />
-          
-          <label for="3d-preview">Preview: </label>
-          <input type="text" name="3d-preview" value="" id="3d-preview" />
+          <label for="threed-preview">Preview: </label>
+          <input type="text" name="threed-preview" value="" id="threed-preview" />
 
-          <label for="3d-emotions">Emotions: </label>
-          <select name="3d-emotions" id="3d-emotions" multiple size="1">
+          <label for="threed-emotions">Emotions: </label>
+          <select name="threed-emotions" id="threed-emotions" multiple size="1">
             <option value="affectionate">Affectionate</option>
             <option value="afraid">Afraid</option>
             <option value="amused">Amused</option>
@@ -109,26 +107,26 @@
             <option value="worried">Worried</option>
           </select>
           
-          <label for="3d-location">Location: </label>
-          <input type="text" name="3d-location" value="" id="3d-location" />
+          <label for="threed-location">Location: </label>
+          <input type="text" name="threed-location" value="" id="threed-location" />
           
-          <label for="3d-weather-condition">Weather condition</label>
-          <input type="text" name="3d-weather-condition" value="" id="3d-weather-condition" />
+          <label for="threed-weather-condition">Weather condition</label>
+          <input type="text" name="threed-weather-condition" value="" id="threed-weather-condition" />
           
-          <label for="3d-weather-wind">Wind</label>
-          <input type="text" name="3d-weather-wind" value="" id="3d-weather-wind" />
+          <label for="threed-weather-wind">Wind</label>
+          <input type="text" name="threed-weather-wind" value="" id="threed-weather-wind" />
           
-          <label for="3d-weather-temperature">Temperature (C)</label>
-          <input type="text" name="3d-weather-temperature" value="" id="3d-weather-temperature" />
+          <label for="threed-weather-temperature">Temperature (C)</label>
+          <input type="text" name="threed-weather-temperature" value="" id="threed-weather-temperature" />
           
-          <label for="3d-weather-humidity">Humidity</label>
-          <input type="text" name="3d-weather-humidity" value="" id="3d-weather-humidity" />
+          <label for="threed-weather-humidity">Humidity</label>
+          <input type="text" name="threed-weather-humidity" value="" id="threed-weather-humidity" />
         </fieldset>
         
         <fieldset>
           <legend>Image Item</legend>
           
-          <button>Change</button>
+          <button id="change-image">Change</button>
           
           <img id="image-preview" src="http://farm1.static.flickr.com/64/158620205_d3349c0bcb_m.jpg" />
           
@@ -144,8 +142,8 @@
           <label for="image-license">License: </label>
           <input type="text" name="image-license" value="" id="image-license" />
           
-          <label for="image-license">License URL: </label>
-          <input type="text" name="image-license" value="" id="image-license" />
+          <label for="image-licenseURL">License URL: </label>
+          <input type="text" name="image-licenseURL" value="" id="image-licenseURL" />
           
           <label for="image-author">Author: </label>
           <input type="text" name="image-author" value="" id="image-author" />
@@ -204,7 +202,7 @@
         <fieldset>
           <legend>Audio Item</legend>
           
-          <button>Change</button>
+          <button id="change-sound">Change</button>
           
           <audio controls>
             <source src="http://beta.freesound.org/data/previews/83/83295_29541-lq.ogg" type="audio/ogg" />
@@ -222,8 +220,8 @@
           <label for="sound-license">License: </label>
           <input type="text" name="sound-license" value="" id="sound-license" />
           
-          <label for="sound-license">License URL: </label>
-          <input type="text" name="sound-license" value="" id="sound-license" />
+          <label for="sound-licenseURL">License URL: </label>
+          <input type="text" name="sound-licenseURL" value="" id="sound-licenseURL" />
           
           <label for="sound-author">Author: </label>
           <input type="text" name="sound-author" value="" id="sound-author" />
@@ -282,9 +280,9 @@
           
           <legend>Video Item</legend>
         
-          <button>Change</button>
+          <button id="change-video">Change</button>
         
-          <iframe class="youtube-player" type="text/html" width="320" height="193" src="http://www.youtube.com/embed/AtxXAV18XAY" frameborder="0">
+          <iframe class="youtube-player" type="text/html" width="320" height="193" src="http://www.youtube.com/embed/AtxXAV18XAY?wmode=opaque" frameborder="0">
           </iframe>
         
           <label for="video-name">Name: </label>
@@ -299,8 +297,8 @@
           <label for="video-license">License: </label>
           <input type="text" name="video-license" value="" id="video-license" />
 
-          <label for="video-license">License URL: </label>
-          <input type="text" name="video-license" value="" id="video-license" />
+          <label for="video-licenseURL">License URL: </label>
+          <input type="text" name="video-licenseURL" value="" id="video-licenseURL" />
 
           <label for="video-author">Author: </label>
           <input type="text" name="video-author" value="" id="video-author" />
