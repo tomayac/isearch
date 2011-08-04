@@ -8,6 +8,7 @@ var FlickrAPI= require('flickrnode').FlickrAPI,
 
 this.fetch = function(query, result) {
 	
+	var q = query.replace(' ','+');
 	var photoInfo = new Array;
 	var licenses = [
 	                   { "name": "All Rights Reserved", "url": "" },
@@ -21,7 +22,7 @@ this.fetch = function(query, result) {
 	                   { "name": "United States Government Work", "url": "http://www.usa.gov/copyright.shtml" }
 	               ];
 	
-	flickr.photos.search({text:query},  function(error, results) {
+	flickr.photos.search({text:q},  function(error, results) {
 		if(error){
 	      result = {'code':100,'body':'Whoops, something went wrong. Try that again.'};
 	    }else{
