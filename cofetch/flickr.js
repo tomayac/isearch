@@ -91,7 +91,7 @@ var methods = {
 					+ '&sort=relevance';
 
 				//Get results of photo search
-				this.get(flickrURL, function(error, data, headers) {
+				this.get(searchURL, function(error, data, headers) {
 
 					//Exit if there was a problem with the request
 					if (error) {
