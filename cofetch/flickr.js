@@ -19,7 +19,7 @@ var methods = {
 			var apiKey = '5226908fe75b3dae6290f60162a501d5';
 			var maxResults = 30;
 			
-			var getPhotoInfo = function(photoId, result, apiKey) {
+			var getPhotoInfo = function(photoId, result, apiKey, context) {
 				var infoURL = "http://api.flickr.com/services/rest/?"
 					+ 'method=flickr.photos.getInfo'
 					+ '&api_key=' + apiKey
@@ -27,11 +27,11 @@ var methods = {
 					+ '&format=json'
 					+ '&nojsoncallback=1';
 
-				this.get(infoURL, function(infoerror, data, headers) {
+				context.get(infoURL, function(infoerror, data, headers) {
 					
 					//Exit if there was a problem with the request
 					if (infoerror) {
-						this.exit(err); 
+						context.exit(err); 
 					}
 					
 					var infoData = JSON.parse(data)['photo'];
@@ -51,7 +51,7 @@ var methods = {
 				});
 			};  
 
-			var getPhotoSizes = function(photoId, result, apiKey) {
+			var getPhotoSizes = function(photoId, result, apiKey, context) {
 				var sizesURL = "http://api.flickr.com/services/rest/?"
 					+ 'method=flickr.photos.getSizes'
 					+ '&api_key=' + apiKey
@@ -59,11 +59,11 @@ var methods = {
 					+ '&format=json'
 					+ '&nojsoncallback=1';
 				
-				this.get(sizesURL, function(sizeserror, data, headers) {
+				context.get(sizesURL, function(sizeserror, data, headers) {
 					
 					//Exit if there was a problem with the request
 					if (sizeserror) {
-						this.exit(err); 
+						context.exit(err); 
 					}
 					
 					var sizes = new Array;
@@ -79,7 +79,7 @@ var methods = {
 				});
 			};  
 			
-			var searchImages = function(query, maxResults, apiKey) {
+			var searchImages = function(query, maxResults, apiKey, context) {
 				var searchURL = "http://api.flickr.com/services/rest/?"
 					+ 'method=flickr.photos.search'
 					+ '&api_key=' + apiKey
@@ -91,11 +91,11 @@ var methods = {
 					+ '&sort=relevance';
 
 				//Get results of photo search
-				this.get(searchURL, function(error, data, headers) {
+				context.get(searchURL, function(error, data, headers) {
 
 					//Exit if there was a problem with the request
 					if (error) {
-						this.exit(err); 
+						context.exit(err); 
 					}
 					
 					var photos = JSON.parse(data)['photos']['photo'];
@@ -129,7 +129,7 @@ var methods = {
 				});
 			};
 			
-			searchImages(query,maxResults,apiKey);
+			searchImages(query,maxResults,apiKey,this);
 			
 			//Exit the Job without returning anything
 		    //The "results" array is already filled in
