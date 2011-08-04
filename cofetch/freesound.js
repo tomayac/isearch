@@ -40,7 +40,7 @@ var methods = {
         var i;
         var result;
         var soundID;
-        var soundData
+        var soundData;
         var detailsURL;
         //let's loop through the array of videos
         for (i=0;i<5;i++) {
