@@ -129,6 +129,8 @@ var methods = {
 				});
 			};
 			
+			searchImages(query,maxResults,apiKey);
+			
 			//Exit the Job without returning anything
 		    //The "results" array is already filled in
 		    this.emit();
