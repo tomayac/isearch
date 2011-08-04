@@ -6,7 +6,7 @@ var FlickrAPI= require('flickrnode').FlickrAPI,
     sys= require('sys'),
     flickr = new FlickrAPI('5226908fe75b3dae6290f60162a501d5', 'cc06237000c66b6c');
 
-this.fetch = function(query, result) {
+this.fetch = function(query) {
 	
 	var q = query.replace(' ','+');
 	var photoInfo = new Array;
@@ -24,8 +24,10 @@ this.fetch = function(query, result) {
 	
 	flickr.photos.search({text:q},  function(error, results) {
 		if(error){
-	      result = {'code':100,'body':'Whoops, something went wrong. Try that again.'};
+	      return {'code':100,'body':'Whoops, something went wrong. Try that again.'};
 	    }else{
+	      
+	      var end = false;	
 	      // Store photoIDs. Note: These come back in reverse chronological order.
 	      for (var x=0; x < 50; x++) {
 	        photoInfo.push({
@@ -78,14 +80,19 @@ this.fetch = function(query, result) {
 		            	tags.push(info.tags.tag[t]._content);
 		            }
 		            photoInfo[idx].Tags = tags;
+		            
+		            if(x == (photoInfo.length-1)) {
+		            	end = true;
+		            }
 		        }
 	        });
 	        
 	      }; // for
 	      
-	      result = {'code':200, 'body':photoInfo};
+	      if(end) {
+	    	  return = {'code':200, 'body':photoInfo};
+	      }
 	    } // else
-
 	});
 	
 };
