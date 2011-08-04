@@ -57,29 +57,29 @@ this.fetch = function(query) {
 				// Populate array at a specific location, because results come back as fast as possible (not in order)
 				if(!error2){
 					var sizecount = sizes.size.length;
-					photoInfo[idx].Preview = sizes.size[0].source;
-					photoInfo[idx].URL = sizes.size[sizecount-1].source;
-					photoInfo[idx].Size = {'width' :sizes.size[sizecount-1].width,
-							               'height':sizes.size[sizecount-1].height};
+					photoInfo[x].Preview = sizes.size[0].source;
+					photoInfo[x].URL = sizes.size[sizecount-1].source;
+					photoInfo[x].Size = {'width' :sizes.size[sizecount-1].width,
+							             'height':sizes.size[sizecount-1].height};
 				}
 	        });
 	        
 	        //Get taken date, tags etc.
 	        flickr.photos.getInfo(results.photo[x].id, '', function(error3, info, idx) {
 	        	if(!error3){
-		            photoInfo[idx].Name = info.title;
-		            photoInfo[idx].Author = info.owner.realname || info.owner.username;
-		            photoInfo[idx].Date = info.dates.taken;
-		            photoInfo[idx].Extension = info.originalformat || 'jpg';
-		            photoInfo[idx].License = licenses[info.license].name;
-		            photoInfo[idx].LicenseURL = licenses[info.license].url;
-		            photoInfo[idx].Location = [info.location.latitude || 0 ,info.location.longitude || 0,0,0];
+		            photoInfo[x].Name = info.title;
+		            photoInfo[x].Author = info.owner.realname || info.owner.username;
+		            photoInfo[x].Date = info.dates.taken;
+		            photoInfo[x].Extension = info.originalformat || 'jpg';
+		            photoInfo[x].License = licenses[info.license].name;
+		            photoInfo[x].LicenseURL = licenses[info.license].url;
+		            photoInfo[x].Location = [info.location.latitude || 0 ,info.location.longitude || 0,0,0];
 		            
 		            var tags = new Array;
 		            for(var t=0; t < info.tags.tag.length; t++) {
 		            	tags.push(info.tags.tag[t]._content);
 		            }
-		            photoInfo[idx].Tags = tags;
+		            photoInfo[x].Tags = tags;
 		            console.log(photoInfo);
 		            if(x == (photoInfo.length-1)) {
 		            	end = true;
