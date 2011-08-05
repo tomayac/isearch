@@ -136,7 +136,7 @@ Note: I have no idea about the .rwml format. Is there something more in there?
     "Location": [37.466139,-96.383057,89.0,50.0] <= [lat, long, altitude (m), heading (°)] many cameras provide these information and both values are in the KML standard which is used by RUCoD's RWML files.
     "Weather": {"condition": "NSC", "wind": 3, "temperature": "23", "humidity": "60"} 
     => condition can have the following values: 
-    RA	Rain
+        RA	Rain
 		SN	Snow
 		GR	Grêle
 		FG	Fog
@@ -599,14 +599,17 @@ var utils = require('util'),
     flickr = require('./flickr');
     //youtube = require('./youtube'),
     //sound = require('./freesound'),
-    //weather = require('./weather');
+    weather = require('./wunderground');
 
 //Get the 3D Model from http://gdv.fh-erfurt.de/modeldb/?mode=json
 var modelname = 'Two Dolphins';    
 var result = new Array;
 
 flickr.fetch(modelname,result,function(error, data) {
-	console.log(result);
+	weather.fetch(result,function(error, data) {
+		console.log('Weather data fetched!');
+		console.log(result);
+	});
 });
 
 
