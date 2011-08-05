@@ -25,7 +25,7 @@
         <ul>
           <li><a id="previous" href="">Previous</a></li>
           <li><a id="next" href="">Next</a></li>
-          <li><a href="save">Save and Next</a></li>
+          <li><a id="save" href="save">Save and Next</a></li>
         </ul>
       </nav>
     </header>
@@ -128,7 +128,7 @@
           
           <button id="change-image">Change</button>
           
-          <img id="image-preview" src="http://farm1.static.flickr.com/64/158620205_d3349c0bcb_m.jpg" />
+          <img id="image-previewFlickr" src="http://farm1.static.flickr.com/64/158620205_d3349c0bcb_m.jpg" />
           
           <label for="image-name">Image Name: </label>
           <input type="text" name="image-name" value="" id="image-name" class="title" />
@@ -204,8 +204,9 @@
           
           <button id="change-sound">Change</button>
           
-          <audio controls>
-            <source src="http://beta.freesound.org/data/previews/83/83295_29541-lq.ogg" type="audio/ogg" />
+          <audio id="sound-previewOGG" controls
+            src="http://beta.freesound.org/data/previews/83/83295_29541-lq.ogg"       
+            type="audio/ogg">
           </audio>
           
           <label for="sound-name">Name: </label>
@@ -282,7 +283,7 @@
         
           <button id="change-video">Change</button>
         
-          <iframe class="youtube-player" type="text/html" width="320" height="193" src="http://www.youtube.com/embed/AtxXAV18XAY?wmode=opaque" frameborder="0">
+          <iframe id="video-previewYT" class="youtube-player" type="text/html" width="320" height="193" src="http://www.youtube.com/embed/AtxXAV18XAY?wmode=opaque" frameborder="0">
           </iframe>
         
           <label for="video-name">Name: </label>

@@ -6,7 +6,7 @@ var cofetchHandler = (function() {
   
   //Variable to hold the scraped data
   var scraperData = {};
-  var threed = {} //How do we populate this one?
+  var threed = {}; //How do we populate this one?
   var videos = [];
   var sounds = [];
   var images = [];
@@ -24,7 +24,7 @@ var cofetchHandler = (function() {
       {id: "main-name", value: "here is the name"},
       {id: "main-categoryPath", value: "animal/fish"},
       {id: "main-screenshot", value: "3d"}, //defaut: 3d screenshot
-      {id: "text-content", value: image.FreeText}
+      {id: "text-content", value: scraperData.FreeText}
     ];
     set(changes);
     
@@ -37,8 +37,12 @@ var cofetchHandler = (function() {
   
   var set3d = function() {
     
+    //Set the preview image to the right SRC
+    $('#threed-preview').attr(
+      {'src': threed.Preview}
+    );
+    
     //Let's prepare the array of changes
-    var video = videos[0];
     var changes = [
       {id: "threed-name", value: threed.Name},
       {id: "threed-tags", value: threed.Tags},
@@ -76,8 +80,18 @@ var cofetchHandler = (function() {
       }
     }
     
-    //Let's prepare the array of changes
+    //Take the first video of the Array
     var video = videos[0];
+    
+    //Extract the ID of the YouTube video
+    var videoID = video.URL.substring(video.URL.indexOf("="));
+    
+    //Set the YouTube IFRAME to the right URL
+    $('#video-previewYT').attr(
+      {'src': 'http://www.youtube.com/embed/' + videoID + '?wmode=opaque'}
+    );
+    
+    //Let's prepare the array of changes
     var changes = [
       {id: "video-name", value: video.Name},
       {id: "video-tags", value: video.Tags},
@@ -117,8 +131,15 @@ var cofetchHandler = (function() {
       }
     }
     
-    //Let's prepare the array of changes
+    //Take the first sound of the array
     var sound = sounds[0];
+    
+    //Update the preview
+    $('#sound-previewOGG').attr(
+      {'src': sound['PreviewOGG']}
+    );
+    
+    //Let's prepare the array of changes
     var changes = [
       {id: "sound-name", value: sound.Name},
       {id: "sound-tags", value: sound.Tags},
@@ -156,8 +177,15 @@ var cofetchHandler = (function() {
       }
     }
     
-    //Let's prepare the array of changes
+    //Take the first video of the Array
     var image = images[0];
+    
+    //Set the Flickr preview to the right URL
+    $('#video-previewFlickr').attr(
+      {'src': image.Preview}
+    );
+    
+    //Let's prepare the array of changes
     var changes = [
       {id: "image-name", value: image.Name},
       {id: "image-tags", value: image.Tags},
@@ -183,8 +211,125 @@ var cofetchHandler = (function() {
   };
   
   var save = function() {
-    //Call server:8082/save/contentObjectID
+    
+    //Let's serialize our form:   
+    var jsonFile = {
+      "ID": contentObjectID,
+      "Name": $('#main-name').val(),
+      "Screenshot": getScreenshot(),
+      "CategoryPath": $('#main-categoryPath').val(), 
+      "Freetext": $('#text-content').val(),
+      "Files": [{
+        "Type": "Object3D",
+        "Name": $('#threed-name').val(), 
+        "Tags": $('#threed-tags').val().split(","),
+        "Extension": $('#threed-extension').val(),
+        "License": $('#threed-license').val(),
+        "LicenseURL": $('#threed-licenseURL').val(),
+        "Author": $('#threed-author').val(),
+        "Date": $('#threed-date').val(),
+        "Size": $('#threed-size').val(),
+        "URL": $('#threed-url').val(),
+        "Preview": $('#threed-preview').val(),
+        "Emotions": $('#threed-emotions').val(),
+        "Location": $('#threed-location').val(),
+        "Weather": {
+          "condition": $('#threed-weather-condition').val(), 
+          "wind": $('#threed-weather-wind').val(), 
+          "temperature": $('#threed-weather-temperature').val(), 
+          "humidity": $('#threed-weather-humidity').val()
+        }
+      },
+      {
+        "Type": "ImageType",
+        "Name": $('#image-name').val(), 
+        "Tags": $('#image-tags').val().split(","),
+        "Extension": $('#image-extension').val(),
+        "License": $('#image-license').val(),
+        "LicenseURL": $('#image-licenseURL').val(),
+        "Author": $('#image-author').val(),
+        "Date": $('#image-date').val(),
+        "Size": $('#image-size').val(),
+        "URL": $('#image-url').val(),
+        "Preview": $('#image-preview').val(),
+        "Dimensions": $('#image-dimensions').val(),
+        "Emotions": $('#image-emotions').val(),
+        "Location": $('#image-location').val(),
+        "Weather": {
+          "condition": $('#image-weather-condition').val(), 
+          "wind": $('#image-weather-wind').val(), 
+          "temperature": $('#image-weather-temperature').val(), 
+          "humidity": $('#image-weather-humidity').val()
+        }
+      },
+      {
+        "Type": "VideoType",
+        "Name": $('#video-name').val(), 
+        "Tags": $('#video-tags').val().split(","),
+        "Extension": $('#video-extension').val(),
+        "License": $('#video-license').val(),
+        "LicenseURL": $('#video-licenseURL').val(),
+        "Author": $('#video-author').val(),
+        "Date": $('#video-date').val(),
+        "Size": $('#video-size').val(),
+        "URL": $('#video-url').val(),
+        "Preview": $('#video-preview').val(),
+        "Dimensions": $('#video-dimensions').val(),
+        "Length": $('#video-length').val(),
+        "Emotions": $('#video-emotions').val(),
+        "Location": $('#video-location').val(),
+        "Weather": {
+          "condition": $('#video-weather-condition').val(), 
+          "wind": $('#video-weather-wind').val(), 
+          "temperature": $('#video-weather-temperature').val(), 
+          "humidity": $('#video-weather-humidity').val()
+        }
+      },
+      {
+        "Type": "SoundType",
+        "Name": $('#sound-name').val(), 
+        "Tags": $('#sound-tags').val().split(","),
+        "Extension": $('#sound-extension').val(),
+        "License": $('#sound-license').val(),
+        "LicenseURL": $('#sound-licenseURL').val(),
+        "Author": $('#sound-author').val(),
+        "Date": $('#sound-date').val(),
+        "Size": $('#sound-size').val(),
+        "URL": $('#sound-url').val(),
+        "Preview": $('#sound-preview').val(),
+        "Length": $('#sound-length').val(),
+        "Emotions": $('#sound-emotions').val(),
+        "Location": $('#sound-location').val(),
+        "Weather": {
+          "condition": $('#sound-weather-condition').val(), 
+          "wind": $('#sound-weather-wind').val(), 
+          "temperature": $('#sound-weather-temperature').val(), 
+          "humidity": $('#sound-weather-humidity').val()
+        }
+      }] 
+    };
+    
+    return jsonFile;
   };
+  
+  var getScreenshot = function() {
+    
+    var screenshotValue = $('#main-screenshot').val();
+    
+    if (screenshotValue === "image") {
+      return $('#image-preview').val();
+    }
+    if (screenshotValue === "3d") {
+      return $('#threed-preview').val();
+    }
+    if (screenshotValue === "video") {
+      return $('#video-preview').val();
+    }
+    if (screenshotValue === "sound") {
+      return $('#sound-preview').val();
+    }  
+    
+  }
   
   var set = function(changes) {
     //"changes" is an array of {id: id, value: value}
@@ -210,9 +355,9 @@ var cofetchHandler = (function() {
   return {
     fetch: fetch,
     populateForm: populateForm,
-    changeVideo: changeVideo,
-    changeSound: changeSound, 
-    changeImage: changeImage,
+    setVideo: setVideo,
+    setSound: setSound, 
+    setImage: setImage,
     save: save
   };
   

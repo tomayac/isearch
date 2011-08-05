@@ -72,6 +72,7 @@ var methods = {
               "Size": "",
               "URL": soundData.url,
               "Preview": soundData.waveform_m,
+              "PreviewOGG": soundData['preview-lq-ogg'],
               "Length": soundData.duration,
               "Emotions": [],
               "Location": [],

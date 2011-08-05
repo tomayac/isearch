@@ -9,8 +9,8 @@ var fs = require('./freesound');
 //});
 
 //Uncomment that if you want to test Audio
-//var audioResults = [];
-//fs.fetch('cow', audioResults, true, function(error, data){
-//  //results is now filled in with the sounds
-//  console.log(audioResults);
-//});
+var audioResults = [];
+fs.fetch('cow', audioResults, true, function(error, data){
+  //results is now filled in with the sounds
+  console.log(audioResults);
+});
