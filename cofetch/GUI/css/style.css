@@ -253,12 +253,7 @@ header{
   z-index:9;
 }
 
-header nav { 
-  overflow: auto;
-  width: 300px;
-  margin: auto;
-}
-
+header nav { overflow: auto; width: 300px; margin: auto; }
 header nav li {
   background-color: #fff;
   border: 1px #999 solid;
@@ -266,11 +261,13 @@ header nav li {
   float: left;
   display: block;
   margin: 10px;
-  padding: 3px 5px;
+  padding: 0;
 }
-
 header nav a {
-  color: #444;
+  color: #444 !important;
+  font-weight: bold;
+  display: block;
+  padding: 10px;
 }
 
 footer {
@@ -281,16 +278,8 @@ footer {
   border-top: 2px #ab2011 solid;
 }
 
-#main {
-  width: 660px;
-  margin: 200px auto;
-  margin-bottom: 20px;
-}
-
-audio, img, iframe {
-  display: block;
-  margin: 5px 5px 10px 5px;
-}
+#main { width: 660px; margin: 200px auto; margin-bottom: 20px; }
+audio, img, iframe { display: block; margin: 5px 5px 10px 5px; }
 
 
 
