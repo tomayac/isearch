@@ -6,9 +6,14 @@ $(document).ready(function(){
     Load Data and populate the form
     ===============================*/
     
+    var currentID = cofetchHandler.getParameterByName('id');
+    if (currentID === "") {
+      currentID = 1;
+    };
+    console.log(currentID);
+    //cofetchHandler.fetch(requestedID);
     //cofetchHandler.populateForm();
-  
-  
+    
   /*===================================
     Registering all the events handlers
     ===================================*/
@@ -31,11 +36,23 @@ $(document).ready(function(){
   $("#previous").click(function(){
     //Load the previous URL
     //i.e take the parameter, decrement it, and load the page
+    var currentLocation = window.location;
+    var newLocation = window.location.href.substring(0,window.location.href.indexOf("?"));
+    newID = parseInt(currentID) - 1;
+    newLocation += "?id=" + newID ;
+    console.log(newLocation);
+    window.location = newLocation;
     return false;
   });
   
   $("#next").click(function(){
     //load next
+    var currentLocation = window.location;
+    var newLocation = window.location.href.substring(0,window.location.href.indexOf("?"));
+    newID = parseInt(currentID) + 1;
+    newLocation += "?id=" + newID ;
+    console.log(newLocation);
+    window.location = newLocation;
     return false;
   });
   
