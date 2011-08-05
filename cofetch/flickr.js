@@ -10,7 +10,7 @@ var methods = {
 
 		//Let's get the arguments passed to the script
 		if (!this.options.args[0]) {
-			this.exit('No arguments were given to the Youtube job');
+			this.exit('No arguments were given to the Flickr job');
 		}
 		var query = this.options.args[0].replace(' ','+');
 		var results = this.options.args[1];
@@ -48,13 +48,13 @@ var methods = {
 
 			//Exit if there was a problem with the request
 			if (error) {
-				context.exit(err); 
+				context.exit(error); 
 			}
 			
 			//Get the photo search result
 			var photos = JSON.parse(data).photos.photo;
 			//Iterate through every found photo
-			for (i=0;i<photos.length;i++) {
+			for (var i=0;i<photos.length;i++) {
 				
 				//Store the image IDs
 				var photoId = photos[i].id;
@@ -71,7 +71,7 @@ var methods = {
 					
 					//Exit if there was a problem with the request
 					if (infoerror) {
-						context.exit(err); 
+						context.exit(infoerror); 
 					}
 					
 					var infoData = JSON.parse(data).photo;
@@ -112,7 +112,7 @@ var methods = {
 						
 						//Exit if there was a problem with the request
 						if (sizeserror) {
-							context.exit(err); 
+							context.exit(sizeserror); 
 						}
 						
 						var sizes = new Array;
@@ -133,7 +133,7 @@ var methods = {
 						
 						results.push(result);
 						
-						if (results.length===maxResults) {
+						if (results.length === maxResults) {
 							//Exit the job if we're done, i.e Array full
 							context.emit();
 			            }
