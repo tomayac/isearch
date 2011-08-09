@@ -26,7 +26,7 @@ exports.get = function(index, callback) {
 	modeldb.fetch(index, function(error, data) {
 		
 		if(error) {
-			context.callback(error,null);
+			callback(error,null);
 			return;
 		}
 		console.log(data);
@@ -38,11 +38,11 @@ exports.get = function(index, callback) {
 		scrapingData.Freetext = "";
 		
 		var flickrImages = new Array();
-		
+		console.log(scrapingData.Name);
 		flickr.fetch(scrapingData.Name,flickrImages,function(error, data) {
 			
 			if(error) {
-				context.callback(error + '(Flickr)',null);
+				callback(error + '(Flickr)',null);
 				return;
 			}
 			
@@ -59,7 +59,7 @@ exports.get = function(index, callback) {
 				youtube.fetch(scrapingData.Name,youtubeVideos,function(error,data) {
 					
 					if(error) {
-						context.callback(error + '(Video)',null);
+						callback(error + '(Video)',null);
 						return;
 					}
 					
@@ -73,7 +73,7 @@ exports.get = function(index, callback) {
 					sound.fetch(scrapingData.Name, sounds, true, function(error,data) {
 						
 						if(error) {
-							context.callback(error + '(Sound)',null);
+							callback(error + '(Sound)',null);
 							return;
 						}
 						
@@ -97,7 +97,7 @@ exports.get = function(index, callback) {
 							sound.fetch(scrapingData.Name, sounds, false, function(error,data) {
 								
 								if(error) {
-									context.callback(error + '(Sound)',null);
+									callback(error + '(Sound)',null);
 									return;
 								}
 								
