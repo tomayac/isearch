@@ -30,16 +30,16 @@ exports.get = function(index, callback) {
 			return;
 		}
 		console.log(data);
-		context.scrapingData.Name = data.Name;
-		context.scrapingData.Screenshot = data.Screenshot;
-		context.scrapingData.CategoryPath = data.Category;
-		context.scrapingData.Files.push(data);
+		scrapingData.Name = data.Name;
+		scrapingData.Screenshot = data.Screenshot;
+		scrapingData.CategoryPath = data.Category;
+		scrapingData.Files.push(data);
 		
-		context.scrapingData.Freetext = "";
+		scrapingData.Freetext = "";
 		
 		var flickrImages = new Array();
 		
-		flickr.fetch(context.scrapingData.Name,flickrImages,function(error, data) {
+		flickr.fetch(scrapingData.Name,flickrImages,function(error, data) {
 			
 			if(error) {
 				context.callback(error + '(Flickr)',null);
@@ -51,12 +51,12 @@ exports.get = function(index, callback) {
 				console.log('Weather data fetched!');
 				
 				for(var w=0; w < data.length; w++) {
-					context.scrapingData.Files.push(data[w]);
+					scrapingData.Files.push(data[w]);
 				}
 				
 				var youtubeVideos = new Array();
 				
-				youtube.fetch(context.scrapingData.Name,youtubeVideos,function(error,data) {
+				youtube.fetch(scrapingData.Name,youtubeVideos,function(error,data) {
 					
 					if(error) {
 						context.callback(error + '(Video)',null);
@@ -65,12 +65,12 @@ exports.get = function(index, callback) {
 					
 					console.log('YouTube data fetched!');
 					for(var y=0; y < youtubeVideos.length; y++) {
-						context.scrapingData.Files.push(youtubeVideos[y]);
+						scrapingData.Files.push(youtubeVideos[y]);
 					}
 					
 					var sounds = new Array();
 					
-					sound.fetch(context.scrapingData.Name, sounds, true, function(error,data) {
+					sound.fetch(scrapingData.Name, sounds, true, function(error,data) {
 						
 						if(error) {
 							context.callback(error + '(Sound)',null);
@@ -84,17 +84,17 @@ exports.get = function(index, callback) {
 								console.log('Weather data for sounds fetched!');
 								
 								for(var s=0; s < data.length; s++) {
-									context.scrapingData.Files.push(data[s]);
+									scrapingData.Files.push(data[s]);
 								}
 								//Return the collected data
-								context.callback(null, context.scrapingData);
+								context.callback(null, scrapingData);
 							});
 						} else {
 						
 							//No sounds with location data was found, so try it without
 							var sounds = new Array();
 							
-							sound.fetch(context.scrapingData.Name, sounds, false, function(error,data) {
+							sound.fetch(scrapingData.Name, sounds, false, function(error,data) {
 								
 								if(error) {
 									context.callback(error + '(Sound)',null);
@@ -102,10 +102,10 @@ exports.get = function(index, callback) {
 								}
 								
 								for(var s=0; s < sounds.length; s++) {
-									context.scrapingData.Files.push(sounds[s]);
+									scrapingData.Files.push(sounds[s]);
 								}
 								//Return the collected data
-								context.callback(null, context.scrapingData);
+								context.callback(null, scrapingData);
 							});
 						}
 						
