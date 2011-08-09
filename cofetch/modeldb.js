@@ -9,9 +9,8 @@ var methods = {
         this.exit('No arguments were given to the ModelDB job');
       }
       var query = this.options.args[0];
-      var results = this.options.args[1]
       
-      var modelDbURL = "http://gdv.fh-erfurt.de/modeldb/?mode=json&pagination=1&page="
+      var modelDbURL = "http://gdv.fh-erfurt.de/modeldb/?mode=json&pagination=1&pagerows=1&page="
           + query;
         
       //Let's go and request our content
@@ -24,14 +23,18 @@ var methods = {
 
         var modelDbResponse = JSON.parse(data);
         var model = modelDbResponse[0];
-                
-        var i;
+        
+        if(!model.Name) {
+        	this.exit('Not found');
+        }
+        
         var result;      
         result = {
             "Type": "Object3d",
-            "Name": model.Name,
+            "Category": model.CategoryPath,
+            "Name": model.Title || model.Name,
             "Tags": "",
-            "Extension": model.Files[0].Type,
+            "Extension": (model.Files[0].Type == 'max') ? '3ds' : model.Files[0].Type,
             "Licence": model.License, 
             "LicenceURL": model.LicenseURL,
             "Author": model.Author,
@@ -42,22 +45,19 @@ var methods = {
             "Emotions": [],
             "Location": [],
             "Weather": {}
-        };
-        results.push(result);
+        };      
         
-        
-        //Exit the Job without returning anything
-        //The "results" array is already filled in
-        this.emit();
+        //Exit the Job and return the result array of the model
+        this.emit(result);
         
       });
     }
-}
+};
 
 //Creates the job
 var job = new nodeio.Job({timeout:10}, methods);
 
 //Exposes it publicly
 exports.fetch = function(id, results, callback) {
-  nodeio.start(job, {args: [id, results]}, callback);
-}
+  nodeio.start(job, {args: [id]}, callback, true);
+};

@@ -594,26 +594,18 @@ RWML File
 
 */
 
-var utils = require('util'),
-    nodeio = require('node.io'),
-    flickr = require('./flickr');
-    //youtube = require('./youtube'),
-    //sound = require('./freesound'),
-    weather = require('./wunderground');
+var nodeio = require('node.io'),
+    fetch = require('./fetch');
 
-//Get the 3D Model from http://gdv.fh-erfurt.de/modeldb/?mode=json
-var modelname = 'Two Dolphins';    
-var result = new Array;
-
-flickr.fetch(modelname,result,function(error, data) {
-	console.log('Flickr data fetched!');
-	console.log('Got ' + result.length + ' images from Flickr.');
-	weather.fetch(result,function(error, data) {
-		console.log('Weather data fetched!');
-		console.log('Got ' + data.length + ' results back from weather data fetching.');
-		console.log(data[0]);
-	});
+fetch.get(1,function(error, data){
+	if(error) {
+		console.log('Error: ' + error);
+	}
+	
+	console.log('Got Data!');
+	console.log(data);
 });
+
 
 
 
