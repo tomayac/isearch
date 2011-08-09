@@ -606,11 +606,16 @@ var modelname = 'Two Dolphins';
 var result = new Array;
 
 flickr.fetch(modelname,result,function(error, data) {
+	console.log('Flickr data fetched!');
+	console.log('Got ' + result.length + ' images from Flickr.');
 	weather.fetch(result,function(error, data) {
 		console.log('Weather data fetched!');
-		console.log(result);
+		console.log('Got ' + data.length + ' results back from weather data fetching.');
+		console.log(data[0]);
 	});
 });
+
+
 
 
 
