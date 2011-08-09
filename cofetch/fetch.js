@@ -29,7 +29,7 @@ exports.get = function(index, callback) {
 			context.callback(error,null);
 			return;
 		}
-		
+		console.log(data);
 		context.scrapingData.Name = data.Name;
 		context.scrapingData.Screenshot = data.Screenshot;
 		context.scrapingData.CategoryPath = data.Category;
