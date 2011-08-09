@@ -58,6 +58,6 @@ var methods = {
 var job = new nodeio.Job({timeout:10}, methods);
 
 //Exposes it publicly
-exports.fetch = function(id, results, callback) {
+exports.fetch = function(id, callback) {
   nodeio.start(job, {args: [id]}, callback, true);
 };
