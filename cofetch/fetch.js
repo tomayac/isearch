@@ -16,6 +16,7 @@ exports.get = function(index, callback) {
 			  "ID": index,
 			  "Name": "",
 			  "Screenshot": "",
+			  "Category": "",
 			  "CategoryPath": "", 
 			  "Files": []
 	};
@@ -37,8 +38,7 @@ exports.get = function(index, callback) {
 			contentObject.Name = data[0].Name;
 			contentObject.Screenshot = data[0].Preview;
 			contentObject.CategoryPath = data[0].CategoryPath;
-			
-			var category = data[0].Category;
+			contentObject.Category = data[0].Category;
 			
 			//We wont need the category path in the individual files
 			delete data[0].Category;
@@ -48,7 +48,7 @@ exports.get = function(index, callback) {
 			contentObject.Files.push(data[0]);
 			
 			//Fetch free text data for the model
-			dbpedia.fetch(contentObject.Name, category, this);
+			dbpedia.fetch(contentObject.Name, contentObject.Category, this);
 		},
 		function getImageData(error,data) {
 			if(error) {
@@ -63,7 +63,13 @@ exports.get = function(index, callback) {
 				contentObject.Files.push(data[0]);
 			}
 			
-			flickr.fetch(contentObject.Name,this);
+			var flickrQuery = contentObject.Name;
+			
+			if(contentObject.Category === 'Fish') {
+				flickrQuery += ' underwater';
+			}
+			
+			flickr.fetch(flickrQuery,this);
 		},
 		function getImageWeatherData(error,data) {
 			if(error) {
@@ -84,9 +90,15 @@ exports.get = function(index, callback) {
 			for(var w=0; w < data.length; w++) {
 				contentObject.Files.push(data[w][0]);
 			}
+			//Some query adjustments for youtube
+			var youtubeQuery = contentObject.Name;
+			
+			if(contentObject.Category === 'Fish') {
+				youtubeQuery += ' underwater';
+			}
 			
 			//Get videos for content object
-			youtube.fetch(contentObject.Name,this);
+			youtube.fetch(youtubeQuery,this);
 		},
 		function getSoundData(error,data) {
 			if(error) {
@@ -128,6 +140,9 @@ exports.get = function(index, callback) {
 					contentObject.Files.push(data[s][0]);
 				}
 			}
+			
+			delete contentObject.Category;
+			
 			console.log('Finished!');
 			
 			//Return the collected content object
