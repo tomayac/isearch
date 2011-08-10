@@ -24,7 +24,7 @@ var methods = {
         
         //Exit if there was a problem with the request
         if (error) {
-           this.exit(err); 
+           this.exit(error); 
         }
         
         //Function to get tags

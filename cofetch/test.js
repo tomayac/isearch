@@ -1,6 +1,7 @@
 var yt = require('./youtube');
 var fs = require('./freesound');
 var mdb = require('./modeldb');
+var dbpedia = require('./dbpedia');
 
 //Uncomment this if you want to test Video
 //var results = [];
@@ -16,9 +17,8 @@ var mdb = require('./modeldb');
 //  console.log(audioResults);
 //});
 
-//Uncomment that one to test ModelDB
-var modelDbResults = [];
-mdb.fetch(1, modelDbResults, function(error, data){
+//Uncomment that one to test dbpedia
+dbpedia.fetch("Blue Marlin", "Fish", function(error, data){
   //results is now filled in with the sounds
-  console.log(modelDbResults);
+  console.log(data);
 });

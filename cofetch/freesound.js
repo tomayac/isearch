@@ -10,7 +10,7 @@ var methods = {
       if (!this.options.args[0]) {
         this.exit('No arguments were given to the Freesound job');
       }
-      var query = this.options.args[0];
+      var query = this.options.args[0].replace(/\s/g,'+');
       var isGeo = this.options.args[1];
       var results = new Array();
       
@@ -91,7 +91,7 @@ var methods = {
 };
 
 //Creates the job
-var job = new nodeio.Job({timeout:10}, methods);
+var job = new nodeio.Job({timeout:20}, methods);
 
 //Exposes it publicly
 exports.fetch = function(query, isGeo, callback) {

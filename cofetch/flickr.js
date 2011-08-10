@@ -1,6 +1,6 @@
 /**
  * Image fetch for Content Object production.
- * Facilitates Flickr API
+ * Facilitates Flickr API with node.io
  */
 var nodeio = require('node.io');
 
