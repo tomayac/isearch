@@ -35,7 +35,7 @@ exports.get = function(index, callback) {
 			console.log('2. Model data fetched!');
 
 			contentObject.Name = data[0].Name;
-			contentObject.Screenshot = data[0].Screenshot;
+			contentObject.Screenshot = data[0].Preview;
 			contentObject.CategoryPath = data[0].CategoryPath;
 			
 			var category = data[0].Category;
