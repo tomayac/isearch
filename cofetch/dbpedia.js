@@ -34,16 +34,18 @@ var methods = {
         //The parser for parsing xml data of the dbpedia service
         var parser = new xml2js.Parser();
         //The function where the transformed JSON data comes in
-        parser.on('end', function(data) {
-        	console.log(data);
-        	
-        	var result = '';
+        parser.on('end', function(data) {    	
+        	var result = data.Result;
         	//Exit the Job returning the results array
             this.emit(result);
         });
         
-        //Convert the XML date to JSON
-        parser.parseString(data);
+        try {
+        	//Convert the XML date to JSON
+        	parser.parseString(data);
+        } catch(e) {
+        	console.log('DBpedia parsing error...continue.');
+        }
         
       });
     }
