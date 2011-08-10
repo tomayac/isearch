@@ -14,7 +14,7 @@ var methods = {
       var isGeo = this.options.args[1];
       var results = new Array();
       
-      var maxResults = 10;
+      var maxResults = 5;
       var freesoundURL = "http://tabasco.upf.edu/api/sounds/search/?"
           + 'q=' + query
           + '&api_key=' + APIKey;
@@ -40,13 +40,16 @@ var methods = {
 	        var freesoundResponse = JSON.parse(data);
 	        var sounds = freesoundResponse.sounds;
 	                
-	        var i;
 	        var soundID;
 	        var soundData;
 	        var detailsURL;
 	        //let's loop through the array of videos
-	        for (i=0;i<5;i++) {
+	        for (var i=0;i<sounds.length;i++) {
 	          
+	          if(i >= maxResults) {
+	        	  break;
+	          }
+	        	
 	          //We get the ID of a sound
 	          soundID = sounds[i].id;
 	          
