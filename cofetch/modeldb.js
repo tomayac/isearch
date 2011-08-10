@@ -31,7 +31,8 @@ var methods = {
         var result;      
         result = {
             "Type": "Object3d",
-            "Category": model.CategoryPath,
+            "Category": model.Category,
+            "CategoryPath": model.CategoryPath,
             "Name": model.Title || model.Name,
             "Tags": "",
             "Extension": (model.Files[0].Type == 'max') ? '3ds' : model.Files[0].Type,

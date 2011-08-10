@@ -17,12 +17,14 @@ var methods = {
       var query = this.options.args[0].replace(/\s/g,'+');
       var qclass = this.options.args[1];
       
-      var maxResults = 3;
+      var maxResults = 1;
       var dbpediaURL = "http://lookup.dbpedia.org/api/search.asmx/KeywordSearch?"
           + 'QueryClass=' + qclass
           + '&QueryString=' + query
           + '&MaxHits=' + maxResults;
-        
+      
+      var context = this;
+      
       //Let's go and request our content
       this.get(dbpediaURL, function(error, data, headers) {
         
@@ -34,17 +36,29 @@ var methods = {
         //The parser for parsing xml data of the dbpedia service
         var parser = new xml2js.Parser();
         //The function where the transformed JSON data comes in
-        parser.on('end', function(data) {    	
-        	var result = data.Result;
+        parser.on('end', function(res) {    	
+        	
+        	var result = {
+        			"Type":"TextType",
+        			"Name":"",
+        			"FreeText":"",
+        			"URL":""
+        	};
+
+        	if(res.Result) {
+        		result.Name = res.Result.Label;
+        		result.FreeText = res.Result.Description;
+        		result.URL = 'http://en.wikipedia.org/wiki/' + result.URI.substring((result.URI.lastIndexOf('/')+1),result.URI.length);
+        	}
+        	
         	//Exit the Job returning the results array
-            this.emit(result);
+        	context.emit(result);
         });
+        //http://dbpedia.org/data/Atlantic_blue_marlin.json -- http://xmlns.com/foaf/0.1/page
         
-        try {
-        	//Convert the XML date to JSON
+        //Convert the XML data to JSON
+        if(data) {
         	parser.parseString(data);
-        } catch(e) {
-        	console.log('DBpedia parsing error...continue.');
         }
         
       });

@@ -3,6 +3,7 @@
  */
 var step    = require('step');
     modeldb = require('./modeldb');
+    dbpedia = require('./dbpedia');
     flickr  = require('./flickr');
     youtube = require('./youtube'),
     sound   = require('./freesound'),
@@ -16,7 +17,6 @@ exports.get = function(index, callback) {
 			  "Name": "",
 			  "Screenshot": "",
 			  "CategoryPath": "", 
-			  "Freetext": "",
 			  "Files": []
 	};
 	
@@ -26,31 +26,50 @@ exports.get = function(index, callback) {
 			console.log('1. Start fetching Content Object data for 3D model with index '+index);
 			modeldb.fetch(index, this);
 		},
-		function getImageData(error,data) {
+		function getTextData(error,data) {
 			if(error) {
 				throw error;
 			}
 			
 			console.log('2. Model data fetched!');
-			console.log(data);
+
 			contentObject.Name = data[0].Name;
 			contentObject.Screenshot = data[0].Screenshot;
-			contentObject.CategoryPath = data[0].Category;
+			contentObject.CategoryPath = data[0].CategoryPath;
+			
+			var category = data[0].Category;
 			
 			//We wont need the category path in the individual files
 			delete data[0].Category;
+			delete data[0].CategoryPath;
 			
 			//Push the 3D model to the files array of the content object
 			contentObject.Files.push(data);
 			
-			contentObject.Freetext = "";
+			//Fetch free text data for the model
+			dbpedia.fetch(contentObject.Name, category, this);
+		},
+		function getImageData(error,data) {
+			if(error) {
+				throw error;
+			}
+			
+			console.log('3. Text data fetched! ('+data.length+')');
+			
+			if(data.Description) {
+				contentObject.Name = data[0].Name;
+				delete data[0].Name;
+				//Push the text data in the Files array because it will be treated as MediaItem in RUCoD
+				contentObject.Files.push(data);
+			}
+			
 			flickr.fetch(contentObject.Name,this);
 		},
 		function getImageWeatherData(error,data) {
 			if(error) {
 				throw error;
 			}
-			console.log('3. Flickr images fetched!');
+			console.log('4. Flickr images fetched!');
 			//Get weather data for images
 			weather.fetch(data,this);
 		},
@@ -58,7 +77,7 @@ exports.get = function(index, callback) {
 			if(error) {
 				throw error;
 			}
-			console.log('4. Weather data for flickr images fetched!');
+			console.log('4.1. Weather data for flickr images fetched!');
 			
 			for(var w=0; w < data.length; w++) {
 				contentObject.Files.push(data[w]);
@@ -89,7 +108,7 @@ exports.get = function(index, callback) {
 				//Get audio for content object
 				sound.fetch(contentObject.Name, false, this);
 			} else {
-				console.log('6. Sound data with geo information fetched!');
+				console.log('x. Sound data with geo information fetched!');
 				//Get weather data for sounds
 				weather.fetch(data,this);
 			}
@@ -99,7 +118,7 @@ exports.get = function(index, callback) {
 				throw error;
 			}
 			
-			console.log('7. Composed Sound data fetched!');
+			console.log('6. Composed Sound data fetched!');
 			for(var s=0; s < data.length; s++) {
 				contentObject.Files.push(data[s]);
 			}
