@@ -59,8 +59,6 @@ exports.get = function(index, callback) {
 			console.log('3. Text data fetched! ('+data.length+')');
 			
 			if(data.Description) {
-				contentObject.Name = data[0].Name;
-				delete data[0].Name;
 				//Push the text data in the Files array because it will be treated as MediaItem in RUCoD
 				contentObject.Files.push(data);
 			}
@@ -123,21 +121,19 @@ exports.get = function(index, callback) {
 		function finalizeData(error,data) {
 			if(error) {
 				console.log('sound error: '+error);
-				return;
-			}
+			} else {
 			
-			console.log('7. Composed Sound data fetched!');
-			for(var s=0; s < data.length; s++) {
-				contentObject.Files.push(data[s]);
+				console.log('7. Composed Sound data fetched!');
+				for(var s=0; s < data.length; s++) {
+					contentObject.Files.push(data[s]);
+				}
 			}
-			
 			console.log('Finished!');
+			
+			//Return the collected content object
+			callback(null, contentObject);
 		}
 	);
-	
-	//Return the collected content object
-	callback(null, contentObject);
-	
 };    
     
     
