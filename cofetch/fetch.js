@@ -21,7 +21,7 @@ exports.get = function(index, callback) {
 	};
 	
 	//Step through the content object data collection
-	Step(
+	step(
 		function getModelData() {	
 			console.log('1. Start fetching Content Object data for 3D model with index '+index);
 			modeldb.fetch(index, this);
