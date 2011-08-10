@@ -12,7 +12,7 @@ var methods = {
 		if (!this.options.args[0]) {
 			this.exit('No arguments were given to the Flickr job');
 		}
-		var query = this.options.args[0].replace(' ','+');
+		var query = this.options.args[0].replace(/\s/g,'+');
 		var results = new Array();
 
 		var apiKey = '5226908fe75b3dae6290f60162a501d5';

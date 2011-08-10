@@ -44,7 +44,7 @@ exports.get = function(index, callback) {
 			contentObject.Files.push(data);
 			
 			contentObject.Freetext = "";
-			
+			console.log('Name: '+contentObject.Name);
 			flickr.fetch(contentObject.Name,this);
 		},
 		function getImageWeatherData(error,data) {
