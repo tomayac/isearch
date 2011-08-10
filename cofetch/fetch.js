@@ -28,7 +28,8 @@ exports.get = function(index, callback) {
 		},
 		function getTextData(error,data) {
 			if(error) {
-				throw error;
+				console.log('modeldb error: '+error);
+				return;
 			}
 			
 			console.log('2. Model data fetched!');
@@ -51,7 +52,8 @@ exports.get = function(index, callback) {
 		},
 		function getImageData(error,data) {
 			if(error) {
-				throw error;
+				console.log('dbpedia error: '+error);
+				return;
 			}
 			
 			console.log('3. Text data fetched! ('+data.length+')');
@@ -67,7 +69,8 @@ exports.get = function(index, callback) {
 		},
 		function getImageWeatherData(error,data) {
 			if(error) {
-				throw error;
+				console.log('flickr error: '+error);
+				return;
 			}
 			console.log('4. Flickr images fetched!');
 			//Get weather data for images
@@ -75,7 +78,8 @@ exports.get = function(index, callback) {
 		},
 		function getVideoData(error,data) {
 			if(error) {
-				throw error;
+				console.log('weather error: '+error);
+				return;
 			}
 			console.log('4.1. Weather data for flickr images fetched!');
 			
@@ -88,7 +92,8 @@ exports.get = function(index, callback) {
 		},
 		function getSoundData(error,data) {
 			if(error) {
-				throw error;
+				console.log('youtube error: '+error);
+				return;
 			}
 			console.log('5. YouTube data fetched!');
 			
@@ -101,24 +106,27 @@ exports.get = function(index, callback) {
 		},
 		function evaluateSoundData(error,data) {
 			if(error) {
-				throw error;
+				console.log('sound error: '+error);
+				return;
 			}
+			
+			console.log('6. Sound data with geo information fetched!');
 			
 			if(data.length < 1) {
 				//Get audio for content object
 				sound.fetch(contentObject.Name, false, this);
 			} else {
-				console.log('x. Sound data with geo information fetched!');
 				//Get weather data for sounds
 				weather.fetch(data,this);
 			}
 		},
 		function finalizeData(error,data) {
 			if(error) {
-				throw error;
+				console.log('sound error: '+error);
+				return;
 			}
 			
-			console.log('6. Composed Sound data fetched!');
+			console.log('7. Composed Sound data fetched!');
 			for(var s=0; s < data.length; s++) {
 				contentObject.Files.push(data[s]);
 			}
