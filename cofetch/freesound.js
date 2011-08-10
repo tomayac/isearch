@@ -44,7 +44,7 @@ var methods = {
 	        var soundData;
 	        var detailsURL;
 	        
-	        if(sounds.length > maxResults) {
+	        if(sounds.length < maxResults) {
 	        	maxResults = sounds.length;
 	        }
 	        
