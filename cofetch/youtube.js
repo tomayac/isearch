@@ -8,7 +8,7 @@ var methods = {
       if (!this.options.args[0]) {
         this.exit('No arguments were given to the Youtube job');
       }
-      var query = this.options.args[0];
+      var query = this.options.args[0].replace(/\s/g,'+');
       var results = new Array();
       
       var maxResults = 10;

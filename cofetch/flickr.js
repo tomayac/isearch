@@ -16,7 +16,7 @@ var methods = {
 		var results = new Array();
 
 		var apiKey = '5226908fe75b3dae6290f60162a501d5';
-		var maxResults = 20;
+		var maxResults = 10;
 		
 		var licenses = [
 	                   { "name": "All Rights Reserved", "url": "" },

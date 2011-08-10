@@ -20,11 +20,11 @@ var methods = {
 			
 			if(start < data.length) {
 				//Return the current result object
-				console.log('process input item: '+start);
+				console.log('process weather data for input item: '+start);
 				callback([data[start]]);
 				
 			} else {
-				console.log('input end');
+				console.log('end of fetching weather data');
 				//There is nothing left for the job, so stop it
 				callback(null,false);
 			}
@@ -127,8 +127,8 @@ var methods = {
 				var tempDate = input.Date.split(' ');
 				var resDate = tempDate[0].split('-');
 				var resTime = tempDate[1].split(':');
-				resTime[0] = parseInt(resTime[0].replace(/^(0+)/g,''));
-				resTime[1] = parseInt(resTime[1].replace(/^(0+)/g,''));
+				resTime[0] = parseInt(resTime[0].replace(/0(\d\/)/g,''));
+				resTime[1] = parseInt(resTime[1].replace(/0(\d\/)/g,''));
 				resTime = new Date(2010,1,1,resTime[0],resTime[1],0);
 
 				var requestURL = 'http://api.wunderground.com/history/cgi-bin/findweather/getForecast?'

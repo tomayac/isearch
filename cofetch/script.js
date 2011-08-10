@@ -602,7 +602,7 @@ fetch.get(1,function(error, data){
 		console.log('Error: ' + error);
 	}
 	
-	console.log('Got Data!');
+	console.log('Content object data:');
 	console.log(data);
 });
 
