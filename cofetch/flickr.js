@@ -13,7 +13,7 @@ var methods = {
 			this.exit('No arguments were given to the Flickr job');
 		}
 		var query = this.options.args[0].replace(' ','+');
-		var results = this.options.args[1];
+		var results = new Array();
 
 		var apiKey = '5226908fe75b3dae6290f60162a501d5';
 		var maxResults = 20;
@@ -135,7 +135,7 @@ var methods = {
 						
 						if (results.length === maxResults) {
 							//Exit the job if we're done, i.e Array full
-							context.emit();
+							context.emit(results);
 			            }
 					}); // end images sizes callback
 				}); // end image info callback
@@ -148,6 +148,6 @@ var methods = {
 var job = new nodeio.Job({timeout:10}, methods);
 
 //Exposes it publicly
-exports.fetch = function(query, results, callback) {
-	nodeio.start(job, {args: [query, results]}, callback);
+exports.fetch = function(query, callback) {
+	nodeio.start(job, {args: [query]}, callback, true);
 };

@@ -1,7 +1,7 @@
 /*
  * This script collects and manages all data for a content objects
  */
-var nodeio  = require('node.io');
+var step    = require('step');
     modeldb = require('./modeldb');
     flickr  = require('./flickr');
     youtube = require('./youtube'),
@@ -10,8 +10,8 @@ var nodeio  = require('node.io');
 
 exports.get = function(index, callback) {
 	
-	//scraping data storage
-	var scrapingData = {
+	//content object data storage
+	var contentObject = {
 			  "ID": index,
 			  "Name": "",
 			  "Screenshot": "",
@@ -20,8 +20,102 @@ exports.get = function(index, callback) {
 			  "Files": []
 	};
 	
-	var context = this;
+	//Step through the content object data collection
+	Step(
+		function getModelData() {	
+			console.log('1. Start fetching Content Object data for 3D model with index '+index);
+			modeldb.fetch(index, this);
+		},
+		function getImageData(error,data) {
+			if(error) {
+				throw error;
+			}
+			
+			console.log('2. Model data fetched!');
+			console.log(data);
+			contentObject.Name = data.Name;
+			contentObject.Screenshot = data.Screenshot;
+			contentObject.CategoryPath = data.Category;
+			
+			//We wont need the category path in the individual files
+			delete data.Category;
+			
+			//Push the 3D model to the files array of the content object
+			contentObject.Files.push(data);
+			
+			contentObject.Freetext = "";
+			
+			flickr.fetch(contentObject.Name,this);
+		},
+		function getImageWeatherData(error,data) {
+			if(error) {
+				throw error;
+			}
+			console.log('3. Flickr images fetched!');
+			//Get weather data for images
+			weather.fetch(data,this);
+		},
+		function getVideoData(error,data) {
+			if(error) {
+				throw error;
+			}
+			console.log('4. Weather data for flickr images fetched!');
+			console.log(data);
+			
+			for(var w=0; w < data.length; w++) {
+				contentObject.Files.push(data[w]);
+			}
+			
+			//Get videos for content object
+			youtube.fetch(contentObject.Name,this);
+		},
+		function getSoundData(error,data) {
+			if(error) {
+				throw error;
+			}
+			console.log('5. YouTube data fetched!');
+			console.log(data);
+			
+			for(var y=0; y < data.length; y++) {
+				contentObject.Files.push(data[y]);
+			}
+			
+			//Get audio for content object
+			sound.fetch(contentObject.Name, true, this);
+		},
+		function evaluateSoundData(error,data) {
+			if(error) {
+				throw error;
+			}
+			
+			if(data.length < 1) {
+				//Get audio for content object
+				sound.fetch(contentObject.Name, false, this);
+			} else {
+				console.log('6. Sound data with geo information fetched!');
+				console.log(data);
+				//Get weather data for sounds
+				weather.fetch(data,this);
+			}
+		},
+		function finalizeData(error,data) {
+			if(error) {
+				throw error;
+			}
+			
+			console.log('7. Composed Sound data fetched!');
+			console.log(data);
+			for(var s=0; s < data.length; s++) {
+				contentObject.Files.push(data[s]);
+			}
+			
+			console.log('Finished!');
+		}
+	);
 	
+	//Return the collected content object
+	callback(null, contentObject);
+	/*
 	//Start collecting the data for the given index
 	modeldb.fetch(index, function(error, data) {
 		
@@ -116,7 +210,7 @@ exports.get = function(index, callback) {
 			});
 		});
 		
-	});
+	});*/
 };    
     
     

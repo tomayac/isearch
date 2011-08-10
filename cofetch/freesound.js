@@ -11,8 +11,8 @@ var methods = {
         this.exit('No arguments were given to the Freesound job');
       }
       var query = this.options.args[0];
-      var results = this.options.args[1];
-      var isGeo = this.options.args[2];
+      var isGeo = this.options.args[1];
+      var results = new Array();
       
       var maxResults = 10;
       var freesoundURL = "http://tabasco.upf.edu/api/sounds/search/?"
@@ -82,18 +82,18 @@ var methods = {
             results.push(result);
             if (results.length===5) {
               //Exit the job if we're done, i.e Array full
-              that.emit();
+              that.emit(results);
             }
           }); 
         }
       });
     }
-}
+};
 
 //Creates the job
 var job = new nodeio.Job({timeout:10}, methods);
 
 //Exposes it publicly
-exports.fetch = function(query, results, isGeo, callback) {
-  nodeio.start(job, {args: [query, results, isGeo]}, callback);
-}
+exports.fetch = function(query, isGeo, callback) {
+  nodeio.start(job, {args: [query, isGeo]}, callback, true);
+};
