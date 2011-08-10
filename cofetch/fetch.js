@@ -105,7 +105,7 @@ exports.get = function(index, callback) {
 		function evaluateSoundData(error,data) {
 			if(error) {
 				console.log('sound error: '+error);
-				return;
+				return [];
 			}
 			
 			console.log('6. Sound data with geo information fetched!');
