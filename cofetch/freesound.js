@@ -43,12 +43,13 @@ var methods = {
 	        var soundID;
 	        var soundData;
 	        var detailsURL;
+	        
+	        if(sounds.length > maxResults) {
+	        	maxResults = sounds.length;
+	        }
+	        
 	        //let's loop through the array of videos
-	        for (var i=0;i<sounds.length;i++) {
-	          
-	          if(i >= maxResults) {
-	        	  break;
-	          }
+	        for (var i=0;i<maxResults;i++) {
 	        	
 	          //We get the ID of a sound
 	          soundID = sounds[i].id;
@@ -64,28 +65,30 @@ var methods = {
 	               that.exit(detailsError); 
 	            }
 	            
-	            soundData = JSON.parse(soundResponse);
-	            result = {
-	              "Type": "SoundType",
-	              "Name": soundData['original_filename'],
-	              "Tags": soundData.tags,
-	              "Extension": soundData.type,
-	              "Licence": "CC", 
-	              "LicenceURL": soundData.license,
-	              "Author": soundData.user.username,
-	              "Date": soundData.created,
-	              "Size": "",
-	              "URL": soundData.url,
-	              "Preview": soundData.waveform_m,
-	              "PreviewOGG": soundData['preview-lq-ogg'],
-	              "Length": soundData.duration,
-	              "Emotions": [],
-	              "Location": [],
-	              "Weather": {}
-	            };
-	            
+	            if(soundResponse) {
+		            soundData = JSON.parse(soundResponse);
+		            result = {
+		              "Type": "SoundType",
+		              "Name": soundData['original_filename'],
+		              "Tags": soundData.tags,
+		              "Extension": soundData.type,
+		              "Licence": "CC", 
+		              "LicenceURL": soundData.license,
+		              "Author": soundData.user.username,
+		              "Date": soundData.created,
+		              "Size": "",
+		              "URL": soundData.url,
+		              "Preview": soundData.waveform_m,
+		              "PreviewOGG": soundData['preview-lq-ogg'],
+		              "Length": soundData.duration,
+		              "Emotions": [],
+		              "Location": [],
+		              "Weather": {}
+		            };
+	            }
 	            results.push(result);
-	            if (results.length===5) {
+	            
+	            if (results.length===maxResults) {
 	              //Exit the job if we're done, i.e Array full
 	              that.emit(results);
 	            }
