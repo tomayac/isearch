@@ -48,7 +48,7 @@ var methods = {
         	if(res.Result) {
         		result.Name = res.Result.Label;
         		result.FreeText = res.Result.Description;
-        		result.URL = 'http://en.wikipedia.org/wiki/' + result.URI.substring((result.URI.lastIndexOf('/')+1),result.URI.length);
+        		result.URL = 'http://en.wikipedia.org/wiki/' + res.Result.URI.substring((res.Result.URI.lastIndexOf('/')+1),res.Result.URI.length);
         	}
         	
         	//Exit the Job returning the results array
