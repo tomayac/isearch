@@ -66,7 +66,7 @@ exports.get = function(index, callback) {
 			var flickrQuery = contentObject.Name;
 			
 			if(contentObject.Category === 'Fish') {
-				flickrQuery += ' underwater';
+				flickrQuery += '+underwater';
 			}
 			
 			flickr.fetch(flickrQuery,this);
@@ -94,7 +94,7 @@ exports.get = function(index, callback) {
 			var youtubeQuery = contentObject.Name;
 			
 			if(contentObject.Category === 'Fish') {
-				youtubeQuery += ' underwater';
+				youtubeQuery += '+underwater';
 			}
 			
 			//Get videos for content object
