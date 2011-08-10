@@ -45,7 +45,7 @@ exports.get = function(index, callback) {
 			delete data[0].CategoryPath;
 			
 			//Push the 3D model to the files array of the content object
-			contentObject.Files.push(data);
+			contentObject.Files.push(data[0]);
 			
 			//Fetch free text data for the model
 			dbpedia.fetch(contentObject.Name, category, this);
@@ -60,7 +60,7 @@ exports.get = function(index, callback) {
 			
 			if(data.Description) {
 				//Push the text data in the Files array because it will be treated as MediaItem in RUCoD
-				contentObject.Files.push(data);
+				contentObject.Files.push(data[0]);
 			}
 			
 			flickr.fetch(contentObject.Name,this);
@@ -82,7 +82,7 @@ exports.get = function(index, callback) {
 			console.log('4.1. Weather data for flickr images fetched!');
 			
 			for(var w=0; w < data.length; w++) {
-				contentObject.Files.push(data[w]);
+				contentObject.Files.push(data[w][0]);
 			}
 			
 			//Get videos for content object
@@ -125,7 +125,7 @@ exports.get = function(index, callback) {
 			
 				console.log('7. Composed Sound data fetched!');
 				for(var s=0; s < data.length; s++) {
-					contentObject.Files.push(data[s]);
+					contentObject.Files.push(data[s][0]);
 				}
 			}
 			console.log('Finished!');
