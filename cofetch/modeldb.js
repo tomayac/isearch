@@ -59,11 +59,16 @@ var modelMethods = {
 
 //Creates the job
 var modelJob = new nodeio.Job({timeout:10}, modelMethods);
-var fetchModel = function(id, callback) {
+
+//Create the object
+var Model = function() {	
+}; 
+
+Model.prototype.fetch = function(id, callback) {
   nodeio.start(modelJob, {args: [id]}, callback, true);
 };
 
 //Exposes it publicly
 if (typeof module !== 'undefined' && "exports" in module) {
-	  module.exports.fetchModel = fetchModel; 
+	  module.exports.Model = Model; 
 }  

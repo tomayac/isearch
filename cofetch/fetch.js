@@ -38,7 +38,9 @@ Fetch.prototype.get = function(index, queries, callback) {
 	step(
 		function getModelData() {	
 			console.log('1. Start fetching Content Object data for 3D model with index '+index);
-			modeldb.fetchModel(index, this);
+			
+			var model = new modeldb.Model();
+			model.fetch(index, this);
 		},
 		function getTextData(error,data) {
 			if(error) {
@@ -190,5 +192,5 @@ Fetch.prototype.get = function(index, queries, callback) {
 
 //Hook into commonJS module systems
 if (typeof module !== 'undefined' && "exports" in module) {
-  module.exports = Fetch;
+  module.exports.Fetch = Fetch;
 }   
