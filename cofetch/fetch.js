@@ -194,11 +194,12 @@ Fetch.prototype.get = function(index, queries, callback) {
 			}
 			if(error) {
 				console.log('sound error: '+error);
-			} 
+			} else { 
 			
-			console.log('6. Composed Sound data fetched!');
-			for(var s=0; s < data.length; s++) {
-				contentObject.Files.push(data[s][0]);
+				console.log('6. Composed Sound data fetched!');
+				for(var s=0; s < data.length; s++) {
+					contentObject.Files.push(data[s][0]);
+				}
 			}
 			
 			delete contentObject.Category;
