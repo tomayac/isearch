@@ -1,12 +1,11 @@
 /* Author: Arnaud */
-
 var cofetchHandler = (function() {
   
   var contentObjectID;
   
   //Variable to hold the scraped data
   var scraperData = {};
-  var threed = {}; //How do we populate this one?
+  var threed = {};
   var videos = [];
   var sounds = [];
   var images = [];
@@ -28,9 +27,27 @@ var cofetchHandler = (function() {
       timeout: 60000,
       success: function(data) {
         console.log('Data for CO #' + id + ' successfully fetched.');
+                
         //Store the returned data
         scraperData = data;
-        return data;
+        
+        //Now, let's sort the files according to their type
+        var files = scraperData.Files;
+        $.each(files, function(index, file){
+          if (file.Type === "ImageType") {
+            images.push(file);
+          } else if (file.Type === "Object3D") {
+            threed = file;
+          } else if (file.Type === "VideoType") {
+            videos.push(file);
+          } else if (file.Type === "SoundType") {
+            sounds.push(file);
+          }
+        });
+        
+        //Populate the form
+        populateForm();
+        
       },
       error: function(jqXHR, textStatus, errorThrown) {
         alert('error ' + textStatus + " " + errorThrown);    
@@ -40,18 +57,23 @@ var cofetchHandler = (function() {
   };
   
   var populateForm = function() {
+    
+    console.log(scraperData);
+    
     var changes = [
-      {id: "main-name", value: "here is the name"},
-      {id: "main-categoryPath", value: "animal/fish"},
+      {id: "main-name", value: scraperData.Name},
+      {id: "main-categoryPath", value: scraperData.CategoryPath},
       {id: "main-screenshot", value: "3d"}, //defaut: 3d screenshot
       {id: "text-content", value: scraperData.FreeText}
     ];
     set(changes);
     
-    set3d();
-    setVideo();
-    setSound();
-    setImage();
+    console.log('Will set the individual mode fieldsets');
+    
+    if(threed.length > 0) { set3d(); }
+    if(videos.length > 0) { setVideo(); }
+    if(sounds.length > 0) { setSound(); }
+    if(images.length > 0) { setImage(); }
     
   };
   
@@ -359,7 +381,9 @@ var cofetchHandler = (function() {
       //We have some fields to set
       var i;
       for (i=0; i<changes.length; i++){
-        setField(changes[i].id, changes[i].value)
+        if(typeof changes[i].value !== undefined) {
+          setField(changes[i].id, changes[i].value)
+        }
       }
     }
   };
@@ -390,7 +414,13 @@ var cofetchHandler = (function() {
     setSound: setSound, 
     setImage: setImage,
     save: save, 
-    getParameterByName: getParameterByName
+    getParameterByName: getParameterByName,
+    //For debug purpose, this could be useful
+    scraperData: scraperData,
+    videos: videos,
+    sounds: sounds,
+    images: images, 
+    threed: threed
   };
   
 }());
