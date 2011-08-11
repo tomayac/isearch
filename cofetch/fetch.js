@@ -42,6 +42,10 @@ Fetch.prototype.get = function(index, queries, callback) {
 			modeldb.fetchModel(index, this);
 		},
 		function getTextData(error,data) {
+			//Be sure to have data before going on
+			if(!error && !data) {
+				error = 'No model data could be retrieved.';
+			}
 			if(error) {
 				console.log('modeldb error: '+error);
 				return;
@@ -71,6 +75,10 @@ Fetch.prototype.get = function(index, queries, callback) {
 			dbpedia.fetchText(contentObject.Name, contentObject.Category, this);
 		},
 		function getImageData(error,data) {
+			//Be sure to have data before going on
+			if(!error && !data) {
+				error = 'No text data could be retrieved.';
+			}
 			if(error) {
 				console.log('dbpedia error: '+error);
 				return;
@@ -93,6 +101,10 @@ Fetch.prototype.get = function(index, queries, callback) {
 			flickr.fetchImage(flickrQuery,this);
 		},
 		function getImageWeatherData(error,data) {
+			//Be sure to have data before going on
+			if(!error && !data) {
+				error = 'No image data could be retrieved.';
+			}
 			if(error) {
 				console.log('flickr error: '+error);
 				return;
@@ -102,6 +114,10 @@ Fetch.prototype.get = function(index, queries, callback) {
 			weather.fetchWeather(data,this);
 		},
 		function getVideoData(error,data) {
+			//Be sure to have data before going on
+			if(!error && !data) {
+				error = 'No weather data could be retrieved.';
+			}
 			if(error) {
 				console.log('weather error: '+error);
 				return;
@@ -126,6 +142,10 @@ Fetch.prototype.get = function(index, queries, callback) {
 			youtube.fetchVideo(youtubeQuery,this);
 		},
 		function getSoundData(error,data) {
+			//Be sure to have data before going on
+			if(!error && !data) {
+				error = 'No video data could be retrieved.';
+			}
 			if(error) {
 				console.log('youtube error: '+error);
 				return;
@@ -146,12 +166,15 @@ Fetch.prototype.get = function(index, queries, callback) {
 			sound.fetchSound(soundQuery, true, this);
 		},
 		function evaluateSoundData(error,data) {
+			//Be sure to have data before going on
+			if(!error && !data) {
+				error = 'No sound data could be retrieved.';
+			}
 			if(error) {
 				console.log('sound error: '+error);
-				return [];
+				return;
 			}
 			
-			console.log('6. Sound data with geo information fetched!');
 			
 			if(data.length < 1) {
 				
@@ -164,19 +187,23 @@ Fetch.prototype.get = function(index, queries, callback) {
 				//Get audio for content object
 				sound.fetchSound(soundQuery, false, this);
 			} else {
+				console.log('5.1 Sound data with geo information fetched!');
 				//Get weather data for sounds
 				weather.fetchWeather(data,this);
 			}
 		},
 		function finalizeData(error,data) {
+			//Be sure to have data before going on
+			if(!error && !data) {
+				error = 'No composed sound data could be retrieved.';
+			}
 			if(error) {
 				console.log('sound error: '+error);
-			} else {
+			} 
 			
-				console.log('7. Composed Sound data fetched!');
-				for(var s=0; s < data.length; s++) {
-					contentObject.Files.push(data[s][0]);
-				}
+			console.log('6. Composed Sound data fetched!');
+			for(var s=0; s < data.length; s++) {
+				contentObject.Files.push(data[s][0]);
 			}
 			
 			delete contentObject.Category;
