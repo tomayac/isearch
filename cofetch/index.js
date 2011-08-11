@@ -33,8 +33,8 @@ server.get('/get/:id', function(req, res){
      console.log(responseString);
      
      //Write the data back
-     res.writeHead(200, {'Content-Type': 'text/plain'});
-     res.end('_cofetchcb(\'' + responseString + '\')');
+     res.writeHead(200, {'Content-Type': 'application/json'});
+     res.end('_cofetchcb({"response":' + responseString + '})');
    });
    
  });

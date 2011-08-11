@@ -6,6 +6,7 @@ var cofetchHandler = (function() {
   //Variable to hold the scraped data
   var scraperData = {};
   var threed = {};
+  var text = {};
   var videos = [];
   var sounds = [];
   var images = [];
@@ -29,7 +30,9 @@ var cofetchHandler = (function() {
         console.log('Data for CO #' + id + ' successfully fetched.');
                 
         //Store the returned data
-        scraperData = data;
+        console.log(data);
+        scraperData = data.response;
+        console.log(scraperData);
         
         //Now, let's sort the files according to their type
         var files = scraperData.Files;
@@ -42,6 +45,8 @@ var cofetchHandler = (function() {
             videos.push(file);
           } else if (file.Type === "SoundType") {
             sounds.push(file);
+          } else if (file.Type === "TextType") {
+            text = file;
           }
         });
         
@@ -64,7 +69,7 @@ var cofetchHandler = (function() {
       {id: "main-name", value: scraperData.Name},
       {id: "main-categoryPath", value: scraperData.CategoryPath},
       {id: "main-screenshot", value: "3d"}, //defaut: 3d screenshot
-      {id: "text-content", value: scraperData.FreeText}
+      {id: "text-content", value: text.FreeText}
     ];
     set(changes);
     
@@ -223,7 +228,7 @@ var cofetchHandler = (function() {
     var image = images[0];
     
     //Set the Flickr preview to the right URL
-    $('#video-previewFlickr').attr(
+    $('#image-previewFlickr').attr(
       {'src': image.Preview}
     );
     
@@ -420,7 +425,8 @@ var cofetchHandler = (function() {
     videos: videos,
     sounds: sounds,
     images: images, 
-    threed: threed
+    threed: threed, 
+    text: text
   };
   
 }());
