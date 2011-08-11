@@ -59,12 +59,9 @@ exports.get = function(index, callback) {
 				return;
 			}
 			
-			console.log('3. Text data fetched! ('+data.length+')');
-			
-			if(data.Description) {
-				//Push the text data in the Files array because it will be treated as MediaItem in RUCoD
-				contentObject.Files.push(data[0]);
-			}
+			console.log('3. Text data fetched!');
+			//Push the text data in the Files array because it will be treated as MediaItem in RUCoD
+			contentObject.Files.push(data[0]);
 			
 			var flickrQuery = contentObject.Name;
 			

@@ -44,7 +44,7 @@ var methods = {
         			"FreeText":"",
         			"URL":""
         	};
-
+        	
         	if(res.Result) {
         		result.Name = res.Result.Label;
         		result.FreeText = res.Result.Description;
