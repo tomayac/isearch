@@ -596,7 +596,7 @@ RWML File
 
 var fetch = require('./fetch');
 
-var myfetch = new fetch.Fetch();
+var myfetch = new fetch();
 myfetch.get(12,{},function(error, data){
 	if(error) {
 		console.log('Error: ' + error);
@@ -605,7 +605,7 @@ myfetch.get(12,{},function(error, data){
 	console.log('Content object data:');
 	console.log(data);
 	
-	var nextfetch = new fetch.Fetch();
+	var nextfetch = new fetch();
 
 	nextfetch.get(18,{},function(error, data){
 		if(error) {

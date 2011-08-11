@@ -65,5 +65,5 @@ var fetchModel = function(id, callback) {
 
 //Exposes it publicly
 if (typeof module !== 'undefined' && "exports" in module) {
-	  module.exports = fetchModel; 
+	  module.exports.fetchModel = fetchModel; 
 }  

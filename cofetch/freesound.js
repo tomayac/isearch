@@ -107,5 +107,5 @@ var fetchSound = function(query, isGeo, callback) {
 
 //Exposes it publicly
 if (typeof module !== 'undefined' && "exports" in module) {
-	  module.exports = fetchSound; 
+	  module.exports.fetchSound = fetchSound; 
 } 

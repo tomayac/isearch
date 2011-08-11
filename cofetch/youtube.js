@@ -91,5 +91,5 @@ var fetchVideo = function(query, callback) {
 
 //Exposes it publicly
 if (typeof module !== 'undefined' && "exports" in module) {
-	  module.exports = fetchVideo; 
+	  module.exports.fetchVideo = fetchVideo; 
 } 

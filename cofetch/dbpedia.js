@@ -73,5 +73,5 @@ var fetchText = function(query, queryClass, callback) {
 
 //Exposes it publicly
 if (typeof module !== 'undefined' && "exports" in module) {
-	  module.exports = fetchText; 
+	  module.exports.fetchText = fetchText; 
 }   

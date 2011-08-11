@@ -158,5 +158,5 @@ var fetchImage = function(query, callback) {
 
 //Exposes it publicly
 if (typeof module !== 'undefined' && "exports" in module) {
-	  module.exports = fetchImage; 
+	  module.exports.fetchImage = fetchImage; 
 }   

@@ -266,5 +266,5 @@ var fetchWeather = function(results, callback) {
 
 //Exposes it publicly
 if (typeof module !== 'undefined' && "exports" in module) {
-	  module.exports = fetchWeather; 
+	  module.exports.fetchWeather = fetchWeather; 
 }  
