@@ -13,16 +13,23 @@ var cofetchHandler = (function() {
   
   var fetch = function(id) {
     
+    //var serverURL = "http://isearch.ai.erfurt.de:8082/get/";
+    var serverURL = "http://localhost:8082/get/";
+    
+    
     contentObjectID = id;
+    console.log('Waiting results for object #' + id);
     
     //Request our data
     $.ajax({
-      url: 'http://isearch.ai.erfurt.de:8082/',
+      url: serverURL + contentObjectID,
       dataType: "jsonp",
       jsonpCallback: "_cofetchcb",
-      timeout: 5000,
+      timeout: 60000,
       success: function(data) {
         console.log('Data for CO #' + id + ' successfully fetched.');
+        //Store the returned data
+        scraperData = data;
         return data;
       },
       error: function(jqXHR, textStatus, errorThrown) {

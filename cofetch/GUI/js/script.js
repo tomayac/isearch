@@ -11,8 +11,9 @@ $(document).ready(function(){
       currentID = 1;
     };
     console.log(currentID);
-    //cofetchHandler.fetch(requestedID);
-    //cofetchHandler.populateForm();
+    
+    cofetchHandler.fetch(currentID);
+    cofetchHandler.populateForm();
     
   /*===================================
     Registering all the events handlers

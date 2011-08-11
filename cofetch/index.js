@@ -29,7 +29,7 @@ server.get('/get/:id', function(req, res){
      
      //Write the data back
      res.writeHead(200, {'Content-Type': 'text/plain'});
-     res.end('cofetchcb(\'{' + responseString + '}\')');
+     res.end('_cofetchcb(\'{' + responseString + '}\')');
    
    });
  });
