@@ -3,7 +3,7 @@ var nodeio = require('node.io');
 var modelMethods = {
     input: false,
     run: function() {
-      
+      console.log('heyho modeldb');
       //Let's get the arguments passed to the script
       if (!this.options.args[0]) {
         this.exit('No arguments were given to the ModelDB job');
