@@ -1,7 +1,7 @@
 /*
  * This script collects and manages all data for a content objects
  */
-var step    = require('step');
+var step    = require('./step');
     modeldb = require('./modeldb');
     dbpedia = require('./dbpedia');
     flickr  = require('./flickr');

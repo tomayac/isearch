@@ -14,8 +14,21 @@ var cofetchHandler = (function() {
   var fetch = function(id) {
     
     contentObjectID = id;
-    //Request
-    //and store data into scraperData
+    
+    //Request our data
+    $.ajax({
+      url: 'http://isearch.ai.erfurt.de:8082/',
+      dataType: "jsonp",
+      jsonpCallback: "_cofetchcb",
+      timeout: 5000,
+      success: function(data) {
+        console.log('Data for CO #' + id + ' successfully fetched.');
+        return data;
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        alert('error ' + textStatus + " " + errorThrown);    
+      }
+    });
     
   };
   
