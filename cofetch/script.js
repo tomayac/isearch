@@ -594,6 +594,8 @@ RWML File
 
 */
 
+var fetch = require('./fetch');
+
 var myfetch = new fetch.Fetch();
 myfetch.get(12,{},function(error, data){
 	if(error) {
