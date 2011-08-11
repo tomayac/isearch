@@ -1,6 +1,6 @@
 var nodeio = require('node.io');
 
-var freesoundMethods = {
+var soundMethods = {
     input: false,
     run: function() {
       
@@ -100,9 +100,12 @@ var freesoundMethods = {
 };
 
 //Creates the job
-var freesoundJob = new nodeio.Job({timeout:20}, freesoundMethods);
+var soundJob = new nodeio.Job({timeout:20}, soundMethods);
+var fetchSound = function(query, isGeo, callback) {
+  nodeio.start(soundJob, {args: [query, isGeo]}, callback, true);
+};
 
 //Exposes it publicly
-exports.fetch = function(query, isGeo, callback) {
-  nodeio.start(freesoundJob, {args: [query, isGeo]}, callback, true);
-};
+if (typeof module !== 'undefined' && "exports" in module) {
+	  module.exports = fetchSound; 
+} 

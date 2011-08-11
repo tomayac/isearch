@@ -4,7 +4,7 @@
  */
 var nodeio = require('node.io');
 
-var flickrMethods = {
+var imageMethods = {
 	input: false,
 	run: function() {
 
@@ -151,9 +151,12 @@ var flickrMethods = {
 };
 
 //Creates the job
-var flickrJob = new nodeio.Job({timeout:10}, flickrMethods);
+var imageJob = new nodeio.Job({timeout:10}, imageMethods);
+var fetchImage = function(query, callback) {
+	nodeio.start(imageJob, {args: [query]}, callback, true);
+};
 
 //Exposes it publicly
-exports.fetch = function(query, callback) {
-	nodeio.start(flickrJob, {args: [query]}, callback, true);
-};
+if (typeof module !== 'undefined' && "exports" in module) {
+	  module.exports = fetchImage; 
+}   

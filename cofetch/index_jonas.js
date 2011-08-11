@@ -72,7 +72,8 @@ http.createServer(function (request, response) {
 	    			userQueries.Sound = parameters[si].replace(/[+]/g,' ');
 	    		}
 	    		
-		    	fetch.get(index, userQueries, function(error, data){
+	    		var cofetcher = new fetch.Fetch();
+	    		cofetcher.get(index, userQueries, function(error, data){
 		    		
 		    		if(error) {
 		    			handleError(error);

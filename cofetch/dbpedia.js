@@ -5,7 +5,7 @@
 var nodeio = require('node.io'),
     xml2js = require('xml2js');
 
-var dbpediaMethods = {
+var textMethods = {
     input: false,
     run: function() {
       
@@ -66,9 +66,12 @@ var dbpediaMethods = {
 };
 
 //Creates the job
-var dbpediaJob = new nodeio.Job({timeout:10}, dbpediaMethods);
+var textJob = new nodeio.Job({timeout:10}, textMethods);
+var fetchText = function(query, queryClass, callback) {
+	  nodeio.start(textJob, {args: [query,queryClass]}, callback, true);
+};
 
 //Exposes it publicly
-exports.fetch = function(query, queryClass, callback) {
-  nodeio.start(dbpediaJob, {args: [query,queryClass]}, callback, true);
-};
+if (typeof module !== 'undefined' && "exports" in module) {
+	  module.exports = fetchText; 
+}   

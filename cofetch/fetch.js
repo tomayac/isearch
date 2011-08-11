@@ -1,7 +1,7 @@
 /*
  * This script collects and manages all data for a content objects
  */
-var step    = require('./step');
+var step    = require('step');
     modeldb = require('./modeldb');
     dbpedia = require('./dbpedia');
     flickr  = require('./flickr');
@@ -38,7 +38,7 @@ Fetch.prototype.get = function(index, queries, callback) {
 	step(
 		function getModelData() {	
 			console.log('1. Start fetching Content Object data for 3D model with index '+index);
-			modeldb.fetch(index, this);
+			modeldb.fetchModel(index, this);
 		},
 		function getTextData(error,data) {
 			if(error) {
@@ -67,7 +67,7 @@ Fetch.prototype.get = function(index, queries, callback) {
 			}
 			
 			//Fetch free text data for the model
-			dbpedia.fetch(contentObject.Name, contentObject.Category, this);
+			dbpedia.fetchText(contentObject.Name, contentObject.Category, this);
 		},
 		function getImageData(error,data) {
 			if(error) {
@@ -89,7 +89,7 @@ Fetch.prototype.get = function(index, queries, callback) {
 				flickrQuery += ' '+contentObject.Category;
 			}
 			
-			flickr.fetch(flickrQuery,this);
+			flickr.fetchImage(flickrQuery,this);
 		},
 		function getImageWeatherData(error,data) {
 			if(error) {
@@ -98,7 +98,7 @@ Fetch.prototype.get = function(index, queries, callback) {
 			}
 			console.log('4. Flickr images fetched!');
 			//Get weather data for images
-			weather.fetch(data,this);
+			weather.fetchWeather(data,this);
 		},
 		function getVideoData(error,data) {
 			if(error) {
@@ -122,7 +122,7 @@ Fetch.prototype.get = function(index, queries, callback) {
 			}
 			
 			//Get videos for content object
-			youtube.fetch(youtubeQuery,this);
+			youtube.fetchVideo(youtubeQuery,this);
 		},
 		function getSoundData(error,data) {
 			if(error) {
@@ -142,7 +142,7 @@ Fetch.prototype.get = function(index, queries, callback) {
 			} 
 			
 			//Get audio for content object
-			sound.fetch(soundQuery, true, this);
+			sound.fetchSound(soundQuery, true, this);
 		},
 		function evaluateSoundData(error,data) {
 			if(error) {
@@ -161,10 +161,10 @@ Fetch.prototype.get = function(index, queries, callback) {
 				} 
 				
 				//Get audio for content object
-				sound.fetch(soundQuery, false, this);
+				sound.fetchSound(soundQuery, false, this);
 			} else {
 				//Get weather data for sounds
-				weather.fetch(data,this);
+				weather.fetchWeather(data,this);
 			}
 		},
 		function finalizeData(error,data) {
@@ -187,5 +187,8 @@ Fetch.prototype.get = function(index, queries, callback) {
 		}
 	);
 };    
-    
-exports.Fetch = Fetch;    
+
+//Hook into commonJS module systems
+if (typeof module !== 'undefined' && "exports" in module) {
+  module.exports = Fetch;
+}   

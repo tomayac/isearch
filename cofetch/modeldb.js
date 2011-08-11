@@ -15,13 +15,12 @@ var modelMethods = {
         
       //Let's go and request our content
       this.get(modelDbURL, function(error, data, headers) {
-        console.log(modelDbURL);
         
         //Exit if there was a problem with the request
         if (error) {
            this.exit(error); 
         }
-        console.log(data);
+        
         var modelDbResponse = JSON.parse(data);
         var model = modelDbResponse[0];
         
@@ -60,8 +59,11 @@ var modelMethods = {
 
 //Creates the job
 var modelJob = new nodeio.Job({timeout:10}, modelMethods);
-
-//Exposes it publicly
-exports.fetch = function(id, callback) {
+var fetchModel = function(id, callback) {
   nodeio.start(modelJob, {args: [id]}, callback, true);
 };
+
+//Exposes it publicly
+if (typeof module !== 'undefined' && "exports" in module) {
+	  module.exports = fetchModel; 
+}  

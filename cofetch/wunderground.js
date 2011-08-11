@@ -4,7 +4,7 @@
  */
 var nodeio = require('node.io');
 
-var wundergroundMethods = {
+var weatherMethods = {
 		input: function (start, num, callback) {
 	        //Handling the input
 			//Let's get the arguments passed to the script
@@ -259,9 +259,12 @@ var options = {
 	};
 
 //Creates the job
-var wundergroundJob = new nodeio.Job(options, wundergroundMethods);
+var weatherJob = new nodeio.Job(options, weatherMethods);
+var fetchWeather = function(results, callback) {
+	nodeio.start(weatherJob, {args: [results]}, callback, true);
+};
 
 //Exposes it publicly
-exports.fetch = function(results, callback) {
-	nodeio.start(wundergroundJob, {args: [results]}, callback, true);
-};
+if (typeof module !== 'undefined' && "exports" in module) {
+	  module.exports = fetchWeather; 
+}  

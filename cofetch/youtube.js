@@ -1,6 +1,6 @@
 var nodeio = require('node.io');
 
-var youtubeMethods = {
+var videoMethods = {
     input: false,
     run: function() {
       
@@ -84,9 +84,12 @@ var youtubeMethods = {
 };
 
 //Creates the job
-var youtubeJob = new nodeio.Job({timeout:10}, youtubeMethods);
+var videoJob = new nodeio.Job({timeout:10}, videoMethods);
+var fetchVideo = function(query, callback) {
+  nodeio.start(videoJob, {args: [query]}, callback, true);
+};
 
 //Exposes it publicly
-exports.fetch = function(query, callback) {
-  nodeio.start(youtubeJob, {args: [query]}, callback, true);
-};
+if (typeof module !== 'undefined' && "exports" in module) {
+	  module.exports = fetchVideo; 
+} 
