@@ -37,7 +37,7 @@ http.createServer(function (request, response) {
 	
 	    var reqpath = url.parse(request.url).pathname;
 	    //Get the parameters of the request
-    	var parameters = reqpath.split('/');
+    	var parameters = reqpath.replace('/','').split('/');
 		
     	//
 	    // CoFetch specific handlers
@@ -60,6 +60,8 @@ http.createServer(function (request, response) {
 		    		}
 		    		
 		    		console.log("Content Object Data fetched!");
+		    		
+		    		data = '_cofetchcb({"response":'+data+'})';
 		    		
 		    		response.writeHead(status.code,status.message,{ 
 		    			                	'Content-Length': Buffer.byteLength(data,'utf8'),
