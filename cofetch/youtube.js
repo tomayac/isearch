@@ -18,7 +18,9 @@ var methods = {
           + '&max-results=' + maxResults
           + '&v=2'
           + '&alt=json';
-        
+      
+      console.log("Now fetching " + maxResults + " YouTube videos for query '" + query + "'.");
+      
       //Let's go and request our content
       this.get(youtubeURL, function(error, data, headers) {
         

@@ -4,6 +4,12 @@
  It will handle the connections
  and the interactions with the
  GUI (POST and GET requests).
+ -------------------------------
+ To make this work: 
+ 1. node npm install -g express
+ 2. node index.js (this file)
+ 3. visit http://localhost/get/23 
+    (for instance)
  ******************************/
  
 var cofetch = require('./fetch');
@@ -12,14 +18,18 @@ var cofetch = require('./fetch');
 var server = require('express').createServer();
 var port = 8082;
 
-server.get('/:id', function(req, res){
+server.get('/get/:id', function(req, res){
    
    //Fetch the CO
-   cofetch.get(req.param.id, function(data){
-   
+   cofetch.get(req.params.id, function(blablaWillBeNul, data){
+      
+     var responseString = JSON.stringify(data);
+     console.log("Success! Here is the CO: ");
+     console.log(responseString);
+     
      //Write the data back
      res.writeHead(200, {'Content-Type': 'text/plain'});
-     res.end('cofetchcb(\'{"data": ' + data + '}\')');
+     res.end('cofetchcb(\'{' + responseString + '}\')');
    
    });
  });
