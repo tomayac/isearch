@@ -44,11 +44,15 @@ var methods = {
 
         var youtubeResponse = JSON.parse(data);
         var videos = youtubeResponse['feed']['entry'];
-                
-        var i;
+        
+        //Adjust the maxResults parameter if there weren't enough results
+		if(videos.length < maxResults) {
+        	maxResults = videos.length;
+        }
+        
         var result;
         //let's loop through the array of videos
-        for (i=0;i<10;i++) {
+        for (var i=0;i<maxResults;i++) {
           result = {
             "Type": "VideoType",
             "Name": videos[i]['title']['$t'],
