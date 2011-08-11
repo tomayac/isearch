@@ -150,7 +150,7 @@ exports.get = function(index, callback) {
 			console.log('Finished!');
 			
 			//Return the collected content object
-			callback(null, contentObject);
+			callback(null, JSON.stringify(contentObject));
 		}
 	);
 };    
