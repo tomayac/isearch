@@ -11,6 +11,9 @@ var step    = require('./step');
 
 exports.get = function(index, callback) {
 	
+	var queryAdjustment = new Array();
+	    queryAdjustment['Fish'] = ' underwater';
+	
 	//content object data storage
 	var contentObject = {
 			  "ID": index,
@@ -65,8 +68,10 @@ exports.get = function(index, callback) {
 			
 			var flickrQuery = contentObject.Name;
 			
-			if(contentObject.Category === 'Fish') {
-				//flickrQuery += '+underwater';
+			if(queryAdjustment[contentObject.Category]) {
+				flickrQuery += queryAdjustment[contentObject.Category];
+			} else {
+				flickrQuery += ' '+contentObject.Category;
 			}
 			
 			flickr.fetch(flickrQuery,this);
@@ -93,8 +98,10 @@ exports.get = function(index, callback) {
 			//Some query adjustments for youtube
 			var youtubeQuery = contentObject.Name;
 			
-			if(contentObject.Category === 'Fish') {
-				//youtubeQuery += '+underwater';
+			if(queryAdjustment[contentObject.Category]) {
+				youtubeQuery += queryAdjustment[contentObject.Category];
+			} else {
+				youtubeQuery += ' '+contentObject.Category;
 			}
 			
 			//Get videos for content object

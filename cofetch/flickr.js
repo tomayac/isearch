@@ -53,8 +53,14 @@ var methods = {
 			
 			//Get the photo search result
 			var photos = JSON.parse(data).photos.photo;
+			
+			//Adjust the maxResults parameter if there weren't enough results
+			if(photos.length < maxResults) {
+	        	maxResults = photos.length;
+	        }
+			
 			//Iterate through every found photo
-			for (var i=0;i<photos.length;i++) {
+			for (var i=0;i<maxResults;i++) {
 				
 				//Store the image IDs
 				var photoId = photos[i].id;
