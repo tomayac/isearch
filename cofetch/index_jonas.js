@@ -53,7 +53,26 @@ http.createServer(function (request, response) {
 	    		
 	    	} else {
 	    		
-		    	fetch.get(index, function(error, data){
+	    		var userQueries = {};
+	    		//Check if we want to use special queries for each media type
+	    		if(parameters.indexOf('text') != -1) {
+	    			var ti = parameters.indexOf('text') +1;
+	    			userQueries.Text = parameters[ti].replace(/[+]/g,' ');
+	    		}
+	    		if(parameters.indexOf('image') != -1) {
+	    			var ii = parameters.indexOf('image') +1;
+	    			userQueries.Image = parameters[ii].replace(/[+]/g,' ');
+	    		}
+	    		if(parameters.indexOf('video') != -1) {
+	    			var vi = parameters.indexOf('video') +1;
+	    			userQueries.Video = parameters[vi].replace(/[+]/g,' ');
+	    		}
+	    		if(parameters.indexOf('sound') != -1) {
+	    			var si = parameters.indexOf('sound') +1;
+	    			userQueries.Sound = parameters[si].replace(/[+]/g,' ');
+	    		}
+	    		
+		    	fetch.get(index, userQueries, function(error, data){
 		    		
 		    		if(error) {
 		    			handleError(error);

@@ -9,7 +9,14 @@ var step    = require('./step');
     sound   = require('./freesound'),
     weather = require('./wunderground');
 
-exports.get = function(index, callback) {
+exports.get = function(index, queries, callback) {
+	
+	var userQuery = {
+			'Text':queries.Text ? queries.Text : null, 
+			'Image':queries.Image ? queries.Image : null,
+			'Video':queries.Video ? queries.Video : null,
+			'Sound':queries.Sound ? queries.Sound : null
+	};
 	
 	var queryAdjustment = new Array();
 	    queryAdjustment['Fish'] = ' underwater';
@@ -50,6 +57,12 @@ exports.get = function(index, callback) {
 			//Push the 3D model to the files array of the content object
 			contentObject.Files.push(data[0]);
 			
+			var dbpediaQuery = contentObject.Name;
+			
+			if(userQuery.Text) {
+				dbpediaQuery = userQuery.Text;
+			}
+			
 			//Fetch free text data for the model
 			dbpedia.fetch(contentObject.Name, contentObject.Category, this);
 		},
@@ -65,7 +78,9 @@ exports.get = function(index, callback) {
 			
 			var flickrQuery = contentObject.Name;
 			
-			if(queryAdjustment[contentObject.Category]) {
+			if(userQuery.Image) {
+				flickrQuery = userQuery.Image;
+			} else if (queryAdjustment[contentObject.Category]) {
 				flickrQuery += queryAdjustment[contentObject.Category];
 			} else {
 				flickrQuery += ' '+contentObject.Category;
@@ -95,7 +110,9 @@ exports.get = function(index, callback) {
 			//Some query adjustments for youtube
 			var youtubeQuery = contentObject.Name;
 			
-			if(queryAdjustment[contentObject.Category]) {
+			if(userQuery.Video) {
+				youtubeQuery = userQuery.Video;
+			} else if(queryAdjustment[contentObject.Category]) {
 				youtubeQuery += queryAdjustment[contentObject.Category];
 			} else {
 				youtubeQuery += ' '+contentObject.Category;
@@ -115,8 +132,14 @@ exports.get = function(index, callback) {
 				contentObject.Files.push(data[y]);
 			}
 			
+			var soundQuery = contentObject.Name;
+			
+			if(userQuery.Sound) {
+				soundQuery = userQuery.Sound;
+			} 
+			
 			//Get audio for content object
-			sound.fetch(contentObject.Name, true, this);
+			sound.fetch(soundQuery, true, this);
 		},
 		function evaluateSoundData(error,data) {
 			if(error) {
@@ -127,8 +150,15 @@ exports.get = function(index, callback) {
 			console.log('6. Sound data with geo information fetched!');
 			
 			if(data.length < 1) {
+				
+				var soundQuery = contentObject.Name;
+				
+				if(userQuery.Sound) {
+					soundQuery = userQuery.Sound;
+				} 
+				
 				//Get audio for content object
-				sound.fetch(contentObject.Name, false, this);
+				sound.fetch(soundQuery, false, this);
 			} else {
 				//Get weather data for sounds
 				weather.fetch(data,this);

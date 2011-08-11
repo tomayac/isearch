@@ -15,18 +15,21 @@ var methods = {
         
       //Let's go and request our content
       this.get(modelDbURL, function(error, data, headers) {
+        console.log(modelDbURL);
         
         //Exit if there was a problem with the request
         if (error) {
-           this.exit(err); 
+           this.exit(error); 
         }
-
+        console.log(data);
         var modelDbResponse = JSON.parse(data);
         var model = modelDbResponse[0];
         
         if(!model.Name) {
         	this.exit('Not found');
         }
+        
+        var urlsplit = model.Files[0].URL.split('.');
         
         var result;      
         result = {
@@ -41,7 +44,7 @@ var methods = {
             "Author": model.Author,
             "Date": model.Date,
             "Size": model.Files[0].Size,
-            "URL": model.Files[0].URL,
+            "URL": (urlsplit[1] == 'max') ? urlsplit[0]+'.3ds' : model.Files[0].URL,
             "Preview": model.Screenshot,
             "Emotions": [],
             "Location": [],
