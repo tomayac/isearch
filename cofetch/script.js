@@ -594,16 +594,26 @@ RWML File
 
 */
 
-var nodeio = require('node.io'),
-    fetch = require('./fetch');
-
-fetch.get(1,function(error, data){
+var myfetch = new fetch.Fetch();
+myfetch.get(12,{},function(error, data){
 	if(error) {
 		console.log('Error: ' + error);
 	}
 	
 	console.log('Content object data:');
 	console.log(data);
+	
+	var nextfetch = new fetch.Fetch();
+
+	nextfetch.get(18,{},function(error, data){
+		if(error) {
+			console.log('Error: ' + error);
+		}
+	
+		console.log('Content object data:');
+		console.log(data);
+	});
+
 });
 
 

@@ -1,6 +1,6 @@
 var nodeio = require('node.io');
 
-var methods = {
+var modelMethods = {
     input: false,
     run: function() {
       
@@ -59,9 +59,9 @@ var methods = {
 };
 
 //Creates the job
-var job = new nodeio.Job({timeout:10}, methods);
+var modelJob = new nodeio.Job({timeout:10}, modelMethods);
 
 //Exposes it publicly
 exports.fetch = function(id, callback) {
-  nodeio.start(job, {args: [id]}, callback, true);
+  nodeio.start(modelJob, {args: [id]}, callback, true);
 };

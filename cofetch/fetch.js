@@ -9,7 +9,10 @@ var step    = require('./step');
     sound   = require('./freesound'),
     weather = require('./wunderground');
 
-exports.get = function(index, queries, callback) {
+var Fetch = function() {	
+};  
+
+Fetch.prototype.get = function(index, queries, callback) {
 	
 	var userQuery = {
 			'Text':queries.Text ? queries.Text : null, 
@@ -185,4 +188,4 @@ exports.get = function(index, queries, callback) {
 	);
 };    
     
-    
+exports.Fetch = Fetch;    

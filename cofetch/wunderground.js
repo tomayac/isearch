@@ -4,7 +4,7 @@
  */
 var nodeio = require('node.io');
 
-var methods = {
+var wundergroundMethods = {
 		input: function (start, num, callback) {
 	        //Handling the input
 			//Let's get the arguments passed to the script
@@ -259,9 +259,9 @@ var options = {
 	};
 
 //Creates the job
-var job = new nodeio.Job(options, methods);
+var wundergroundJob = new nodeio.Job(options, wundergroundMethods);
 
 //Exposes it publicly
 exports.fetch = function(results, callback) {
-	nodeio.start(job, {args: [results]}, callback, true);
+	nodeio.start(wundergroundJob, {args: [results]}, callback, true);
 };
