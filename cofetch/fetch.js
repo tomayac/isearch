@@ -43,12 +43,12 @@ Fetch.prototype.get = function(index, queries, callback) {
 		},
 		function getTextData(error,data) {
 			//Be sure to have data before going on
-			if(!error && !data) {
+			if(!error && data.length < 1) {
 				error = 'No model data could be retrieved.';
 			}
 			if(error) {
 				console.log('modeldb error: '+error);
-				return;
+				return [];
 			}
 			
 			console.log('2. Model data fetched!');
@@ -76,12 +76,12 @@ Fetch.prototype.get = function(index, queries, callback) {
 		},
 		function getImageData(error,data) {
 			//Be sure to have data before going on
-			if(!error && !data) {
+			if(!error && data.length < 1) {
 				error = 'No text data could be retrieved.';
 			}
 			if(error) {
 				console.log('dbpedia error: '+error);
-				return;
+				return [];
 			}
 			
 			console.log('3. Text data fetched!');
@@ -102,12 +102,12 @@ Fetch.prototype.get = function(index, queries, callback) {
 		},
 		function getImageWeatherData(error,data) {
 			//Be sure to have data before going on
-			if(!error && !data) {
+			if(!error && data.length < 1) {
 				error = 'No image data could be retrieved.';
 			}
 			if(error) {
 				console.log('flickr error: '+error);
-				return;
+				return [];
 			}
 			console.log('4. Flickr images fetched!');
 			//Get weather data for images
@@ -115,12 +115,12 @@ Fetch.prototype.get = function(index, queries, callback) {
 		},
 		function getVideoData(error,data) {
 			//Be sure to have data before going on
-			if(!error && !data) {
+			if(!error && data.length < 1) {
 				error = 'No weather data could be retrieved.';
 			}
 			if(error) {
 				console.log('weather error: '+error);
-				return;
+				return [];
 			}
 			console.log('4.1. Weather data for flickr images fetched!');
 			
@@ -143,12 +143,12 @@ Fetch.prototype.get = function(index, queries, callback) {
 		},
 		function getSoundData(error,data) {
 			//Be sure to have data before going on
-			if(!error && !data) {
+			if(!error && data.length < 1) {
 				error = 'No video data could be retrieved.';
 			}
 			if(error) {
 				console.log('youtube error: '+error);
-				return;
+				return [];
 			}
 			console.log('5. YouTube data fetched!');
 			
@@ -166,15 +166,10 @@ Fetch.prototype.get = function(index, queries, callback) {
 			sound.fetchSound(soundQuery, true, this);
 		},
 		function evaluateSoundData(error,data) {
-			//Be sure to have data before going on
-			if(!error && !data) {
-				error = 'No sound data could be retrieved.';
-			}
 			if(error) {
 				console.log('sound error: '+error);
-				return;
+				return [];
 			}
-			
 			
 			if(data.length < 1) {
 				
@@ -194,7 +189,7 @@ Fetch.prototype.get = function(index, queries, callback) {
 		},
 		function finalizeData(error,data) {
 			//Be sure to have data before going on
-			if(!error && !data) {
+			if(!error && data.length < 1) {
 				error = 'No composed sound data could be retrieved.';
 			}
 			if(error) {
