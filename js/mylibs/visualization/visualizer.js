@@ -10,7 +10,7 @@
 * SearchResults.js => dataParser.js 
 * ResultVisualization.js => visualizer.js
 * TreeMap.js => treeMap.js
-* HyperbolicTree.js =~ hyperbolicTree.js
+* HyperbolicTree.js => hyperbolicTree.js
 */
 
 /*
@@ -19,7 +19,7 @@
 * => UI
 */
 
-define("mylibs/visualization/visualizer", 
+define("mylibs/visualization/visualizer",
     [	"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js",
 		"order!js/mylibs/visualization/UI.js", 	
 		"mylibs/config",
@@ -36,7 +36,7 @@ define("mylibs/visualization/visualizer",
 		results = res ;
 		element = ele ;
 
-		redraw(options.method, options) ;
+		redraw(options) ;
 	};
 
 	var setOptions = function(options) {
@@ -53,7 +53,9 @@ define("mylibs/visualization/visualizer",
 		}
 	};
 
-	var redraw = function(method, options) {
+	var redraw = function(options) {
+  	
+  	var method = options.method;
   	
 		//Let's empty the DOM element first
 		$(element).empty() ;

@@ -39,8 +39,11 @@ var cofetchHandler = (function() {
         $.each(files, function(index, file){
           if (file.Type === "ImageType") {
             images.push(file);
-          } else if (file.Type === "Object3D") {
-            threed = file;
+          } else if (file.Type === "Object3d") {
+            console.log('Setting 3d object');
+            threed = $.extend(true, {}, file); //deep copy
+            console.log(threed);
+            //threed = file;
           } else if (file.Type === "VideoType") {
             videos.push(file);
           } else if (file.Type === "SoundType") {
@@ -85,7 +88,7 @@ var cofetchHandler = (function() {
   var set3d = function() {
     
     //Set the preview image to the right SRC
-    $('#threed-preview').attr(
+    $('#threed-visualPreview').attr(
       {'src': threed.Preview}
     );
     

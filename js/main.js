@@ -38,7 +38,9 @@ define("main",
         
         $(window).resize(function() {
             clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(menu.adjust(), 200);
+            resizeTimer = setTimeout(function() {
+              menu.adjust();
+            }, 200);
         });
 
         //Initializes the settings panel
@@ -83,6 +85,8 @@ define("main",
 
             //Remove the tags
             $(".tags").hide();
+            //Remove the autosuggestions
+            $(".token-input-dropdown-isearch").hide();
 
             //Displays the results
             results.display(query);

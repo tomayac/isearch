@@ -1,7 +1,7 @@
 /*
  * This script collects and manages all data for a content objects
  */
-var step    = require('step');
+var step    = require('./step');
     modeldb = require('./modeldb');
     dbpedia = require('./dbpedia');
     flickr  = require('./flickr');
@@ -21,8 +21,8 @@ Fetch.prototype.get = function(index, queries, callback) {
 			'Sound':queries.Sound ? queries.Sound : null
 	};
 	
-	var queryAdjustment = new Array();
-	    queryAdjustment['Fish'] = ' underwater';
+	var queryAdjustment = {};
+	queryAdjustment['Fish'] = ' underwater';
 	
 	//content object data storage
 	var contentObject = {
@@ -47,7 +47,7 @@ Fetch.prototype.get = function(index, queries, callback) {
 				error = 'No model data could be retrieved.';
 			}
 			if(error) {
-				console.log('modeldb error: '+error);
+				console.log('modeldb error: ' + error);
 				return [];
 			}
 			
@@ -72,7 +72,7 @@ Fetch.prototype.get = function(index, queries, callback) {
 			}
 			
 			//Fetch free text data for the model
-			dbpedia.fetchText(contentObject.Name, contentObject.Category, this);
+			dbpedia.fetchText(dbpediaQuery, contentObject.Category, this);
 		},
 		function getImageData(error,data) {
 			//Be sure to have data before going on
@@ -205,9 +205,9 @@ Fetch.prototype.get = function(index, queries, callback) {
 			delete contentObject.Category;
 			
 			console.log('Finished!');
-			
+			console.log(JSON.stringify(contentObject));
 			//Return the collected content object
-			callback(null, JSON.stringify(contentObject));
+			callback(null, contentObject);
 		}
 	);
 };    

@@ -8,7 +8,7 @@
  To make this work: 
  1. node npm install -g express
  2. node index.js (this file)
- 3. visit http://localhost/get/23 
+ 3. visit http://localhost:8082/get/23 
     (for instance)
  ******************************/
  
@@ -27,8 +27,10 @@ server.get('/get/:id', function(req, res){
    
 	 var cofetcher = new cofetch.Fetch();	
      //Fetch the CO             == this parameter allows you to pass individual queries for each media type it the 3D object name is insufficient 
-	 cofetcher.get(req.params.id, {}, function(blablaWillBeNul, data){
-      
+	 cofetcher.get(req.params.id, {}, function(error, data){
+     if (error) {
+       console.log("Error with the fetch.js script: " + error);
+     }
      var responseString = JSON.stringify(data);
      console.log("Success! Here is the CO: ");
      console.log(responseString);
