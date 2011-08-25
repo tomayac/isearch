@@ -29,8 +29,8 @@ var modelMethods = {
         }
         
         var lindex = model.Files[0].URL.lastIndexOf('.');
-        var ext = url.substr(lindex+1);
-        var base = url.substring(0,lindex);
+        var ext = model.Files[0].URL.substr(lindex+1);
+        var base = model.Files[0].URL.substring(0,lindex);
         
         var result;      
         result = {
