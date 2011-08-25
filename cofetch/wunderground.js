@@ -258,9 +258,9 @@ var options = {
 	    flatten: false
 	};
 
-//Creates the job
-var weatherJob = new nodeio.Job(options, weatherMethods);
 var fetchWeather = function(results, callback) {
+	//Creates the job
+	var weatherJob = new nodeio.Job(options, weatherMethods);
 	nodeio.start(weatherJob, {args: [results]}, callback, true);
 };
 

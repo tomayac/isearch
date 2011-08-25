@@ -150,9 +150,9 @@ var imageMethods = {
 	}
 };
 
-//Creates the job
-var imageJob = new nodeio.Job({timeout:10}, imageMethods);
 var fetchImage = function(query, callback) {
+	//Creates the job
+	var imageJob = new nodeio.Job({timeout:10}, imageMethods);
 	nodeio.start(imageJob, {args: [query]}, callback, true);
 };
 

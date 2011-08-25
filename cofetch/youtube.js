@@ -83,10 +83,10 @@ var videoMethods = {
     }
 };
 
-//Creates the job
-var videoJob = new nodeio.Job({timeout:10}, videoMethods);
 var fetchVideo = function(query, callback) {
-  nodeio.start(videoJob, {args: [query]}, callback, true);
+	//Creates the job
+	var videoJob = new nodeio.Job({timeout:10}, videoMethods);
+	nodeio.start(videoJob, {args: [query]}, callback, true);
 };
 
 //Exposes it publicly

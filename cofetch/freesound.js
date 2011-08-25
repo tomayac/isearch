@@ -99,10 +99,10 @@ var soundMethods = {
     }
 };
 
-//Creates the job
-var soundJob = new nodeio.Job({timeout:20}, soundMethods);
 var fetchSound = function(query, isGeo, callback) {
-  nodeio.start(soundJob, {args: [query, isGeo]}, callback, true);
+	//Creates the job
+	var soundJob = new nodeio.Job({timeout:20}, soundMethods);
+	nodeio.start(soundJob, {args: [query, isGeo]}, callback, true);
 };
 
 //Exposes it publicly

@@ -65,10 +65,10 @@ var textMethods = {
     }
 };
 
-//Creates the job
-var textJob = new nodeio.Job({timeout:10}, textMethods);
 var fetchText = function(query, queryClass, callback) {
-	  nodeio.start(textJob, {args: [query,queryClass]}, callback, true);
+	//Creates the job
+	var textJob = new nodeio.Job({timeout:10}, textMethods);
+	nodeio.start(textJob, {args: [query,queryClass]}, callback, true);
 };
 
 //Exposes it publicly

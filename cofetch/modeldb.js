@@ -57,10 +57,10 @@ var modelMethods = {
     }
 };
 
-//Creates the job
-var modelJob = new nodeio.Job({timeout:10}, modelMethods);
 var fetchModel = function(id, callback) {
-  nodeio.start(modelJob, {args: [id]}, callback, true);
+	//Creates the job
+	var modelJob = new nodeio.Job({timeout:10}, modelMethods);
+	nodeio.start(modelJob, {args: [id]}, callback, true);
 };
 
 //Exposes it publicly
