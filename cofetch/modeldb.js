@@ -3,7 +3,7 @@ var nodeio = require('node.io');
 var modelMethods = {
     input: false,
     run: function() {
-      console.log('heyho modeldb');
+
       //Let's get the arguments passed to the script
       if (!this.options.args[0]) {
         this.exit('No arguments were given to the ModelDB job');
@@ -59,7 +59,7 @@ var modelMethods = {
 
 //Creates the job
 var modelJob = new nodeio.Job({timeout:10}, modelMethods);
- var fetchModel = function(id, callback) {
+var fetchModel = function(id, callback) {
   nodeio.start(modelJob, {args: [id]}, callback, true);
 };
 
