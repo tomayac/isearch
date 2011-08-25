@@ -28,7 +28,9 @@ var modelMethods = {
         	this.exit('Not found');
         }
         
-        var urlsplit = model.Files[0].URL.split('.');
+        var lindex = model.Files[0].URL.lastIndexOf('.');
+        var ext = url.substr(lindex+1);
+        var base = url.substring(0,lindex);
         
         var result;      
         result = {
@@ -43,7 +45,7 @@ var modelMethods = {
             "Author": model.Author,
             "Date": model.Date,
             "Size": model.Files[0].Size,
-            "URL": (urlsplit[1] == 'max') ? urlsplit[0]+'.3ds' : model.Files[0].URL,
+            "URL": (ext == 'max') ? base+'.3ds' : model.Files[0].URL,
             "Preview": model.Screenshot,
             "Emotions": [],
             "Location": [],

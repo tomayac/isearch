@@ -205,7 +205,7 @@ Fetch.prototype.get = function(index, queries, callback) {
 			delete contentObject.Category;
 			
 			console.log('Finished!');
-			console.log(JSON.stringify(contentObject));
+			
 			//Return the collected content object
 			callback(null, contentObject);
 		}
