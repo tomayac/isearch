@@ -51,8 +51,12 @@ var imageMethods = {
 				context.exit(error); 
 			}
 			
-			//Get the photo search result
-			var photos = JSON.parse(data).photos.photo;
+			var photos = new Array();
+			
+			try {
+				//Get the photo search result
+				photos = JSON.parse(data).photos.photo;
+			} catch(e) {}
 			
 			//Adjust the maxResults parameter if there weren't enough results
 			if(photos.length < maxResults) {
