@@ -13,8 +13,8 @@ var cofetchHandler = (function() {
   
   var fetch = function(id) {
     
-    //var serverURL = "http://isearch.ai.erfurt.de:8082/get/";
-    var serverURL = "http://localhost:8082/get/";
+    var serverURL = "http://isearch.ai.fh-erfurt.de:8081/get/";
+    //var serverURL = "http://localhost:8082/get/";
     
     
     contentObjectID = id;
