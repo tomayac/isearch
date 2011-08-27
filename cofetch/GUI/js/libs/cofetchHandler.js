@@ -4,9 +4,11 @@ var cofetchHandler = (function() {
   var contentObjectID;
   
   //Variable to hold the scraped data
-  var scraperData = {};
-  var threed = {};
-  var text = {};
+  var scraperData = []; //I don't know why a simple empty object "{}" does not
+                        //work here. It seems the script does have access to the
+                        //variable inly if it's array. W.E.I.R.D ^^
+  var threed = [];
+  var text = [];
   var videos = [];
   var sounds = [];
   var images = [];
@@ -30,26 +32,23 @@ var cofetchHandler = (function() {
         console.log('Data for CO #' + id + ' successfully fetched.');
                 
         //Store the returned data
-        console.log(data);
-        scraperData = data.response;
-        console.log(scraperData);
+        scraperData.push(data.response);
+        console.log("Scraped data: ",scraperData);
         
         //Now, let's sort the files according to their type
-        var files = scraperData.Files;
+        var files = scraperData[0].Files;
         $.each(files, function(index, file){
           if (file.Type === "ImageType") {
             images.push(file);
           } else if (file.Type === "Object3d") {
-            console.log('Setting 3d object');
-            threed = $.extend(true, {}, file); //deep copy
-            console.log(threed);
-            //threed = file;
+            threed.push(file);
+            console.log("Threed variable",threed);
           } else if (file.Type === "VideoType") {
             videos.push(file);
           } else if (file.Type === "SoundType") {
             sounds.push(file);
           } else if (file.Type === "TextType") {
-            text = file;
+            text.push(file);
           }
         });
         
@@ -69,10 +68,10 @@ var cofetchHandler = (function() {
     console.log(scraperData);
     
     var changes = [
-      {id: "main-name", value: scraperData.Name},
-      {id: "main-categoryPath", value: scraperData.CategoryPath},
+      {id: "main-name", value: scraperData[0].Name},
+      {id: "main-categoryPath", value: scraperData[0].CategoryPath},
       {id: "main-screenshot", value: "3d"}, //defaut: 3d screenshot
-      {id: "text-content", value: text.FreeText}
+      {id: "text-content", value: text[0].FreeText}
     ];
     set(changes);
     
@@ -89,27 +88,27 @@ var cofetchHandler = (function() {
     
     //Set the preview image to the right SRC
     $('#threed-visualPreview').attr(
-      {'src': threed.Preview}
+      {'src': threed[0].Preview}
     );
     
     //Let's prepare the array of changes
     var changes = [
-      {id: "threed-name", value: threed.Name},
-      {id: "threed-tags", value: threed.Tags},
-      {id: "threed-extension", value: threed.Extension},
-      {id: "threed-license", value: threed.License},
-      {id: "threed-licenseURL", value: threed.LicenseURL},
-      {id: "threed-author", value: threed.Author},
-      {id: "threed-date", value: threed.Date},
-      {id: "threed-size", value: threed.Size},
-      {id: "threed-url", value: threed.URL},
-      {id: "threed-preview", value: threed.Preview},
-      {id: "threed-emotions", value: threed.Emotions},
-      {id: "threed-location", value: threed.Location},
-      {id: "threed-weather-condition", value: threed.Weather.condition},
-      {id: "threed-weather-wind", value: threed.Weather.wind},
-      {id: "threed-weather-temperature", value: threed.Weather.temperature},
-      {id: "threed-weather-humidity", value: threed.Weather.humidity},
+      {id: "threed-name", value: threed[0].Name},
+      {id: "threed-tags", value: threed[0].Tags},
+      {id: "threed-extension", value: threed[0].Extension},
+      {id: "threed-license", value: threed[0].License},
+      {id: "threed-licenseURL", value: threed[0].LicenseURL},
+      {id: "threed-author", value: threed[0].Author},
+      {id: "threed-date", value: threed[0].Date},
+      {id: "threed-size", value: threed[0].Size},
+      {id: "threed-url", value: threed[0].URL},
+      {id: "threed-preview", value: threed[0].Preview},
+      {id: "threed-emotions", value: threed[0].Emotions},
+      {id: "threed-location", value: threed[0].Location},
+      {id: "threed-weather-condition", value: threed[0].Weather.condition},
+      {id: "threed-weather-wind", value: threed[0].Weather.wind},
+      {id: "threed-weather-temperature", value: threed[0].Weather.temperature},
+      {id: "threed-weather-humidity", value: threed[0].Weather.humidity},
     ];
     
     //And apply them
