@@ -15,8 +15,8 @@ var cofetchHandler = (function() {
   
   var fetch = function(id) {
     
-    //var serverURL = "http://isearch.ai.erfurt.de:8082/get/";
-    var serverURL = "http://localhost:8082/get/";
+    var serverURL = "http://isearch.ai.fh-erfurt.de:8081/get/";
+    //var serverURL = "http://localhost:8082/get/";
     
     
     contentObjectID = id;
@@ -267,8 +267,11 @@ var cofetchHandler = (function() {
       "Name": $('#main-name').val(),
       "Screenshot": getScreenshot(),
       "CategoryPath": $('#main-categoryPath').val(), 
-      "Freetext": $('#text-content').val(),
       "Files": [{
+          "Type": "Text",
+          "FreeText": $('#text-content').val()
+      },
+      {
         "Type": "Object3D",
         "Name": $('#threed-name').val(), 
         "Tags": $('#threed-tags').val().split(","),
@@ -376,9 +379,8 @@ var cofetchHandler = (function() {
     }
     if (screenshotValue === "sound") {
       return $('#sound-preview').val();
-    }  
-    
-  }
+    }   
+  };
   
   var set = function(changes) {
     //"changes" is an array of {id: id, value: value}
@@ -389,7 +391,7 @@ var cofetchHandler = (function() {
       var i;
       for (i=0; i<changes.length; i++){
         if(typeof changes[i].value !== undefined) {
-          setField(changes[i].id, changes[i].value)
+          setField(changes[i].id, changes[i].value);
         }
       }
     }

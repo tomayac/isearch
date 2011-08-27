@@ -81,7 +81,7 @@ http.createServer(function (request, response) {
 		    		
 		    		console.log("Content Object Data fetched!");
 		    		
-		    		data = '_cofetchcb({"response":'+data+'})';
+		    		data = '_cofetchcb({"response":' + JSON.stringify(data) + '})';
 		    		
 		    		response.writeHead(status.code,status.message,{ 
 		    			                	'Content-Length': Buffer.byteLength(data,'utf8'),
