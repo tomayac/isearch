@@ -133,8 +133,8 @@ var cofetchHandler = (function() {
     var video = videos[0];
     
     //Extract the ID of the YouTube video
-    var videoID = video.URL.substring(video.URL.indexOf("=")-1);
-    
+    var videoID = video.URL.substring(video.URL.indexOf("="));
+    console.log(videoID);
     //Set the YouTube IFRAME to the right URL
     $('#video-previewYT').attr(
       {'src': 'http://www.youtube.com/embed/' + videoID}
