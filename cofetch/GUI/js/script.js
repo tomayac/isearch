@@ -29,6 +29,11 @@ $(document).ready(function(){
     return false;
   });
   
+  $("#search-video").click(function(){
+    cofetchHandler.setVideo($("#search-video-phrase").val());
+    return false;
+  });
+  
   $("#change-sound").click(function(){
     cofetchHandler.setSound(true);
     return false;

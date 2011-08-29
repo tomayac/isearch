@@ -12,6 +12,142 @@ var step    = require('./step');
 var Fetch = function() {	
 };  
 
+Fetch.prototype.getSpecific = function(type, query, callback) {
+	
+	if(callback && (!type || !query)) {
+		callback('Missing parameter', []);
+	}
+	
+	var handleResult = function(error,data) {
+		//Be sure to have data before going on
+		if(!error && data.length < 1) {
+			error = 'No data could be retrieved.';
+		}
+		if(error) {
+			callback('error: ' + error,[]);
+		}
+		
+		callback(null,data);
+	};
+	
+	switch(type) {
+		case 'text':
+			step(
+				function init() {
+					//Fetch free text data for the model
+					dbpedia.fetchText(query, '', this);
+				},
+				function getResult(error,data) {
+					//Be sure to have data before going on
+					if(!error && data.length < 1) {
+						error = 'No data could be retrieved.';
+					}
+					if(error) {
+						console.log('error: ' + error);
+						callback(error,[]);
+					}
+					callback(null,data);
+				}
+			);
+			break;
+		case 'image':
+			step(
+				function init() {
+					//Fetch images for the given query
+					flickr.fetchImage(query,this);
+				},
+				function getWeather(error,data) {
+					//Be sure to have data before going on
+					if(!error && data.length < 1) {
+						error = 'No data could be retrieved.';
+					}
+					if(error) {
+						console.log('error: ' + error);
+						callback(error,[]);
+					}
+					weather.fetchWeather(data,this);
+				},
+				function getResult(error,data) {
+					//Be sure to have data before going on
+					if(!error && data.length < 1) {
+						error = 'No data could be retrieved.';
+					}
+					if(error) {
+						console.log('error: ' + error);
+						callback(error,[]);
+					}
+					
+					var result = [];
+					for(var w=0; w < data.length; w++) {
+						result.push(data[w][0]);
+					}
+					
+					callback(null,result);
+				}
+			);
+			break;
+		case 'video':
+			step(
+				function init() {
+					//Get videos for the given query
+					youtube.fetchVideo(query,this);
+				},
+				function getResult(error,data) {
+					//Be sure to have data before going on
+					if(!error && data.length < 1) {
+						error = 'No data could be retrieved.';
+					}
+					if(error) {
+						console.log('error: ' + error);
+						callback(error,[]);
+					}
+					callback(null,data);
+				}
+			);
+			break;
+		case 'sound':
+			step(
+				function init() {
+					//Get audio for the given query
+					sound.fetchSound(query, true, this);
+				},
+				function getWeather(error,data) {
+					if(error) {
+						console.log('error: ' + error);
+						callback(error,[]);
+					}
+					if(data.length < 1) {
+						sound.fetchSound(query, false, this);
+					} else {
+						weather.fetchWeather(data,this);
+					}
+				},
+				function getResult(error,data) {
+					//Be sure to have data before going on
+					if(!error && data.length < 1) {
+						error = 'No data could be retrieved.';
+					}
+					if(error) {
+						console.log('error: ' + error);
+						callback(error,[]);
+					}
+					
+					var result = [];
+					
+					if(data[0][0]) {
+						for(var w=0; w < data.length; w++) {
+							result.push(data[w][0]);
+						}
+					} else {
+						result = data;
+					}
+					callback(null,result);
+				}
+			);
+			break;
+	}
+};
+
 Fetch.prototype.get = function(index, queries, callback) {
 	
 	var userQuery = {

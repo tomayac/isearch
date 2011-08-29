@@ -13,11 +13,10 @@ var cofetchHandler = (function() {
   var sounds = [];
   var images = [];
   
+  var serverURL = "http://isearch.ai.fh-erfurt.de:8081/get/";
+  //var serverURL = "http://localhost:8082/get/";
+  
   var fetch = function(id) {
-    
-    var serverURL = "http://isearch.ai.fh-erfurt.de:8081/get/";
-    //var serverURL = "http://localhost:8082/get/";
-    
     
     contentObjectID = id;
     console.log('Waiting results for object #' + id);
@@ -115,6 +114,12 @@ var cofetchHandler = (function() {
     set(changes);
     
   };
+  
+  var getVideo = function(searchPhrase) {
+	  if (typeof searchPhrase !== "undefined") {
+	  
+	  }
+  }; 
   
   var setVideo = function(shift) {
     if (typeof shift !== "undefined") {
