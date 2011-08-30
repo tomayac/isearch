@@ -49,6 +49,8 @@
         <fieldset>
           <legend>Text Item</legend>
           
+          <input type="text" name="search-text-phrase" value="" id="search-text-phrase" class="inline" /> <button id="search-text">Search new</button><br/>
+          
           <textarea name="text-content" id="text-content" cols="30" rows="10"></textarea>
         </fieldset>
         
@@ -127,6 +129,7 @@
           <legend>Image Item</legend>
           
           <button id="change-image">Change</button>
+          or <input type="text" name="search-image-phrase" value="" id="search-image-phrase" class="inline" /> <button id="search-image">Search new</button>
           
           <img id="image-previewFlickr" src="http://farm1.static.flickr.com/64/158620205_d3349c0bcb_m.jpg" />
           
@@ -203,6 +206,7 @@
           <legend>Audio Item</legend>
           
           <button id="change-sound">Change</button>
+          or <input type="text" name="search-sound-phrase" value="" id="search-sound-phrase" class="inline" /> <button id="search-sound">Search new</button>
           
           <audio id="sound-previewOGG" controls
             src="http://beta.freesound.org/data/previews/83/83295_29541-lq.ogg"       
@@ -282,7 +286,7 @@
           <legend>Video Item</legend>
         
           <button id="change-video">Change</button> 
-          - <input type="text" name="search-video-phrase" value="" id="search-video-phrase" class="title" /> <button id="search-video">Search new</button> 
+          or <input type="text" name="search-video-phrase" value="" id="search-video-phrase" class="inline" /> <button id="search-video">Search new</button> 
         
           <iframe id="video-previewYT" class="youtube-player" type="text/html" width="320" height="193" src="http://www.youtube.com/embed/AtxXAV18XAY" frameborder="0">
           </iframe>

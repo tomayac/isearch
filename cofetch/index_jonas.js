@@ -38,13 +38,13 @@ http.createServer(function (request, response) {
 	    var reqpath = url.parse(request.url).pathname;
 	    //Get the parameters of the request
     	var parameters = reqpath.replace('/','').split('/');
-		
+    	var status = {"code":200,"message":"OK"};
+    	
     	//
 	    // CoFetch specific handlers
 	    //
 	    if(parameters[0] == 'get') {
 	    	
-	    	var status = {"code":200,"message":"OK"};
 	    	var index = parseInt(parameters[1]);
 	    	
 	    	if(isNaN(index)) {
@@ -94,7 +94,32 @@ http.createServer(function (request, response) {
 		    	});
 	    	}
 	    	
-	    } else {
+	    } else if (parameters[0] == 'getPart') {
+	    	var type  = parameters[1] || '';
+	    	var query = parameters[2].replace(/[+]/g,' ') || '';
+	    	
+	    	var cofetcher = new fetch.Fetch();
+    		cofetcher.getPart(type, query, function(error, data){
+	    		
+	    		if(error) {
+	    			handleError(error);
+	    		}
+	    		
+	    		console.log("Results for '" + type + "' with query '" + query + "' retrieved!");
+	    		
+	    		data = '_cofetchcb({"response":' + JSON.stringify(data) + '})';
+	    		
+	    		response.writeHead(status.code,status.message,{ 
+	    			                	'Content-Length': Buffer.byteLength(data,'utf8'),
+									  	'Content-Type'  : 'application/json; charset=utf8',
+									  	'Access-Control-Max-Age': '3628800',
+									  	'Access-Control-Allow-Methods':'GET'
+								   });
+				response.write(data);
+				response.end();
+	    	});
+	    	
+        } else {
 		    // Handle normal static site requests
 			if(request.url === '/') {
 			    request.url += 'index.html';	    

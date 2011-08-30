@@ -12,7 +12,7 @@ var step    = require('./step');
 var Fetch = function() {	
 };  
 
-Fetch.prototype.getSpecific = function(type, query, callback) {
+Fetch.prototype.getPart = function(type, query, callback) {
 	
 	if(callback && (!type || !query)) {
 		callback('Missing parameter', []);

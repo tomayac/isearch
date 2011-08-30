@@ -13,11 +13,11 @@ var cofetchHandler = (function() {
   var sounds = [];
   var images = [];
   
-  var serverURL = "http://isearch.ai.fh-erfurt.de:8081/get/";
-  //var serverURL = "http://localhost:8082/get/";
-  
   var fetch = function(id) {
     
+	var serverURL = "http://isearch.ai.fh-erfurt.de:8081/get/";
+	//var serverURL = "http://localhost:8082/get/";  
+	  
     contentObjectID = id;
     console.log('Waiting results for object #' + id);
     
@@ -62,6 +62,85 @@ var cofetchHandler = (function() {
     
   };
   
+  var fetchPart = function(type, query) {
+	  
+	  var serverURL = "http://isearch.ai.fh-erfurt.de:8081/getPart/";
+	  //var serverURL = "http://localhost:8082/get/";
+	  
+	  console.log('Waiting for results for ' + type + ' search with query "' + query + '"');
+	    
+	  //Request our data
+	  $.ajax({
+		  url: serverURL + type + '/' + query.replace(/\s/g,'+'),
+		  dataType: "jsonp",
+		  jsonpCallback: "_cofetchcb",
+		  timeout: 60000,
+		  success: function(data) {
+			  console.log(type + 'data for query "' + query + '" successfully fetched.');
+                
+			  console.log("Scraped data: ",data);
+        
+			  //Now, let's sort the files according to their type
+			  var files = data.response;
+			  
+	          if (type === "image") {
+	        	  //Reset the old result
+	        	  images = [];
+	        	  
+	        	  $.each(files, function(index, file){  
+	        		  images.push(file);
+	        	  });
+	        	  
+	        	  if(images.length > 0) {
+	        		  setImage();
+	        	  }
+	        	  
+	          } else if (type === "text") {
+	        	  //Reset the old result
+	        	  text = [];
+	        	  
+	        	  $.each(files, function(index, file){  
+	        		  text.push(file);
+	        	  });
+	        	  
+	        	  if(text.length > 0) {
+	        		  setText();
+	        	  }
+	        	  
+	          } else if (type === "video") {
+	        	  //Reset the old result
+	        	  videos = [];
+	        	  
+	        	  $.each(files, function(index, file){  
+	        		  videos.push(file);
+	        	  });
+	        	  
+	        	  if(videos.length > 0) {
+	        		  setVideo();
+	        	  }
+	          } else if (type === "sound") {
+	        	  //Reset the old result
+	        	  sounds = [];
+	        	  
+	        	  $.each(files, function(index, file){  
+	        		  sounds.push(file);
+	        	  });
+	        	  
+	        	  if(sounds.length > 0) {
+	        		  setSound();
+	        	  }
+	          }
+		        
+		      //Populate the form
+		      populateForm();
+        
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        alert('error ' + textStatus + " " + errorThrown);    
+      }
+    });
+  };
+  
   var populateForm = function() {
     
     console.log(scraperData);
@@ -81,6 +160,19 @@ var cofetchHandler = (function() {
     if(sounds.length > 0) { setSound(); }
     if(images.length > 0) { setImage(); }
     
+  };
+  
+  var getText = function(searchPhrase) {
+	  if (typeof searchPhrase !== "undefined") {
+		  fetchPart('text',searchPhrase);
+	  }
+  }; 
+  
+  var setText = function() {
+	  var changes = [
+         {id: "text-content", value: text[0].FreeText}
+       ];
+       set(changes);
   };
   
   var set3d = function() {
@@ -117,7 +209,7 @@ var cofetchHandler = (function() {
   
   var getVideo = function(searchPhrase) {
 	  if (typeof searchPhrase !== "undefined") {
-	  
+		  fetchPart('video',searchPhrase);
 	  }
   }; 
   
@@ -172,6 +264,12 @@ var cofetchHandler = (function() {
     
   };
   
+  var getSound = function(searchPhrase) {
+	  if (typeof searchPhrase !== "undefined") {
+		  fetchPart('sound',searchPhrase);
+	  }
+  }; 
+  
   var setSound = function(shift) {
     if (typeof shift !== "undefined") {
       //if the "shift" argument is set, we must change the video
@@ -217,6 +315,12 @@ var cofetchHandler = (function() {
     //And apply them
     set(changes);
   };
+  
+  var getImage = function(searchPhrase) {
+	  if (typeof searchPhrase !== "undefined") {
+		  fetchPart('image',searchPhrase);
+	  }
+  }; 
   
   var setImage = function(shift) {
     if (typeof shift !== "undefined") {
@@ -423,9 +527,15 @@ var cofetchHandler = (function() {
   
   return {
     fetch: fetch,
+    fetchPart: fetchPart,
     populateForm: populateForm,
+    getText: getText,
+    setText: setText,
+    getVideo: getVideo,
     setVideo: setVideo,
-    setSound: setSound, 
+    getSound: getSound,
+    setSound: setSound,
+    getImage: getImage,
     setImage: setImage,
     save: save, 
     getParameterByName: getParameterByName,

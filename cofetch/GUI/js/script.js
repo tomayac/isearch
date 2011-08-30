@@ -19,8 +19,18 @@ $(document).ready(function(){
     Registering all the events handlers
     ===================================*/
 
+  $("#search-text").click(function(){
+    cofetchHandler.getText($("#search-text-phrase").val());
+    return false;
+  });  
+    
   $("#change-image").click(function(){
     cofetchHandler.setImage(true);
+    return false;
+  });
+  
+  $("#search-image").click(function(){
+    cofetchHandler.getImage($("#search-image-phrase").val());
     return false;
   });
   
@@ -30,12 +40,17 @@ $(document).ready(function(){
   });
   
   $("#search-video").click(function(){
-    cofetchHandler.setVideo($("#search-video-phrase").val());
+    cofetchHandler.getVideo($("#search-video-phrase").val());
     return false;
   });
   
   $("#change-sound").click(function(){
     cofetchHandler.setSound(true);
+    return false;
+  });
+  
+  $("#search-sound").click(function(){
+    cofetchHandler.getSound($("#search-sound-phrase").val());
     return false;
   });
   
