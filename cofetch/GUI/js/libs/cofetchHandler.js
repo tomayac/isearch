@@ -181,7 +181,7 @@ var cofetchHandler = (function() {
     $('#threed-visualPreview').attr(
       {'src': threed[0].Preview}
     );
-    
+
     //Let's prepare the array of changes
     var changes = [
       {id: "threed-name", value: threed[0].Name},
