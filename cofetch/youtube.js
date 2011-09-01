@@ -55,30 +55,51 @@ var videoMethods = {
         var result;
         //let's loop through the array of videos
         for (var i=0;i<maxResults;i++) {
-          result = {
-            "Type": "VideoType",
-            "Name": videos[i]['title']['$t'],
-            "Tags": getTags(videos[i]),
-            "Extension": "",
-            "License": "All right reserved", 
-            "LicenseURL": "http://www.youtube.com",
-            "Author": videos[i].author[0].name['$t'],
-            "Date": videos[i].published['$t'],
-            "Size": "",
-            "URL": "https://www.youtube.com/watch?v="+videos[i]['media$group']['yt$videoid']['$t'],
-            "Preview": videos[i]['media$group']['media$thumbnail'][0].url,
-            "Dimensions": [],
-            "Length": videos[i]['media$group']['yt$duration'].seconds,
-            "Emotions": [],
-            "Location": [],
-            "Weather": {}
-          };
-          results.push(result);
-        }
-        
-        //Exit the Job returning the results array
-        this.emit(results);
-        
+          
+          var vInfoUrl = 'http://youtube.com/get_video_info?video_id=' + videos[i]['media$group']['yt$videoid']['$t'];
+        	
+          //Get the specific video content
+          this.get(vInfoUrl, function(error, data, headers) {
+              
+            //Exit if there was a problem with the request
+            if (error) {
+              this.exit(error); 
+            }
+            
+            var vInfoResponse = querystring.parse(new Buffer(data || '', 'base64').toString('utf8'));
+            var vInfoUrls = vInfoResponse['url_encoded_fmt_stream_map'].split(',');
+            
+            for(var u=0; u < vInfoUrls.length; u++) {
+            	vInfoUrls[u] = vInfoUrls[u].substr(vInfoUrls[u].indexOf('=')+1);
+            }
+            
+            console.log(vInfoUrls);
+            
+            result = {
+                    "Type": "VideoType",
+                    "Name": videos[i]['title']['$t'],
+                    "Tags": getTags(videos[i]),
+                    "Extension": "",
+                    "License": "All right reserved", 
+                    "LicenseURL": "http://www.youtube.com",
+                    "Author": videos[i].author[0].name['$t'],
+                    "Date": videos[i].published['$t'],
+                    "Size": "",
+                    "URL": "https://www.youtube.com/watch?v="+videos[i]['media$group']['yt$videoid']['$t'],
+                    "Preview": videos[i]['media$group']['media$thumbnail'][0].url,
+                    "Dimensions": [],
+                    "Length": videos[i]['media$group']['yt$duration'].seconds,
+                    "Emotions": [],
+                    "Location": [],
+                    "Weather": {}
+                  };
+             
+            results.push(result);
+             
+            //Exit the Job returning the results array
+            this.emit(results);
+          });
+        } //End for loop
       });
     }
 };

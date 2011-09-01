@@ -370,6 +370,8 @@ var cofetchHandler = (function() {
   
   var save = function() {
     
+	var serverURL = "http://isearch.ai.fh-erfurt.de:8081/post/";  
+	  
     //Let's serialize our form:   
     var jsonFile = {
       "ID": contentObjectID,
@@ -469,6 +471,11 @@ var cofetchHandler = (function() {
         }
       }] 
     };
+    
+    $.post(serverURL, jsonFile,
+    	function(data) {
+    		console.log("CO saved: " + data);
+	});
     
     return jsonFile;
   };

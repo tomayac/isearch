@@ -4,7 +4,9 @@
 var http      = require('http'),
     url       = require('url'),
     fileserve = require('node-static'),
-    fetch     = require('./fetch');
+    qs        = require('querystring'),
+    fetch     = require('./fetch'),
+    rucod     = require('./store');
 
 var port      = 8081;
     host      = '194.94.204.39';
@@ -32,13 +34,24 @@ http.createServer(function (request, response) {
 	 response.end();
 	 return;
  };
+ 
+ var reqpath = url.parse(request.url).pathname;
+ //Get the parameters of the request
+ var parameters = reqpath.replace('/','').split('/');
+ var status = {"code":200,"message":"OK"};
+ var postData = '';
+ 
+ if (request.method == 'POST') {
+ 
+	 request.addListener('data', function(data) {
+		 if (parameters[0] == 'post') {
+			 postData += data;	
+	     }
+	 });
+ 
+ }
 	
  request.addListener('end', function () {
-	
-	    var reqpath = url.parse(request.url).pathname;
-	    //Get the parameters of the request
-    	var parameters = reqpath.replace('/','').split('/');
-    	var status = {"code":200,"message":"OK"};
     	
     	//
 	    // CoFetch specific handlers
@@ -119,7 +132,18 @@ http.createServer(function (request, response) {
 				response.end();
 	    	});
 	    	
-        } else {
+        } else if (parameters[0] == 'post') {
+        	 var coJson = qs.parse(postData);
+        	 rucod.store(coJson,1,function(info) {
+        		 response.writeHead(status.code,status.message,{ 
+	                	'Content-Length': Buffer.byteLength(info,'utf8'),
+					  	'Content-Type'  : 'plain/text; charset=utf8'
+				 });
+				 response.write(info);
+				 response.end(); 
+        	 });
+             	
+	    } else {
 		    // Handle normal static site requests
 			if(request.url === '/') {
 			    request.url += 'index.html';	    
