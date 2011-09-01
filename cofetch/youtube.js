@@ -1,4 +1,5 @@
-var nodeio = require('node.io');
+var nodeio = require('node.io'),
+    querystring = require('querystring');
 
 var urlDecode = function (utftext) {
 	var string = "";
