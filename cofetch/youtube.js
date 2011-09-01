@@ -1,4 +1,5 @@
-var nodeio = require('node.io');
+var nodeio = require('node.io'),
+    querystring = require('querystring');
 
 var videoMethods = {
     input: false,
@@ -66,14 +67,20 @@ var videoMethods = {
               this.exit(error); 
             }
             
-            var vInfoResponse = querystring.parse(new Buffer(data || '', 'base64').toString('utf8'));
-            var vInfoUrls = vInfoResponse['url_encoded_fmt_stream_map'].split(',');
+            var vInfoResponse = querystring.parse(data);
+            var vInfoUrls = new Buffer(vInfoResponse['url_encoded_fmt_stream_map'] || '', 'base64').toString('utf8').split(',');
+            var vDataUrl = '';
             
             for(var u=0; u < vInfoUrls.length; u++) {
-            	vInfoUrls[u] = vInfoUrls[u].substr(vInfoUrls[u].indexOf('=')+1);
+            	vInfoUrls[u] = vInfoUrls[u].substring(vInfoUrls[u].indexOf('=')+1,vInfoUrls[u].lastIndexOf(';') < 0 ? vInfoUrls[u].length : vInfoUrls[u].lastIndexOf(';'));
+            	if(vInfoUrls[u].indexOf('video/mp4') > 0) {
+            		vDataUrl = vInfoUrls[u];
+            	}
             }
             
             console.log(vInfoUrls);
+            console.log('data url:');
+            console.log(vDataUrl);
             
             result = {
                     "Type": "VideoType",
@@ -86,6 +93,7 @@ var videoMethods = {
                     "Date": videos[i].published['$t'],
                     "Size": "",
                     "URL": "https://www.youtube.com/watch?v="+videos[i]['media$group']['yt$videoid']['$t'],
+                    "DataURL": vDataUrl,
                     "Preview": videos[i]['media$group']['media$thumbnail'][0].url,
                     "Dimensions": [],
                     "Length": videos[i]['media$group']['yt$duration'].seconds,
