@@ -1,4 +1,4 @@
-var nodeio = require('node.io'),
+var nodeio = require('node.io');
 
 var videoMethods = {
     input: false,
