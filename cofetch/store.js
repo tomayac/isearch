@@ -11,6 +11,9 @@ var path   = require('path'),
     querystring = require('querystring');
 
 var basepath = '/var/www/isearch/cofetch/output';
+var fileOutputPath = '';
+var publicOutputUrl = 'http://isearch.ai.fh-erfurt.de/cofetch/output';
+var baseName = '';
 
 var mime = new Array();
     mime['jpg']   = 'image/jpeg';
@@ -34,6 +37,18 @@ var mime = new Array();
     mime['webm']  = 'video/webm';
     mime['flv']   = 'video/x-flv';
 
+var getISODateString = function(d){
+	 function pad(n){
+		 return n<10 ? '0'+n : n;
+	 };
+	 return d.getUTCFullYear()+'-'
+	      + pad(d.getUTCMonth()+1)+'-'
+	      + pad(d.getUTCDate())+'T'
+	      + pad(d.getUTCHours())+':'
+	      + pad(d.getUTCMinutes())+':'
+	      + pad(d.getUTCSeconds())+'Z';
+};
+    
 var getVideoSourceUrl = function(youtubeLink, id, callback) {
 	
 	var result = false;
@@ -114,7 +129,7 @@ var publishRUCoD = function(data,callback) {
 		if(data.Files[f].Type == 'Text') {
 			continue;
 		};
-		for(var t=0; t < data.Files[f].Tags; t++) {
+		for(var t=0; t < data.Files[f].Tags.length; t++) {
 			rucodBody += '<MetaTag name="UserTag" xsi:type="xsd:string">' + data.Files[f].Tags[t] + '</MetaTag>';
 		}
 	}
@@ -141,7 +156,12 @@ var publishRUCoD = function(data,callback) {
 						if(mime[data.Files[f].Extension]) {
 							rucodBody += '<FileFormat>' + mime[data.Files[f].Extension] + '</FileFormat>';
 						}
-						for(var t=0; t < data.Files[f].Tags; t++) {
+						
+						if(data.Files[f].Description) {
+							rucodBody += '<FreeText>' + data.Files[f].Description + '</FreeText>';
+						}
+						
+						for(var t=0; t < data.Files[f].Tags.length; t++) {
 							rucodBody += '<MetaTag name="UserTag" xsi:type="xsd:string">' + data.Files[f].Tags[t] + '</MetaTag>';
 						}
 						rucodBody += '<MediaLocator>';
@@ -158,13 +178,106 @@ var publishRUCoD = function(data,callback) {
 					} 
 					
 					rucodBody += '</MultimediaContent>';
-							
+					
 				} // End for loop
 				
 				rucodBody += '</ContentObjectTypes>';
 				
-				console.log(rucodHeadS + rucodBody + rucodHeadE);
-				callback('Done');
+				//Find the best fitting media item to be used for rwml creation
+				var rwmlFileIndex = 0;
+				
+				for(var f=0; f < data.Files.length; f++) {
+					if(data.Files[f].Type == 'Text') {
+						continue;
+					}
+					//Do we have GPS
+					if(data.Files[f].Location.length > 1) {
+						//Do we have weather
+						if(data.Files[f].Weather.temperature.length > 1) {
+							rwmlFileIndex = f;
+							break;
+						}
+						rwmlFileIndex = f;
+						break;
+					}
+				}
+				
+				var rawDateParts = data.Files[rwmlFileIndex].Date.split(" ");
+				var dateParts = rawDateParts[0].split("-");
+				var timeParts = rawDateParts[0].split(":");
+				var rwmlDate = new Date(dateParts[0],dateParts[1],dateParts[2],timeParts[0],timeParts[1],timeParts[2]);
+				
+				//Create the RWML file
+				var rwml = '<RWML>' +
+					       '<R_Descriptor>' +
+			               '<ContextSlice>' +
+				           '<DateTime>' +
+				           '<Date>' + getISODateString(rwmlDate) + '</Date>' +	
+				           '</DateTime>';
+				if(data.Files[rwmlFileIndex].Location.length > 1) {
+				  var location = data.Files[rwmlFileIndex].Location.split(",");	
+				  rwml +=  '<Location type="gml">' +
+				           '<gml:CircleByCenterPoint numArc="1">' +
+				           '<gml:pos>' + location[0] + ' ' + location[1] + '</gml:pos>' +
+				           '<gml:radius uom="M">10</gml:radius>' +
+				           '</gml:CircleByCenterPoint>' +
+				           '</Location>' +
+				           '<Direction>' +
+				           '<Heading>' + location[3] + '</Heading>' +
+				           '<Tilt>0</Tilt>' +
+				           '<Roll>0</Roll>' +
+				           '</Direction>';
+				} 
+				if(data.Files[rwmlFileIndex].Weather.temperature.length > 1) {
+				   rwml += '<Weather>' +
+                           '<Condition>' + data.Files[rwmlFileIndex].Weather.condition + '</Condition>' +
+                           '<Temperature>' + data.Files[rwmlFileIndex].Weather.temperature + '</Temperature>' +
+                           '<WindSpeed>' + data.Files[rwmlFileIndex].Weather.wind + '</WindSpeed>' +
+                           '<Humidity>' + data.Files[rwmlFileIndex].Weather.humidity + '</Humidity>' +
+                           '</Weather>';	
+				}
+				
+				   rwml += '</ContextSlice>' +
+				           '</R_Descriptor>' +
+				           '</RWML>';
+				
+				//Add the RWML to the RUCoD
+				rucodBody += '<RealWorldInfo>' +
+							 '<MetadataUri filetype="xml">' + publicOutputUrl + '/' + baseName + '.rwml</MetadataUri> ' +
+							 '</RealWorldInfo>';   
+				
+				//Find and add emotion if there are some
+				var emoIndex = 0;
+				
+				for(var f=0; f < data.Files.length; f++) {
+					if(data.Files[f].Type == 'Text') {
+						continue;
+					}
+					if(data.Files[f].Emotions.length > 1) {
+						emoIndex = f;
+						break;
+					}
+				}
+				rucodBody += '<UserInfo>' +
+							 '<UserInfoName>Emotion</UserInfoName>' +
+				             '<emotion>' +
+				             '<category set="everydayEmotions" name="' + data.Files[emoIndex].Emotions + '"/>' +
+				             '</emotion>' +
+				             '</UserInfo>';	
+				
+				//Write RWML file
+				fs.writeFile(fileOutputPath + baseName + '.rwml', rwml, function (error) {
+					if (error) throw error;
+					console.log('RWML file created or overwritten under ' + fileOutputPath + baseName + '.rwml');
+					
+					//Write RUCoD file
+					fs.writeFile(fileOutputPath + baseName + '_rucod.xml', (rucodHeadS + rucodBody + rucodHeadE), function (error) {
+						if (error) throw error;
+						console.log('RUCoD file created or overwritten under ' + fileOutputPath + baseName + '_rucod.xml');
+						
+						callback('Done');
+					});
+				});
 				
 			}); //End asynchronous call
 		}	
@@ -182,10 +295,11 @@ exports.store = function(data, overwrite, callback) {
 	var catpath = data.CategoryPath.split('/');
 	//And check if the folders for those categories exist
 	//in the file system, if not create them
-	var copath = basepath;
+	var fileOutputPath = basepath;
 	
 	for(var p=0; p < catpath.length; p++) {
-		copath += '/' + catpath[p];
+		fileOutputPath += '/' + catpath[p];
+		publicOutputUrl += '/' + catpath[p];
 		if(!path.existsSync(copath)) {
 			if(fs.mkdirSync(copath, 0755)) {
 				break;
@@ -193,10 +307,13 @@ exports.store = function(data, overwrite, callback) {
 		}
 	}
 	
-	var coname = data.Name.replace(/\s/g,'_') + '.json';
+	baseName = data.Name.replace(/\s/g,'_');
+	
+	//Set the general output path for this content object
+	fileOutputPath += '/';
 	
 	//Check if the folder for this content object already exists
-	path.exists(copath + '/' + coname, function (exists) {
+	path.exists(fileOutputPath + baseName + '.json', function (exists) {
 		//Pre check
 		if(exists && overwrite === false) {
 			console.log('File exists!');
@@ -205,9 +322,9 @@ exports.store = function(data, overwrite, callback) {
 		} 
 		
 		//Write JSON file
-		fs.writeFile(copath + '/' + coname, JSON.stringify(data), function (error) {
+		fs.writeFile(fileOutputPath + baseName + '.json', JSON.stringify(data), function (error) {
 		  if (error) throw error;
-		  console.log('JSON file created or overwritten under ' + copath + '/' + coname);
+		  console.log('JSON file created or overwritten under ' + fileOutputPath + baseName + '.json');
 		  
 		  //Create RUCoD for Content Object data
 		  publishRUCoD(data,callback);

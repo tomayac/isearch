@@ -90,6 +90,10 @@ var imageMethods = {
 					
 					for(var t=0; t < infoData.tags.tag.length; t++) {
 						tags.push(infoData.tags.tag[t]._content);
+						//make sure to get not too many tags
+			            if(i > 6) {
+			            	break;
+			            }
 					}
 					
 					var result = {

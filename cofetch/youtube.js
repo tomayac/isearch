@@ -38,6 +38,10 @@ var videoMethods = {
             //Loop through the categories. NB: the first item is skipped because it's always a URL
             for (i=1; i<categories.length; i++) {
               tags.push(categories[i].term);
+              //make sure to get not too many tags
+              if(i > 6) {
+            	  break;
+              }
             }
             return tags;
           } else {
