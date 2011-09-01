@@ -1,5 +1,34 @@
-var nodeio = require('node.io'),
-    querystring = require('querystring');
+var nodeio = require('node.io');
+
+var urlDecode = function (utftext) {
+	var string = "";
+	var i = 0;
+	var c = c1 = c2 = 0;
+
+	while ( i < utftext.length ) {
+
+		c = utftext.charCodeAt(i);
+
+		if (c < 128) {
+			string += String.fromCharCode(c);
+			i++;
+		}
+		else if((c > 191) && (c < 224)) {
+			c2 = utftext.charCodeAt(i+1);
+			string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
+			i += 2;
+		}
+		else {
+			c2 = utftext.charCodeAt(i+1);
+			c3 = utftext.charCodeAt(i+2);
+			string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
+			i += 3;
+		}
+
+	}
+
+	return string;
+}
 
 var videoMethods = {
     input: false,
@@ -24,7 +53,7 @@ var videoMethods = {
       
       //Let's go and request our content
       this.get(youtubeURL, function(error, data, headers) {
-        
+    	  
         //Exit if there was a problem with the request
         if (error) {
            this.exit(error); 
@@ -54,6 +83,8 @@ var videoMethods = {
         }
         
         var result;
+        var context = this;
+        
         //let's loop through the array of videos
         for (var i=0;i<maxResults;i++) {
           
@@ -68,7 +99,7 @@ var videoMethods = {
             }
             
             var vInfoResponse = querystring.parse(data);
-            var vInfoUrls = new Buffer(vInfoResponse['url_encoded_fmt_stream_map'] || '', 'base64').toString('utf8').split(',');
+            var vInfoUrls = urlDecode(vInfoResponse['url_encoded_fmt_stream_map']).split(',');
             var vDataUrl = '';
             
             for(var u=0; u < vInfoUrls.length; u++) {
@@ -84,19 +115,19 @@ var videoMethods = {
             
             result = {
                     "Type": "VideoType",
-                    "Name": videos[i]['title']['$t'],
-                    "Tags": getTags(videos[i]),
+                    "Name": context.videos[i]['title']['$t'],
+                    "Tags": context.getTags(videos[i]),
                     "Extension": "",
                     "License": "All right reserved", 
                     "LicenseURL": "http://www.youtube.com",
-                    "Author": videos[i].author[0].name['$t'],
-                    "Date": videos[i].published['$t'],
+                    "Author": context.videos[i].author[0].name['$t'],
+                    "Date": context.videos[i].published['$t'],
                     "Size": "",
-                    "URL": "https://www.youtube.com/watch?v="+videos[i]['media$group']['yt$videoid']['$t'],
+                    "URL": "https://www.youtube.com/watch?v="+context.videos[i]['media$group']['yt$videoid']['$t'],
                     "DataURL": vDataUrl,
-                    "Preview": videos[i]['media$group']['media$thumbnail'][0].url,
+                    "Preview": context.videos[i]['media$group']['media$thumbnail'][0].url,
                     "Dimensions": [],
-                    "Length": videos[i]['media$group']['yt$duration'].seconds,
+                    "Length": context.videos[i]['media$group']['yt$duration'].seconds,
                     "Emotions": [],
                     "Location": [],
                     "Weather": {}
