@@ -163,17 +163,20 @@ var publishRUCoD = function(data,callback) {
  * @param overwrite indicates weather an existing file for content object should be overwritten or not
  */
 exports.store = function(data, overwrite, callback) {
-	
+	console.log(data.CategoryPath);
 	//Get the category path of the CO json
 	var catpath = data.CategoryPath.split('/');
 	//And check if the folders for those categories exist
-	//in the file system
+	//in the file system, if not create them
 	var copath = basepath;
-
+	console.log(catpath);
+	
 	for(var p=0; p < catpath.length; p++) {
 		copath += '/' + catpath[p];
-		if(path.existsSync(copath)) {
-			if(!fs.mkdirSync(copath, 0755)) {
+		console.log('copath: '+copath);
+		if(!path.existsSync(copath)) {
+			if(fs.mkdirSync(copath, 0755)) {
+				console.log('folder created');
 				break;
 			}
 		}
