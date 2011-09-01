@@ -1,36 +1,6 @@
 var nodeio = require('node.io'),
     querystring = require('querystring');
 
-var urlDecode = function (utftext) {
-	var string = "";
-	var i = 0;
-	var c = c1 = c2 = 0;
-
-	while ( i < utftext.length ) {
-
-		c = utftext.charCodeAt(i);
-
-		if (c < 128) {
-			string += String.fromCharCode(c);
-			i++;
-		}
-		else if((c > 191) && (c < 224)) {
-			c2 = utftext.charCodeAt(i+1);
-			string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
-			i += 2;
-		}
-		else {
-			c2 = utftext.charCodeAt(i+1);
-			c3 = utftext.charCodeAt(i+2);
-			string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
-			i += 3;
-		}
-
-	}
-
-	return string;
-}
-
 var videoMethods = {
     input: false,
     run: function() {
@@ -100,10 +70,11 @@ var videoMethods = {
             }
             
             var vInfoResponse = querystring.parse(data);
-            var vInfoUrls = urlDecode(vInfoResponse['url_encoded_fmt_stream_map']).split(',');
+            var vInfoUrls = vInfoResponse['url_encoded_fmt_stream_map'].split(',');
             var vDataUrl = '';
             
             for(var u=0; u < vInfoUrls.length; u++) {
+            	vInfoUrls[u] = decodeURIComponent(vInfoUrls[u].replace(/\+/g,  " "));
             	vInfoUrls[u] = vInfoUrls[u].substring(vInfoUrls[u].indexOf('=')+1,vInfoUrls[u].lastIndexOf(';') < 0 ? vInfoUrls[u].length : vInfoUrls[u].lastIndexOf(';'));
             	if(vInfoUrls[u].indexOf('video/mp4') > 0) {
             		vDataUrl = vInfoUrls[u];
@@ -135,11 +106,15 @@ var videoMethods = {
                   };
              
             results.push(result);
-             
-            //Exit the Job returning the results array
-            this.emit(results);
+            
+            if(results.length == maxResults) {
+            	//Exit the Job returning the results array
+                this.emit(results);
+            }
+            
           });
         } //End for loop
+        
       });
     }
 };
