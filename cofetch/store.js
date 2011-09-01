@@ -300,8 +300,8 @@ exports.store = function(data, overwrite, callback) {
 	for(var p=0; p < catpath.length; p++) {
 		fileOutputPath += '/' + catpath[p];
 		publicOutputUrl += '/' + catpath[p];
-		if(!path.existsSync(copath)) {
-			if(fs.mkdirSync(copath, 0755)) {
+		if(!path.existsSync(fileOutputPath)) {
+			if(fs.mkdirSync(fileOutputPath, 0755)) {
 				break;
 			}
 		}
