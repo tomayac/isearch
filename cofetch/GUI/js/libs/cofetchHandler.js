@@ -185,6 +185,7 @@ var cofetchHandler = (function() {
     //Let's prepare the array of changes
     var changes = [
       {id: "threed-name", value: threed[0].Name},
+      {id: "threed-desc", value: threed[0].Description},
       {id: "threed-tags", value: threed[0].Tags},
       {id: "threed-extension", value: threed[0].Extension},
       {id: "threed-license", value: threed[0].License},
@@ -240,6 +241,7 @@ var cofetchHandler = (function() {
     //Let's prepare the array of changes
     var changes = [
       {id: "video-name", value: video.Name},
+      {id: "video-desc", value: video.Description},
       {id: "video-tags", value: video.Tags},
       {id: "video-extension", value: video.Extension},
       {id: "video-license", value: video.License},
@@ -294,6 +296,7 @@ var cofetchHandler = (function() {
     //Let's prepare the array of changes
     var changes = [
       {id: "sound-name", value: sound.Name},
+      {id: "sound-desc", value: sound.Description},
       {id: "sound-tags", value: sound.Tags},
       {id: "sound-extension", value: sound.Extension},
       {id: "sound-license", value: sound.License},
@@ -346,6 +349,7 @@ var cofetchHandler = (function() {
     //Let's prepare the array of changes
     var changes = [
       {id: "image-name", value: image.Name},
+      {id: "image-desc", value: image.Description},
       {id: "image-tags", value: image.Tags},
       {id: "image-extension", value: image.Extension},
       {id: "image-license", value: image.License},
@@ -385,6 +389,7 @@ var cofetchHandler = (function() {
       {
         "Type": "Object3D",
         "Name": $('#threed-name').val(), 
+        "Description:": $('#threed-desc').val(),
         "Tags": $('#threed-tags').val().split(","),
         "Extension": $('#threed-extension').val(),
         "License": $('#threed-license').val(),
@@ -405,7 +410,8 @@ var cofetchHandler = (function() {
       },
       {
         "Type": "ImageType",
-        "Name": $('#image-name').val(), 
+        "Name": $('#image-name').val(),
+        "Description": $('#image-desc').val(),
         "Tags": $('#image-tags').val().split(","),
         "Extension": $('#image-extension').val(),
         "License": $('#image-license').val(),
@@ -428,6 +434,7 @@ var cofetchHandler = (function() {
       {
         "Type": "VideoType",
         "Name": $('#video-name').val(), 
+        "Description": $('#video-desc').val(),
         "Tags": $('#video-tags').val().split(","),
         "Extension": $('#video-extension').val(),
         "License": $('#video-license').val(),
@@ -450,7 +457,8 @@ var cofetchHandler = (function() {
       },
       {
         "Type": "SoundType",
-        "Name": $('#sound-name').val(), 
+        "Name": $('#sound-name').val(),
+        "Description": $('#sound-desc').val(),
         "Tags": $('#sound-tags').val().split(","),
         "Extension": $('#sound-extension').val(),
         "License": $('#sound-license').val(),

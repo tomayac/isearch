@@ -95,6 +95,7 @@ var imageMethods = {
 					var result = {
 						"Type": "ImageType",
 						"Name": infoData.title._content,
+						"Description": infoData.title._content,
 						"Tags": tags,
 						"Extension": infoData.originalformat || 'jpg',
 						"License": licenses[infoData.license].name, 

@@ -34,7 +34,9 @@ var mime = new Array();
     mime['webm']  = 'video/webm';
     mime['flv']   = 'video/x-flv';
 
-var getVideoSourceUrl = function(youtubeLink,callback) {
+var getVideoSourceUrl = function(youtubeLink, id, callback) {
+	
+	var result = false;
 	
 	var videoId = youtubeLink.substr(youtubeLink.lastIndexOf('=')+1);
 	var infoUrl = 'http://youtube.com/get_video_info?video_id=' + videoId;
@@ -72,11 +74,11 @@ var getVideoSourceUrl = function(youtubeLink,callback) {
 			callback('error: ' + error, null);
 			return;
 		}
-		
-		callback(null,data[0]);
+
+		callback(null, id, data[0]);
 		
 	}, true);
-	
+
 };  
     
 
@@ -86,6 +88,8 @@ var getVideoSourceUrl = function(youtubeLink,callback) {
  */
 var publishRUCoD = function(data,callback) {
     
+	var count = 0;
+	
 	//Set the static structure of the RUCoD XML file
 	var rucodHeadS = '<?xml version="1.0" encoding="UTF-8"?>' +
 		             '<RUCoD xsi="http://www.isearch-project.eu/isearch/RUCoD" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml">' +
@@ -117,43 +121,54 @@ var publishRUCoD = function(data,callback) {
 	
 	rucodBody += '</Tags>' +
                  '<ContentObjectTypes>';
-	//Fitting the media files into RUCoD
-	for(var f=0; f < data.Files; f++) {
-		
-		getVideoSourceUrl(data.Files[f].URL, function(error, url) {
-			rucodBody += '<MultimediaContent xsi:type="' + data.Files[f].Type + '">';
+	
+	//First run, get the video data url for youtube videos 
+	for(var f=0; f < data.Files.length; f++) {
+		if (data.Files[f].Type == 'VideoType') {
+			getVideoSourceUrl(data.Files[f].URL, f, function(error, id, url) {
 			
-			if(data.Files[f].Type == 'Text') {
-				rucodBody += '<FreeText>' + data.Files[f].FreeText + '</FreeText>';
-			} else {
-				rucodBody += '<MediaName>' + data.Files[f].Name + '</MediaName>';
-				if(mime[data.Files[f].Extension]) {
-					rucodBody += '<FileFormat>' + mime[data.Files[f].Extension] + '</FileFormat>';
-				}
-				for(var t=0; t < data.Files[f].Tags; t++) {
-					rucodBody += '<MetaTag name="UserTag" xsi:type="xsd:string">' + data.Files[f].Tags[t] + '</MetaTag>';
-				}
-				rucodBody += '<MediaLocator>';
-				rucodBody += '<MediaUri>' + url + '</MediaUri>';
-				rucodBody += '<MediaPreview>' + data.Files[f].Preview + '</MediaPreview>';
-				rucodBody += '</MediaLocator>';
-				rucodBody += '<MediaCreationInformation>';
-				rucodBody += '<Licensing>' + data.Files[f].License + '</Licensing>';
-				rucodBody += '<Creator>';
-				rucodBody += '<Name>' + data.Files[f].Author + '</Name>';
-				rucodBody += '</Creator>';
-				rucodBody += '</MediaCreationInformation>';
-			
-			}
-			rucodBody += '</MultimediaContent>';
-
-		});
-	}
-	
-	
-	rucodBody += '</ContentObjectTypes>';
-	
-	console.log(rucodHeadS + rucodBody + rucodHeadE);
+				data.Files[id].URL = url;
+				
+				//Fitting the media files into RUCoD
+				for(var f=0; f < data.Files.length; f++) {
+					rucodBody += '<MultimediaContent xsi:type="' + data.Files[f].Type + '">';
+					
+					if(data.Files[f].Type == 'Text') {
+						rucodBody += '<FreeText>' + data.Files[f].FreeText + '</FreeText>';
+					} else  {	
+						
+						rucodBody += '<MediaName>' + data.Files[f].Name + '</MediaName>';
+						if(mime[data.Files[f].Extension]) {
+							rucodBody += '<FileFormat>' + mime[data.Files[f].Extension] + '</FileFormat>';
+						}
+						for(var t=0; t < data.Files[f].Tags; t++) {
+							rucodBody += '<MetaTag name="UserTag" xsi:type="xsd:string">' + data.Files[f].Tags[t] + '</MetaTag>';
+						}
+						rucodBody += '<MediaLocator>';
+						rucodBody += '<MediaUri>' + data.Files[f].URL + '</MediaUri>';
+						rucodBody += '<MediaPreview>' + data.Files[f].Preview + '</MediaPreview>';
+						rucodBody += '</MediaLocator>';
+						rucodBody += '<MediaCreationInformation>';
+						rucodBody += '<Licensing>' + data.Files[f].License + '</Licensing>';
+						rucodBody += '<Creator>';
+						rucodBody += '<Name>' + data.Files[f].Author + '</Name>';
+						rucodBody += '</Creator>';
+						rucodBody += '</MediaCreationInformation>';
+							
+					} 
+					
+					rucodBody += '</MultimediaContent>';
+							
+				} // End for loop
+				
+				rucodBody += '</ContentObjectTypes>';
+				
+				console.log(rucodHeadS + rucodBody + rucodHeadE);
+				callback('Done');
+				
+			}); //End asynchronous call
+		}	
+	} //End first run loop
 };
 
 
@@ -195,8 +210,8 @@ exports.store = function(data, overwrite, callback) {
 		  console.log('JSON file created or overwritten under ' + copath + '/' + coname);
 		  
 		  //Create RUCoD for Content Object data
-		  //publishRUCoD(data,callback);
-		  callback('Done');
+		  publishRUCoD(data,callback);
+		  
 		});
 		
 		

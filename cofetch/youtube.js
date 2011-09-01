@@ -39,6 +39,7 @@ var videoMethods = {
             for (i=1; i<categories.length; i++) {
               tags.push(categories[i].term);
             }
+            return tags;
           } else {
             return [];
           }
@@ -60,6 +61,7 @@ var videoMethods = {
             result = {
                     "Type": "VideoType",
                     "Name": videos[i]['title']['$t'],
+                    "Description": videos[i]['media$group']['media$description']['$t'],
                     "Tags": getTags(videos[i]),
                     "Extension": "",
                     "License": "All right reserved", 

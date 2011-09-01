@@ -38,6 +38,7 @@ var modelMethods = {
             "Category": model.Category,
             "CategoryPath": model.CategoryPath,
             "Name": model.Title || model.Name,
+            "Description": "",
             "Tags": "",
             "Extension": (model.Files[0].Type == 'max') ? '3ds' : model.Files[0].Type,
             "License": model.License, 
