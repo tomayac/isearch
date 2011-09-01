@@ -133,6 +133,7 @@ http.createServer(function (request, response) {
 	    	});
 	    	
         } else if (parameters[0] == 'post') {
+        	//Store the JSON content object data
         	 var coJson = qs.parse(postData);
         	 rucod.store(coJson,1,function(info) {
         		 response.writeHead(status.code,status.message,{ 
