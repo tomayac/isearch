@@ -407,77 +407,92 @@ var cofetchHandler = (function() {
           "temperature": $('#threed-weather-temperature').val(), 
           "humidity": $('#threed-weather-humidity').val()
         }
-      },
-      {
-        "Type": "ImageType",
-        "Name": $('#image-name').val(),
-        "Description": $('#image-desc').val(),
-        "Tags": $('#image-tags').val().split(","),
-        "Extension": $('#image-extension').val(),
-        "License": $('#image-license').val(),
-        "LicenseURL": $('#image-licenseURL').val(),
-        "Author": $('#image-author').val(),
-        "Date": $('#image-date').val(),
-        "Size": $('#image-size').val(),
-        "URL": $('#image-url').val(),
-        "Preview": $('#image-preview').val(),
-        "Dimensions": $('#image-dimensions').val(),
-        "Emotions": $('#image-emotions option:selected').text(),
-        "Location": $('#image-location').val().split(","),
-        "Weather": {
-          "condition": $('#image-weather-condition').val(), 
-          "wind": $('#image-weather-wind').val(), 
-          "temperature": $('#image-weather-temperature').val(), 
-          "humidity": $('#image-weather-humidity').val()
-        }
-      },
-      {
-        "Type": "VideoType",
-        "Name": $('#video-name').val(), 
-        "Description": $('#video-desc').val(),
-        "Tags": $('#video-tags').val().split(","),
-        "Extension": $('#video-extension').val(),
-        "License": $('#video-license').val(),
-        "LicenseURL": $('#video-licenseURL').val(),
-        "Author": $('#video-author').val(),
-        "Date": $('#video-date').val(),
-        "Size": $('#video-size').val(),
-        "URL": $('#video-url').val(),
-        "Preview": $('#video-preview').val(),
-        "Dimensions": $('#video-dimensions').val(),
-        "Length": $('#video-length').val(),
-        "Emotions": $('#video-emotions option:selected').text(),
-        "Location": $('#video-location').val().split(","),
-        "Weather": {
-          "condition": $('#video-weather-condition').val(), 
-          "wind": $('#video-weather-wind').val(), 
-          "temperature": $('#video-weather-temperature').val(), 
-          "humidity": $('#video-weather-humidity').val()
-        }
-      },
-      {
-        "Type": "SoundType",
-        "Name": $('#sound-name').val(),
-        "Description": $('#sound-desc').val(),
-        "Tags": $('#sound-tags').val().split(","),
-        "Extension": $('#sound-extension').val(),
-        "License": $('#sound-license').val(),
-        "LicenseURL": $('#sound-licenseURL').val(),
-        "Author": $('#sound-author').val(),
-        "Date": $('#sound-date').val(),
-        "Size": $('#sound-size').val(),
-        "URL": $('#sound-url').val(),
-        "Preview": $('#sound-preview').val(),
-        "Length": $('#sound-length').val(),
-        "Emotions": $('#sound-emotions option:selected').text(),
-        "Location": $('#sound-location').val().split(","),
-        "Weather": {
-          "condition": $('#sound-weather-condition').val(), 
-          "wind": $('#sound-weather-wind').val(), 
-          "temperature": $('#sound-weather-temperature').val(), 
-          "humidity": $('#sound-weather-humidity').val()
-        }
-      }] 
+      }]
+    };
+    
+    if($('#image-name').val().length > 0) {
+    	jsonFile.Files.push(
+			{
+		        "Type": "ImageType",
+		        "Name": $('#image-name').val(),
+		        "Description": $('#image-desc').val(),
+		        "Tags": $('#image-tags').val().split(","),
+		        "Extension": $('#image-extension').val(),
+		        "License": $('#image-license').val(),
+		        "LicenseURL": $('#image-licenseURL').val(),
+		        "Author": $('#image-author').val(),
+		        "Date": $('#image-date').val(),
+		        "Size": $('#image-size').val(),
+		        "URL": $('#image-url').val(),
+		        "Preview": $('#image-preview').val(),
+		        "Dimensions": $('#image-dimensions').val(),
+		        "Emotions": $('#image-emotions option:selected').text(),
+		        "Location": $('#image-location').val().split(","),
+		        "Weather": {
+		          "condition": $('#image-weather-condition').val(), 
+		          "wind": $('#image-weather-wind').val(), 
+		          "temperature": $('#image-weather-temperature').val(), 
+		          "humidity": $('#image-weather-humidity').val()
+		        }
+		    }
+    	); 
+    };
+    
+    if($('#video-name').val().length > 0) {
+    	jsonFile.Files.push(
+			{
+		        "Type": "VideoType",
+		        "Name": $('#video-name').val(), 
+		        "Description": $('#video-desc').val(),
+		        "Tags": $('#video-tags').val().split(","),
+		        "Extension": $('#video-extension').val(),
+		        "License": $('#video-license').val(),
+		        "LicenseURL": $('#video-licenseURL').val(),
+		        "Author": $('#video-author').val(),
+		        "Date": $('#video-date').val(),
+		        "Size": $('#video-size').val(),
+		        "URL": $('#video-url').val(),
+		        "Preview": $('#video-preview').val(),
+		        "Dimensions": $('#video-dimensions').val(),
+		        "Length": $('#video-length').val(),
+		        "Emotions": $('#video-emotions option:selected').text(),
+		        "Location": $('#video-location').val().split(","),
+		        "Weather": {
+		          "condition": $('#video-weather-condition').val(), 
+		          "wind": $('#video-weather-wind').val(), 
+		          "temperature": $('#video-weather-temperature').val(), 
+		          "humidity": $('#video-weather-humidity').val()
+		        }
+		    }
+    	);
+    };
+    
+    if($('#sound-name').val().length > 0) {
+    	jsonFile.Files.push(
+			{
+		        "Type": "SoundType",
+		        "Name": $('#sound-name').val(),
+		        "Description": $('#sound-desc').val(),
+		        "Tags": $('#sound-tags').val().split(","),
+		        "Extension": $('#sound-extension').val(),
+		        "License": $('#sound-license').val(),
+		        "LicenseURL": $('#sound-licenseURL').val(),
+		        "Author": $('#sound-author').val(),
+		        "Date": $('#sound-date').val(),
+		        "Size": $('#sound-size').val(),
+		        "URL": $('#sound-url').val(),
+		        "Preview": $('#sound-preview').val(),
+		        "Length": $('#sound-length').val(),
+		        "Emotions": $('#sound-emotions option:selected').text(),
+		        "Location": $('#sound-location').val().split(","),
+		        "Weather": {
+		          "condition": $('#sound-weather-condition').val(), 
+		          "wind": $('#sound-weather-wind').val(), 
+		          "temperature": $('#sound-weather-temperature').val(), 
+		          "humidity": $('#sound-weather-humidity').val()
+		        }
+		     }
+    	);
     };
     
     $.post(serverURL, jsonFile,
