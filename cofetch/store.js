@@ -163,20 +163,16 @@ var publishRUCoD = function(data,callback) {
  * @param overwrite indicates weather an existing file for content object should be overwritten or not
  */
 exports.store = function(data, overwrite, callback) {
-	console.log(data.CategoryPath);
 	//Get the category path of the CO json
 	var catpath = data.CategoryPath.split('/');
 	//And check if the folders for those categories exist
 	//in the file system, if not create them
 	var copath = basepath;
-	console.log(catpath);
 	
 	for(var p=0; p < catpath.length; p++) {
 		copath += '/' + catpath[p];
-		console.log('copath: '+copath);
 		if(!path.existsSync(copath)) {
 			if(fs.mkdirSync(copath, 0755)) {
-				console.log('folder created');
 				break;
 			}
 		}
@@ -194,12 +190,13 @@ exports.store = function(data, overwrite, callback) {
 		} 
 		
 		//Write JSON file
-		fs.writeFile(copath + '/' + coname, data, function (error) {
+		fs.writeFile(copath + '/' + coname, JSON.stringify(data), function (error) {
 		  if (error) throw error;
 		  console.log('JSON file created or overwritten under ' + copath + '/' + coname);
 		  
 		  //Create RUCoD for Content Object data
-		  publishRUCoD(data,callback);
+		  //publishRUCoD(data,callback);
+		  callback('Done');
 		});
 		
 		
