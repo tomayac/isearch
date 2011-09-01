@@ -152,6 +152,8 @@ var publishRUCoD = function(data,callback) {
 	
 	
 	rucodBody += '</ContentObjectTypes>';
+	
+	console.log(rucodHeadS + rucodBody + rucodHeadE);
 };
 
 
