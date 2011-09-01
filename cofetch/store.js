@@ -7,7 +7,8 @@
  */
 var path   = require('path'),
     fs     = require('fs'),
-    xml2js = require('xml2js');
+    nodeio = require('node.io'),
+    querystring = require('querystring');
 
 var basepath = '/var/www/isearch/cofetch/output';
 
@@ -32,6 +33,51 @@ var mime = new Array();
     mime['mp3']   = 'audio/mpeg';
     mime['webm']  = 'video/webm';
     mime['flv']   = 'video/x-flv';
+
+var getVideoSourceUrl = function(youtubeLink,callback) {
+	
+	var videoId = youtubeLink.substr(youtubeLink.lastIndexOf('=')+1);
+	var infoUrl = 'http://youtube.com/get_video_info?video_id=' + videoId;
+	
+	var job = new nodeio.Job({
+	    input: false,
+	    run: function () {
+	        var url = this.options.args[0];
+	        this.get(url, function(err, data) {
+	            if (err) {
+	                this.exit(err);
+	            } else {
+	            	
+	            	var vInfoResponse = querystring.parse(data);
+	                var vInfoUrls = vInfoResponse['url_encoded_fmt_stream_map'].split(',');
+	                var vDataUrl = '';
+	                
+	                for(var u=0; u < vInfoUrls.length; u++) {
+	                	vInfoUrls[u] = decodeURIComponent(vInfoUrls[u].replace(/\+/g,  " "));
+	                	vInfoUrls[u] = vInfoUrls[u].substring(vInfoUrls[u].indexOf('=')+1,vInfoUrls[u].lastIndexOf(';') < 0 ? vInfoUrls[u].length : vInfoUrls[u].lastIndexOf(';'));
+	                	if(vInfoUrls[u].indexOf('video/mp4') > 0) {
+	                		vDataUrl = vInfoUrls[u];
+	                	}
+	                }
+	            	
+	                this.emit(vDataUrl);
+	            }
+	        });
+	    }
+	});
+	
+	nodeio.start(job, {args: [infoUrl]}, function(error,data) {
+		
+		if(error) {
+			callback('error: ' + error, null);
+			return;
+		}
+		
+		callback(null,data[0]);
+		
+	}, true);
+	
+};  
     
 
 /**
@@ -73,31 +119,35 @@ var publishRUCoD = function(data,callback) {
                  '<ContentObjectTypes>';
 	//Fitting the media files into RUCoD
 	for(var f=0; f < data.Files; f++) {
-		rucodBody += '<MultimediaContent xsi:type="' + data.Files[f].Type + '">';
 		
-		if(data.Files[f].Type == 'Text') {
-			rucodBody += '<FreeText>' + data.Files[f].FreeText + '</FreeText>';
-		} else {
-			rucodBody += '<MediaName>' + data.Files[f].Name + '</MediaName>';
-			if(mime[data.Files[f].Extension]) {
-				rucodBody += '<FileFormat>' + mime[data.Files[f].Extension] + '</FileFormat>';
+		getVideoSourceUrl(data.Files[f].URL, function(error, url) {
+			rucodBody += '<MultimediaContent xsi:type="' + data.Files[f].Type + '">';
+			
+			if(data.Files[f].Type == 'Text') {
+				rucodBody += '<FreeText>' + data.Files[f].FreeText + '</FreeText>';
+			} else {
+				rucodBody += '<MediaName>' + data.Files[f].Name + '</MediaName>';
+				if(mime[data.Files[f].Extension]) {
+					rucodBody += '<FileFormat>' + mime[data.Files[f].Extension] + '</FileFormat>';
+				}
+				for(var t=0; t < data.Files[f].Tags; t++) {
+					rucodBody += '<MetaTag name="UserTag" xsi:type="xsd:string">' + data.Files[f].Tags[t] + '</MetaTag>';
+				}
+				rucodBody += '<MediaLocator>';
+				rucodBody += '<MediaUri>' + url + '</MediaUri>';
+				rucodBody += '<MediaPreview>' + data.Files[f].Preview + '</MediaPreview>';
+				rucodBody += '</MediaLocator>';
+				rucodBody += '<MediaCreationInformation>';
+				rucodBody += '<Licensing>' + data.Files[f].License + '</Licensing>';
+				rucodBody += '<Creator>';
+				rucodBody += '<Name>' + data.Files[f].Author + '</Name>';
+				rucodBody += '</Creator>';
+				rucodBody += '</MediaCreationInformation>';
+			
 			}
-			for(var t=0; t < data.Files[f].Tags; t++) {
-				rucodBody += '<MetaTag name="UserTag" xsi:type="xsd:string">' + data.Files[f].Tags[t] + '</MetaTag>';
-			}
-			rucodBody += '<MediaLocator>';
-			rucodBody += '<MediaUri>' + data.Files[f].URL + '</MediaUri>';
-			rucodBody += '<MediaPreview>' + data.Files[f].Preview + '</MediaPreview>';
-			rucodBody += '</MediaLocator>';
-			rucodBody += '<MediaCreationInformation>';
-			rucodBody += '<Licensing>' + data.Files[f].License + '</Licensing>';
-			rucodBody += '<Creator>';
-			rucodBody += '<Name>' + data.Files[f].Author + '</Name>';
-			rucodBody += '</Creator>';
-			rucodBody += '</MediaCreationInformation>';
-		
-		}
-		rucodBody += '</MultimediaContent>';
+			rucodBody += '</MultimediaContent>';
+
+		});
 	}
 	
 	

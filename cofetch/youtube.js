@@ -1,5 +1,4 @@
 var nodeio = require('node.io'),
-    querystring = require('querystring');
 
 var videoMethods = {
     input: false,
@@ -58,32 +57,6 @@ var videoMethods = {
         
         //let's loop through the array of videos
         for (var i=0;i<maxResults;i++) {
-          
-          var vInfoUrl = 'http://youtube.com/get_video_info?video_id=' + videos[i]['media$group']['yt$videoid']['$t'];
-        	
-          //Get the specific video content
-          this.get(vInfoUrl, function(error, data, headers) {
-              
-            //Exit if there was a problem with the request
-            if (error) {
-              this.exit(error); 
-            }
-            
-            var vInfoResponse = querystring.parse(data);
-            var vInfoUrls = vInfoResponse['url_encoded_fmt_stream_map'].split(',');
-            var vDataUrl = '';
-            
-            for(var u=0; u < vInfoUrls.length; u++) {
-            	vInfoUrls[u] = decodeURIComponent(vInfoUrls[u].replace(/\+/g,  " "));
-            	vInfoUrls[u] = vInfoUrls[u].substring(vInfoUrls[u].indexOf('=')+1,vInfoUrls[u].lastIndexOf(';') < 0 ? vInfoUrls[u].length : vInfoUrls[u].lastIndexOf(';'));
-            	if(vInfoUrls[u].indexOf('video/mp4') > 0) {
-            		vDataUrl = vInfoUrls[u];
-            	}
-            }
-            
-            console.log(vInfoUrls);
-            console.log('data url:');
-            console.log(vDataUrl);
             
             result = {
                     "Type": "VideoType",
@@ -96,7 +69,6 @@ var videoMethods = {
                     "Date": context.videos[i].published['$t'],
                     "Size": "",
                     "URL": "https://www.youtube.com/watch?v="+context.videos[i]['media$group']['yt$videoid']['$t'],
-                    "DataURL": vDataUrl,
                     "Preview": context.videos[i]['media$group']['media$thumbnail'][0].url,
                     "Dimensions": [],
                     "Length": context.videos[i]['media$group']['yt$duration'].seconds,
@@ -106,14 +78,11 @@ var videoMethods = {
                   };
              
             results.push(result);
-            
-            if(results.length == maxResults) {
-            	//Exit the Job returning the results array
-                this.emit(results);
-            }
-            
-          });
+
         } //End for loop
+        
+        //Exit the Job returning the results array
+        this.emit(results);
         
       });
     }

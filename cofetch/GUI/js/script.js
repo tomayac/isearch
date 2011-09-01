@@ -79,7 +79,7 @@ $(document).ready(function(){
   
   $("#save").click(function(){
     var jsonFile = cofetchHandler.save();
-    console.log(jsonFile);
+    console.log(JSON.stringify(jsonFile));
     return false;
     //post JSON to the correct handler server:8082/save/ID
   });
