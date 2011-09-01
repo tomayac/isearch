@@ -53,25 +53,24 @@ var videoMethods = {
         }
         
         var result;
-        var context = this;
         
         //let's loop through the array of videos
         for (var i=0;i<maxResults;i++) {
             
             result = {
                     "Type": "VideoType",
-                    "Name": context.videos[i]['title']['$t'],
-                    "Tags": context.getTags(videos[i]),
+                    "Name": videos[i]['title']['$t'],
+                    "Tags": getTags(videos[i]),
                     "Extension": "",
                     "License": "All right reserved", 
                     "LicenseURL": "http://www.youtube.com",
-                    "Author": context.videos[i].author[0].name['$t'],
-                    "Date": context.videos[i].published['$t'],
+                    "Author": videos[i].author[0].name['$t'],
+                    "Date": videos[i].published['$t'],
                     "Size": "",
-                    "URL": "https://www.youtube.com/watch?v="+context.videos[i]['media$group']['yt$videoid']['$t'],
-                    "Preview": context.videos[i]['media$group']['media$thumbnail'][0].url,
+                    "URL": "https://www.youtube.com/watch?v="+videos[i]['media$group']['yt$videoid']['$t'],
+                    "Preview": videos[i]['media$group']['media$thumbnail'][0].url,
                     "Dimensions": [],
-                    "Length": context.videos[i]['media$group']['yt$duration'].seconds,
+                    "Length": videos[i]['media$group']['yt$duration'].seconds,
                     "Emotions": [],
                     "Location": [],
                     "Weather": {}
