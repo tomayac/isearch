@@ -26,7 +26,7 @@ var cofetchHandler = (function() {
       url: serverURL + contentObjectID,
       dataType: "jsonp",
       jsonpCallback: "_cofetchcb",
-      timeout: 60000,
+      timeout: 80000,
       success: function(data) {
         console.log('Data for CO #' + id + ' successfully fetched.');
                 
@@ -74,7 +74,7 @@ var cofetchHandler = (function() {
 		  url: serverURL + type + '/' + query.replace(/\s/g,'+'),
 		  dataType: "jsonp",
 		  jsonpCallback: "_cofetchcb",
-		  timeout: 60000,
+		  timeout: 80000,
 		  success: function(data) {
 			  console.log(type + 'data for query "' + query + '" successfully fetched.');
                 
