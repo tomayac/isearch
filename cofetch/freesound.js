@@ -102,7 +102,7 @@ var soundMethods = {
 
 var fetchSound = function(query, isGeo, callback) {
 	//Creates the job
-	var soundJob = new nodeio.Job({timeout:20}, soundMethods);
+	var soundJob = new nodeio.Job({timeout:10}, soundMethods);
 	nodeio.start(soundJob, {args: [query, isGeo]}, callback, true);
 };
 
