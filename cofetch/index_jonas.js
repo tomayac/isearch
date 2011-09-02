@@ -90,6 +90,7 @@ http.createServer(function (request, response) {
 		    		
 		    		if(error) {
 		    			handleError(error);
+		    			return;
 		    		}
 		    		
 		    		console.log("Content Object Data fetched!");

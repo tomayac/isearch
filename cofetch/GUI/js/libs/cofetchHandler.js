@@ -502,7 +502,6 @@ var cofetchHandler = (function() {
     	  data: JSON.stringify(jsonFile),
     	  success: function(data) {
       		console.log("CO saved: " + data);
-      		alert(data);
     	  },
     	  traditional: true,
     	  dataType: "text",
