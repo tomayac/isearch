@@ -299,7 +299,8 @@ Fetch.prototype.get = function(index, queries, callback) {
 			} 
 			
 			//Get audio for content object
-			sound.fetchSound(soundQuery, true, this);
+			//sound.fetchSound(soundQuery, true, this);
+			return [];
 		},
 		function evaluateSoundData(error,data) {
 			if(error) {
@@ -307,6 +308,8 @@ Fetch.prototype.get = function(index, queries, callback) {
 				return [];
 			}
 			
+			return [];
+			/*
 			if(data.length < 1) {
 				
 				var soundQuery = contentObject.Name;
@@ -321,7 +324,7 @@ Fetch.prototype.get = function(index, queries, callback) {
 				console.log('5.1 Sound data with geo information fetched!');
 				//Get weather data for sounds
 				weather.fetchWeather(data,this);
-			}
+			}*/
 		},
 		function finalizeData(error,data) {
 			//Be sure to have data before going on
