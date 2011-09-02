@@ -183,63 +183,57 @@ var publishRUCoD = function(data,callback) {
 				
 				rucodBody += '</ContentObjectTypes>';
 				
-				//Find the best fitting media item to be used for rwml creation
-				var rwmlFileIndex = 0;
+				//Generate RWML data for each media item
+				var rwml = '<RWML>' +
+			               '<R_Descriptor>';
 				
 				for(var f=0; f < data.Files.length; f++) {
+					//Text does not has any real world information
 					if(data.Files[f].Type == 'Text') {
 						continue;
 					}
+					//Prepare the creation date of the media item for use in RWML 
+					var rawDateParts = data.Files[f].Date.split(" ");
+					var dateParts = rawDateParts[0].split("-");
+					var timeParts = rawDateParts[0].split(":");
+					var rwmlDate = new Date(dateParts[0],dateParts[1],dateParts[2],timeParts[0],timeParts[1],timeParts[2]);
+					
+					//Create the RWML file
+					   rwml += '<ContextSlice>' +
+					           '<DateTime>' +
+					           '<Date>' + getISODateString(rwmlDate) + '</Date>' +	
+					           '</DateTime>';
 					//Do we have GPS
-					if(data.Files[f].Location.length > 1) {
-						//Do we have weather
-						if(data.Files[f].Weather.temperature.length > 1) {
-							rwmlFileIndex = f;
-							break;
-						}
-						rwmlFileIndex = f;
-						break;
+					if(data.Files[rwmlFileIndex].Location.length > 1) {
+					   var location = data.Files[rwmlFileIndex].Location;	
+					   rwml += '<Location type="gml">' +
+					           '<gml:CircleByCenterPoint numArc="1">' +
+					           '<gml:pos>' + location[0] + ' ' + location[1] + '</gml:pos>' +
+					           '<gml:radius uom="M">10</gml:radius>' +
+					           '</gml:CircleByCenterPoint>' +
+					           '</Location>' +
+					           '<Direction>' +
+					           '<Heading>' + location[3] + '</Heading>' +
+					           '<Tilt>0</Tilt>' +
+					           '<Roll>0</Roll>' +
+					           '</Direction>';
 					}
-				}
+					//Do we have weather
+					if(data.Files[rwmlFileIndex].Weather.temperature.length > 1) {
+					   rwml += '<Weather>' +
+	                           '<Condition>' + data.Files[rwmlFileIndex].Weather.condition + '</Condition>' +
+	                           '<Temperature>' + data.Files[rwmlFileIndex].Weather.temperature + '</Temperature>' +
+	                           '<WindSpeed>' + data.Files[rwmlFileIndex].Weather.wind + '</WindSpeed>' +
+	                           '<Humidity>' + data.Files[rwmlFileIndex].Weather.humidity + '</Humidity>' +
+	                           '</Weather>';	
+					}
+					
+					   rwml += '</ContextSlice>';
+				} // End for loop for RWML
 				
-				var rawDateParts = data.Files[rwmlFileIndex].Date.split(" ");
-				var dateParts = rawDateParts[0].split("-");
-				var timeParts = rawDateParts[0].split(":");
-				var rwmlDate = new Date(dateParts[0],dateParts[1],dateParts[2],timeParts[0],timeParts[1],timeParts[2]);
+				rwml += '</R_Descriptor>' +
+		                '</RWML>';
 				
-				//Create the RWML file
-				var rwml = '<RWML>' +
-					       '<R_Descriptor>' +
-			               '<ContextSlice>' +
-				           '<DateTime>' +
-				           '<Date>' + getISODateString(rwmlDate) + '</Date>' +	
-				           '</DateTime>';
-				if(data.Files[rwmlFileIndex].Location.length > 1) {
-				  var location = data.Files[rwmlFileIndex].Location.split(",");	
-				  rwml +=  '<Location type="gml">' +
-				           '<gml:CircleByCenterPoint numArc="1">' +
-				           '<gml:pos>' + location[0] + ' ' + location[1] + '</gml:pos>' +
-				           '<gml:radius uom="M">10</gml:radius>' +
-				           '</gml:CircleByCenterPoint>' +
-				           '</Location>' +
-				           '<Direction>' +
-				           '<Heading>' + location[3] + '</Heading>' +
-				           '<Tilt>0</Tilt>' +
-				           '<Roll>0</Roll>' +
-				           '</Direction>';
-				} 
-				if(data.Files[rwmlFileIndex].Weather.temperature.length > 1) {
-				   rwml += '<Weather>' +
-                           '<Condition>' + data.Files[rwmlFileIndex].Weather.condition + '</Condition>' +
-                           '<Temperature>' + data.Files[rwmlFileIndex].Weather.temperature + '</Temperature>' +
-                           '<WindSpeed>' + data.Files[rwmlFileIndex].Weather.wind + '</WindSpeed>' +
-                           '<Humidity>' + data.Files[rwmlFileIndex].Weather.humidity + '</Humidity>' +
-                           '</Weather>';	
-				}
-				
-				   rwml += '</ContextSlice>' +
-				           '</R_Descriptor>' +
-				           '</RWML>';
 				
 				//Add the RWML to the RUCoD
 				rucodBody += '<RealWorldInfo>' +
@@ -275,7 +269,7 @@ var publishRUCoD = function(data,callback) {
 						if (error) throw error;
 						console.log('RUCoD file created or overwritten under ' + fileOutputPath + baseName + '_rucod.xml');
 						
-						callback('Done');
+						callback('JSON and RUCoD files successfully saved.');
 					});
 				});
 				

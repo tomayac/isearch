@@ -78,10 +78,18 @@ $(document).ready(function(){
   });
   
   $("#save").click(function(){
-    var jsonFile = cofetchHandler.save();
-    console.log(JSON.stringify(jsonFile));
+	//post JSON to the correct handler server
+    var sent = cofetchHandler.save();
+    console.log(sent);
+    //load next
+    var currentLocation = window.location;
+    var newLocation = window.location.href.substring(0,window.location.href.indexOf("?"));
+    newID = parseInt(currentID) + 1;
+    newLocation += "?id=" + newID ;
+    console.log(newLocation);
+    window.location = newLocation;
+    
     return false;
-    //post JSON to the correct handler server:8082/save/ID
   });
   
 });
