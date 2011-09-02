@@ -338,9 +338,7 @@ Fetch.prototype.get = function(index, queries, callback) {
 				}
 			}
 			
-			if(contentObject['Category'])  {
-				delete contentObject.Category;
-			}
+			delete contentObject.Category;
 			
 			console.log('Finished!');
 			
