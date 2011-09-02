@@ -89,22 +89,24 @@ http.createServer(function (request, response) {
 	    		cofetcher.get(index, userQueries, function(error, data){
 		    		
 		    		if(error) {
+		    			
 		    			handleError(error);
-		    			return;
+		    			
+		    		} else {
+		    		
+			    		console.log("Content Object Data fetched!");
+			    		
+			    		data = '_cofetchcb({"response":' + JSON.stringify(data) + '})';
+			    		
+			    		response.writeHead(status.code,status.message,{ 
+			    			                	'Content-Length': Buffer.byteLength(data,'utf8'),
+											  	'Content-Type'  : 'application/json; charset=utf8',
+											  	'Access-Control-Max-Age': '3628800',
+											  	'Access-Control-Allow-Methods':'GET'
+										   });
+						response.write(data);
+						response.end();
 		    		}
-		    		
-		    		console.log("Content Object Data fetched!");
-		    		
-		    		data = '_cofetchcb({"response":' + JSON.stringify(data) + '})';
-		    		
-		    		response.writeHead(status.code,status.message,{ 
-		    			                	'Content-Length': Buffer.byteLength(data,'utf8'),
-										  	'Content-Type'  : 'application/json; charset=utf8',
-										  	'Access-Control-Max-Age': '3628800',
-										  	'Access-Control-Allow-Methods':'GET'
-									   });
-					response.write(data);
-					response.end();
 		    	});
 	    	}
 	    	
@@ -116,21 +118,24 @@ http.createServer(function (request, response) {
     		cofetcher.getPart(type, query, function(error, data){
 	    		
 	    		if(error) {
+	    			
 	    			handleError(error);
+	    			
+	    		} else {
+	    		
+		    		console.log("Results for '" + type + "' with query '" + query + "' retrieved!");
+		    		
+		    		data = '_cofetchcb({"response":' + JSON.stringify(data) + '})';
+		    		
+		    		response.writeHead(status.code,status.message,{ 
+		    			                	'Content-Length': Buffer.byteLength(data,'utf8'),
+										  	'Content-Type'  : 'application/json; charset=utf8',
+										  	'Access-Control-Max-Age': '3628800',
+										  	'Access-Control-Allow-Methods':'GET'
+									   });
+					response.write(data);
+					response.end();
 	    		}
-	    		
-	    		console.log("Results for '" + type + "' with query '" + query + "' retrieved!");
-	    		
-	    		data = '_cofetchcb({"response":' + JSON.stringify(data) + '})';
-	    		
-	    		response.writeHead(status.code,status.message,{ 
-	    			                	'Content-Length': Buffer.byteLength(data,'utf8'),
-									  	'Content-Type'  : 'application/json; charset=utf8',
-									  	'Access-Control-Max-Age': '3628800',
-									  	'Access-Control-Allow-Methods':'GET'
-								   });
-				response.write(data);
-				response.end();
 	    	});
 	    	
         } else if (parameters[0] == 'post') {
