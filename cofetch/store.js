@@ -101,10 +101,8 @@ var getVideoSourceUrl = function(youtubeLink, id, callback) {
  * Converts the given Content Object data in JSON format into XML RUCoD format with their
  * respective RWML files.
  */
-var publishRUCoD = function(data,callback) {
-    
-	var count = 0;
-	
+var publishRUCoD = function(data, outputPath, callback) {
+    	
 	//Set the static structure of the RUCoD XML file
 	var rucodHeadS = '<?xml version="1.0" encoding="UTF-8"?>' +
 		             '<RUCoD xsi="http://www.isearch-project.eu/isearch/RUCoD" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml">' +
@@ -136,7 +134,7 @@ var publishRUCoD = function(data,callback) {
 	
 	rucodBody += '</Tags>' +
                  '<ContentObjectTypes>';
-	
+
 	//First run, get the video data url for youtube videos 
 	for(var f=0; f < data.Files.length; f++) {
 		if (data.Files[f].Type == 'VideoType') {
@@ -194,9 +192,9 @@ var publishRUCoD = function(data,callback) {
 					}
 					//Prepare the creation date of the media item for use in RWML 
 					var rawDateParts = data.Files[f].Date.split(" ");
-					var dateParts = rawDateParts[0].split("-");
-					var timeParts = rawDateParts[0].split(":");
-					var rwmlDate = new Date(dateParts[0],dateParts[1],dateParts[2],timeParts[0],timeParts[1],timeParts[2]);
+					var dateParts = (rawDateParts[0] || "2011-08-01").split("-");
+					var timeParts = (rawDateParts[1] || "12:01:01").split(":");
+					var rwmlDate = new Date(parseInt(dateParts[0]),parseInt(dateParts[1].replace(/0(\d\/)/g,'')),parseInt(dateParts[2].replace(/0(\d\/)/g,'')),parseInt(timeParts[0].replace(/0(\d\/)/g,'')),parseInt(timeParts[1].replace(/0(\d\/)/g,'')),parseInt(timeParts[2].replace(/0(\d\/)/g,'')));
 					
 					//Create the RWML file
 					   rwml += '<ContextSlice>' +
@@ -258,16 +256,16 @@ var publishRUCoD = function(data,callback) {
 				             '<category set="everydayEmotions" name="' + data.Files[emoIndex].Emotions + '"/>' +
 				             '</emotion>' +
 				             '</UserInfo>';	
-				
+
 				//Write RWML file
-				fs.writeFile(fileOutputPath + baseName + '.rwml', rwml, function (error) {
+				fs.writeFile(outputPath+ baseName + '.rwml', rwml, function (error) {
 					if (error) throw error;
-					console.log('RWML file created or overwritten under ' + fileOutputPath + baseName + '.rwml');
+					console.log('RWML file created or overwritten under ' + outputPath + baseName + '.rwml');
 					
 					//Write RUCoD file
-					fs.writeFile(fileOutputPath + baseName + '_rucod.xml', (rucodHeadS + rucodBody + rucodHeadE), function (error) {
+					fs.writeFile(outputPath + baseName + '_rucod.xml', (rucodHeadS + rucodBody + rucodHeadE), function (error) {
 						if (error) throw error;
-						console.log('RUCoD file created or overwritten under ' + fileOutputPath + baseName + '_rucod.xml');
+						console.log('RUCoD file created or overwritten under ' + outputPath + baseName + '_rucod.xml');
 						
 						callback('JSON and RUCoD files successfully saved.');
 					});
@@ -321,7 +319,7 @@ exports.store = function(data, overwrite, callback) {
 		  console.log('JSON file created or overwritten under ' + fileOutputPath + baseName + '.json');
 		  
 		  //Create RUCoD for Content Object data
-		  publishRUCoD(data,callback);
+		  publishRUCoD(data,fileOutputPath,callback);
 		  
 		});
 		

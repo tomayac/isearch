@@ -135,7 +135,7 @@ http.createServer(function (request, response) {
         } else if (parameters[0] == 'post') {
         	//Store the JSON content object data
         	 var coJson = JSON.parse(postData);
-        	 console.log(coJson);
+        	 
         	 rucod.store(coJson,1,function(info) {
         		 response.writeHead(status.code,status.message,{ 
 	                	'Content-Length': Buffer.byteLength(info,'utf8'),
