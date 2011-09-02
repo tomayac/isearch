@@ -495,10 +495,18 @@ var cofetchHandler = (function() {
     	);
     };
     
-    $.post(serverURL, jsonFile,
-    	function(data) {
-    		console.log("CO saved: " + data);
-	});
+    //Send it to the server
+    $.ajax({
+    	  type: "POST",
+    	  url: serverURL,
+    	  data: JSON.stringify(jsonFile),
+    	  success: function(data) {
+      		console.log("CO saved: " + data);
+    	  },
+    	  traditional: true,
+    	  contentType : "application/json; charset=utf-8"
+    });
+    
     
     return jsonFile;
   };
