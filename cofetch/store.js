@@ -204,8 +204,8 @@ var publishRUCoD = function(data,callback) {
 					           '<Date>' + getISODateString(rwmlDate) + '</Date>' +	
 					           '</DateTime>';
 					//Do we have GPS
-					if(data.Files[rwmlFileIndex].Location.length > 1) {
-					   var location = data.Files[rwmlFileIndex].Location;	
+					if(data.Files[f].Location.length > 1) {
+					   var location = data.Files[f].Location;	
 					   rwml += '<Location type="gml">' +
 					           '<gml:CircleByCenterPoint numArc="1">' +
 					           '<gml:pos>' + location[0] + ' ' + location[1] + '</gml:pos>' +
@@ -219,12 +219,12 @@ var publishRUCoD = function(data,callback) {
 					           '</Direction>';
 					}
 					//Do we have weather
-					if(data.Files[rwmlFileIndex].Weather.temperature.length > 1) {
+					if(data.Files[f].Weather.temperature.length > 1) {
 					   rwml += '<Weather>' +
-	                           '<Condition>' + data.Files[rwmlFileIndex].Weather.condition + '</Condition>' +
-	                           '<Temperature>' + data.Files[rwmlFileIndex].Weather.temperature + '</Temperature>' +
-	                           '<WindSpeed>' + data.Files[rwmlFileIndex].Weather.wind + '</WindSpeed>' +
-	                           '<Humidity>' + data.Files[rwmlFileIndex].Weather.humidity + '</Humidity>' +
+	                           '<Condition>' + data.Files[f].Weather.condition + '</Condition>' +
+	                           '<Temperature>' + data.Files[f].Weather.temperature + '</Temperature>' +
+	                           '<WindSpeed>' + data.Files[f].Weather.wind + '</WindSpeed>' +
+	                           '<Humidity>' + data.Files[f].Weather.humidity + '</Humidity>' +
 	                           '</Weather>';	
 					}
 					
