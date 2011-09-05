@@ -23,6 +23,8 @@ var soundMethods = {
         //If we want geotagged sounds
         freesoundURL += '&f=is_geotagged:true';
       }
+      
+      console.log(freesoundURL);
       //Store the current context
       var that = this;
       
