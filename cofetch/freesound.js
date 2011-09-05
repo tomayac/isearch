@@ -15,7 +15,7 @@ var soundMethods = {
       var results = new Array();
       
       var maxResults = 5;
-      var freesoundURL = "http://tabasco.upf.edu/api/sounds/search/?"
+      var freesoundURL = "http://beta.freesound.org/api/sounds/search/?"
           + 'q=' + query
           + '&api_key=' + APIKey;
       
