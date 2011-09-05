@@ -300,7 +300,6 @@ Fetch.prototype.get = function(index, queries, callback) {
 			
 			//Get audio for content object
 			sound.fetchSound(soundQuery, true, this);
-			return [];
 		},
 		function evaluateSoundData(error,data) {
 			if(error) {
