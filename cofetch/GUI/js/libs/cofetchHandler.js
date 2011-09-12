@@ -13,6 +13,10 @@ var cofetchHandler = (function() {
   var sounds = [];
   var images = [];
   
+  var iImg = 0, imgDir = 1;
+  var iVid = 0, vidDir = 1;
+  var iSou = 0, souDir = 1;
+  
   var fetch = function(id) {
     
 	var serverURL = "http://isearch.ai.fh-erfurt.de:8081/get/";
@@ -133,9 +137,6 @@ var cofetchHandler = (function() {
 	        		  setSound();
 	        	  }
 	          }
-		        
-		      //Populate the form
-		      populateForm();
         
       },
       error: function(jqXHR, textStatus, errorThrown) {
@@ -222,16 +223,23 @@ var cofetchHandler = (function() {
       //if the "shift" argument is set, we must change the video
       //We do so by removing the first element of the array "videos"
       
-      if (videos.length > 1) {
-        videos.shift();
+      if (iVid == (videos.length-1)) {
+    	vidDir = 0;
+        alert('No other videos to see, going back');
+      } else if(iVid == 0){
+    	vidDir = 1; 
+    	alert('Beginning of videos');
+      }
+      
+      if(vidDir == 1) {
+    	  iVid++;
       } else {
-        alert('No other videos to see');
-        return;
+    	  iVid--;
       }
     }
     
     //Take the first video of the Array
-    var video = videos[0];
+    var video = videos[iVid];
     
     //Extract the ID of the YouTube video
     var videoID = video.URL.substring(video.URL.indexOf("=")+1);
@@ -277,19 +285,26 @@ var cofetchHandler = (function() {
   
   var setSound = function(shift) {
     if (typeof shift !== "undefined") {
-      //if the "shift" argument is set, we must change the video
-      //We do so by removing the first element of the array "sounds"
+        //if the "shift" argument is set, we must change the video
+        //We do so by removing the first element of the array "sounds"
       
-      if (sounds.length > 1) {
-        sounds.shift();
-      } else {
-        alert('No other sound to hear');
-        return;
-      }
+    	if (iSou == (sounds.length-1)) {
+    		souDir = 0;
+            alert('No other sounds to hear, going back');
+        } else if(iSou == 0){
+        	souDir = 1; 
+        	alert('Beginning of sounds');
+        }
+          
+        if(souDir == 1) {
+        	iSou++;
+        } else {
+        	iSou--;
+        }
     }
     
     //Take the first sound of the array
-    var sound = sounds[0];
+    var sound = sounds[iSou];
     
     //Update the preview
     $('#sound-previewOGG').attr(
@@ -333,16 +348,23 @@ var cofetchHandler = (function() {
       //if the "shift" argument is set, we must change the video
       //We do so by removing the first element of the array "images"
       
-      if (images.length > 1) {
-        images.shift();
-      } else {
-        alert('No other images to look at!');
-        return;
-      }
+    	if (iImg == (images.length-1)) {
+    		imgDir = 0;
+            alert('No other sounds to hear, going back');
+        } else if(iImg == 0){
+        	imgDir = 1; 
+        	alert('Beginning of sounds');
+        }
+          
+        if(imgDir == 1) {
+        	iImg++;
+        } else {
+        	iImg--;
+        }
     }
     
     //Take the first video of the Array
-    var image = images[0];
+    var image = images[iImg];
     
     //Set the Flickr preview to the right URL
     $('#image-previewFlickr').attr(
