@@ -140,7 +140,7 @@ http.createServer(function (request, response) {
 	    	
         } else if (parameters[0] == 'post') {
         	//Store the JSON content object data
-        	console.log(postData);
+        	//console.log(postData);
         	 var coJson = JSON.parse(postData);
         	 
         	 rucod.store(coJson,true,function(info) {
