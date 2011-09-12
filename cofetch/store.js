@@ -194,6 +194,10 @@ var publishRUCoD = function(data, outputPath, callback) {
 						
 						rucodBody += '<MediaName>' + data.Files[f].Name + '</MediaName>';
 						
+						if(data.Files[f].Length) {
+							rucodBody += '<MediaTime>' + data.Files[f].Length + '</MediaTime>';
+						}
+						
 						for(var t=0; t < data.Files[f].Tags.length; t++) {
 							rucodBody += '<MetaTag name="UserTag" xsi:type="xsd:string">' + data.Files[f].Tags[t] + '</MetaTag>';
 						}
