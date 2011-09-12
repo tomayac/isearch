@@ -12,7 +12,7 @@ var imageMethods = {
 		if (!this.options.args[0]) {
 			this.exit('No arguments were given to the Flickr job');
 		}
-		console.log(this.options.args);
+		//console.log(this.options.args);
 		
 		var query = this.options.args[0].replace(/\s/g,'+');
 		var geo = this.options.args[1];
@@ -45,7 +45,7 @@ var imageMethods = {
 			+ '&nojsoncallback=1'
 			+ '&sort=relevance';
 		
-		console.log(searchURL);
+		//console.log(searchURL);
 		
 		//Store the current context
 	    var context = this;
