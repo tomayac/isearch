@@ -20,6 +20,7 @@ var cofetchHandler = (function() {
 	  
     contentObjectID = id;
     console.log('Waiting results for object #' + id);
+    $("#loading").show();
     
     //Request our data
     $.ajax({
@@ -53,6 +54,8 @@ var cofetchHandler = (function() {
         
         //Populate the form
         populateForm();
+        
+        $("#loading").hide();
         
       },
       error: function(jqXHR, textStatus, errorThrown) {
