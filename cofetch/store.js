@@ -122,7 +122,7 @@ var publishRUCoD = function(data, outputPath, callback) {
 	var rucodBody = '<Tags>';
 	
 	//Grabbing the tags for the RUCoD header
-	for(var f=0; f < data.Files; f++) {
+	for(var f=0; f < data.Files.length; f++) {
 		//Text has no tags ;-)
 		if(data.Files[f].Type == 'Text') {
 			continue;
@@ -150,7 +150,6 @@ var publishRUCoD = function(data, outputPath, callback) {
 						rucodBody += '<FreeText>' + data.Files[f].FreeText + '</FreeText>';
 					} else  {	
 						
-						rucodBody += '<MediaName>' + data.Files[f].Name + '</MediaName>';
 						if(mime[data.Files[f].Extension]) {
 							rucodBody += '<FileFormat>' + mime[data.Files[f].Extension] + '</FileFormat>';
 						}
@@ -159,19 +158,23 @@ var publishRUCoD = function(data, outputPath, callback) {
 							rucodBody += '<FreeText>' + data.Files[f].Description + '</FreeText>';
 						}
 						
-						for(var t=0; t < data.Files[f].Tags.length; t++) {
-							rucodBody += '<MetaTag name="UserTag" xsi:type="xsd:string">' + data.Files[f].Tags[t] + '</MetaTag>';
-						}
+						rucodBody += '<MediaCreationInformation>';
+						rucodBody += '<Author>';
+						rucodBody += '<Name>' + data.Files[f].Author + '</Name>';
+						rucodBody += '</Author>';
+						rucodBody += '<Licensing>' + data.Files[f].License + '</Licensing>';
+						rucodBody += '</MediaCreationInformation>';
+						
 						rucodBody += '<MediaLocator>';
 						rucodBody += '<MediaUri>' + data.Files[f].URL + '</MediaUri>';
 						rucodBody += '<MediaPreview>' + data.Files[f].Preview + '</MediaPreview>';
 						rucodBody += '</MediaLocator>';
-						rucodBody += '<MediaCreationInformation>';
-						rucodBody += '<Licensing>' + data.Files[f].License + '</Licensing>';
-						rucodBody += '<Creator>';
-						rucodBody += '<Name>' + data.Files[f].Author + '</Name>';
-						rucodBody += '</Creator>';
-						rucodBody += '</MediaCreationInformation>';
+						
+						rucodBody += '<MediaName>' + data.Files[f].Name + '</MediaName>';
+						
+						for(var t=0; t < data.Files[f].Tags.length; t++) {
+							rucodBody += '<MetaTag name="UserTag" xsi:type="xsd:string">' + data.Files[f].Tags[t] + '</MetaTag>';
+						}
 							
 					} 
 					
@@ -182,8 +185,7 @@ var publishRUCoD = function(data, outputPath, callback) {
 				rucodBody += '</ContentObjectTypes>';
 				
 				//Generate RWML data for each media item
-				var rwml = '<RWML>' +
-			               '<R_Descriptor>';
+				var rwml = '<RWML>';
 				
 				for(var f=0; f < data.Files.length; f++) {
 					//Text does not has any real world information
@@ -229,13 +231,12 @@ var publishRUCoD = function(data, outputPath, callback) {
 					   rwml += '</ContextSlice>';
 				} // End for loop for RWML
 				
-				rwml += '</R_Descriptor>' +
-		                '</RWML>';
+				rwml += '</RWML>';
 				
 				
 				//Add the RWML to the RUCoD
 				rucodBody += '<RealWorldInfo>' +
-							 '<MetadataUri filetype="xml">' + publicOutputUrl + '/' + baseName + '.rwml</MetadataUri> ' +
+							 '<MetadataUri filetype="rwml">' + publicOutputUrl + '/' + baseName + '.rwml</MetadataUri> ' +
 							 '</RealWorldInfo>';   
 				
 				//Find and add emotion if there are some
