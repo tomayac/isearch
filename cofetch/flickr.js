@@ -149,8 +149,8 @@ var imageMethods = {
 						
 						result.Preview = sizeData[0].source;
 						result.URL     = sizeData[sizeindex ].source;
-						//Image size calculating: width x height x (24Bit = 3 Byte) / (1024 = 1 KByte) / ( 4 = 1/4 of the bitmap size = the estimated jpg size)   
-						result.Size    = ((sizeData[sizeindex].width * sizeData[sizeindex].height * 3) / 1024) / 4;
+						//Image size calculating: width x height x (24Bit = 3 Byte) / ( 5 = 1/5 of the bitmap size = the estimated jpg size)   
+						result.Size    = (sizeData[sizeindex].width * sizeData[sizeindex].height * 3) / 5;
 						
 						results.push(result);
 						
