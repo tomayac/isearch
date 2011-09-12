@@ -54,7 +54,7 @@ Fetch.prototype.getPart = function(type, query, callback) {
 			step(
 				function init() {
 					//Fetch images for the given query
-					flickr.fetchImage(query,this);
+					flickr.fetchImage(query,0,this);
 				},
 				function getWeather(error,data) {
 					//Be sure to have data before going on
@@ -234,7 +234,7 @@ Fetch.prototype.get = function(index, queries, callback) {
 				flickrQuery += ' '+contentObject.Category;
 			}
 			
-			flickr.fetchImage(flickrQuery,this);
+			flickr.fetchImage(flickrQuery,1,this);
 		},
 		function getImageWeatherData(error,data) {
 			//Be sure to have data before going on

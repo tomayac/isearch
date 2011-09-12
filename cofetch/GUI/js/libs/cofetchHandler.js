@@ -350,10 +350,10 @@ var cofetchHandler = (function() {
       
     	if (iImg == (images.length-1)) {
     		imgDir = 0;
-            alert('No other sounds to hear, going back');
+            alert('No other images to see, going back');
         } else if(iImg == 0){
         	imgDir = 1; 
-        	alert('Beginning of sounds');
+        	alert('Beginning of images');
         }
           
         if(imgDir == 1) {

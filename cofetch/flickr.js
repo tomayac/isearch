@@ -13,6 +13,7 @@ var imageMethods = {
 			this.exit('No arguments were given to the Flickr job');
 		}
 		var query = this.options.args[0].replace(/\s/g,'+');
+		var geo = this.options.args[1];
 		var results = new Array();
 
 		var apiKey = '5226908fe75b3dae6290f60162a501d5';
@@ -34,7 +35,7 @@ var imageMethods = {
 			+ 'method=flickr.photos.search'
 			+ '&api_key=' + apiKey
 			+ '&text=' + query
-			+ '&has_geo=1'
+			+ geo ? '&has_geo=1' : ''
 			+ '&per_page=' + maxResults
 			+ '&format=json'
 			+ '&nojsoncallback=1'
@@ -165,10 +166,10 @@ var imageMethods = {
 	}
 };
 
-var fetchImage = function(query, callback) {
+var fetchImage = function(query, geo, callback) {
 	//Creates the job
 	var imageJob = new nodeio.Job({timeout:10}, imageMethods);
-	nodeio.start(imageJob, {args: [query]}, callback, true);
+	nodeio.start(imageJob, {args: [query,geo]}, callback, true);
 };
 
 //Exposes it publicly
