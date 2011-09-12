@@ -286,7 +286,7 @@ audio, img, iframe { display: block; margin: 5px 5px 10px 5px; }
 
 #loading { display:none; }
 #loading { display:none; position:fixed; left:0; top:0; width:100%; height:100%;
-           background-image:url("loadingbg.png"); }
+           background-image:url("../loadingbg.png"); }
 
 
 
