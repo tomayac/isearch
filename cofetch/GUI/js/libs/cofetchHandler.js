@@ -375,7 +375,13 @@ var cofetchHandler = (function() {
   var save = function() {
     
 	var serverURL = "http://isearch.ai.fh-erfurt.de:8081/post/";  
-	  
+	
+	var tags = $('#threed-tags').val().split(",");
+	for(var t=0; t < tags.length; t++) {
+		tags[t] = tags[t].replace(/^\s*|\s*$/g,'');
+		tags[t] = tags[t].charAt(0).toUpperCase() + tags[t].slice(1);
+	}
+	
     //Let's serialize our form:   
     var jsonFile = {
       "ID": contentObjectID,
@@ -390,7 +396,7 @@ var cofetchHandler = (function() {
         "Type": "Object3D",
         "Name": $('#threed-name').val(), 
         "Description:": $('#threed-desc').val(),
-        "Tags": $('#threed-tags').val().split(","),
+        "Tags": tags,
         "Extension": $('#threed-extension').val(),
         "License": $('#threed-license').val(),
         "LicenseURL": $('#threed-licenseURL').val(),
@@ -411,12 +417,18 @@ var cofetchHandler = (function() {
     };
     
     if($('#image-name').val().length > 0) {
+    	var tags = $('#image-tags').val().split(",");
+    	for(var t=0; t < tags.length; t++) {
+    		tags[t] = tags[t].replace(/^\s*|\s*$/g,'');
+    		tags[t] = tags[t].charAt(0).toUpperCase() + tags[t].slice(1);
+    	}
+    	
     	jsonFile.Files.push(
 			{
 		        "Type": "ImageType",
 		        "Name": $('#image-name').val(),
 		        "Description": $('#image-desc').val(),
-		        "Tags": $('#image-tags').val().split(","),
+		        "Tags": tags,
 		        "Extension": $('#image-extension').val(),
 		        "License": $('#image-license').val(),
 		        "LicenseURL": $('#image-licenseURL').val(),
@@ -439,12 +451,18 @@ var cofetchHandler = (function() {
     };
     
     if($('#video-name').val().length > 0) {
+    	var tags = $('#video-tags').val().split(",");
+    	for(var t=0; t < tags.length; t++) {
+    		tags[t] = tags[t].replace(/^\s*|\s*$/g,'');
+    		tags[t] = tags[t].charAt(0).toUpperCase() + tags[t].slice(1);
+    	}
+    	
     	jsonFile.Files.push(
 			{
 		        "Type": "VideoType",
 		        "Name": $('#video-name').val(), 
 		        "Description": $('#video-desc').val(),
-		        "Tags": $('#video-tags').val().split(","),
+		        "Tags": tags,
 		        "Extension": $('#video-extension').val(),
 		        "License": $('#video-license').val(),
 		        "LicenseURL": $('#video-licenseURL').val(),
@@ -468,12 +486,18 @@ var cofetchHandler = (function() {
     };
     
     if($('#sound-name').val().length > 0) {
+    	var tags = $('#sound-tags').val().split(",");
+    	for(var t=0; t < tags.length; t++) {
+    		tags[t] = tags[t].replace(/^\s*|\s*$/g,'');
+    		tags[t] = tags[t].charAt(0).toUpperCase() + tags[t].slice(1);
+    	}
+    	
     	jsonFile.Files.push(
 			{
 		        "Type": "SoundType",
 		        "Name": $('#sound-name').val(),
 		        "Description": $('#sound-desc').val(),
-		        "Tags": $('#sound-tags').val().split(","),
+		        "Tags": tags,
 		        "Extension": $('#sound-extension').val(),
 		        "License": $('#sound-license').val(),
 		        "LicenseURL": $('#sound-licenseURL').val(),
