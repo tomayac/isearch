@@ -34,12 +34,16 @@ var imageMethods = {
 		var searchURL = "http://api.flickr.com/services/rest/?"
 			+ 'method=flickr.photos.search'
 			+ '&api_key=' + apiKey
-			+ '&text=' + query
-			+ geo ? '&has_geo=1' : ''
-			+ '&per_page=' + maxResults
+			+ '&text=' + query;
+		if(geo == 1) {
+			searchURL += '&has_geo=1';
+		}
+		searchURL += '&per_page=' + maxResults
 			+ '&format=json'
 			+ '&nojsoncallback=1'
 			+ '&sort=relevance';
+		
+		console.log(searchURL);
 		
 		//Store the current context
 	    var context = this;
