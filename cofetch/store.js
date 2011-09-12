@@ -37,6 +37,21 @@ var mime = new Array();
     mime['webm']  = 'video/webm';
     mime['flv']   = 'video/x-flv';
 
+//enhance the array prototype to have a unique function which prevents
+//double entries within an array
+Array.prototype.unique = function() {
+
+    var o = {};
+    var tmp = [];
+
+    for(var i = 0 ; i < this.length; i++) { o[this[i]] = true; }
+
+    for(var i in o) { tmp[tmp.length] = i; }
+
+    return tmp;
+
+};    
+    
 var getISODateString = function(d){
 	 function pad(n){
 		 return n<10 ? '0'+n : n;
@@ -121,6 +136,7 @@ var publishRUCoD = function(data, outputPath, callback) {
 	
 	var rucodBody = '<Tags>';
 	
+	var tagArray = new Array();
 	//Grabbing the tags for the RUCoD header
 	for(var f=0; f < data.Files.length; f++) {
 		//Text has no tags ;-)
@@ -128,8 +144,14 @@ var publishRUCoD = function(data, outputPath, callback) {
 			continue;
 		};
 		for(var t=0; t < data.Files[f].Tags.length; t++) {
-			rucodBody += '<MetaTag name="UserTag" xsi:type="xsd:string">' + data.Files[f].Tags[t] + '</MetaTag>';
+			tagArray.push(data.Files[f].Tags[t]);
 		}
+	}
+	//Filtering the Array to have only unique tags in there
+	var uniqueTags = tagArray.unique();
+	//and print the tags into the header
+	for(var t=0; t < uniqueTags.length; t++) {
+		rucodBody += '<MetaTag name="UserTag" xsi:type="xsd:string">' + uniqueTags[t] + '</MetaTag>';
 	}
 	
 	rucodBody += '</Tags>' +
