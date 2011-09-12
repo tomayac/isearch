@@ -123,9 +123,13 @@ var imageMethods = {
 						"URL": "",
 						"Preview": "",
 						"Emotions": [],
-						"Location": [infoData.location.latitude || 0 ,infoData.location.longitude || 0,0,0],
+						"Location": [0,0,0,0],
 						"Weather": {}
 					};
+					
+					if(infoData.location) {
+						result.Location = [infoData.location.latitude || 0 ,infoData.location.longitude || 0,0,0];
+					}
 					
 					//Get the image sizes for the current image
 					var sizesURL = "http://api.flickr.com/services/rest/?"
