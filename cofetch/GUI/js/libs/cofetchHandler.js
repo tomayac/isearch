@@ -228,7 +228,6 @@ var cofetchHandler = (function() {
         alert('No other videos to see, going back');
       } else if(iVid == 0){
     	vidDir = 1; 
-    	alert('Beginning of videos');
       }
       
       if(vidDir == 1) {
@@ -293,7 +292,6 @@ var cofetchHandler = (function() {
             alert('No other sounds to hear, going back');
         } else if(iSou == 0){
         	souDir = 1; 
-        	alert('Beginning of sounds');
         }
           
         if(souDir == 1) {
@@ -353,7 +351,6 @@ var cofetchHandler = (function() {
             alert('No other images to see, going back');
         } else if(iImg == 0){
         	imgDir = 1; 
-        	alert('Beginning of images');
         }
           
         if(imgDir == 1) {
