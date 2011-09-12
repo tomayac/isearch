@@ -46,6 +46,12 @@ var soundMethods = {
 	        var soundData;
 	        var detailsURL;
 	        
+	        //No sounds found, get back
+	        if(sounds.length < 1) {
+	        	that.emit(results);
+	        	return;
+	        }
+	        
 	        if(sounds.length < maxResults) {
 	        	maxResults = sounds.length;
 	        }
@@ -104,7 +110,7 @@ var soundMethods = {
 
 var fetchSound = function(query, isGeo, callback) {
 	//Creates the job
-	var soundJob = new nodeio.Job({timeout:10}, soundMethods);
+	var soundJob = new nodeio.Job({timeout:15}, soundMethods);
 	nodeio.start(soundJob, {args: [query, isGeo]}, callback, true);
 };
 

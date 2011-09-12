@@ -58,6 +58,12 @@ var imageMethods = {
 				photos = JSON.parse(data).photos.photo;
 			} catch(e) {}
 			
+			//No sounds found, get back
+	        if(photos.length < 1) {
+	        	that.emit(results);
+	        	return;
+	        }
+			
 			//Adjust the maxResults parameter if there weren't enough results
 			if(photos.length < maxResults) {
 	        	maxResults = photos.length;

@@ -52,6 +52,12 @@ var videoMethods = {
         var youtubeResponse = JSON.parse(data);
         var videos = youtubeResponse['feed']['entry'];
         
+        //No sounds found, get back
+        if(videos.length < 1) {
+        	that.emit(results);
+        	return;
+        }
+        
         //Adjust the maxResults parameter if there weren't enough results
 		if(videos.length < maxResults) {
         	maxResults = videos.length;
