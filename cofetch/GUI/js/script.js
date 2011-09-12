@@ -77,7 +77,10 @@ $(document).ready(function(){
     return false;
   });
   
-  $("#save").click(function(){
+  $("#save").click(function(e){
+	
+	e.preventDefault();  
+	
 	//post JSON to the correct handler server
     var sent = cofetchHandler.save();
     console.log(sent);

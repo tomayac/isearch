@@ -408,7 +408,7 @@ var cofetchHandler = (function() {
         "Size": $('#threed-size').val(),
         "URL": $('#threed-url').val(),
         "Preview": $('#threed-preview').val(),
-        "Emotions": $('#threed-emotions').val().split(","),
+        "Emotions": $('#threed-emotions').val() || [],
         "Location": $('#threed-location').val().split(","),
         "Weather": {
           "condition": $('#threed-weather-condition').val(), 
@@ -441,7 +441,7 @@ var cofetchHandler = (function() {
 		        "URL": $('#image-url').val(),
 		        "Preview": $('#image-preview').val(),
 		        "Dimensions": $('#image-dimensions').val(),
-		        "Emotions": $('#image-emotions').val().split(","),
+		        "Emotions": $('#image-emotions').val() || [],
 		        "Location": $('#image-location').val().split(","),
 		        "Weather": {
 		          "condition": $('#image-weather-condition').val(), 
@@ -476,7 +476,7 @@ var cofetchHandler = (function() {
 		        "Preview": $('#video-preview').val(),
 		        "Dimensions": $('#video-dimensions').val(),
 		        "Length": $('#video-length').val(),
-		        "Emotions": $('#video-emotions').val().split(","),
+		        "Emotions": $('#video-emotions').val() || [],
 		        "Location": $('#video-location').val().split(","),
 		        "Weather": {
 		          "condition": $('#video-weather-condition').val(), 
@@ -510,7 +510,7 @@ var cofetchHandler = (function() {
 		        "URL": $('#sound-url').val(),
 		        "Preview": $('#sound-preview').val(),
 		        "Length": $('#sound-length').val(),
-		        "Emotions": $('#sound-emotions').val().split(","),
+		        "Emotions": $('#sound-emotions').val() || [],
 		        "Location": $('#sound-location').val().split(","),
 		        "Weather": {
 		          "condition": $('#sound-weather-condition').val(), 
