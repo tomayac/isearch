@@ -83,15 +83,16 @@ $(document).ready(function(){
 	
 	//post JSON to the correct handler server
     var sent = cofetchHandler.save();
-    console.log(sent);
-    //load next
+    alert(sent);
+    //load next 
+    /*
     var currentLocation = window.location;
     var newLocation = window.location.href.substring(0,window.location.href.indexOf("?"));
     newID = parseInt(currentID) + 1;
     newLocation += "?id=" + newID ;
     console.log(newLocation);
     window.location = newLocation;
-    
+    */
     return false;
   });
   
