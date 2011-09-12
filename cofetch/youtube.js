@@ -54,7 +54,7 @@ var videoMethods = {
         
         //No sounds found, get back
         if(videos.length < 1) {
-        	that.emit(results);
+        	this.emit(results);
         	return;
         }
         

@@ -60,7 +60,7 @@ var imageMethods = {
 			
 			//No sounds found, get back
 	        if(photos.length < 1) {
-	        	that.emit(results);
+	        	context.emit(results);
 	        	return;
 	        }
 			
