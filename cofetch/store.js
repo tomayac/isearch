@@ -272,17 +272,17 @@ var publishRUCoD = function(data, outputPath, callback) {
 					if(data.Files[f].Type == 'Text') {
 						continue;
 					}
-					if(data.Files[f].Emotions.length > 1 && data.Files[f].Emotions[0] != "Not set") {
+					if(data.Files[f].Emotions.length > 0 && data.Files[f].Emotions[0] != "Not set") {
 						emoIndex = f;
 						break;
 					}
 				}
 				rucodBody += '<UserInfo>' +
-							 '<UserInfoName>Emotion</UserInfoName>' +
-				             '<emotion>' +
-				             '<category set="everydayEmotions" name="' + data.Files[emoIndex].Emotions + '"/>' +
-				             '</emotion>' +
-				             '</UserInfo>';	
+							 '<UserInfoName>Emotion</UserInfoName>';
+				for(var e=0; e < data.Files[emoIndex].Emotions.length; e++) {
+					rucodBody += '<emotion><category set="everydayEmotions" name="' + data.Files[emoIndex].Emotions[e] + '"/></emotion>';
+				}
+			    rucodBody += '</UserInfo>';	
 
 				//Write RWML file
 				fs.writeFile(outputPath+ baseName + '.rwml', rwml, function (error) {
