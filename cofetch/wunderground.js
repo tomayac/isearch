@@ -139,9 +139,9 @@ var weatherMethods = {
 				    + '&day=' + resDate[2]
 				    + '&year=' + resDate[0];
 				
-				console.log(requestURL);
-				
 				context.getHtml(requestURL, function(error, $) {		
+					
+					console.log(requestURL);
 					
 					var weatherTable = {};
 					
