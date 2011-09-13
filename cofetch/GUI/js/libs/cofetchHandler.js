@@ -555,7 +555,7 @@ var cofetchHandler = (function() {
     });
     
     
-    return 'Save request sent!';
+    return 'Successfully saved!';
   };
   
   var getScreenshot = function() {

@@ -47,6 +47,10 @@ var soundMethods = {
 	        var detailsURL;
 	        
 	        //No sounds found, get back
+	        if(!sounds) {
+	        	that.emit(results);
+	        	return;
+	        }
 	        if(sounds.length < 1) {
 	        	that.emit(results);
 	        	return;

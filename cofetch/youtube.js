@@ -52,7 +52,11 @@ var videoMethods = {
         var youtubeResponse = JSON.parse(data);
         var videos = youtubeResponse['feed']['entry'];
         
-        //No sounds found, get back
+        //No videos found, get back
+        if(!videos) {
+        	this.emit(results);
+        	return;
+        }
         if(videos.length < 1) {
         	this.emit(results);
         	return;
