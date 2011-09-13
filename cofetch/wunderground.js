@@ -217,7 +217,8 @@ var weatherMethods = {
 						humidity = parseInt(humidity);
 						
 						//Get the windspeed for the most fitting time
-						windspeed = (weatherTable[targetRow].children[dataColumns.windspeed].children[0].data == 'Calm') ? parseFloat('0.0') : Math.round(parseFloat(weatherTable[targetRow].children[dataColumns.windspeed].children[0].children[0].children[0].data));
+						var winddata = weatherTable[targetRow].children[dataColumns.windspeed].children[0].data.replace(/^\s*|\s*$/g,'');
+						windspeed = (winddata == 'Calm' || winddata == '-') ? parseFloat('0.0') : Math.round(parseFloat(weatherTable[targetRow].children[dataColumns.windspeed].children[0].children[0].children[0].data));
 						
 		                //Calculate the beaufort number for the determined windspeed
 		                for(var b=0; b < beaufortScale.length; b++) {
