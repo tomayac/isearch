@@ -274,13 +274,13 @@ var publishRUCoD = function(data, outputPath, callback) {
 			if(data.Files[f].Type == 'Text') {
 				continue;
 			}
-			if(data.Files[f].Emotions.length > 0 && (data.Files[f].Emotions[0] != "Not set" || data.Files[f].Emotions[0].length > 0)) {
+			if(data.Files[f].Emotions.length > 0 && data.Files[f].Emotions[0] != "Not set" && data.Files[f].Emotions[0].length > 0) {
 				emoIndex = f;
 				break;
 			}
 		}
 		
-		if(emoIndex != -1) {
+		if(emoIndex >= 0) {
 			rucodBody += '<UserInfo>' +
 						 '<UserInfoName>Emotion</UserInfoName>';
 			for(var e=0; e < data.Files[emoIndex].Emotions.length; e++) {
