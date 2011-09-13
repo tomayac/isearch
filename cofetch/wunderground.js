@@ -141,7 +141,7 @@ var weatherMethods = {
 				
 				context.getHtml(requestURL, function(error, $) {		
 					
-					console.log(requestURL);
+					//console.log(requestURL);
 					
 					var weatherTable = {};
 					
