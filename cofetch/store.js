@@ -274,7 +274,7 @@ var publishRUCoD = function(data, outputPath, callback) {
 			if(data.Files[f].Type == 'Text') {
 				continue;
 			}
-			if(data.Files[f].Emotions.length > 0 && data.Files[f].Emotions[0] != "Not set") {
+			if(data.Files[f].Emotions.length > 0 && (data.Files[f].Emotions[0] != "Not set" || data.Files[f].Emotions[0].length > 0)) {
 				emoIndex = f;
 				break;
 			}
