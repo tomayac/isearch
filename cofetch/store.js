@@ -283,7 +283,8 @@ var publishRUCoD = function(data, outputPath, callback) {
 					rucodBody += '<emotion><category set="everydayEmotions" name="' + data.Files[emoIndex].Emotions[e] + '"/></emotion>';
 				}
 			    rucodBody += '</UserInfo>';	
-
+			    
+			    console.log("Temporary RUCoD data collected. Writing files...");
 				//Write RWML file
 				fs.writeFile(outputPath+ baseName + '.rwml', rwml, function (error) {
 					if (error) throw error;
