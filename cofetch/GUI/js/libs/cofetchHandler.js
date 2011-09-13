@@ -63,7 +63,7 @@ var cofetchHandler = (function() {
         
       },
       error: function(jqXHR, textStatus, errorThrown) {
-        alert('error ' + textStatus + " " + errorThrown);    
+        alert(textStatus + " " + errorThrown);    
       }
     });
     
