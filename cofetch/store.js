@@ -268,7 +268,7 @@ var publishRUCoD = function(data, outputPath, callback) {
 					 '</RealWorldInfo>';   
 		
 		//Find and add emotion if there are some
-		var emoIndex = 0;
+		var emoIndex = -1;
 		
 		for(var f=0; f < data.Files.length; f++) {
 			if(data.Files[f].Type == 'Text') {
@@ -279,13 +279,16 @@ var publishRUCoD = function(data, outputPath, callback) {
 				break;
 			}
 		}
-		rucodBody += '<UserInfo>' +
-					 '<UserInfoName>Emotion</UserInfoName>';
-		for(var e=0; e < data.Files[emoIndex].Emotions.length; e++) {
-			rucodBody += '<emotion><category set="everydayEmotions" name="' + data.Files[emoIndex].Emotions[e] + '"/></emotion>';
+		
+		if(emoIndex != -1) {
+			rucodBody += '<UserInfo>' +
+						 '<UserInfoName>Emotion</UserInfoName>';
+			for(var e=0; e < data.Files[emoIndex].Emotions.length; e++) {
+				rucodBody += '<emotion><category set="everydayEmotions" name="' + data.Files[emoIndex].Emotions[e] + '"/></emotion>';
+			}
+		    rucodBody += '</UserInfo>';	
 		}
-	    rucodBody += '</UserInfo>';	
-	    
+		
 	    console.log("Temporary RUCoD data collected. Writing files...");
 		//Write RWML file
 		fs.writeFile(outputPath+ baseName + '.rwml', rwml, function (error) {
