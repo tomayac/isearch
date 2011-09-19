@@ -1,5 +1,5 @@
 {
-    "name": "guiserver",
+    "name": "musebag",
 	"mappings": {
 		"commonjs-utils": "jar:http://github.com/kriszyp/commonjs-utils/zipball/master!/lib/"
 	},

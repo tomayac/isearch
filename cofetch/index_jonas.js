@@ -8,8 +8,7 @@ var http      = require('http'),
     fetch     = require('./fetch'),
     rucod     = require('./store');
 
-var port      = 8081;
-    host      = '194.94.204.39';
+var port      = 8085;
 
 //
 //Create a node-static server to serve the current directory
@@ -172,6 +171,6 @@ http.createServer(function (request, response) {
 		    });
 	    }
 	});
-}).listen(port, host);
+}).listen(port);
 
-console.log('Cofetch Server running at http://' + host + ':' + port + '/');
+console.log('Cofetch Server running at port ' + port);
