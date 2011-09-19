@@ -11,4 +11,4 @@ var webservice = require('webservice'),
     cofind = require('./cofind');
 
 webservice.createServer(cofind).listen(8084);
-console.log(' > CoFind webservice started on port 8084'.cyan);
+console.log(' > CoFind webservice started on port 8084');

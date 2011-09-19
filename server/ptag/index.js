@@ -11,4 +11,4 @@ var webservice = require('webservice'),
     ptag = require('./ptag');
 
 webservice.createServer(ptag).listen(8083);
-console.log(' > pTag webservice started on port 8083'.cyan);
+console.log(' > pTag webservice started on port 8083');

@@ -17,4 +17,4 @@ require.reloadable(function(){
 });
 
 webservice.createServer(musebag).listen(8082);
-console.log(' > pTag webservice started on port 8082'.cyan);
+console.log(' > pTag webservice started on port 8082');
