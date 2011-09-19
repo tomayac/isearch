@@ -143,7 +143,7 @@ http.createServer(function (request, response) {
         	//console.log(postData);
         	 var coJson = JSON.parse(postData);
         	 
-        	 rucod.store(coJson,true,function(info) {
+        	 rucod.store(coJson,false,function(info) {
         		 response.writeHead(status.code,status.message,{ 
 	                	'Content-Length': Buffer.byteLength(info,'utf8'),
 					  	'Content-Type'  : 'plain/text; charset=utf8'
