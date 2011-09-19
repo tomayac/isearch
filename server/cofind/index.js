@@ -7,7 +7,7 @@
  * @author Jonas Etzold
  * @company University of Applied Sciences Erfurt
  */
-var webservice = require('./lib/webservice'),
+var webservice = require('webservice'),
     cofind = require('./cofind');
 
 webservice.createServer(cofind).listen(8084);

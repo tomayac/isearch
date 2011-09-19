@@ -7,7 +7,7 @@
  * @author Arnaud Brousseau and Jonas Etzold
  * @company Google Deutschland GmbH, University of Applied Sciences Erfurt
  */
-var webservice = require('./lib/webservice'),
+var webservice = require('webservice'),
     musebag = require('./musebag');
 
 

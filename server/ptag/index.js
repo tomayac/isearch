@@ -7,7 +7,7 @@
  * @author Jonas Etzold
  * @company University of Applied Sciences Erfurt
  */
-var webservice = require('./lib/webservice'),
+var webservice = require('webservice'),
     ptag = require('./ptag');
 
 webservice.createServer(ptag).listen(8083);
