@@ -19,11 +19,11 @@ var httpProxy = require('http-proxy');
 //Configuration variables
 var options = {
   router: {
-    'isearch.ai.fh-erfurt.de/'        : '127.0.0.1:8081',
-    'isearch.ai.fh-erfurt.de/musebag' : '127.0.0.1:8082',
-    'isearch.ai.fh-erfurt.de/pTag'    : '127.0.0.1:8083',
-    'isearch.ai.fh-erfurt.de/cofind'  : '127.0.0.1:8084',
-    'isearch.ai.fh-erfurt.de/cofetch' : '127.0.0.1:8085'
+    'isearch.ai.fh-erfurt.de/'        : '194.94.204.39:8081',
+    'isearch.ai.fh-erfurt.de/musebag' : '194.94.204.39:8082',
+    'isearch.ai.fh-erfurt.de/ptag'    : '194.94.204.39:8083',
+    'isearch.ai.fh-erfurt.de/cofind'  : '194.94.204.39:8084',
+    'isearch.ai.fh-erfurt.de/cofetch' : '194.94.204.39:8085'
   }
 };
 
