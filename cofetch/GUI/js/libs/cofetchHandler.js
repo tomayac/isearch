@@ -19,8 +19,7 @@ var cofetchHandler = (function() {
   
   var fetch = function(id) {
     
-	var serverURL = "http://isearch.ai.fh-erfurt.de:8081/get/";
-	//var serverURL = "http://localhost:8082/get/";  
+	var serverURL = "http://isearch.ai.fh-erfurt.de:8085/get/";
 	  
     contentObjectID = id;
     console.log('Waiting results for object #' + id);
@@ -71,7 +70,7 @@ var cofetchHandler = (function() {
   
   var fetchPart = function(type, query) {
 	  
-	  var serverURL = "http://isearch.ai.fh-erfurt.de:8081/getPart/";
+	  var serverURL = "http://isearch.ai.fh-erfurt.de:8085/getPart/";
 	  //var serverURL = "http://localhost:8082/get/";
 	  
 	  console.log('Waiting for results for ' + type + ' search with query "' + query + '"');
@@ -396,7 +395,7 @@ var cofetchHandler = (function() {
   
   var save = function() {
     
-	var serverURL = "http://isearch.ai.fh-erfurt.de:8081/post/";  
+	var serverURL = "http://isearch.ai.fh-erfurt.de:8085/post/";  
 	
 	var tags = $('#threed-tags').val().split(",");
 	for(var t=0; t < tags.length; t++) {

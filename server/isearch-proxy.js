@@ -19,14 +19,15 @@ var httpProxy = require('http-proxy');
 //Configuration variables
 var options = {
   router: {
-    'isearch.ai.fh-erfurt.de/'        : '194.94.204.39:8081',
-    'isearch.ai.fh-erfurt.de/musebag' : '194.94.204.39:8082',
-    'isearch.ai.fh-erfurt.de/ptag'    : '194.94.204.39:8083',
-    'isearch.ai.fh-erfurt.de/cofind'  : '194.94.204.39:8084',
-    'isearch.ai.fh-erfurt.de/cofetch' : '194.94.204.39:8085'
+    'isearch.ai.fh-erfurt.de/musebag' : 'isearch.ai.fh-erfurt.de:8082',
+    'isearch.ai.fh-erfurt.de/ptag'    : 'isearch.ai.fh-erfurt.de:8083',
+    'isearch.ai.fh-erfurt.de/cofind'  : 'isearch.ai.fh-erfurt.de:8084',
+    'isearch.ai.fh-erfurt.de/cofetch' : 'isearch.ai.fh-erfurt.de:8085',
+    'isearch.ai.fh-erfurt.de'         : 'isearch.ai.fh-erfurt.de:8081'	
   }
 };
 
 //Server, Router setup
 var proxyServer = httpProxy.createServer(options);
 proxyServer.listen(80);
+console.log("I-SEARCH proxy is listing on port 80 at isearch.ai.fh-erfurt.de");
