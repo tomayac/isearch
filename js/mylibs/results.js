@@ -1,7 +1,7 @@
 //That JS will take care of the results interactions & visualizations
 
-define("mylibs/com.isearch.results", 
-    ["mylibs/com.isearch.config","mylibs/visualization/dataParser", "mylibs/visualization/visualizer"],
+define("mylibs/results", 
+    ["mylibs/config","mylibs/visualization/dataParser", "mylibs/visualization/visualizer"],
     function(config, dataParser, visualizer){
   
   //Private variable to hold the results
@@ -42,17 +42,29 @@ define("mylibs/com.isearch.results",
           $(this).hide();
         }); 
   };
+  
+  /*
+    var fetch = function(query) {
+
+	var urlToFetch = "http://www.osmoz2009.com/isearch/";
+
+     $.ajax({
+		crossDomain: true,
+        url: urlToFetch ,
+        type: "GET",
+        dataType: "jsonp",
+        data: {
+		"format": "json"
+      },
+ */
 
   var fetch = function(query) {
-
-    //var urlToFetch = "http://vision.iti.gr:8080/fcgi-bin/indexer.exe";
 	var urlToFetch = "http://vision.iti.gr/sotiris/isearch/fetch.php";
 
-	var index ;
-	
 	if ( query ) __queryParams.q = query ;
 	
     $.ajax({
+      crossDomain: true,
       url: urlToFetch ,
       type: "GET",
       dataType: "jsonp",

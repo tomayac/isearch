@@ -2,7 +2,7 @@
 * Class to represent the user tags
 */
 
-define("mylibs/com.isearch.tags", function(){
+define("mylibs/tags", function(){
   
   var tags = [];
   

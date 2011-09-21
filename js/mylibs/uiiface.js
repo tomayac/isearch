@@ -17,7 +17,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-define("mylibs/com.isearch.uiiface", ["libs/jquery.hasEventListener.min"], function(){
+define("mylibs/uiiface", ["libs/jquery.hasEventListener.min"], function(){
   
   var UIIFace = {};
   

@@ -322,6 +322,7 @@ footer {
   margin-top: 10px;
   width: 900px;
   height: 600px;
+  border: 1px solid red; /* For debugging purposes */
   position: relative;
 }
 #restart {

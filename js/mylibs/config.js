@@ -1,5 +1,4 @@
-define("mylibs/com.isearch.config",
-["!js/mylibs/visualization/DefaultThumbRenderer.js"],
+define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js"],
   function() {
     
     var constants = {

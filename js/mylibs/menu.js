@@ -1,5 +1,5 @@
-define("mylibs/com.isearch.menu",
-  ["mylibs/com.isearch.config", "mylibs/com.isearch.uiiface"],
+define("mylibs/menu",
+  ["mylibs/config", "mylibs/uiiface"],
   function(config, uiiface) {
     
     var hasNav = false;

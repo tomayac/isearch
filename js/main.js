@@ -22,8 +22,7 @@ if(typeof console == "undefined") {
 }
 
 define("main",
-    ["mylibs/com.isearch.menu", "mylibs/com.isearch.config", 
-    "mylibs/com.isearch.tags", "mylibs/com.isearch.results", 
+    ["mylibs/menu", "mylibs/config", "mylibs/tags", "mylibs/results", 
     "libs/jquery.tokeninput"],
     function(menu, config, tags, results) {
 
@@ -39,7 +38,9 @@ define("main",
         
         $(window).resize(function() {
             clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(menu.adjust(), 200);
+            resizeTimer = setTimeout(function() {
+              menu.adjust();
+            }, 200);
         });
 
         //Initializes the settings panel
@@ -84,6 +85,8 @@ define("main",
 
             //Remove the tags
             $(".tags").hide();
+            //Remove the autosuggestions
+            $(".token-input-dropdown-isearch").hide();
 
             //Displays the results
             results.display(query);
