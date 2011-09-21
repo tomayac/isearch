@@ -43,6 +43,7 @@ http.createServer(function (request, response) {
  if (request.method == 'POST') {
  
 	 request.addListener('data', function(data) {
+		 console.log(parameters);
 		 if (parameters[0] == 'post') {
 			 postData += data;	
 	     }
@@ -139,6 +140,7 @@ http.createServer(function (request, response) {
 	    	
         } else if (parameters[0] == 'post') {
         	 //Store the JSON content object data
+        	 console.log('Debug output: ');
         	 console.log(postData);
         	 var coJson = JSON.parse(postData);
         	 
