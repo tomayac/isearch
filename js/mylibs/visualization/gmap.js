@@ -1,3 +1,196 @@
+
+// http://gmaps-samples-v3.googlecode.com/svn/trunk/infowindow_custom/infowindow-custom.html
+
+/* An InfoBox is like an info window, but it displays
+ * under the marker, opens quicker, and has flexible styling.
+ * @param {GLatLng} latlng Point to place bar at
+ * @param {Map} map The map on which to display this InfoBox.
+ * @param {Object} opts Passes configuration options - content,
+ *   offsetVertical, offsetHorizontal, className, height, width
+ */
+ 
+function InfoBox(opts) {
+  google.maps.OverlayView.call(this);
+  this.latlng_ = opts.latlng;
+  this.map_ = opts.map;
+  this.offsetVertical_ = -195;
+  this.offsetHorizontal_ = 0;
+  this.height_ = 185;
+  this.width_ = 130;
+  this.data = opts.data ;
+  this.thumbRenderer = opts.thumbRenderer ;
+
+  var me = this;
+  this.boundsChangedListener_ =
+    google.maps.event.addListener(this.map_, "bounds_changed", function() {
+      return me.panMap.apply(me);
+    });
+
+  // Once the properties of this OverlayView are initialized, set its map so
+  // that we can display it.  This will trigger calls to panes_changed and
+  // draw.
+  this.setMap(this.map_);
+}
+
+/* InfoBox extends GOverlay class from the Google Maps API
+ */
+InfoBox.prototype = new google.maps.OverlayView();
+
+/* Creates the DIV representing this InfoBox
+ */
+InfoBox.prototype.remove = function() {
+  if (this.div_) {
+    this.div_.parentNode.removeChild(this.div_);
+    this.div_ = null;
+  }
+};
+
+/* Redraw the Bar based on the current projection and zoom level
+ */
+InfoBox.prototype.draw = function() {
+  // Creates the element if it doesn't exist already.
+  this.createElement();
+  if (!this.div_) return;
+
+  // Calculate the DIV coordinates of two opposite corners of our bounds to
+  // get the size and position of our Bar
+  var pixPosition = this.getProjection().fromLatLngToDivPixel(this.latlng_);
+  if (!pixPosition) return;
+
+  // Now position our DIV based on the DIV coordinates of our bounds
+ // this.div_.style.width = this.width_ + "px";
+  this.div_.style.left = (pixPosition.x + this.offsetHorizontal_) + "px";
+ // this.div_.style.height = this.height_ + "px";
+  this.div_.style.top = (pixPosition.y + this.offsetVertical_) + "px";
+  this.div_.style.display = 'block';
+};
+
+InfoBox.prototype.close = function() {
+	this.setMap(null);
+
+};
+/* Creates the DIV representing this InfoBox in the floatPane.  If the panes
+ * object, retrieved by calling getPanes, is null, remove the element from the
+ * DOM.  If the div exists, but its parent is not the floatPane, move the div
+ * to the new pane.
+ * Called from within draw.  Alternatively, this can be called specifically on
+ * a panes_changed event.
+ */
+InfoBox.prototype.createElement = function() {
+  var panes = this.getPanes();
+  var div = this.div_;
+  if (!div) {
+    // This does not handle changing panes.  You can set the map to be null and
+    // then reset the map to move the div.
+    div = this.div_ = $('<div/>', { "class": "gmaps-infobox", "width": this.width_ + "px" }).get(0) ;
+    	
+	var contentDiv = $('<div/>', { css: { width: "128px" }}) ;
+						
+	var tr = this.thumbRenderer ;
+	var thumb = this.data ;
+	
+	// select default media to show
+	var mediaType = null ;
+	if ( thumb.defaultMedia )
+		mediaType = thumb.defaultMedia ;
+	else if ( thumb.doc.media.length > 0 )
+		mediaType = thumb.doc.media[0].type ;
+		   
+	tr.renderContents(contentDiv, thumb, mediaType) ;
+
+    var topDiv = $('<div/>', { css: { "text-align": "right" } }).appendTo(div) ;
+	var closeImg = $('<img/>', { css: { width: "32px", height: "32px", cursor: "pointer" }, src: "http://gmaps-samples.googlecode.com/svn/trunk/images/closebigger.gif" }).appendTo(topDiv) ;
+
+    function removeInfoBox(ib) {
+      return function() {
+        ib.setMap(null);
+      };
+    }
+
+    google.maps.event.addDomListener(closeImg.get(0), 'click', removeInfoBox(this));
+	contentDiv.appendTo(div) ;
+	div.style.display = 'none';
+    panes.floatPane.appendChild(div);
+    this.panMap();
+  } else if (div.parentNode != panes.floatPane) {
+    // The panes have changed.  Move the div.
+    div.parentNode.removeChild(div);
+    panes.floatPane.appendChild(div);
+  } else {
+    // The panes have not changed, so no need to create or move the div.
+  }
+}
+
+/* Pan the map to fit the InfoBox.
+ */
+InfoBox.prototype.panMap = function() {
+  // if we go beyond map, pan map
+  var map = this.map_;
+  var bounds = map.getBounds();
+  if (!bounds) return;
+
+  // The position of the infowindow
+  var position = this.latlng_;
+
+  // The dimension of the infowindow
+  var iwWidth = this.width_;
+  var iwHeight = this.height_;
+
+  // The offset position of the infowindow
+  var iwOffsetX = this.offsetHorizontal_;
+  var iwOffsetY = this.offsetVertical_;
+
+  // Padding on the infowindow
+  var padX = 40;
+  var padY = 40;
+
+  // The degrees per pixel
+  var mapDiv = map.getDiv();
+  var mapWidth = mapDiv.offsetWidth;
+  var mapHeight = mapDiv.offsetHeight;
+  var boundsSpan = bounds.toSpan();
+  var longSpan = boundsSpan.lng();
+  var latSpan = boundsSpan.lat();
+  var degPixelX = longSpan / mapWidth;
+  var degPixelY = latSpan / mapHeight;
+
+  // The bounds of the map
+  var mapWestLng = bounds.getSouthWest().lng();
+  var mapEastLng = bounds.getNorthEast().lng();
+  var mapNorthLat = bounds.getNorthEast().lat();
+  var mapSouthLat = bounds.getSouthWest().lat();
+
+  // The bounds of the infowindow
+  var iwWestLng = position.lng() + (iwOffsetX - padX) * degPixelX;
+  var iwEastLng = position.lng() + (iwOffsetX + iwWidth + padX) * degPixelX;
+  var iwNorthLat = position.lat() - (iwOffsetY - padY) * degPixelY;
+  var iwSouthLat = position.lat() - (iwOffsetY + iwHeight + padY) * degPixelY;
+
+  // calculate center shift
+  var shiftLng =
+      (iwWestLng < mapWestLng ? mapWestLng - iwWestLng : 0) +
+      (iwEastLng > mapEastLng ? mapEastLng - iwEastLng : 0);
+  var shiftLat =
+      (iwNorthLat > mapNorthLat ? mapNorthLat - iwNorthLat : 0) +
+      (iwSouthLat < mapSouthLat ? mapSouthLat - iwSouthLat : 0);
+
+  // The center of the map
+  var center = map.getCenter();
+
+  // The new map center
+  var centerX = center.lng() - shiftLng;
+  var centerY = center.lat() - shiftLat;
+
+  // center the map to the new shifted center
+  map.setCenter(new google.maps.LatLng(centerY, centerX));
+
+  // Remove the listener after panning is complete.
+  google.maps.event.removeListener(this.boundsChangedListener_);
+  this.boundsChangedListener_ = null;
+};
+
+/////////////////////////////////////////////////////////////////////////////////
+
 MarkerLayer = function(markers_) {
 
 	this.markers = markers_ ;
@@ -21,33 +214,34 @@ p.updateVisibility = function( zoom, minZoom, maxZoom )
 
 ///////////////////////////////////////////////////////////////////////////////
 
-GoogleMap = function(mapDiv, layers_) {
+GoogleMap = function(mapDiv, thumbRenderer, layers_) {
 
 	this.map = null ;
 	this.layers = [] ;
 	this.bounds = new google.maps.LatLngBounds() ;
 	this.visibleInfoWindow = null ;
+	this.thumbRenderer = thumbRenderer ;
 	
 	this.initMap(mapDiv, layers_) ;
 };
 
 var p = GoogleMap.prototype ;
 
+p.visibleInfoWindow = null ;
+
 p.getMapZoomRange = function() {
 	var currentMapTypeId = this.map.getMapTypeId();
 	mapType = this.map.mapTypes.get(currentMapTypeId) ;
 	var minZoom = 0, maxZoom = 30 ;
-	if ( typeof(mapType.minZoom) == "number")  minZoom = mapType.minZoom;
-	if ( typeof(mapType.maxZoom) == "number") maxZoom = mapType.maxZoom ;
+	if ( mapType )
+	{
+		if ( typeof(mapType.minZoom) == "number")  minZoom = mapType.minZoom;
+		if ( typeof(mapType.maxZoom) == "number") maxZoom = mapType.maxZoom ;
+	}
 	
 	return { 'minzoom': minZoom, 'maxzoom': maxZoom } ;
 } ;
 	
-p.openInfoWindow = function(infoWindow, marker) {
-	if ( this.visibleInfoWindow ) this.visibleInfoWindow.close();
-    infoWindow.open(this.map, marker);
-	this.visibleInfoWindow = infoWindow ;
-} ;
 	
 p.updateLayerVisibility = function(layer) {
 	
@@ -87,62 +281,6 @@ p.UpdateLayerListMenu = function() {
 	$(".gmap-control-drop-down-menu ul").html(html) ;
 };
 	
-	
-p.CreateLayersControl = function (controlDiv) {
-		
-	var map = this.map ;
-	var layers = this.layers ;
-	var obj = this ;
-
-	var html = '<div class="gmaps-control"><div class="gmaps-control-dropdown">Layers<img style="position: absolute; right: 4px; top: 4px; display: block;" src="http://maps.gstatic.com/intl/en_us/mapfiles/down-arrow.gif"></div></div>' ;
-
-	html += '<div class="gmap-control-drop-down-menu"><ul>' ;
-	
-	html += '</ul></div>' ;
-	
-	controlDiv.innerHTML = html ;
-  
-	google.maps.event.addDomListener(controlDiv, 'click', function() {
-		obj.UpdateLayerListMenu() ;
-		if ( $(".gmap-control-drop-down-menu").css('display') == 'none' ) 
-			$(".gmap-control-drop-down-menu").css("display", "block") ;
-		else 
-			$(".gmap-control-drop-down-menu").css("display", "none") ;
-				
-		$('.gmap-control-drop-down-menu ul li a').bind( 'click', {'layers': layers, 'map': map }, function(e) {
-			var img = $(this).children('img:first');
-			var isChecked = false;
-			if ( img.attr('src') === "images/checked.png"){
-				img.attr('src', "images/unchecked.png");
-			} else {
-				img.attr('src', "images/checked.png");
-				isChecked = true;
-			}
-			
-			var id = this.id ;
-			var layers = e.data.layers ;
-			
-			for( i=0 ; i<layers.length ; i++ )
-			{
-				if ( layers[i].id == id ) 
-				{
-					if ( layers[i].type == "kml" )
-					{
-						if ( isChecked ) layers[i].layer.setMap(e.data.map) ;
-						else layers[i].layer.setMap(null) ;
-					}
-					else if ( layers[i].type == "markers" )
-					{
-						layers[i].markers.setVisible(isChecked) ;
-					}
-				}
-			}
-							
-			return false ;
-
-		}) ;
-	}); 
-};
 
 p.addLayers = function(_layers)
 {
@@ -154,26 +292,7 @@ p.addLayers = function(_layers)
 	{
 		_layers[i].finished = false ;
 		
-		if ( _layers[i].type == "kml" )
-		{
-			var layerUrl = _layers[i].url ;
-			var layer = new google.maps.KmlLayer(layerUrl, { preserveViewport: true });
-			_layers[i].layer = layer ;
-			_layers[i].id = 'layer-' + (i + offset) ;
-			layer.setMap(map) ;
-				
-			google.maps.event.addListener(layer, "defaultviewport_changed", function() {
-				obj.bounds.union(this.getDefaultViewport()) ;
-			}) ;
-			google.maps.event.addListener(layer, "metadata_changed", ( function(index) {
-				return function() {
-					_layers[index].finished = true ;
-					obj.checkFinished() ;
-				}
-			})(i)) ;
-				
-		}
-		else if ( _layers[i].type == "markers" )
+		if ( _layers[i].type == "markers" )
 		{
 			_layers[i].id = 'layer-' + (i + offset);
 			
@@ -189,36 +308,42 @@ p.addLayers = function(_layers)
 				
 				var pos = new google.maps.LatLng(data.lat, data.lon) ;
 				
-				var markerImage = new google.maps.MarkerImage(data.icon, 
-					new google.maps.Size(32, 32),
-					new google.maps.Point(0, 0),
-					new google.maps.Point(16, 16),
-					new google.maps.Size(32, 32)
-				);
+				var marker ;
 				
-				var marker = new google.maps.Marker({
-								position: pos,
-								map: map,
-								title: data.desc,
-								visible: true,
-								icon: markerImage  
-							} ) ;
-							
-						 // Create marker info window.
-				var infoWindow = new google.maps.InfoWindow({	
-					content: data.desc,
-					size: new google.maps.Size(200, 80)
-				});
-
-				// Add marker click event listener.
-				google.maps.event.addListener(marker, 'click', ( function(infowin) { 
-					return function() {
-						if ( obj.visibleInfoWindow ) obj.visibleInfoWindow.close();
-						infowin.open(obj.map, this);
-						obj.visibleInfoWindow = infowin ;
-					} ; 
-				})(infoWindow) ) ;
-							
+				if ( data.hasOwnProperty("icon") )
+				{
+					var markerImage = new google.maps.MarkerImage(data.icon, 
+						new google.maps.Size(32, 32),
+						new google.maps.Point(0, 0),
+						new google.maps.Point(16, 16),
+						new google.maps.Size(32, 32)
+					);
+				
+					marker = new google.maps.Marker({
+							position: pos,
+							map: map,
+							title: data.tooltip,
+							visible: true,
+							icon: markerImage  
+					} ) ;
+				}
+				else
+				{
+					marker = new google.maps.Marker({
+							position: pos,
+							map: map,
+							title: data.tooltip,
+							visible: true
+					} ) ;
+				}							
+		
+				google.maps.event.addListener(marker, "click", 	(function(data, marker) { 
+					return function(e) {
+						if ( obj.visibleInfoWindow ) obj.visibleInfoWindow.close() ;
+						obj.visibleInfoWindow = new InfoBox({latlng: marker.getPosition(), map: map, data: data.data, thumbRenderer: obj.thumbRenderer});
+						}
+					})(data, marker));
+				
 				markers.push(marker) ;
 							
 				obj.bounds.extend(pos) ;
@@ -231,6 +356,8 @@ p.addLayers = function(_layers)
 		}	
 		
 		this.layers.push(_layers[i]) ;
+		
+		
 	}
 } ;
 	
@@ -254,22 +381,16 @@ p.initMap = function(mapDiv, _layers) {
    	var map = this.map = new google.maps.Map(mapDiv, options);
 		
 	this.addLayers(_layers) ;
-		
-		
-	var layersControlDiv = document.createElement('DIV');
-	layersControlDiv.setAttribute('id', 'map-layers-control') ;
-	layersControlDiv.index = 1;
-	layersControlDiv.style.padding = '5px';
 	
-	this.CreateLayersControl(layersControlDiv) ;
-		
-	map.controls[google.maps.ControlPosition.TOP_RIGHT].push(layersControlDiv);
-		
-	google.maps.event.addDomListener(layersControlDiv, 'click', function() {});
-		
 	var layers = this.layers ;
 		
 	google.maps.event.addListener(map, "zoom_changed", function() {
+		for(var i=0 ; i<layers.length ; i++ )
+			obj.updateLayerVisibility(layers[i]) ;
+		} 
+	) ;
+	
+	google.maps.event.addListener(map, "bounds_changed", function() {
 		for(var i=0 ; i<layers.length ; i++ )
 			obj.updateLayerVisibility(layers[i]) ;
 		} 

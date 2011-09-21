@@ -42,28 +42,33 @@ define("mylibs/results",
           $(this).hide();
         }); 
   };
+  
+  /*
+    var fetch = function(query) {
+
+	var urlToFetch = "http://www.osmoz2009.com/isearch/";
+
+     $.ajax({
+		crossDomain: true,
+        url: urlToFetch ,
+        type: "GET",
+        dataType: "jsonp",
+        data: {
+		"format": "json"
+      },
+ */
 
   var fetch = function(query) {
+	var urlToFetch = "http://vision.iti.gr/sotiris/isearch/fetch.php";
 
-  //var urlToFetch = "http://vision.iti.gr:8080/fcgi-bin/indexer.exe";
-	//var urlToFetch = "http://vision.iti.gr/sotiris/isearch/fetch.php";
-  var urlToFetch = "http://www.osmoz2009.com/isearch/";
+	if ( query ) __queryParams.q = query ;
+	
     $.ajax({
       crossDomain: true,
       url: urlToFetch ,
       type: "GET",
       dataType: "jsonp",
-      data: {
-        "format": "json"
-        
-        //Note: we now have a fix JSON returned. no need to pass the query
-        //"q": query, 
-        //"total": 100, 
-        //"cls": "5,3", 
-        //"tr": "lle", 
-        //"out": "json",
-        //"index": "furniture"
-      },
+      data: __queryParams,
       success: function(data) {
 
         console.log(data)
@@ -94,7 +99,8 @@ define("mylibs/results",
       //method: config.contants.visualizationMethod, 
       method: config.constants.visualizationMethod,
       onItemClick: showItem, 
-      thumbSize: config.constants.iconSize 
+      thumbSize: config.constants.iconSize,
+		thumbRenderer: new DefaultThumbRenderer
     };
     console.log('Will draw in 1 line');
     visualizer.draw(results, "#visualization-container", config.constants.visOptions) ;

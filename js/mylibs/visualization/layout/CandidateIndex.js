@@ -1,48 +1,3 @@
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 CandidateIndex = function( cellWidth, cellHeight )	
 {	
 	this.m_cellWidth = cellWidth;	
@@ -63,6 +18,7 @@ p.addCandidate = function( candidate )
 	const ymin = Math.floor( candidate.m_extent.ymin / this.m_cellHeight );	
 	const ymax = Math.floor( candidate.m_extent.ymax / this.m_cellHeight );	
 		
+	
 	for ( var x = xmin; x <= xmax; x++ )	
 	{	
 		var tx  = x << 8;	
@@ -70,6 +26,7 @@ p.addCandidate = function( candidate )
 		for( var y = ymin; y <= ymax; y++ )	
 		{	
 			var ti = tx | y;	
+			
 			var candidates = this.m_dict[ti] ;	
 			
 			if ( !candidates  )	
@@ -118,7 +75,7 @@ p.searchForOverlappingCandidates = function( candidate )
 		var found = false ;
 		for(var i=0 ; i<candidate.overlapping.length ; i++ )
 		{
-			if ( some(candidate.overlapping[i]) ) {
+			if ( candidate.overlapping[i] === forEachCandidate ) {
 				found = true ;
 				break ;
 			}
