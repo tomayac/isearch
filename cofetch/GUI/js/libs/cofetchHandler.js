@@ -395,7 +395,7 @@ var cofetchHandler = (function() {
   
   var save = function() {
     
-	var serverURL = "http://isearch.ai.fh-erfurt.de:8085/post/";  
+	var serverURL = "http://isearch.ai.fh-erfurt.de/cofetch/post/";  
 	
 	var tags = $('#threed-tags').val().split(",");
 	for(var t=0; t < tags.length; t++) {
