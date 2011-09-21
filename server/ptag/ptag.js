@@ -82,7 +82,7 @@ exports.resultTagRecommendations.schema = {
 exports.tag = function(options, callback){
 	var stored = false;
 	//storeUserTags(RUCoDID,Tags) options.tags
-	var rucodMangerURL = "http://www.isearch-project.eu/rmn/storeUserTags?" 
+	var rucodMangerUrl = "http://www.isearch-project.eu/rmn/storeUserTags?" 
 		               + "rucodid=" + options.resultItemID + "&" 
 		               + "tags=" + options.tags;
 	
