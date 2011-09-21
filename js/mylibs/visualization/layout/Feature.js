@@ -8,6 +8,6 @@ var Feature = function( labelGraphic, x, y, w, h )
 	var c2 = new Candidate( this, x, y - h    , w, h );	
 	var c3 = new Candidate( this, x - w, y    , w, h );	
 	var c4 = new Candidate( this, x - w, y - h, w, h );	
-	this.candidates = [c2,c1,c4,c3];	
+	this.candidates = [c0, c2,c1,c4,c3];	
 	this.cost = 0 ;	
 }	

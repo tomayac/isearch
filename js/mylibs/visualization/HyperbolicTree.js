@@ -9,7 +9,11 @@ define("mylibs/visualization/HyperbolicTree",
 		"order!js/mylibs/visualization/layout/Feature.js",
 		"order!js/mylibs/visualization/layout/CandidateIndex.js",
 		"order!js/mylibs/visualization/layout/LabelManager.js",
+		"order!js/mylibs/visualization/UI.js",
 		"order!js/mylibs/visualization/Thumbnail.js",
+		"order!js/mylibs/visualization/audio/dsp.js",
+		"order!js/mylibs/visualization/audio/audio.js",
+		"order!js/mylibs/visualization/audio/audioRenderer.js",
 		"order!js/mylibs/visualization/ThumbContainer.js",
 		"order!js/mylibs/visualization/Tween.js"
 	],	function() {
@@ -34,6 +38,9 @@ define("mylibs/visualization/HyperbolicTree",
 			
 		if ( options.iconArrange )
 			this.thumbOptions.iconArrange = options.iconArrange ;
+		
+		if ( options.thumbRenderer )
+			this.thumbOptions.thumbRenderer = options.thumbRenderer ;
 
 		this.graph = new HyperGraph(searchResults) ;
 
@@ -61,6 +68,13 @@ define("mylibs/visualization/HyperbolicTree",
 			this.thumbOptions.thumbSize = options.thumbSize ;
 		if ( options.iconArrange ) 
 			this.thumbOptions.iconArrange = options.iconArrange ;
+		if ( options.thumbRenderer )
+			this.thumbOptions.thumbRenderer = options.thumbRenderer ;
+			
+		var pageBox = $('.page-container', this.container) ;
+		
+		if ( pageBox.length > 0 )
+			this.redrawThumbView($(".page-content", pageBox), this.currentIdx) ;
 		
 	};
 
@@ -91,8 +105,26 @@ define("mylibs/visualization/HyperbolicTree",
 			this.ctx.scale(cw/2, cw/2) ;
 		}
 
+		this.clicks = 0 ;
+		var self = this ;
+		
+		$(this.canvas).click(function(e) {
+			self.clicks++ ;
+			if (self.clicks == 1) 
+			{
+				setTimeout(function()	{
+					if ( self.clicks == 1) {
+						self.handleMouseClick(e) ;
+					} else {
+						self.handleMouseDoubleClick(e) ;
+					}
+					self.clicks = 0;
+				}, 300);
+			}
+		});
+  
 
-		this.canvas.addEventListener("click", function(e) { obj.handleMouseClick(e) ; }, false);
+		// this.canvas.addEventListener("click", function(e) { obj.handleMouseClick(e) ; }, false);
 	  //	this.canvas.addEventListener("dblclick", function(e) { obj.handleMouseDoubleClick(e) ; }, false);
 	};
 
@@ -148,35 +180,43 @@ define("mylibs/visualization/HyperbolicTree",
 		var pt = this.getPosition(e) ;
 
 		var lp = this.globalToLocal(pt) ;
+			
+		this.translateTo(new HPoint(lp.x, -lp.y)) ;
 
-		if ( e.shiftKey ) {
-			for(var i =0 ; i<this.graph.nodes.length  ; i++ )
+		var tween = new Tween(this, 0, 1, 500, Tween.linear) ;
+
+	};
+	
+	p.handleMouseDoubleClick = function(e) {
+		var pt = this.getPosition(e) ;
+
+		var lp = this.globalToLocal(pt) ;
+
+		for(var i =0 ; i<this.graph.nodes.length  ; i++ )
+		{
+			var node = this.graph.nodes[i] ;
+
+			if ( lp.x >= node.px - node.thumbSize/2 && lp.x <= node.px + node.thumbSize/2 &&
+				lp.y >= node.py - node.thumbSize/2 && lp.y <= node.py + node.thumbSize/2 )
 			{
-				var node = this.graph.nodes[i] ;
-
-				if ( lp.x >= node.px - node.thumbSize/2 && lp.x <= node.px + node.thumbSize/2 &&
-					lp.y >= node.py - node.thumbSize/2 && lp.y <= node.py + node.thumbSize/2 )
-				{
-					this.onImageClicked(i) ;
-					return ;
-				}
+				this.onImageClicked(i) ;
+				return ;
 			}
 		}
-		else
-		{
-			this.translateTo(new HPoint(lp.x, -lp.y)) ;
-
-			var tween = new Tween(this, 0, 1, 500, Tween.linear) ;
-
-		}
-
+	}
+	
+	p.redrawThumbView = function(ele, idx)
+	{
+		this.icons = new ThumbContainer(ele, this.graph.icons[idx], this.thumbOptions) ;
+		this.icons.draw() ;
+		
 	};
 
 	p.onImageClicked = function(idx) {
 		var that = this ;
-		UI.showPage("Cluster View", function(ele) {
-			var icons = new ThumbContainer(ele, that.graph.icons[idx], that.thumbOptions) ;
-			icons.draw() ;
+		UI.showPage(this.container, "Cluster View", function(ele) {
+			that.currentIdx = idx ;
+			that.redrawThumbView(ele, idx) ;
 		}) ;
 	};
 

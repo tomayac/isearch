@@ -7,6 +7,9 @@ define("mylibs/visualization/HPanel",
 		"order!js/mylibs/visualization/layout/CandidateIndex.js",
 		"order!js/mylibs/visualization/layout/LabelManager.js",
 		"order!js/mylibs/visualization/Thumbnail.js",
+		"order!js/mylibs/visualization/audio/dsp.js",
+		"order!js/mylibs/visualization/audio/audio.js",
+		"order!js/mylibs/visualization/audio/audioRenderer.js",
 		"order!js/mylibs/visualization/ThumbContainer.js",
 		"order!js/mylibs/visualization/GroupBox.js"
 	
@@ -33,6 +36,9 @@ define("mylibs/visualization/HPanel",
 
 		if ( options.iconArrange )
 			this.thumbOptions.iconArrange = options.iconArrange ;
+		
+		if ( options.thumbRenderer )
+			this.thumbOptions.thumbRenderer = options.thumbRenderer ;
 			
 		if ( options.hasOwnProperty("showGroups") )
 			this.showGroups = options.showGroups ;
@@ -63,6 +69,8 @@ define("mylibs/visualization/HPanel",
 			this.thumbOptions.thumbSize = +options.thumbSize ;
 		if ( options.iconArrange )
 			this.thumbOptions.iconArrange = options.iconArrange ;
+		if ( options.thumbRenderer )
+			this.thumbOptions.thumbRenderer = options.thumbRenderer ;
 		
 
 		this.resultsPanel = new ThumbContainer($('#hpanel-results'), this.icons, this.thumbOptions ) ;

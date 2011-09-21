@@ -1,18 +1,23 @@
 <?php
 
 
-function invokeService()
+function invokeService($url = null)
 {
-	set_time_limit(100) ;
-	$ch = curl_init("http://vision.iti.gr:8080/fcgi-bin/indexer2.exe?" . $_SERVER['QUERY_STRING']);
+	if ( $url == null )
+	{
+		set_time_limit(100) ;
+		$ch = curl_init("http://vision.iti.gr:8080/fcgi-bin/indexer2.exe?" . $_SERVER['QUERY_STRING']);
 
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_HEADER, 0);
 
-	$data = curl_exec($ch);
-	curl_close($ch);
+		$data = curl_exec($ch);
+		curl_close($ch);
 
-	return $data ;
+		return $data ;
+	}
+	else 
+		return file_get_contents($url) ;
 }
 
 function parseClusters($outerNode)
@@ -156,7 +161,19 @@ function xml2json($data)
 		{
 			$rwInfo = $rwInfoList->item(0) ;
 			
-			$sposElements = $rwInfo->getElementsByTagName("CircleByCenterPoint") ;
+			$rwParentEle = $rwInfo ;
+			
+			$metadataUriElements = $rwInfo->getElementsByTagName("MetadataUri") ;
+			
+			if ( $metadataUriElements->length > 0 )
+			{
+				$metadataUriEle = $metadataUriElements->item(0) ;
+				$metadataUri = $metadataUriEle->firstChild->nodeValue ;
+				$rwxml = @ DOMDocument::load($metadataUri);
+				if ( $rwxml ) $rwParentEle = $rwxml ;
+			}
+		
+			$sposElements = $rwParentEle->getElementsByTagName("CircleByCenterPoint") ;
 			
 			if ( $sposElements->length > 0 )
 			{
@@ -185,7 +202,7 @@ function xml2json($data)
 				}		
 			}
 
-			$dtElements = $rwInfo->getElementsByTagName("DateTime") ;
+			$dtElements = $rwParentEle->getElementsByTagName("DateTime") ;
 			
 			if ( $dtElements->length > 0 )
 			{
@@ -204,9 +221,6 @@ function xml2json($data)
 						$rw['time']['duration'] = $ce->firstChild->nodeValue ;
 					}
 				}		
-			
-
-
 			}
 		}
 		
@@ -227,21 +241,25 @@ function xml2json($data)
 	
 }
 
+$url = null ;
+
+if ( isset($_GET['url']) ) $url = $_GET['url'] ;
+
 if ( isset($_GET['out']) && $_GET['out'] == "xml" )
 {
 	header("content-type: text/xml");
-	echo invokeService() ;
+	echo invokeService($url) ;
 }
 else
 {
-//	header("content-type: text/plain");
+	//header("content-type: text/plain");
 	
 	if ( isset($_GET['callback']) ) 
 		header("content-type: application/javascript");
 	else 
 		header("content-type: application/json");
-	
-	xml2json(invokeService()) ;
+
+	xml2json(invokeService($url)) ;
 	
 	
 }

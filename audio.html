@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="utf-8">
+<meta name="description" content="Music visualizations with JavaScript and HTML5 audio.">
+
+<title>All this is done in HTML5 by the way.</title>
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript" src="js/mylibs/visualization/audio/dsp.js"></script>
+<script type="text/javascript" src="js/mylibs/visualization/audio/audio.js"></script>
+<script type="text/javascript" src="js/mylibs/visualization/audio/audioRenderer.js"></script>
+<script src="js/libs/modernizr-1.7.min.js"></script>
+
+<link rel="stylesheet" href="css/vis.css"/>
+
+<script>
+
+$(document).ready(function() {
+audioRenderer($('#container'), 
+	//"http://vision.iti.gr/sotiris/public/isearch/etno/previews/ASC/ETN/000/010/07/ASC.ETN.00001007.0001.mp3",
+	"http://tonycuffe.com/mp3/tailtoddle_lo.mp3",
+	"http://vision.iti.gr/sotiris/public/isearch/etno/previews/ASC/ETN/000/010/07/ASC.ETN.00001007.0001.ogg",
+	"http://vision.iti.gr/sotiris/public/isearch/etno/previews/ASC/ETN/000/010/07/ASC.ETN.00001007.0001.svg",
+	"flower"
+	) ;
+}) ;
+</script>
+
+</head>
+
+<body>
+
+	<div id="container" style="width: 100px; height: 400px;">
+	
+	
+	
+	</div>
+
+		
+	
+</div>
+
+
+</div>
+
+
+
+</body>
+</html>
+

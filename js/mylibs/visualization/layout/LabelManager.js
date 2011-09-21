@@ -1,8 +1,12 @@
-LabelManager = function(mapWidth, mapHeight) {	
+LabelManager = function(mapWidth, mapHeight, options) {	
 	this.m_mapWidth = mapWidth ;	
 	this.m_mapHeight = mapHeight ;	
-	this.m_index = new CandidateIndex(mapWidth / 15, mapHeight / 15 ); 	
+	this.m_index = new CandidateIndex(mapWidth / 32, mapHeight / 32 ); 	
 	this.m_features = [] ;	
+	if ( options )
+	{
+		if ( options.hasOwnProperty('snapToGrid' ) ) this.m_snapToGrid = options.snapToGrid ;
+	}
 }	
 
 var p = LabelManager.prototype;	
@@ -11,9 +15,23 @@ p.m_index = null ;
 p.m_features = null ;	
 p.m_mapWidth = 0 ;	
 p.m_mapHeight = 0 ;	
+p.m_snapToGrid = true ;
 			
 p.addLabelGraphic = function( index, x, y, width, height ) {	
-	var feature = new Feature( index, x, y, width, height );	
+
+	var feature ;
+	
+	if ( this.m_snapToGrid == true )
+	{
+		var _x = parseInt(x / width) ;
+		var _y = parseInt(y / height) ;
+		_x = width * _x ;
+		_y = height * _y ;
+		
+		feature = new Feature( index, _x, _y, width, height );	
+	}
+	else feature = new Feature( index, x, y, width, height );	
+	
 	this.m_features.push( feature );	
 	for ( var c = 0 ; c< feature.candidates.length ; c++ )	
 	{	

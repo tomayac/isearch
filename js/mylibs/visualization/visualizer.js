@@ -21,12 +21,12 @@
 
 define("mylibs/visualization/visualizer", 
     [	"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js",
-		"order!js/mylibs/visualization/UI.js", 	
+		"order!js/libs/slides.jquery.js", 	
 		"mylibs/com.isearch.config",
 		"mylibs/visualization/TreeMap",
 		"mylibs/visualization/HyperbolicTree", 
 		"mylibs/visualization/HPanel" ], 
-    function(undefined, ui, config, treeMap, hyperbolicTree, hPanel) {
+    function(undefined, undefined, config, treeMap, hyperbolicTree, hPanel) {
   
 	var widget = null;
 	var results = null;
@@ -91,9 +91,10 @@ define("mylibs/visualization/visualizer",
 			+ 	'<input type="radio" name="ts" id="ts96"/><label for="ts96">96</label>'
 			+	'<input type="radio" name="ts" id="ts128"/><label for="ts128">128</label>'
 			+	'</div></div>'
-			+	'<div class="formitem"><span style="margin-right: 5px;">Icons Arrangement</span><div id="arrange-buttons" style="display:inline;">'
+			+	'<div class="formitem"><span style="margin-right: 5px;">Layout</span><div id="arrange-buttons" style="display:inline;">'
 			+	'<input type="radio" name="ia" id="ia-grid"/><label for="ia-grid">Grid</label>'
 			+ 	'<input type="radio" name="ia" id="ia-smart"/><label for="ia-smart">Smart</label>'
+			+ 	'<input type="radio" name="ia" id="ia-smart-grid"/><label for="ia-smart-grid">Smart Grid</label>'
 			+	'</div></div>'
 			+ 	'</form>');
 			

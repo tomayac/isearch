@@ -7,6 +7,9 @@ define("mylibs/visualization/TreeMap",
 		"order!js/mylibs/visualization/layout/CandidateIndex.js",
 		"order!js/mylibs/visualization/layout/LabelManager.js",
 		"order!js/mylibs/visualization/Thumbnail.js",	
+		"order!js/mylibs/visualization/audio/dsp.js",
+		"order!js/mylibs/visualization/audio/audio.js",
+		"order!js/mylibs/visualization/audio/audioRenderer.js",
 		"order!js/mylibs/visualization/ThumbContainer.js",
 		"order!js/mylibs/visualization/Rectangle.js"
 	],	function(){
@@ -24,6 +27,9 @@ define("mylibs/visualization/TreeMap",
 			
 		if ( options.iconArrange )
 			this.thumbOptions.iconArrange = options.iconArrange ;
+			
+		if ( options.thumbRenderer )
+			this.thumbOptions.thumbRenderer = options.thumbRenderer ;
 
 		this.tree = {} ;
 		this.history = [this.tree] ;
@@ -52,6 +58,8 @@ define("mylibs/visualization/TreeMap",
 			this.thumbOptions.thumbSize = +options.thumbSize ;
 		if ( options.iconArrange )
 			this.thumbOptions.iconArrange = options.iconArrange ;
+		if ( options.thumbRenderer )
+			this.thumbOptions.thumbRenderer = options.thumbRenderer ;
 
 		this.redraw(this.tree, 0) ;
 		

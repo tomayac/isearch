@@ -8,8 +8,13 @@ ThumbContainer = function(containerDiv, data, options) {
 		this.onClick = options.onClick ;	
 	if ( options.iconArrange )	
 	{
-		this.mode = ( options.iconArrange == "grid" ) ? ThumbContainer.GRID_MODE : ThumbContainer.TRANS_MODE ;	
+		if ( options.iconArrange == "grid" ) this.mode = ThumbContainer.GRID_MODE ;
+		else if ( options.iconArrange == "smart" ) this.mode = ThumbContainer.TRANS_MODE ;	
+		else if ( options.iconArrange == "smart-grid" ) this.mode = ThumbContainer.TRANS_GRID_MODE ;
 	}
+	if ( options.thumbRenderer )
+		this.thumbRenderer = options.thumbRenderer ;
+		
 	this.containerDiv = containerDiv ;	
 
 	this.createCanvas() ;	
@@ -25,6 +30,7 @@ var p = ThumbContainer.prototype;
 
 ThumbContainer.GRID_MODE = 0 ;	
 ThumbContainer.TRANS_MODE = 1 ;	
+ThumbContainer.TRANS_GRID_MODE = 2 ;	
 
 ThumbContainer.NAV_FIXED = 0 ;	
 ThumbContainer.NAV_HOVER = 1 ;	
@@ -35,7 +41,7 @@ ThumbContainer.navBarSize = 32 ;
 ThumbContainer.thumbMargin = 4 ;
 
 ThumbContainer.menuItems = [ { text: "Google Map", icon: "world-icon-small", onClick: function(ctx) { ctx.showMap() ; }},
-							 { text: " Time line", icon: "clock-icon-small", onClick: null}
+							 { text: " Time line", icon: "clock-icon-small", onClick: function(ctx) { ctx.showTimeline() ; }}
 						] ;
 
 p.containerDiv = null ;	
@@ -59,7 +65,7 @@ p.pageCount = 0 ;
 p.navMode = ThumbContainer.NAV_FIXED ;	
 p.navBar = null ;	
 p.menuBar = null ;
-
+p.thumbRenderer = null ;
 
 ThumbContainer.zoomScales = [0.25, 0.5, 1.0, 1.5, 2.0, 3.0, 4.0] ;	
   	
@@ -212,6 +218,18 @@ ThumbContainer.selectThumbUrl = function(doc)
 			if ( mediaType.previews && mediaType.previews.length > 0 )
 				return mediaType.previews[0].url ;
 		}
+		else if ( mediaType.type == "SoundType" )
+		{
+			if ( mediaType.previews && mediaType.previews.length > 0 )
+			{
+				for( var j=0 ; j<mediaType.previews.length ; j++ )
+				{
+					var frmt = mediaType.previews[j].format ;
+					if ( frmt == "image/jpeg" || frmt == "image/png" )
+						return mediaType.previews[j].url ;
+				}
+			}
+		}
 	}
 	
 	return null ;
@@ -239,24 +257,10 @@ p.createThumbnail = function(i, x, y)
 	
 	var tm = ThumbContainer.thumbMargin ;
 	
-	var imgOut = $('<div/>', { "class": "thumbnail", id: "thumb-" + i, css: {  overflow: "auto", position: "absolute", width: this.thumbSize, height: this.thumbSize, left: x, top: y } }).appendTo(this.containerDiv) ;
-	var img = $('<div/>', { css: { position: "absolute", left: tm, right: tm, top: tm, bottom: tm }  }).appendTo(imgOut) ;
+	var imgOut = $('<div/>', { "class": "thumbnail", id: "thumb-" + i, css: {  overflow: "hidden", position: "absolute", width: this.thumbSize, height: this.thumbSize, left: x, top: y } }).appendTo(this.containerDiv) ;
 	
-	img.thumb(ThumbContainer.selectThumbUrl(item.doc)) ;
-	item.img = imgOut ;
-			
-	var obj = this ;
-	img.hover( 	function(e) {
-					obj.showTooltip(i) ;
-				},
-				function(e) {
-					obj.hideTooltip(i) ;
-				}
-			) ;
-			
-	img.click( function(e) {
-		if ( obj.onClick ) obj.onClick(item) ;
-	}) ;
+	this.thumbRenderer.render(item, imgOut, this.containerDiv) ;
+	
 }
 
 p.redraw = function(contentWidth, contentHeight)	
@@ -312,10 +316,15 @@ p.redraw = function(contentWidth, contentHeight)
 	}	
 	else	
 	{	
-		var lmanager = new LabelManager(contentWidth, contentHeight) ;		
-
 		var sz = this.thumbSize  ;	
 
+		var options = {} ;
+			
+		options.snapToGrid = (this.mode == ThumbContainer.TRANS_GRID_MODE) ;
+		
+		var lmanager = new LabelManager(contentWidth, contentHeight, options) ;		
+
+				
 		for( var i=0 ; i<this.thumbs.length ; i++ )	
 		{	
 			var item = this.thumbs[i] ;	
@@ -344,84 +353,6 @@ p.redraw = function(contentWidth, contentHeight)
 	}	
 	
 	
-
-};	
-
-p.doShowTooltip = function(item) 	
-{	
-	// find the upper left corner of the thumbnail in window coordinates	
-
-	var thumb = this.thumbs[item] ;
-	var ele = thumb.img ;
-	
-	var offset = $(this.containerDiv).offset() ;	
-	var posx = ele.position().left + offset.left ;	
-	var posy = ele.position().top  + offset.top ;	
-		
-	var ele = $(".tooltip") ;	
-	var tooltip ;	
-	
-	var desc = ThumbContainer.selectTooltipText(thumb.doc) ;
-
-	if ( ele.length == 0 )	
-	{	
-		var tooltip = jQuery(document.createElement('div'))	
-					 .addClass("tooltip")	
-					 .html("<p>" + desc + "</p>").	
-					appendTo('body');	
-	}	
-	else	
-	{	
-		tooltip = ele ;	
-		ele.html("<p>" + desc + "</p>") ;	
-	}				
-
-	var ttw = tooltip.outerWidth() ;	
-	var tth = tooltip.outerHeight() ;	
-	var ww = $(window).width() + $(window).scrollLeft();	
-	var wh = $(window).height() + $(window).scrollTop() ;	
-	var ts = this.thumbSize ;	
-
-	if ( posx + ts + ttw < ww )	
-	{	
-		tooltip.css("left", posx + ts)	
-	}	
-	else 	
-	{	
-		tooltip.css("left", ww-ttw-2)	
-	}	
-
-	if ( posy + ts + tth < wh  )	
-	{	
-		tooltip.css("top", posy + ts)	
-	}	
-	else 	
-	{	
-		tooltip.css("top", wh-tth-2)	
-			
-	}	
-		
-	tooltip.fadeIn('fast') ;	
-	//console.log(item.id) ;	
-};	
-
-p.showTooltip = function(item)	
-{	
-	
-	var obj = this ;	
-	this.tooltipPending = true ;	
-	this.hoverItem = item ;
-	
-	setTimeout( function() { 	
-		if ( obj.hoverItem === item ) obj.doShowTooltip(item) ;
-	}, 500) ;	
-
-};	
-
-p.hideTooltip = function(item) 	
-{	
-	this.hoverItem = null ;
-	$(".tooltip").hide() ;	
 
 };	
 
@@ -517,6 +448,7 @@ p.resize = function()
 p.showMap = function()	
 {	
 	var markerImages = [];	
+	var markerImages2 = [];	
 
 	for( var i=0 ; i<this.thumbs.length ; i++ )	
 	{	
@@ -531,25 +463,235 @@ p.showMap = function()
 				var thumb = ThumbContainer.selectThumbUrl(data.doc) ;
 				var tooltip = ThumbContainer.selectTooltipText(data.doc) ;
 				
-				markerImages.push({ "lat": lat, "lon": lon, "icon": thumb, "desc": tooltip }) ;	
+				markerImages.push({ "lat": lat, "lon": lon, "icon": thumb, "tooltip": tooltip, data: data }) ;	
+				markerImages2.push({ "lat": lat, "lon": lon, "tooltip": tooltip, data: data }) ;	
 			}
 		}
 	}	
 	
 	var mapDialog = $('<div/>', { title: "Geographic location of documents"}).appendTo('body') ;
 
+	var that = this ;
+	
+	var sw = $(window).width() ;	
+	var sh = $(window).height() ;
+	
 	mapDialog.dialog({
-			width: "600",
-			height: "400",
+			width: sw*2/3,
+			height: sh*3/4,
 			modal: true,
 			open: function(e, ui) {
-				var mainMap = new GoogleMap($(this).get(0), [ 	
+				var mainMap = new GoogleMap($(this).get(0), that.thumbRenderer, [ 	
 				{ type: 'markers', data: markerImages, name: 'Images',	
-						minzoom: 4}	
+						minzoom: 12, maxzoom: 24},
+				{ type: 'markers', data: markerImages2, name: 'Placemarks',	
+						minzoom: 0, maxzoom: 11}						
 				]) ;
-			}				
+			}
+			
 	});
 	
 };	
 	
+p.showTimeline = function()
+{
+	var sw = $(window).width() ;	
+	var sh = $(window).height() ;
+	// hack to deal with initialisation
+	Timeline.DateTime = SimileAjax.DateTime ;
+		
+	var timelineDialog = $('<div/>', { title: "Timeline of documents", css: { overflow: "hidden", height: sh*2/3 + "px"}}).appendTo('body');
+
+	var eventSource = new Timeline.DefaultEventSource();
+	
+	var theme = Timeline.ClassicTheme.create();
+	theme.mouseWheel = 'default' ;
+	
+	var obj = this ;
+	
+	Timeline.CompactEventPainter.prototype._paintEventIcon = function(commonData, iconData, top, left, metrics, theme) {
+	//	var img = SimileAjax.Graphics.createTranslucentImage(iconData.url);
+		var iconDiv = this._timeline.getDocument().createElement("div");
+		iconDiv.className = 'timeline-event-icon' + ("className" in iconData ? (" " + iconData.className) : "");
+		iconDiv.style.left = left + "px";
+		iconDiv.style.top = top + "px";
+		iconDiv.style.width = iconData.width + "px" ;
+		iconDiv.style.height = iconData.height + "px" ;
+		
+		obj.thumbRenderer.render(iconData.data, $(iconDiv), $(this._eventLayer)) ;
+		//iconDiv.appendChild(img);
+    
+		//if ("tooltip" in commonData && typeof commonData.tooltip == "string") {
+		//	iconDiv.title = commonData.tooltip;
+		//}
+    
+		this._eventLayer.appendChild(iconDiv);
+   
+		return {
+			left:   left,
+			top:    top,
+			width:  metrics.iconWidth,
+			height: metrics.iconHeight,
+			elmt:   iconDiv
+		};
+	
+	};
+	
+	Timeline.CompactEventPainter.prototype.paintPreciseInstantEvent = function(evt, metrics, theme, highlightIndex) {
+		var commonData = {
+			tooltip: evt.getProperty("tooltip") || evt.getText()
+		
+		};
+    
+		var iconData = {
+			url: evt.getIcon(),
+			data: evt._obj.data
+		};
+		if (iconData.url == null) {
+			iconData.url = metrics.defaultIcon;
+			iconData.width = metrics.defaultIconWidth;
+			iconData.height = metrics.defaultIconHeight;
+			iconData.className = "timeline-event-icon-default";
+		} else {
+			iconData.width = evt.getProperty("iconWidth") || metrics.customIconWidth;
+			iconData.height = evt.getProperty("iconHeight") || metrics.customIconHeight;
+		}
+    
+		var labelData = {
+			text:       evt.getText(),
+			color:      evt.getTextColor() || evt.getColor(),
+			className:  evt.getClassName()
+		};
+    
+		var result = this.paintTapeIconLabel(
+			evt.getStart(),
+			commonData,
+			null, // no tape data
+			iconData,
+			labelData,
+			metrics,
+			theme,
+			highlightIndex
+		);
+/*
+		var self = this;
+		var clickHandler = function(elmt, domEvt, target) {
+			return self._onClickInstantEvent(result.iconElmtData.elmt, domEvt, evt);
+		};
+		SimileAjax.DOM.registerEvent(result.iconElmtData.elmt, "mousedown", clickHandler);
+		SimileAjax.DOM.registerEvent(result.labelElmtData.elmt, "mousedown", clickHandler);
+*/
+		this._eventIdToElmt[evt.getID()] = result.iconElmtData.elmt;
+	};
+	
+
+		
+	var bandInfos = [
+		Timeline.createBandInfo({
+			date:           "Jun 28 2009 00:00:00 GMT",
+			width:          "90%", 
+			intervalUnit:   Timeline.DateTime.MONTH, 
+			intervalPixels: 100,
+			eventSource:    eventSource,
+			theme:          theme,
+            eventPainter:   Timeline.CompactEventPainter,
+            eventPainterParams: {
+                iconLabelGap:     5,
+                labelRightMargin: 20,
+                        
+                iconWidth:        64, // These are for per-event custom icons
+                iconHeight:       64,
+                       
+                stackConcurrentPreciseInstantEvents: {
+                    limit: 10,
+                    iconWidth:              64,
+                    iconHeight:             64
+                }
+			
+            },
+	
+			zoomIndex:      10,
+			zoomSteps:      new Array(
+				{pixelsPerInterval: 280,  unit: Timeline.DateTime.HOUR},
+				{pixelsPerInterval: 140,  unit: Timeline.DateTime.HOUR},
+				{pixelsPerInterval:  70,  unit: Timeline.DateTime.HOUR},
+				{pixelsPerInterval:  35,  unit: Timeline.DateTime.HOUR},
+				{pixelsPerInterval: 400,  unit: Timeline.DateTime.DAY},
+				{pixelsPerInterval: 200,  unit: Timeline.DateTime.DAY},
+				{pixelsPerInterval: 100,  unit: Timeline.DateTime.DAY},
+				{pixelsPerInterval:  50,  unit: Timeline.DateTime.DAY},
+				{pixelsPerInterval: 400,  unit: Timeline.DateTime.MONTH},
+				{pixelsPerInterval: 200,  unit: Timeline.DateTime.MONTH},
+				{pixelsPerInterval: 100,  unit: Timeline.DateTime.MONTH},
+				{pixelsPerInterval: 400,  unit: Timeline.DateTime.YEAR},
+				{pixelsPerInterval: 200,  unit: Timeline.DateTime.YEAR},
+				{pixelsPerInterval: 100,  unit: Timeline.DateTime.YEAR}				// DEFAULT zoomIndex
+			)
+		}),
+		Timeline.createBandInfo({
+			date:           "Jun 28 2009 00:00:00 GMT",
+			width:          "10%", 
+			intervalUnit:   Timeline.DateTime.YEAR, 
+			intervalPixels: 200,
+			showEventText:  false, 
+			trackHeight:    0.5,
+			trackGap:       0.2,
+			eventSource:    eventSource,
+			overview:       true
+		})
+	];
+	bandInfos[1].syncWith = 0;
+	bandInfos[1].highlight = true;
+  
+	var tl = Timeline.create(timelineDialog.get(0), bandInfos);
+	
+	var event_data = { "dateTimeFormat": "iso8601", events: [] } ;
+	
+	for( var i=0 ; i<this.thumbs.length ; i++ )	
+	{	
+		var data = this.thumbs[i] ;	
+
+		if ( data.doc.hasOwnProperty("rw") && data.doc.rw )
+		{
+			if ( data.doc.rw.hasOwnProperty("time") )
+			{
+				// title ?
+				var d = new Date(data.doc.rw.time.dateTime) ;
+				
+				function ISODateString(d) {
+					function pad(n){
+						return n<10 ? '0'+n : n
+					}
+					return d.getUTCFullYear()+'-'
+					+ pad(d.getUTCMonth()+1)+'-'
+					+ pad(d.getUTCDate())
+				}
+				var dateStr = ISODateString(d) ;
+				
+				var event = { 
+					id:  data.doc.id, 
+					start: data.doc.rw.time.dateTime,
+					icon:  ThumbContainer.selectThumbUrl(data.doc),
+					data: data
+				//	title: ThumbContainer.selectTooltipText(data.doc)
+				} ;
+				
+				event_data.events.push(event) ;
+			}
+		}
+		
+	}
+	
+	eventSource.loadJSON(event_data, document.location.href); 
+	
+	
+
+	timelineDialog.dialog({
+		width: sw*2/3,
+		height: sh*3/4,
+		modal: true,
+		resizable: false 
+	}) ;	
+
+} ;
 	
