@@ -10,7 +10,7 @@ var path   = require('path'),
     nodeio = require('node.io'),
     querystring = require('querystring');
 
-var basepath = '/var/www/isearch/cofetch/output';
+var basepath = '/var/www/isearch/client/cofetch/output';
 var fileOutputPath = '';
 var publicOutputUrl = 'http://isearch.ai.fh-erfurt.de/cofetch/output';
 var baseName = '';
