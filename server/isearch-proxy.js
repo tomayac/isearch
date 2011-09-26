@@ -19,7 +19,6 @@ var httpProxy = require('http-proxy');
 //Configuration variables
 var options = {
   router: {
-    'isearch.ai.fh-erfurt.de/musebag' : 'isearch.ai.fh-erfurt.de:8082',
     'isearch.ai.fh-erfurt.de/ptag'    : 'isearch.ai.fh-erfurt.de:8083',
     'isearch.ai.fh-erfurt.de/cofind'  : 'isearch.ai.fh-erfurt.de:8084',
     'isearch.ai.fh-erfurt.de/cofetch' : 'isearch.ai.fh-erfurt.de:8085',

@@ -8,7 +8,7 @@ if (!com) {
   throw new Error("com already exists and is not an object");
 }
 if (!com.isearch) {
-  com.isearch = {}
+  com.isearch = {};
 } else if (typeof com.isearch != "object") {
   throw new Error("com.isearch already exists and is not an object");
 }
@@ -18,7 +18,7 @@ if(typeof console == "undefined") {
   var console = {
     log: function () {},
     error: function () {}
-  }
+  };
 }
 
 define("main",
@@ -97,12 +97,12 @@ define("main",
           return false;
         });
       });
-    }
+    };
     
     //Public methods, returned at the end
     return {
       start: start
-    }
+    };
   }
 );
 

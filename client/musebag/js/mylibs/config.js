@@ -70,6 +70,28 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js"],
         //Prevents the form submit to trigger a page reload
         return false;
       });
+      
+      //Listen to button click to login
+      $settingsPanel.find('#login-user').click(function(){
+    	  
+    	  var serverURL = "http://isearch.ai.fh-erfurt.de/login/";
+    	  
+    	  var postData = {email: $settingsPanel.find("#email").val() || '',
+    			          pw: $settingsPanel.find("#pw").val() || ''};
+    	  
+    	  //Send it to the server
+    	  $.ajax({
+	    	  type: "POST",
+	    	  url: serverURL,
+	    	  data: JSON.stringify(postData),
+	    	  success: function(data) {
+	      		console.log("User logged in: " + data);
+	    	  },
+	    	  dataType: "text",
+	    	  contentType : "application/json; charset=utf-8"
+	      });
+    	  
+      });
 
     }; //End of initPanel()
 

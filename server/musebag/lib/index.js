@@ -9,9 +9,15 @@
  */
 
 var express = require('express'),
+    redisStore = require('connect-redis')(express),
     musebag = require('./musebag');
 
 var app = module.exports = express.createServer();
+
+//Nodules module reloading    
+require.reloadable(function(){
+	musebag = require('./musebag');
+});
 
 // Configuration
 app.configure(function(){
@@ -20,7 +26,7 @@ app.configure(function(){
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.cookieParser());
-  app.use(express.session({ secret: 'isearchsession' }));
+  app.use(express.session({ secret: "isearchsession", store: new redisStore }));
   app.use(app.router);
   app.use(express.static('/var/www/isearch/client/musebag'));
 });
@@ -41,10 +47,12 @@ app.get('/blaa', function(req, res){
 });
 
 app.post('/login', function(req, res){
+	console.log("Login function called...");
+	console.log(req.body);
 	musebag.login({email: req.body.email, pw: req.body.pw}, function(error, data) {
 		console.log("User logged in.");
 	});
 });
 
 app.listen(8081);
-console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+console.log("MuseBag Express server listening on port %d in %s mode", app.address().port, app.settings.env);

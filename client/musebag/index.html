@@ -10,8 +10,8 @@
 
   <title>Welcome. This is the future of search. Yay!</title>
   <meta name="description" 
-        content="iSearch project is a multi-modal search engine."/>
-  <meta name="author" content="iSearch project members"/>
+        content="I-SEARCH project is a multi-modal search engine."/>
+  <meta name="author" content="I-SEARCH project members"/>
   
   <meta name="HandheldFriendly" content="True"/>
   <meta name="MobileOptimized" content="320"/>
@@ -58,27 +58,46 @@
 <body>
 <div id="settings-panel">
   <form method="post" action="#">
-     
-    <label for="max-num-results">Max number of result</label>
-    <input type="text" id="max-num-results"/>
-
-    <label for="icon-size">Icon size</label>
-    <select id="icon-size">
-      <option value="16">16</option>
-      <option value="32">32</option>
-      <option value="64">64</option>
-      <option value="128">128</option>
-    </select>
     
-    <label for="visualization-method">Visualization Method</label>
-    <select id="visualization-method">
-      <option value="tmap">Tree Map</option>
-      <option value="htree">Hyperbolic Tree</option>
-      <option value="hpanel">Hierarchy Panels</option>
-
-    </select>
-
+    <section class="setting"> 
+        <label for="max-num-results">Max number of result</label>
+        <input type="text" id="max-num-results"/>
+    </section>
+    
+    <section class="setting"> 
+        <label for="icon-size">Icon size</label>
+        <select id="icon-size">
+          <option value="16">16</option>
+          <option value="32">32</option>
+          <option value="64">64</option>
+          <option value="128">128</option>
+        </select>
+    </section>    
+    
+    <section class="setting"> 
+        <label for="visualization-method">Visualization Method</label>
+        <select id="visualization-method">
+          <option value="tmap">Tree Map</option>
+          <option value="htree">Hyperbolic Tree</option>
+          <option value="hpanel">Hierarchy Panels</option>
+    
+        </select>
+    </section>
+    
     <button id="update-settings">Update the settings!</button>
+    
+    <section class="setting">
+        <label for="email">Email</label>
+        <input type="text" id="email" name="email"/>
+    </section>
+    
+    <section class="setting">
+        <label for="password">Email</label>
+        <input type="password" id="pw" name="pw"/>
+    </section> 
+    
+    <button id="login-user">Login</button>
+    
   </form>
 </div>
 <div id="settings">
@@ -222,7 +241,7 @@
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
   <script>window.jQuery || document.write("<script src='js/libs/jquery-1.6.2.min.js'>\x3C/script>")</script>
   
-  <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=true?v=3.2"></script>
+  <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=true&v=3.2"></script>
   
   <script>
   // curenntly this hack is required to load the library correctly
