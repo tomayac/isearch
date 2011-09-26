@@ -12,15 +12,80 @@ this.name = "MuseBag";
 this.version = "0.1.0";
 this.endpoint = "http://isearch.ai.fh-erfurt.de/musebag";
 
-//The parse function
-exports.parse = function(options, callback){
-	var body = "You called the server procedure 'parse' of I-SEARCH. It is treated as a test.";
-  	callback(null, body);
+/**
+ * Required node modules
+ */
+var nodeio = require('node.io');
+
+var verifyUser = function(email,pw) {
+	
+	var jobMethods = {
+			input: false,
+		    run: function() {
+		    	
+		    	//Let's get the arguments passed to the script
+		        if (!this.options.args[0]) {
+		          this.exit('No arguments were given to the dbpedia job');
+		        }
+		        
+		        var email = this.options.args[0];
+		        var pw    = this.options.args[1];
+		    	
+		    	var verifyURL = "http://gdv.fh-erfurt.de/i-search/apc-dummy/index.php?"
+		            + 'f=validateUser'
+		            + '&email=' + email
+		            + '&pw=' + pw;
+		    	
+		    	this.get(dbpediaURL, function(error, data, headers) {
+		            
+		            //Exit if there was a problem with the request
+		            if (error) {
+		               this.exit(error); 
+		            }
+		            
+		            var verifyResponse = JSON.parse(data);
+		            
+		            //Check if return data is ok
+		            if(verifyResponse.error) {
+		            	this.exit(verifyResponse.error);
+		            }
+		            if(!verifyResponse.user) {
+		            	this.exit('The user data was delivered in an invalid format.');
+		            }
+		            
+		            //Exit the Job and return the user data
+		            this.emit(verifyResponse.user);
+		    	}); //end of get
+		    }
+	}; // end of jobMethods
+	
+	//Creates the job
+	var verifyJob = new nodeio.Job({timeout:10}, jobMethods);
+	nodeio.start(verifyJob, {args: [email,pw]}, callback, true);
 };
-//Documentation for parse function
-exports.parse.description = "This is the parse method, it parses the query contents from the GUI form. It generates a request RUCoD header and transmit it to the Multimodal Query Formulator";
-exports.parse.schema = {
-  query: { 
+
+/**
+ * login function
+ */
+exports.login = function(options, callback){
+	verifyUser(options.email,options.pw, function(error, data) {
+		//Exit if there was a problem with the request
+        if (error) {
+        	callback(error, null); 
+        }
+		//if anything went ok, establish a session with the user data
+        
+		callback(null, data);
+	});
+};
+//Documentation for login function
+exports.login.description = "This method logs a given user into an I-SEARCH session and establishes the search session.";
+exports.login.schema = {
+  email: { 
+    type: 'string',
+    optional: false 
+  },
+  pw: { 
     type: 'string',
     optional: false 
   }

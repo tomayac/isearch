@@ -8,6 +8,7 @@
  * - user logs into I-SEARCH over Search Interface
  * - login approved by Personalisation Component
  * - Search Interface establishes session
+ * - Search Interface registers user in CoFind (registerUser(email))
  * - Search Interface queries CoFind interfaceSnippet(email) function to retrieve CoFind HTML Snippet and register the user
  * - 
  * 
@@ -27,7 +28,12 @@ console.log(' > CoFind webservice started on port 8084');
 io.sockets.on('connection', function (socket) {
   
 	socket.emit('message', { data: 'You are connected!' });
-  
+    
+	socket.on('registerUser', function (data) {
+		//Register user in CoFind database
+		//
+    });
+    
 	socket.on('addUser', function (data) {
 		console.log(data);
 		//Add web socket flag to data object

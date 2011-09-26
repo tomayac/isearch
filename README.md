@@ -6,10 +6,19 @@ This space is used to build the GUI part of I-SEARCH.
 
 ##Some info: 
 
-- the mockup is built on top of the amazing HTML5BoilerPlate
-- the build/ test/ crossdomain.xml robots.txt and plugin stub are here for the near future.
+- this is the GUI project for I-SEARCH. It consists of several components which are here
+  splitted in a the client and server folder for a better project structure 
+- the main interface component is names MuSeBag which stands for Multimodal Search Bag. Its
+  mockup is built on top of the amazing HTML5BoilerPlate
+- the build/ test/ crossdomain.xml robots.txt and plugin stub within the client/musebag folder are there for the near future.
   We'll probably need it very soon. But if you ask: yes, they're unuseful right
   now.
+- further components are: 
+   - CoFetch: a script for semi-automatic RUCoD creation, which is the exchange format
+     on which the I-SEARCH search engine is based on.
+   - CoFind: a component which enables collaborative search
+   - pTag: a component which provides personal tag recommendation for I-SEARCH
+- all server parts are javascript and will only run on a nodeJS server     
 
 
 
@@ -24,16 +33,16 @@ RequireJS (check the [official website](http://requirejs.org)) is a dependancy m
 
 Let's also embrace the use of **module pattern**. Example: 
 
-    define(“the/path/to/my/module”, [“dependancy1”, “dependancy2”],   function(dependancy1, dependancy2){
+    define(â€œthe/path/to/my/moduleâ€�, [â€œdependancy1â€�, â€œdependancy2â€�],   function(dependancy1, dependancy2){
       //This will execute when the dependancies are loaded
-      var privateVariable = “secret”;
+      var privateVariable = â€œsecretâ€�;
       var privateStuff = function(){
         dependancy1.aUsefulFunction();
         dependancy2.util(privateVariable);
         //do stuff
       };
 
-     var publicThing = “hooray”;
+     var publicThing = â€œhoorayâ€�;
       var iAmPublic = function(){
         //do stuff
       };
@@ -47,11 +56,10 @@ Let's also embrace the use of **module pattern**. Example:
     })
 
 ##Other matters:
- 
-The "fake server" needs to be manually uploaded each time it is changed.
-Right now, the URL to access the static RUCoD returned is http://www.osmoz2009.com/isearch
 
-Maybe I'll put some parameters later on to alter the behaviour.
+- The project URL of the interface is: http://isearch.ai.fh-erfurt.de/ 
+- pTag is a RESTful Webservice, the service description can be found here:
+  http://isearch.ai.fh-erfurt.de/ptag/
 
 
 Have fun!

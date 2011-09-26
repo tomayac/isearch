@@ -13,7 +13,7 @@ var port      = 8085;
 //
 //Create a node-static server to serve the current directory
 //
-var file = new(fileserve.Server)('/var/www/isearch/cofetch/GUI');   
+var file = new(fileserve.Server)('/var/www/isearch/client/cofetch');   
 
 http.createServer(function (request, response) {     
  

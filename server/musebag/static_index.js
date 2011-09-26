@@ -6,7 +6,7 @@ var port      = 8081;
 //
 // Create a node-static server to serve the current directory
 //
-var staticGui = new(nodestatic.Server)('/var/www/isearch');   
+var staticGui = new(nodestatic.Server)('/var/www/isearch/client/musebag');   
 
 http.createServer(function (request, response) {     
 	
