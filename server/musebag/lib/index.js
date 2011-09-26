@@ -7,14 +7,44 @@
  * @author Arnaud Brousseau and Jonas Etzold
  * @company Google Deutschland GmbH, University of Applied Sciences Erfurt
  */
-var webservice = require('webservice'),
+
+var express = require('express'),
     musebag = require('./musebag');
 
+var app = module.exports = express.createServer();
 
-// Nodules module reloading    
-require.reloadable(function(){
-	musebag = require('./musebag');
+// Configuration
+app.configure(function(){
+  app.set('views', __dirname + '/views');
+  app.set('view engine', 'jade');
+  app.use(express.bodyParser());
+  app.use(express.methodOverride());
+  app.use(express.cookieParser());
+  app.use(express.session({ secret: 'isearchsession' }));
+  app.use(app.router);
+  app.use(express.static('/var/www/isearch/client/musebag'));
 });
 
-webservice.createServer(musebag).listen(8082);
-console.log(' > MuseBag server component service started on port 8082');
+app.configure('development', function(){
+  app.use(express.errorHandler({ dumpExceptions: true, showStack: true })); 
+});
+
+app.configure('production', function(){
+  app.use(express.errorHandler()); 
+});
+
+// Routes
+app.get('/blaa', function(req, res){
+  res.render('index', {
+    title: 'Express'
+  });
+});
+
+app.post('/login', function(req, res){
+	musebag.login({email: req.body.email, pw: req.body.pw}, function(error, data) {
+		console.log("User logged in.");
+	});
+});
+
+app.listen(8081);
+console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);

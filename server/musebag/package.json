@@ -1,9 +1,11 @@
 {
-    "name": "musebag",
-	"mappings": {
-		"commonjs-utils": "jar:http://github.com/kriszyp/commonjs-utils/zipball/master!/lib/"
-	},
-    "version": "0.1",
-    "description": "Serves the I-SEARCH GUI with all information to handle search queries and results.",
-    "author": "Jonas Etzold, Arnaud Brousseau"
+    "name": "musebag"
+  , "version": "0.1.1"
+  ,  "description": "Serves the I-SEARCH GUI with all information to handle search queries and results."
+  ,  "author": "Jonas Etzold, Arnaud Brousseau"
+  , "private": true
+  , "dependencies": {
+      "express": "2.4.6"
+    , "jade": ">= 0.0.1"
+  }
 }

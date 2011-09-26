@@ -7,10 +7,6 @@
  * @author Arnaud Brousseau and Jonas Etzold
  * @company Google Deutschland GmbH, University of Applied Sciences Erfurt
  */
-this.title = "MuseBag - The Multimodal Search Interface for I-SEARCH";
-this.name = "MuseBag";
-this.version = "0.1.0";
-this.endpoint = "http://isearch.ai.fh-erfurt.de/musebag";
 
 /**
  * Required node modules
@@ -36,7 +32,7 @@ var verifyUser = function(email,pw) {
 		            + '&email=' + email
 		            + '&pw=' + pw;
 		    	
-		    	this.get(dbpediaURL, function(error, data, headers) {
+		    	this.get(verifyURL, function(error, data, headers) {
 		            
 		            //Exit if there was a problem with the request
 		            if (error) {
@@ -77,16 +73,4 @@ exports.login = function(options, callback){
         
 		callback(null, data);
 	});
-};
-//Documentation for login function
-exports.login.description = "This method logs a given user into an I-SEARCH session and establishes the search session.";
-exports.login.schema = {
-  email: { 
-    type: 'string',
-    optional: false 
-  },
-  pw: { 
-    type: 'string',
-    optional: false 
-  }
 };
