@@ -71,6 +71,18 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js"],
         return false;
       });
       
+      //Get the user name if available
+	  $.ajax({
+    	  type: "GET",
+    	  url: "http://isearch.ai.fh-erfurt.de/profile/Email",
+    	  success: function(data) {
+      		data = JSON.parse(data);
+      		$("#login-status").text("Hello " + data.Email);
+    	  },
+    	  dataType: "text",
+    	  contentType : "application/json; charset=utf-8"
+      });
+      
       //Listen to button click to login
       $settingsPanel.find('#login-user').click(function(){
     	  
@@ -92,6 +104,9 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js"],
 	    	  dataType: "text",
 	    	  contentType : "application/json; charset=utf-8"
 	      });
+    	  
+    	  //Notify the user that their action has been successful -- close the panel
+          $settingsPanel.hide(constants.slideUpAnimationTime);
     	  
     	  //Prevents the form submit to trigger a page reload
           return false;

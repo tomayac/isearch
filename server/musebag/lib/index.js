@@ -41,12 +41,32 @@ app.configure('production', function(){
 
 // Routes
 app.get('/blaa', function(req, res){
-	res.send("Hello " + req.session.user.Email + ". You were born on " + req.session.user.Dob);
+	if(req.session.user) {
+		res.send("Hello " + req.session.user.Email + ". You were born on " + req.session.user.Dob);
+	}
+	else {
+		res.send("Sorry you're not logged in.");
+	}
+});
+
+app.get('/profile/:attrib', function(req, res) {
+	var attrib = req.params.attrib;
+	
+	//Does a user is logged in?
+	if(!req.session.user) {
+		res.send(JSON.stringify({error : 'You are not logged in!'}));
+	}
+	//Does the requested profile attribute is available
+	if(req.session.user[attrib]) {
+		res.send(JSON.stringify({error : 'The requested user profile attribute is not available!'}));
+	} else {
+		res.send(JSON.stringify({attrib : req.session.user[attrib]}));
+	}
 });
 
 app.post('/login', function(req, res){
 	console.log("Login function called...");
-	console.log(req.body);
+
 	musebag.login(req.body, function(error, data) {
 		
 		if(error) {
@@ -55,8 +75,6 @@ app.post('/login', function(req, res){
 			return;
 		}
 		
-		console.log("User logged in.");
-		console.log(data);
 		//Store user data in session
 		req.session.user = data;
 		
