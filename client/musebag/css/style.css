@@ -152,6 +152,9 @@ nav {
   text-align: right;
 }
 #settings a { color: white; display: block; }
+
+#settings span {float: left;}
+
 #settings-panel {
   background-color: #666;
   border-bottom: 1px #999 solid;
@@ -159,6 +162,11 @@ nav {
   padding: 10px;
   display: none;
 }
+
+#settings-panel .setting { float:left; margin-right: 10px; }
+
+#settings-panel .float-button { float:left; margin-right: 50px; }
+
 #settings-panel label, #settings-panel input, #settings-panel button, #settings-panel select{
   display: block;
 }
