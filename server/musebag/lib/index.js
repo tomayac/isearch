@@ -49,8 +49,9 @@ app.get('/blaa', function(req, res){
 app.post('/login', function(req, res){
 	console.log("Login function called...");
 	console.log(req.body);
-	musebag.login({email: req.body.email, pw: req.body.pw}, function(error, data) {
+	musebag.login(req.body, function(error, data) {
 		console.log("User logged in.");
+		console.log(data);
 	});
 });
 

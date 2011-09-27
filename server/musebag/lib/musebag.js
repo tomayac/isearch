@@ -13,7 +13,7 @@
  */
 var nodeio = require('node.io');
 
-var verifyUser = function(email,pw) {
+var verifyUser = function(email,pw,callback) {
 	
 	var jobMethods = {
 			input: false,
