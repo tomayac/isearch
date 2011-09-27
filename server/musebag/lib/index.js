@@ -50,8 +50,17 @@ app.post('/login', function(req, res){
 	console.log("Login function called...");
 	console.log(req.body);
 	musebag.login(req.body, function(error, data) {
+		
+		if(error) {
+			console.log(error);
+			res.send(error);
+			return;
+		}
+		
 		console.log("User logged in.");
 		console.log(data);
+		
+		res.send("User logged in.");
 	});
 });
 

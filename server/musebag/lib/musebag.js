@@ -64,13 +64,6 @@ var verifyUser = function(email,pw,callback) {
  * login function
  */
 exports.login = function(options, callback){
-	verifyUser(options.email,options.pw, function(error, data) {
-		//Exit if there was a problem with the request
-        if (error) {
-        	callback(error, null); 
-        }
-		//if anything went ok, establish a session with the user data
-        
-		callback(null, data);
-	});
+	
+	verifyUser(options.email,options.pw,callback);
 };
