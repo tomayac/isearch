@@ -57,6 +57,9 @@ app.get('/profile/:attrib', function(req, res) {
 		res.send(JSON.stringify({error : 'You are not logged in!'}));
 	}
 	//Does the requested profile attribute is available
+	console.log(attrib);
+	console.log(req.session.user);
+	console.log(req.session.user[attrib]);
 	if(req.session.user[attrib]) {
 		res.send(JSON.stringify({error : 'The requested user profile attribute is not available!'}));
 	} else {
