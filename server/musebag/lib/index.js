@@ -41,9 +41,7 @@ app.configure('production', function(){
 
 // Routes
 app.get('/blaa', function(req, res){
-  res.render('index', {
-    title: 'Express'
-  });
+	res.send("Hello " + req.session.user.Email + ". You were born on " + req.session.user.Dob);
 });
 
 app.post('/login', function(req, res){

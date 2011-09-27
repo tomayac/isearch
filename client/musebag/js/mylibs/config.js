@@ -86,6 +86,7 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js"],
 	    	  data: JSON.stringify(postData),
 	    	  success: function(data) {
 	      		console.log("User logged in: " + data);
+	      		data = JSON.parse(data);
 	      		$("#login-status").text("Hello " + data.Email);
 	    	  },
 	    	  dataType: "text",
