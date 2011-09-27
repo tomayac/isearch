@@ -53,14 +53,14 @@ app.post('/login', function(req, res){
 		
 		if(error) {
 			console.log(error);
-			res.send(error);
+			//res.send(error);
 			return;
 		}
 		
 		console.log("User logged in.");
 		console.log(data);
 		
-		res.send("User logged in.");
+		//res.send("User logged in.");
 	});
 });
 
