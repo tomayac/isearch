@@ -161,6 +161,7 @@ nav {
   color: white;
   padding: 10px;
   display: none;
+  overflow: hidden;
 }
 
 #settings-panel .setting { float:left; margin-right: 10px; }
