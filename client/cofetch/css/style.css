@@ -289,9 +289,11 @@ audio, img, iframe { display: block; margin: 5px 5px 10px 5px; }
            background-image:url("../loadingbg.png"); } 
 #loading p {position:relative; top:250px; left:45%; color:#fff; font-weight:bold;}           
 
-#settings-panel section.setting { display:block; float:left; margin-left: 10px; }
+.setting { float:left; margin-right: 10px; }
 
+.float-button { float:left; margin-right: 50px; }
 
+#settings span {float: left;}
 
 /* =============================================================================
    Non-semantic helper classes
