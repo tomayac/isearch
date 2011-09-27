@@ -86,11 +86,14 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js"],
 	    	  data: JSON.stringify(postData),
 	    	  success: function(data) {
 	      		console.log("User logged in: " + data);
+	      		$("#login-status").text("Hello " + data.Email);
 	    	  },
 	    	  dataType: "text",
 	    	  contentType : "application/json; charset=utf-8"
 	      });
     	  
+    	  //Prevents the form submit to trigger a page reload
+          return false;
       });
 
     }; //End of initPanel()

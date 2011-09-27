@@ -53,14 +53,16 @@ app.post('/login', function(req, res){
 		
 		if(error) {
 			console.log(error);
-			//res.send(error);
+			res.send(error);
 			return;
 		}
 		
 		console.log("User logged in.");
 		console.log(data);
+		//Store user data in session
+		req.session.user = data;
 		
-		//res.send("User logged in.");
+		res.send(JSON.stringify(data));
 	});
 });
 
