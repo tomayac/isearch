@@ -77,6 +77,7 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js"],
     	  url: "http://isearch.ai.fh-erfurt.de/profile/Email",
     	  success: function(data) {
       		data = JSON.parse(data);
+      		console.log('Got profile response...');
       		console.log(data);
       		if(!data.error) {
       			$("#login-status").text("Hello " + data.Email);

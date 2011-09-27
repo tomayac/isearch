@@ -58,7 +58,7 @@ app.get('/profile/:attrib', function(req, res) {
 	}
 	//Does the requested profile attribute is available
 	if(req.session.user[attrib]) {
-		res.send('{' + attrib + ': "' + req.session.user[attrib] + '"}');
+		res.send('{"' + attrib + '": "' + req.session.user[attrib] + '"}');
 	} else {
 		res.send(JSON.stringify({error : 'The requested user profile attribute is not available!'}));
 	}
