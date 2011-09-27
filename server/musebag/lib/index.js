@@ -60,8 +60,7 @@ app.get('/profile/:attrib', function(req, res) {
 	if(req.session.user[attrib]) {
 		var data = {};
 		data[attrib] = req.session.user[attrib];
-		console.log(data);
-		res.send('{"' + attrib + '": "' + req.session.user[attrib] + '"}');
+		res.send(JSON.stringify(data));
 	} else {
 		res.send(JSON.stringify({error : 'The requested user profile attribute is not available!'}));
 	}
