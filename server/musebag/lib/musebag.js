@@ -20,7 +20,8 @@ var verifyUser = function(email,pw,callback) {
         + '&email=' + email
         + '&pw=' + pw;
 	
-	rest.get(verifyURL)
+	restler
+	.get(verifyURL)
 	.on('complete', function(data) {
 		console.log(data);
 		
