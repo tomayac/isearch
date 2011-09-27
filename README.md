@@ -33,7 +33,7 @@ RequireJS (check the [official website](http://requirejs.org)) is a dependancy m
 
 Let's also embrace the use of **module pattern**. Example: 
 
-    define(â€œthe/path/to/my/moduleâ€�, [â€œdependancy1â€�, â€œdependancy2â€�],   function(dependancy1, dependancy2){
+    define("the/path/to/my/module", ["dependancy1", "dependancy2"],   function(dependancy1, dependancy2){
       //This will execute when the dependancies are loaded
       var privateVariable = â€œsecretâ€�;
       var privateStuff = function(){
@@ -42,7 +42,7 @@ Let's also embrace the use of **module pattern**. Example:
         //do stuff
       };
 
-     var publicThing = â€œhoorayâ€�;
+     var publicThing = "hooray";
       var iAmPublic = function(){
         //do stuff
       };
