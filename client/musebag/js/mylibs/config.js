@@ -155,6 +155,30 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js", "my
 	    	jQuery('#imageDrop').removeClass("over");
 	    });
 	    
+	    UIIFace.registerEvent('sketch','sketch', function(event, pen) {
+			//console.dir(pen);
+			var canvas = $('#sketch')[0];
+            var context = canvas.getContext('2d');   
+			
+			context.strokeStyle ='rgba('+pen.color+',.3)';
+            context.lineWidth = pen.size; 
+            context.beginPath();
+            context.moveTo(pen.oldX, pen.oldY);
+            context.lineTo(pen.x, pen.y);
+            context.closePath();
+            context.stroke(); 
+		});
+	    
+	    UIIFace.registerEvent('sketch','delete',function(error) {
+	    	
+	    	if(error <= 0.4) {
+	    		console.log('delete gesture detected with error: ' + error);
+	    		var canvas = $('#sketch')[0];
+	    		var context = canvas.getContext('2d');  
+	    		context.clearRect(0, 0, canvas.width, canvas.height);
+	    	}
+	    }); 
+	    
     }; //End of initUiiFace
 
 
