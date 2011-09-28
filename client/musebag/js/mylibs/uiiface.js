@@ -17,7 +17,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-define("mylibs/uiiface", ["libs/jquery.hasEventListener.min"], function(){
+define("mylibs/uiiface", ["libs/jquery.hasEventListener.min", "libs/jquery-1.6.2.min"], function(){
   
   var UIIFace = {};
   
@@ -571,7 +571,7 @@ define("mylibs/uiiface", ["libs/jquery.hasEventListener.min"], function(){
   				jQuery(element).bind(event,callback);
   			}
   			//a clickTarget is defined which means, that the user wants the given
-  			//event alternativly triggert on the element provided within clickTarget
+  			//event alternativly triggered on the element provided within clickTarget
   			if(!UIIFace.Tools.isEmpty(options) && !UIIFace.Tools.isEmpty(options.clickTarget)) {
   				jQuery(clickTarget).bind('click',callback);
   			}
@@ -585,5 +585,5 @@ define("mylibs/uiiface", ["libs/jquery.hasEventListener.min"], function(){
     initialize: UIIFace.initialize,
     registerEvent: UIIFace.registerEvent
   };
-})
+});
 

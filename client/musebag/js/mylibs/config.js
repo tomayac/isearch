@@ -102,7 +102,7 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js", "my
 	    	  success: function(data) {
 	      		console.log("User logged in: " + data);
 	      		data = JSON.parse(data);
-	      		$("#login-status").text("Hello " + data.Email);
+	      		$("#login-status").text("Hello " + data.Email + "<a href=\"\" id=\"logout-user\">[Logout]</a>");
 	    	  },
 	    	  dataType: "text",
 	    	  contentType : "application/json; charset=utf-8"
@@ -147,6 +147,9 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js", "my
     
     var initUiiFace = function() {
     	
+    	//Init of UIIFace
+    	/*UIIFace.initialize({gestureHint:false});
+    	
     	//Drag and Drop of files
 	    var dropHandler = new FileDrop('imageDrop',['jpg','png'],'http://gdv.fh-erfurt.de/i-search/mqf-dummy/handle.php');
 	    
@@ -177,7 +180,7 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js", "my
 	    		var context = canvas.getContext('2d');  
 	    		context.clearRect(0, 0, canvas.width, canvas.height);
 	    	}
-	    }); 
+	    }); */
 	    
     }; //End of initUiiFace
 
