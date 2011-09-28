@@ -39,6 +39,7 @@
   <link rel="stylesheet" href="css/token-input.css"/>
     
   <link rel="stylesheet" href="css/vis.css"/>
+  <link rel="stylesheet" href="css/uiiface.css"/>
   <link rel="stylesheet" href="css/jquery-ui-1.8.14.custom.css"/>
   
   <!-- Modernizr at the top. Rest at the bottom for better perf. -->
@@ -101,7 +102,7 @@
   </form>
 </div>
 <div id="settings">
-  <span id="login-status">Hello Guest</span>  
+  <span id="login-status">Hello Guest <a href="" id="logout-user">[Logout]</a></span>  
   <a href="#">Open/Close Settings Panel</a>
 </div>
   <div id="container">
@@ -168,7 +169,7 @@
       </section>
       
       <section class="panel picture">
-        <p class="instruction">
+        <p class="instruction dropContainer" id="imageDrop">
           Grab a picture and drop it here
         </p>
         <p class="instruction">

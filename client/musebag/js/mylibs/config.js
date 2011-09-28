@@ -1,4 +1,4 @@
-define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js"],
+define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js", "uiiface", "filedrop"],
   function() {
     
     var constants = {
@@ -114,8 +114,48 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js"],
     	  //Prevents the form submit to trigger a page reload
           return false;
       });
+      
+      //Listen to logout link click
+      $('#logout-user').click(function(){
+    	  
+    	  var serverURL = "http://isearch.ai.fh-erfurt.de/login/";
+    	  
+    	  var postData = {email: $settingsPanel.find("#email").val() || '',
+    			          pw: $settingsPanel.find("#pw").val() || ''};
+    	  
+    	  //Send it to the server
+    	  $.ajax({
+	    	  type: "DELETE",
+	    	  url: serverURL,
+	    	  success: function(data) {
+	      		  if(!data.error) {	
+	      			  console.log("User logged out");
+	      			  $("#login-status").text("Hello Guest");
+	      		  } else {
+	      			  alert("Something went wrong: " + data.error);
+	      		  }
+	    	  },
+	    	  dataType: "text",
+	    	  contentType : "application/json; charset=utf-8"
+	      });
+    	  
+    	  //Prevents the form submit to trigger a page reload
+          return false;
+      });
 
     }; //End of initPanel()
+    
+    var initUiiFace = function() {
+    	
+    	//Drag and Drop of files
+	    var dropHandler = new FileDrop('imageDrop',['jpg','png'],'http://gdv.fh-erfurt.de/i-search/mqf-dummy/handle.php');
+	    
+	    UIIFace.registerEvent('imageDrop','drop',function(event) {
+	    	jQuery.proxy(dropHandler.handleFiles(event.originalEvent),dropHandler);
+	    	jQuery('#imageDrop').removeClass("over");
+	    });
+	    
+    }; //End of initUiiFace
 
 
     //Public variables and functions
@@ -123,7 +163,8 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js"],
       constants: constants,
       set: set,
       initPanel: initPanel,
-    }
+      initUiiFace: initUiiFace
+    };
     
   }
 );

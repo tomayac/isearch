@@ -48,6 +48,9 @@ define("main",
 
         //Initializes the tagging system
         tags.init();
+        
+        //Initializes the UIIFace events
+        config.initUiiFace();
 
         //Behaviour of the menu (panels, etc)
         $('nav li').click(function(){

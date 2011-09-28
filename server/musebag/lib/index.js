@@ -40,49 +40,14 @@ app.configure('production', function(){
 });
 
 // Routes
-app.get('/blaa', function(req, res){
-	if(req.session.user) {
-		res.send("Hello " + req.session.user.Email + ". You were born on " + req.session.user.Dob);
-	}
-	else {
-		res.send("Sorry you're not logged in.");
-	}
-});
+app.post('/login', musebag.login);
+app.del('/login', musebag.logout);
 
-app.get('/profile/:attrib', function(req, res) {
-	var attrib = req.params.attrib;
-	
-	//Does a user is logged in?
-	if(!req.session.user) {
-		res.send(JSON.stringify({error : 'You are not logged in!'}));
-	}
-	//Does the requested profile attribute is available
-	if(req.session.user[attrib]) {
-		var data = {};
-		data[attrib] = req.session.user[attrib];
-		res.send(JSON.stringify(data));
-	} else {
-		res.send(JSON.stringify({error : 'The requested user profile attribute is not available!'}));
-	}
-});
+app.get('/profile/:attrib', musebag.profile);
 
-app.post('/login', function(req, res){
-	console.log("Login function called...");
-
-	musebag.login(req.body, function(error, data) {
-		
-		if(error) {
-			console.log(error);
-			res.send(error);
-			return;
-		}
-		
-		//Store user data in session
-		req.session.user = data;
-		
-		res.send(JSON.stringify(data));
-	});
-});
+app.post('/query/item', musebag.queryItem);
+app.post('/query', musebag.query);
 
 app.listen(8081);
+
 console.log("MuseBag Express server listening on port %d in %s mode", app.address().port, app.settings.env);
