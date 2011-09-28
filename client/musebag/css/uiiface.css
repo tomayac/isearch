@@ -1,0 +1,71 @@
+.dropContainer.over {
+    background-color: #eee;
+}
+
+.dropContainer {
+	border: 1px solid #060;
+	width: 580px;
+	height: 400px;
+	padding: 10px;
+}
+
+.dropContainer .component {
+    display: inline-block;
+    margin: 5px auto 5px auto;
+    position: relative;
+    z-index: 2;
+    opacity: 0.5;
+    padding: 0 5px;
+}
+
+.dropContainer .component img {
+    height: 200px;
+}
+
+.dropContainer .component .progressBar {
+    position: absolute;
+    top:50%;
+    left: 50%;
+    margin: -10px 0 0 -100px;
+    width: 200px;
+    height: 20px;
+    
+    border: 1px solid #000;
+    border-radius: 10px;
+    box-shadow: 1px 1px 2px #fff;
+}
+
+.dropContainer .component .progressBar p
+{
+    width: 20px;
+    height: 20px;
+    
+    -moz-border-radius: 10px;
+    background-color: #1E528C;
+}
+
+.dropContainer .loaded {
+    opacity: 1;
+}
+
+.dropContainer .loaded .progressBar {
+    display: none;
+}
+
+.dropContainer .component canvas,
+.dropContainer .component audio {
+	 position: relative;
+     border: 1px solid #aaa;  
+}
+
+.gestureHint {
+	display:none;
+	position:absolute;
+	top:0;
+	left:0;
+	width:10px;
+	height:10px;
+	background-color:#a00;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
