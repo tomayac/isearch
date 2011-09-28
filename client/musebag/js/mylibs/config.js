@@ -1,4 +1,4 @@
-define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js", "uiiface", "filedrop"],
+define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js", "mylibs/uiiface", "mylibs/filedrop"],
   function() {
     
     var constants = {
