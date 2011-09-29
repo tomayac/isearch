@@ -22,9 +22,9 @@ if(typeof console == "undefined") {
 }
 
 define("main",
-    ["mylibs/menu", "mylibs/config", "mylibs/tags", "mylibs/results", 
+    ["mylibs/menu", "mylibs/config", "mylibs/tags", "mylibs/results", "mylibs/uiiface", 
     "libs/jquery.tokeninput"],
-    function(menu, config, tags, results) {
+    function(menu, config, tags, results, uiiface) {
 
     var start = function() {
       console.log('In the start function');
@@ -42,16 +42,16 @@ define("main",
               menu.adjust();
             }, 200);
         });
-
+        
         //Initializes the settings panel
         config.initPanel();
-
+        
         //Initializes the tagging system
         tags.init();
-        
-        //Initializes the UIIFace events
-        config.initUiiFace();
 
+        //Initializes the UIIFace
+        uiiface.initialize({gestureHint:false});
+        
         //Behaviour of the menu (panels, etc)
         $('nav li').click(function(){
           var clickedListItem = $(this);

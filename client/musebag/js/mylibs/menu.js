@@ -1,10 +1,10 @@
 define("mylibs/menu",
-  ["mylibs/config", "mylibs/uiiface"],
-  function(config, uiiface) {
+  ["mylibs/config", "mylibs/uiiface", "mylibs/filedrop"],
+  function(config, uiiface, filedrop) {
     
     var hasNav = false;
     var attachedModes = []; //Stock the attached events 
-                            //(we don't want to attch them each time a panel is displayed)
+                            //(we don't want to attach them each time a panel is displayed)
     var reset = function() {
         $('.panel').slideUp(config.constants.slideUpAnimationTime);
         $('nav li').removeClass('active');
@@ -33,13 +33,13 @@ define("mylibs/menu",
      if (hasNav === false) {
           $('<a/>', {  
             id: 'navButtonLeft',  
-            href: '#',  
+            href: '#'  
           }).appendTo('nav').click(function(){ 
             shift('right',20); 
           });
           $('<a/>', {  
             id: 'navButtonRight',  
-            href: '#',  
+            href: '#'  
           }).appendTo('nav').click(function(){ 
             shift('left',20); 
           });
@@ -82,7 +82,7 @@ define("mylibs/menu",
       }
       console.log('will shift menu to ' + direction + ' from ' + amount + 'px'); 
       var originalMarginInPx = $('nav ul').css('margin-left');
-      var originalMargin = parseInt(originalMarginInPx.substring(0,originalMarginInPx.length - 2)) //Drops the "px"
+      var originalMargin = parseInt(originalMarginInPx.substring(0,originalMarginInPx.length - 2)); //Drops the "px"
 
       console.log('margin is currently' + originalMargin);
       var newMargin = originalMargin + parseInt(amount);
@@ -146,7 +146,7 @@ define("mylibs/menu",
       $('.panel.text button').click(function(){
         console.log('Text button clicked');
 
-        var textIcon = $('nav li[data-mode="text"]')
+        var textIcon = $('nav li[data-mode="text"]');
         textIcon.addClass('uploading');
 
         var textBox = $('.panel.text input');
@@ -169,7 +169,7 @@ define("mylibs/menu",
       $('.panel.geolocation button').click(function(){
         console.log('Button geolocation pressed');
 
-        var pictureIcon = $('nav li[data-mode="geolocation"]')
+        var pictureIcon = $('nav li[data-mode="geolocation"]');
         pictureIcon.addClass('uploading');
 
         //N.B: COMPLETELY FAKE!! 
@@ -187,7 +187,7 @@ define("mylibs/menu",
       $('.panel.3d button').click(function(){
         console.log('Button 3d pressed');
 
-        var pictureIcon = $('nav li[data-mode="3d"]')
+        var pictureIcon = $('nav li[data-mode="3d"]');
         pictureIcon.addClass('uploading');
 
         //N.B: COMPLETELY FAKE!! 
@@ -202,10 +202,19 @@ define("mylibs/menu",
     };
 
     var attachPictureEvents = function() {
+    	
+    	//Drag and Drop of files
+	    var dropHandler = new filedrop.FileDrop('imageDrop',['jpg','png'],'http://localhost:8081/query/item');
+	    
+	    uiiface.registerEvent('imageDrop','drop',function(event) {
+	    	$.proxy(dropHandler.handleFiles(event.originalEvent),dropHandler);
+	    	$('#imageDrop').removeClass("over");
+	    });
+    	
       $('.panel.picture button.shoot, .panel.picture button.upload').click(function(){
         console.log('Button "Shoot picture" pressed');
 
-        var pictureIcon = $('nav li[data-mode="picture"]')
+        var pictureIcon = $('nav li[data-mode="picture"]');
         pictureIcon.addClass('uploading');
 
         //N.B: COMPLETELY FAKE!! 
@@ -221,27 +230,25 @@ define("mylibs/menu",
     
     var attachSketchEvents = function() {
 
-        uiiface.initialize({gestureHint:true});
-
-    		uiiface.registerEvent('sketch','sketch', function(event, pen) {
-    			//console.dir(pen);
-    			var canvas = $('#sketch')[0];
-          var context = canvas.getContext('2d');   
-
-    			context.strokeStyle ='rgba('+pen.color+',.3)';
-          context.lineWidth = pen.size; 
-          context.beginPath();
-          context.moveTo(pen.oldX, pen.oldY);
-          context.lineTo(pen.x, pen.y);
-          context.closePath();
-          context.stroke(); 
-    		});
+    	uiiface.registerEvent('sketch','sketch', function(event, pen) {
+	    	//console.dir(pen);
+	    	var canvas = $('#sketch')[0];
+	        var context = canvas.getContext('2d');   
+	
+	    	context.strokeStyle ='rgba('+pen.color+',.3)';
+	        context.lineWidth = pen.size; 
+	        context.beginPath();
+	        context.moveTo(pen.oldX, pen.oldY);
+	        context.lineTo(pen.x, pen.y);
+	        context.closePath();
+	        context.stroke(); 
+    	});
 
 
       $('.panel.sketch button.done').click(function(){
         console.log('Button "sketch done" pressed');
 
-        var sketchIcon = $('nav li[data-mode="sketch"]')
+        var sketchIcon = $('nav li[data-mode="sketch"]');
         sketchIcon.addClass('uploading');
 
         //N.B: COMPLETELY FAKE!! 
@@ -259,7 +266,7 @@ define("mylibs/menu",
       $('.panel.sound button').click(function(){
         console.log('Button in sound panel pressed');
 
-        var pictureIcon = $('nav li[data-mode="sound"]')
+        var pictureIcon = $('nav li[data-mode="sound"]');
         pictureIcon.addClass('uploading');
 
         //N.B: COMPLETELY FAKE!! 

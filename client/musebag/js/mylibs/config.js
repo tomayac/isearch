@@ -1,4 +1,4 @@
-define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js", "mylibs/uiiface", "mylibs/filedrop"],
+define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js"],
   function() {
     
     var constants = {
@@ -74,7 +74,7 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js", "my
       //Get the user name if available
 	  $.ajax({
     	  type: "GET",
-    	  url: "http://isearch.ai.fh-erfurt.de/profile/Email",
+    	  url: "http://localhost:8081/profile/Email",
     	  success: function(data) {
       		data = JSON.parse(data);
 
@@ -89,7 +89,7 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js", "my
       //Listen to button click to login
       $settingsPanel.find('#login-user').click(function(){
     	  
-    	  var serverURL = "http://isearch.ai.fh-erfurt.de/login/";
+    	  var serverURL = "http://localhost:8081/login/";
     	  
     	  var postData = {email: $settingsPanel.find("#email").val() || '',
     			          pw: $settingsPanel.find("#pw").val() || ''};
@@ -102,7 +102,7 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js", "my
 	    	  success: function(data) {
 	      		console.log("User logged in: " + data);
 	      		data = JSON.parse(data);
-	      		$("#login-status").text("Hello " + data.Email + "<a href=\"\" id=\"logout-user\">[Logout]</a>");
+	      		$("#login-status").text("Hello " + data.Email);
 	    	  },
 	    	  dataType: "text",
 	    	  contentType : "application/json; charset=utf-8"
@@ -114,11 +114,11 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js", "my
     	  //Prevents the form submit to trigger a page reload
           return false;
       });
-      
-      //Listen to logout link click
+	  
+	  //Listen to logout link click
       $('#logout-user').click(function(){
     	  
-    	  var serverURL = "http://isearch.ai.fh-erfurt.de/login/";
+    	  var serverURL = "http://localhost:8081/login/";
     	  
     	  var postData = {email: $settingsPanel.find("#email").val() || '',
     			          pw: $settingsPanel.find("#pw").val() || ''};
@@ -144,53 +144,13 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js", "my
       });
 
     }; //End of initPanel()
-    
-    var initUiiFace = function() {
-    	
-    	//Init of UIIFace
-    	/*UIIFace.initialize({gestureHint:false});
-    	
-    	//Drag and Drop of files
-	    var dropHandler = new FileDrop('imageDrop',['jpg','png'],'http://gdv.fh-erfurt.de/i-search/mqf-dummy/handle.php');
-	    
-	    UIIFace.registerEvent('imageDrop','drop',function(event) {
-	    	jQuery.proxy(dropHandler.handleFiles(event.originalEvent),dropHandler);
-	    	jQuery('#imageDrop').removeClass("over");
-	    });
-	    
-	    UIIFace.registerEvent('sketch','sketch', function(event, pen) {
-			//console.dir(pen);
-			var canvas = $('#sketch')[0];
-            var context = canvas.getContext('2d');   
-			
-			context.strokeStyle ='rgba('+pen.color+',.3)';
-            context.lineWidth = pen.size; 
-            context.beginPath();
-            context.moveTo(pen.oldX, pen.oldY);
-            context.lineTo(pen.x, pen.y);
-            context.closePath();
-            context.stroke(); 
-		});
-	    
-	    UIIFace.registerEvent('sketch','delete',function(error) {
-	    	
-	    	if(error <= 0.4) {
-	    		console.log('delete gesture detected with error: ' + error);
-	    		var canvas = $('#sketch')[0];
-	    		var context = canvas.getContext('2d');  
-	    		context.clearRect(0, 0, canvas.width, canvas.height);
-	    	}
-	    }); */
-	    
-    }; //End of initUiiFace
 
 
     //Public variables and functions
     return {
       constants: constants,
       set: set,
-      initPanel: initPanel,
-      initUiiFace: initUiiFace
+      initPanel: initPanel
     };
     
   }

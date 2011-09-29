@@ -79,6 +79,7 @@ exports.profile = function(req, res) {
 	//Does a user is logged in?
 	if(!req.session.user) {
 		res.send(JSON.stringify({error : 'You are not logged in!'}));
+		return;
 	}
 	//Does the requested profile attribute is available
 	if(req.session.user[attrib]) {
@@ -105,11 +106,72 @@ exports.queryItem = function(req, res) {
 		req.session.query = { 'items' : [] };
 	}
 	
+	//Store the session id
+	var sid = req.sessionID.substring(req.sessionID.length-32,req.sessionID.length);
+	req.session.extSessionId = sid;
 	//Create the upload parser
 	var upload = new formidable.IncomingForm();
 	//Set the upload settings
 	upload.keepExtensions = true;
 	upload.maxFieldsSize = 8 * 1024 * 1024; // 8 MB
+	upload.encoding = 'binary';
+	//Check for every uploaded file
+	upload.addListener('file', function(name, file) {
+	    
+		//The temporary information about the uploaded file
+		var uploadItem = { path : file.path,
+				           name : file.name, 
+				           type : file.type,
+				           size : file.size};
+		
+		fs.readFile(file.path, function (error, filedata) {
+			if(error) {
+				msg.error = error;
+				res.send(JSON.stringify(msg));
+				return;
+			}
+			
+			//Forward the uploaded file to the multimodal query formulator
+			var queryFormulatorURL = "http://gdv.fh-erfurt.de/i-search/mqf-dummy/handle.php";
+
+			restler
+			.post(queryFormulatorURL, { 
+				multipart: true,
+			    data: {"f"        : "storeQueryItem",
+			    	   "session"  : sid,
+			           "fileName" : uploadItem.name,
+			    	   "fileSize" : uploadItem.size,
+			    	   "fileType" : uploadItem.type,
+			    	   "file" : restler.file(uploadItem.path, uploadItem.type)}
+			 })
+			.on('complete', function(data) {		
+				//Check if return data is ok
+		        if(data.error) {
+		        	msg.error = data.error;
+		        	res.send(JSON.stringify(msg));
+		        	return;
+		        }
+		        
+		        //Store query item data in session
+		        uploadItem.path = data.file;
+		        console.log(uploadItem);
+				req.session.query.items.push(uploadItem);
+				
+				//Return query item path to client
+				res.send(JSON.stringify(data.file));
+			})
+			.on('error', function(error) {
+				msg.error = error;
+				res.send(JSON.stringify(msg));
+			});
+			
+		}); //end function fs.readFile
+	});
+	
+	upload.addListener('end', function() {
+	    //res.end();
+	});
+	
 	//Parse the upload data
 	upload.parse(req, function(error, fields, files) {
 		
@@ -117,49 +179,6 @@ exports.queryItem = function(req, res) {
 			msg.error = error;
 			res.send(JSON.stringify(msg));
 			return;
-		}
-		
-		console.log(req);
-		
-		for(var f=0; f < files.length; f++) {
-			fs.readFile(files[0].path, function (error, filedata) {
-				if(error) {
-					msg.error = error;
-					res.send(JSON.stringify(msg));
-					return;
-				}
-				
-				//Forward the uploaded file to the multimodal query formulator
-				var queryFormulatorURL = "http://gdv.fh-erfurt.de/i-search/mqf-dummy/handle.php";
-				
-				restler
-				.post(queryFormulatorURL, {
-					 headers: {"X-File-Name" : "test.jpg",
-						       "X-File-Size" : "1200",
-						       "X-File-Type" : "image"}, 
-				     data: filedata,
-				     multipart: true
-				 })
-				.on('complete', function(data) {		
-					
-					//Check if return data is ok
-			        if(!data.user) {
-			        	msg.error = 'The user data was delivered in an invalid format.';
-			        	res.send(JSON.stringify(msg));
-			        }
-			        
-			        //Store query item data in session
-					req.session.query.items.push({'path' : data.file,
-						                          'type' : data.type});
-					//Return query item path to client
-			        res.send(JSON.stringify(data.file));
-				})
-				.on('error', function(error) {
-					msg.error = error;
-					res.send(JSON.stringify(msg));
-				});
-				
-			}); //end function fs.readFile
 		}
 
 	}); //end function upload.parse

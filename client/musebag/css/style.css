@@ -153,7 +153,7 @@ nav {
 }
 #settings a { color: white; display: block; }
 
-#settings span {float: left; min-width: 150px; }
+#settings span {float: left; }
 #settings span a { display: inline; }
 
 #settings-panel {

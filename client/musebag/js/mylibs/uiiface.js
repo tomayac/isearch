@@ -17,7 +17,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-define("mylibs/uiiface", ["libs/jquery.hasEventListener.min", "libs/jquery-1.6.2.min"], function(){
+define("mylibs/uiiface", ["libs/jquery.hasEventListener.min"], function(){
   
   var UIIFace = {};
   
@@ -109,7 +109,7 @@ define("mylibs/uiiface", ["libs/jquery.hasEventListener.min", "libs/jquery-1.6.2
   		} else if(UIIFace.isEventSupported('touchstart')) {
   			touchEvents['down'] = 'touchstart'; 
   		}
-
+  		
   		if(UIIFace.isEventSupported('MozTouchMove')) {
   			touchEvents['move'] = 'MozTouchMove'; 
   		} else if(UIIFace.isEventSupported('touchMove')) {
@@ -137,7 +137,7 @@ define("mylibs/uiiface", ["libs/jquery.hasEventListener.min", "libs/jquery-1.6.2
   	 * It is partly enhanced by an approach developed in my master thesis.
   	 *  
   	 */
-      UIIFace.GestureInterpreter = function (element) {
+    UIIFace.GestureInterpreter = function (element) {
   		var element = element;
 
   		/** Internal class for mouse or touch probe */
@@ -152,14 +152,14 @@ define("mylibs/uiiface", ["libs/jquery.hasEventListener.min", "libs/jquery-1.6.2
   				e.stopPropagation();
   			};
 
-  	        jQuery(target).bind('mousemove', jQuery.proxy(_track,this));
+  	        $(target).bind('mousemove', $.proxy(_track,this));
   		};
 
   		Probe.prototype = {
   		    probe: function ()
   		    {
   		    	pos = { };
-  		    	jQuery.extend(pos,this.pos);
+  		    	$.extend(pos,this.pos);
   		    	return pos;
   		    }
   		};
@@ -196,7 +196,7 @@ define("mylibs/uiiface", ["libs/jquery.hasEventListener.min", "libs/jquery-1.6.2
   		            this.options.matcher.match(this.movLog);
   		        }
   		        if(uiiOptions.gestureHint === true) {
-  		    		jQuery('.gestureHint').hide();
+  		    		$('.gestureHint').hide();
   		    	}
 
   		        this.movLog.length = 0;
@@ -208,7 +208,7 @@ define("mylibs/uiiface", ["libs/jquery.hasEventListener.min", "libs/jquery-1.6.2
   		    	this.movLog.push(position);
 
   		    	if(uiiOptions.gestureHint === true) {
-  		    		jQuery('.gestureHint').show().css('top',position.y+30).css('left',position.x+25);
+  		    		$('.gestureHint').show().css('top',position.y+30).css('left',position.x+25);
   		    	}
   		    	//console.log('start');
   		    },
@@ -220,7 +220,7 @@ define("mylibs/uiiface", ["libs/jquery.hasEventListener.min", "libs/jquery-1.6.2
   		        };  
   				this.movLog.push(position);
   				if(uiiOptions.gestureHint === true) {
-  		    		jQuery('.gestureHint').show().css('top',position.y+30).css('left',position.x+25);
+  		    		$('.gestureHint').show().css('top',position.y+30).css('left',position.x+25);
   		    	}
   		    }
   		};
@@ -275,7 +275,7 @@ define("mylibs/uiiface", ["libs/jquery.hasEventListener.min", "libs/jquery-1.6.2
   		        this.cbObject = eventObj;
 
   		        var that = this;
-  		        this.timer = setInterval(jQuery.proxy(this.monitor,this), this.delay );
+  		        this.timer = setInterval($.proxy(this.monitor,this), this.delay );
   		    },
 
   			/*
@@ -493,8 +493,8 @@ define("mylibs/uiiface", ["libs/jquery.hasEventListener.min", "libs/jquery-1.6.2
   	            			color: '90,0,0',
   	            			oldX : 0,
   	            			oldY : 0,
-  	            			x    : parseFloat((e.pageX - jQuery(target).offset().left).toFixed(2)),
-  	            			y    : parseFloat((e.pageY - jQuery(target).offset().top).toFixed(2))
+  	            			x    : parseFloat((e.pageX - $(target).offset().left).toFixed(2)),
+  	            			y    : parseFloat((e.pageY - $(target).offset().top).toFixed(2))
   	            	};
   	            }  
   				break;
@@ -506,10 +506,10 @@ define("mylibs/uiiface", ["libs/jquery.hasEventListener.min", "libs/jquery-1.6.2
   					pens[e.streamId].oldX = pens[e.streamId].x;
   					pens[e.streamId].oldY = pens[e.streamId].y;
 
-  					pens[e.streamId].x = parseFloat((e.pageX - jQuery(target).offset().left).toFixed(2));
-  					pens[e.streamId].y = parseFloat((e.pageY - jQuery(target).offset().top).toFixed(2));
+  					pens[e.streamId].x = parseFloat((e.pageX - $(target).offset().left).toFixed(2));
+  					pens[e.streamId].y = parseFloat((e.pageY - $(target).offset().top).toFixed(2));
 
-  					jQuery(target).trigger('sketch', pens[e.streamId]);
+  					$(target).trigger('sketch', pens[e.streamId]);
   				}
   				break;
   			case touchEvents['up']:
@@ -530,25 +530,26 @@ define("mylibs/uiiface", ["libs/jquery.hasEventListener.min", "libs/jquery-1.6.2
 
   	/** Main public functions */
   	UIIFace.initialize = function(options) {
-
+  		
   		uiiOptions = options;
   		UIIFace.CommandMapper();
+
   	};
 
   	UIIFace.registerEvent = function(aElement, event, callback, options) {
 
   		var element = '#' + aElement;
 
-  		if(jQuery.inArray(event,eventList) > -1) {
+  		if($.inArray(event,eventList) > -1) {
 
   			//just bind basic browser events needed to create custom events available to I-SEARCH GUI
   			switch(event) {
   				case 'sketch': 
-  					if(jQuery(element).is('canvas')) {
-  						jQuery(element).bind('mousedown' + (touchEvents['down'] !== undefined ? ' ' + touchEvents['down'] : ''),UIIFace.InteractionManager.sketch);
-  						jQuery(element).bind('mousemove' + (touchEvents['move'] !== undefined ? ' ' + touchEvents['move'] : ''),UIIFace.InteractionManager.sketch);
-  						jQuery(element).bind('mouseup' + (touchEvents['up'] !== undefined ? ' ' + touchEvents['up'] : ''),UIIFace.InteractionManager.sketch);
-  						jQuery(element).bind('mouseout',UIIFace.InteractionManager.sketch);
+  					if($(element).is('canvas')) {
+  						$(element).bind('mousedown' + (touchEvents['down'] !== undefined ? ' ' + touchEvents['down'] : ''),UIIFace.InteractionManager.sketch);
+  						$(element).bind('mousemove' + (touchEvents['move'] !== undefined ? ' ' + touchEvents['move'] : ''),UIIFace.InteractionManager.sketch);
+  						$(element).bind('mouseup' + (touchEvents['up'] !== undefined ? ' ' + touchEvents['up'] : ''),UIIFace.InteractionManager.sketch);
+  						$(element).bind('mouseout',UIIFace.InteractionManager.sketch);
   					} else { 
   						throw 'A sketch event can only be bound to canvas elements.'; 
   					}
@@ -560,20 +561,20 @@ define("mylibs/uiiface", ["libs/jquery.hasEventListener.min", "libs/jquery-1.6.2
   					gi.start();
   					break;
   				case 'drop':
-  					jQuery(element).bind('dragenter', function(e){ jQuery(element).addClass("over"); e.stopPropagation(); e.preventDefault();});
-  					jQuery(element).bind('dragover' , function(e){ e.stopPropagation(); e.preventDefault();},false);
-  					jQuery(element).bind('dragleave', function(e){ jQuery(element).removeClass("over"); e.stopPropagation(); e.preventDefault();});
+  					$(element).bind('dragenter', function(e){ $(element).addClass("over"); e.stopPropagation(); e.preventDefault();});
+  					$(element).bind('dragover' , function(e){ e.stopPropagation(); e.preventDefault();},false);
+  					$(element).bind('dragleave', function(e){ $(element).removeClass("over"); e.stopPropagation(); e.preventDefault();});
   					break;
   			}
   			//Always register the custom event to the element, as we will trigger
   			//that event in the specialized handler functions
-  			if(!jQuery.hasEventListener(element,event)) {
-  				jQuery(element).bind(event,callback);
+  			if(!$.hasEventListener(element,event)) {
+  				$(element).bind(event,callback);
   			}
   			//a clickTarget is defined which means, that the user wants the given
   			//event alternativly triggered on the element provided within clickTarget
   			if(!UIIFace.Tools.isEmpty(options) && !UIIFace.Tools.isEmpty(options.clickTarget)) {
-  				jQuery(clickTarget).bind('click',callback);
+  				$(clickTarget).bind('click',callback);
   			}
 
   		}

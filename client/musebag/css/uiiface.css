@@ -3,10 +3,12 @@
 }
 
 .dropContainer {
-	border: 1px solid #060;
-	width: 580px;
-	height: 400px;
+	max-height: 200px;
 	padding: 10px;
+}
+
+.dropContainer span {
+    display:block;
 }
 
 .dropContainer .component {
@@ -19,15 +21,15 @@
 }
 
 .dropContainer .component img {
-    height: 200px;
+    max-height: 200px;
 }
 
 .dropContainer .component .progressBar {
     position: absolute;
     top:50%;
     left: 50%;
-    margin: -10px 0 0 -100px;
-    width: 200px;
+    margin: -10px 0 0 -75px;
+    width: 150px;
     height: 20px;
     
     border: 1px solid #000;
@@ -41,6 +43,7 @@
     height: 20px;
     
     -moz-border-radius: 10px;
+    border-radius: 10px;
     background-color: #1E528C;
 }
 
