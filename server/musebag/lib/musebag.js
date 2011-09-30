@@ -158,7 +158,7 @@ exports.queryItem = function(req, res) {
 				req.session.query.items.push(uploadItem);
 				
 				//Return query item path to client
-				res.send(JSON.stringify(data.file));
+				res.send(JSON.stringify(uploadItem));
 			})
 			.on('error', function(error) {
 				msg.error = error;

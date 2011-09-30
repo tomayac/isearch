@@ -88,7 +88,6 @@ define("mylibs/filedrop", ["libs/jquery.hasEventListener.min"], function(){
 	//Handles the file upload with 
 	FileDrop.prototype.processXHR = function(file, index) {
 	    var xhr        = new XMLHttpRequest(),
-	        reader     = new FileReader(),
 	        formData   = new FormData(),
 	        container  = document.getElementById('dropComponent'+index),
 	        progressDomElements = [
@@ -107,12 +106,18 @@ define("mylibs/filedrop", ["libs/jquery.hasEventListener.min"], function(){
 	    //Handle file display after upload of a media file
 	    xhr.onreadystatechange =  function (event) {
 	        if (xhr.readyState == 4) {
-	            var filePath = xhr.responseText;
+	            var fileInfo = JSON.parse(xhr.responseText);
 	            //3D model display via GLGE
-	            if((/dae/i).test(file.fileName)) {
-	            	var modelHandler = new that.ModelHandler(filePath,'dropComponent' + index + '-canvas');
+	            if((/dae/i).test(fileInfo.name)) {
+	            	var modelHandler = new that.ModelHandler(fileInfo.path,'dropComponent' + index + '-canvas');
 	            	modelHandler.initialize();
-	            }   
+	            }
+	            //Image display in query field
+	            console.log(fileInfo);
+	            if((/image/i).test(fileInfo.type)) {
+	            	$("#query-field").tokenInput('add',{id:"cat",name:"<img src='" + fileInfo.path + "'/>"});
+	            	$("#dropComponent" + index).remove();
+	            }
 	        }  
 	    };
 	    

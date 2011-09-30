@@ -13,7 +13,7 @@ ul.token-input-list-isearch {
     padding-right: 11%;
     padding-left: 1%;
     margin: 1em auto;
-    height: 2.2em;
+    height: 3.2em;
     border: 1px #CCC solid;
     box-shadow: 0px 0px 2px 2px rgba(99,99,99,0.2); 
 }
@@ -59,6 +59,7 @@ li.token-input-token-isearch span {
 li.token-input-token-isearch p img{
     vertical-align: middle;
     margin-top: -3px;
+    max-height: 2.5em;
 }
 li.token-input-selected-token-isearch {
     background-color: #666;

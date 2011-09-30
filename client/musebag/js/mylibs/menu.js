@@ -204,20 +204,44 @@ define("mylibs/menu",
     var attachPictureEvents = function() {
     	
     	//Drag and Drop of files
-	    var dropHandler = new filedrop.FileDrop('imageDrop',['jpg','png'],'http://localhost:8081/query/item');
+	    var dropHandler = new filedrop.FileDrop('imageDrop',['jpg','png','gif'],'http://isearch.ai.fh-erfurt.de/query/item');
 	    
 	    uiiface.registerEvent('imageDrop','drop',function(event) {
 	    	$.proxy(dropHandler.handleFiles(event.originalEvent),dropHandler);
 	    	$('#imageDrop').removeClass("over");
 	    });
-    	
-      $('.panel.picture button.shoot, .panel.picture button.upload').click(function(){
+	    
+	    $('#imageUpload').change(function(event) {
+	    	
+	    	var xhr    = new XMLHttpRequest();
+	        formData   = new FormData();
+			$.each(event.target.files, function(i, file){
+				formData.append('file-' + i, file);
+			});
+			
+			var success = function(event) {
+				var fileInfo = JSON.parse(data);
+				$("#query-field").tokenInput('add',{id:"cat",name:"<img src='" + fileInfo.path + "'/>"});
+			};
+			
+			xhr.upload.addEventListener("load", success, false); 
+			xhr.open("POST", "query/item", true);
+			xhr.send(formData);
+
+			event.preventDefault();
+			return false; 
+	    });
+	    
+	    $('.panel.picture button.upload').click(function(){
+	    	$('#imageUpload').click();
+	    });
+	    
+      $('.panel.picture button.shoot').click(function(){
         console.log('Button "Shoot picture" pressed');
 
         var pictureIcon = $('nav li[data-mode="picture"]');
         pictureIcon.addClass('uploading');
 
-        //N.B: COMPLETELY FAKE!! 
         $("#query-field").tokenInput('add',{id:"cat",name:"<img src='img/fake/fake-picture.jpg'/>"});
         //Remove the "uploading style" | Note: this won't be visible, hopefully
         pictureIcon.removeClass('uploading');

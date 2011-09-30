@@ -71,7 +71,7 @@ define("mylibs/results",
       data: __queryParams,
       success: function(data) {
 
-        console.log(data)
+        console.log(data);
         //Let's save the data in a safer place
         store(data);
 

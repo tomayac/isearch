@@ -4,11 +4,10 @@
  * GUI services. Currently it routes to the following services which are hosted
  * on this server:
  * 
- * - Multimodal Search Interface as general GUI for I-SEARCH
- * - Server component of Multimodal Search interface, which handles the communication between GUI and Search Engine
  * - pTag as Personal Content Tagging Service for I-SEARCH
  * - CoFind as Collaborativ Search Service for I-SEARCH
  * - CoFetch for Semi-automatic Content Object creation based on the FHE 3D Model Database
+ * - Multimodal Search Interface as general GUI for I-SEARCH
  *    
  * @author Jonas Etzold
  * 
