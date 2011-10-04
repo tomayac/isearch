@@ -79,7 +79,7 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js"],
       		data = JSON.parse(data);
 
       		if(!data.error) {
-      			$("#login-status").text("Hello " + data.Email);
+      			$("#login-status").text("Hello " + data.Email + "<span id=\"logout-user\">[logout]</span>");
       		}
     	  },
     	  dataType: "text",
@@ -102,7 +102,7 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js"],
 	    	  success: function(data) {
 	      		console.log("User logged in: " + data);
 	      		data = JSON.parse(data);
-	      		$("#login-status").text("Hello " + data.Email);
+	      		$("#login-status").text("Hello " + data.Email + "<span id=\"logout-user\">[logout]</span>");
 	    	  },
 	    	  dataType: "text",
 	    	  contentType : "application/json; charset=utf-8"

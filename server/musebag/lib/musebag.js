@@ -109,6 +109,7 @@ exports.queryItem = function(req, res) {
 	//Store the session id
 	var sid = req.sessionID.substring(req.sessionID.length-32,req.sessionID.length);
 	req.session.extSessionId = sid;
+	
 	//Create the upload parser
 	var upload = new formidable.IncomingForm();
 	//Set the upload settings

@@ -113,7 +113,6 @@ define("mylibs/filedrop", ["libs/jquery.hasEventListener.min"], function(){
 	            	modelHandler.initialize();
 	            }
 	            //Image display in query field
-	            console.log(fileInfo);
 	            if((/image/i).test(fileInfo.type)) {
 	            	$("#query-field").tokenInput('add',{id:"cat",name:"<img src='" + fileInfo.path + "'/>"});
 	            	$("#dropComponent" + index).remove();
