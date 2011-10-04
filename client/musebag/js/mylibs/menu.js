@@ -221,7 +221,10 @@ define("mylibs/menu",
 			
 			var success = function(event) {
 				var fileInfo = JSON.parse(data);
+				console.log("Image uploaded...");
 				$("#query-field").tokenInput('add',{id:"cat",name:"<img src='" + fileInfo.path + "'/>"});
+				//Remove the "uploading style" | Note: this won't be visible, hopefully
+				$('.panel.picture button.upload').removeClass('uploading');
 			};
 			
 			xhr.upload.addEventListener("load", success, false); 
@@ -233,6 +236,7 @@ define("mylibs/menu",
 	    });
 	    
 	    $('.panel.picture button.upload').click(function(){
+	    	$('.panel.picture button.upload').addClass('uploading');
 	    	$('#imageUpload').click();
 	    });
 	    
@@ -269,16 +273,36 @@ define("mylibs/menu",
     	});
 
 
-      $('.panel.sketch button.done').click(function(){
+      $('.panel.sketch button.done').click(function(event){
+    	  
         console.log('Button "sketch done" pressed');
 
         var sketchIcon = $('nav li[data-mode="sketch"]');
         sketchIcon.addClass('uploading');
+        
+        //----
+        var xhr    = new XMLHttpRequest(),
+            formData   = new FormData(),
+            canvas = $('#sketch')[0];
+        
+        var imgData = canvas.toDataURL("image/png");
+        imgData.replace(/^data:image\/(png|jpg);base64,/, "");
+		formData.append('file', imgData);
+		
+		var success = function(event) {
+			var fileInfo = JSON.parse(data);
+			$("#query-field").tokenInput('add',{id:"cat",name:"<img src='" + fileInfo.path + "'/>"});
+			//Remove the "uploading style" | Note: this won't be visible, hopefully
+	        sketchIcon.removeClass('uploading');
+		};
+		
+		xhr.upload.addEventListener("load", success, false); 
+		xhr.open("POST", "query/item", true);
+		xhr.send(formData);
 
-        //N.B: COMPLETELY FAKE!! 
-        $("#query-field").tokenInput('add',{id:"cat",name:"<img src='img/fake/fake-sketch.jpg'/>"});
-        //Remove the "uploading style" | Note: this won't be visible, hopefully
-        sketchIcon.removeClass('uploading');
+		event.preventDefault();
+		return false; 
+		//----
 
         reset();
         attachedModes.push('sketch');

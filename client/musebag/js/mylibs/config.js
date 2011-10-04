@@ -87,7 +87,7 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js"],
       });
       
       //Listen to button click to login
-      $settingsPanel.find('#login-user').click(function(){
+      $('#login-user').click(function(){
     	  
     	  var serverURL = "http://localhost:8081/login/";
     	  
