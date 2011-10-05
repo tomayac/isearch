@@ -15,9 +15,10 @@ var express = require('express'),
 var app = module.exports = express.createServer();
 
 //Nodules module reloading    
-//require.reloadable(function(){
-//	musebag = require('./musebag');
-//});
+/*require.reloadable(function(){
+ 	musebag = require('./musebag');
+});
+*/
 
 // Configuration
 app.configure(function(){
