@@ -87,7 +87,9 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js"],
       });
       
       //Listen to button click to login
-      $('#login-user').click(function(){
+      $('#login-user').click(function(event){
+    	  
+    	  event.preventDefault();
     	  
     	  var serverURL = "http://isearch.ai.fh-erfurt.de/login/";
     	  
@@ -116,7 +118,9 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js"],
       });
 	  
 	  //Listen to logout link click
-      $('#logout-user').click(function(){
+      $('#logout-user').click(function(event){
+    	  
+    	  event.preventDefault();
     	  
     	  var serverURL = "http://isearch.ai.fh-erfurt.de/logout/"; 	  
     	  
@@ -141,7 +145,6 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js"],
       });
 
     }; //End of initPanel()
-
 
     //Public variables and functions
     return {
