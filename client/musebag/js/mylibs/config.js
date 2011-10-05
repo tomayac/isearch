@@ -119,7 +119,7 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js"],
       });
 	  
 	  //Listen to logout link click
-      $('#logout-user').click(function(event){
+      $('#login-user a').click(function(event){
     	  
     	  event.preventDefault();
     	  
