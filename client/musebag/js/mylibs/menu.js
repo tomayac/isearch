@@ -271,6 +271,16 @@ define("mylibs/menu",
 	        context.closePath();
 	        context.stroke(); 
     	});
+    	
+    	uiiface.registerEvent('sketch','delete',function(error) {
+	    	
+	    	if(error <= 0.4) {
+	    		console.log('delete gesture detected with error: ' + error);
+	    		var canvas = $('#sketch')[0];
+	    		var context = canvas.getContext('2d');  
+	    		context.clearRect(0, 0, canvas.width, canvas.height);
+	    	}
+	    }); 
 
 
       $('.panel.sketch button.done').click(function(event){
