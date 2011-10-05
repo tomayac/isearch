@@ -20,7 +20,7 @@ define("mylibs/tags", function(){
     $(".tags a").click(function() {
       var tagText = $(this).text();
       var query = $('#query-field').val();
-      $("#query-field").tokenInput('add',{id: tagText,name: tagText})    
+      $("#query-field").tokenInput('add',{id: tagText,name: tagText});    
     });
   };
   
