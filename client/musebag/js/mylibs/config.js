@@ -85,24 +85,16 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js"],
                   	  type: "GET",
                   	  url: "http://isearch.ai.fh-erfurt.de/ptag/tagRecommendations?userID=" + data.ID,
                   	  success: function(data) {
-                    		data = JSON.parse(data);
+                    		//data = JSON.parse(data);
 
-                    		if(!data.error) {
-                    			var html = '';
-                    			
-                    			for(var t=0; t < data.length; t++) {
-                    				html += '<a href="#" data-rank="' + data[t][1] + '">' + data[t][0] + '</a>';
-                    			}
-                    			
-                    			$(".tags").html(html);
-                    			
-                    			//Initializes the tagging system
-                    	        tags.init();
-                    	        
-                    	        //Get tokens and load them as autosuggestion for the user
-                    	        var tokens = tags.getTokens();
-                    	        $("#query-field").tokenInput(tokens, {theme: "isearch"});
+                    		var html = '';
+                    		console.log(data);
+                    		for(var t=0; t < data.length; t++) {
+                    			html += '<a href="#" data-rank="' + data[t][1] + '">' + data[t][0] + '</a>';
                     		}
+                    			
+                    		$(".tags").html(html);
+                    			
                   	  },
                   	  dataType: "text",
                   	  contentType : "application/json; charset=utf-8"
