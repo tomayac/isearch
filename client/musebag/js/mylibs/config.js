@@ -118,10 +118,7 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js"],
 	  //Listen to logout link click
       $('#logout-user').click(function(){
     	  
-    	  var serverURL = "http://isearch.ai.fh-erfurt.de/login/";
-    	  
-    	  var postData = {email: $settingsPanel.find("#email").val() || '',
-    			          pw: $settingsPanel.find("#pw").val() || ''};
+    	  var serverURL = "http://isearch.ai.fh-erfurt.de/logout/"; 	  
     	  
     	  //Send it to the server
     	  $.ajax({
