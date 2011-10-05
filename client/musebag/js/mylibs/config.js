@@ -116,6 +116,7 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js"],
 
       		if(!data.error) {
       			$("#login-status").html("Hello " + data.Email + " <a id=\"logout-user\" href=\"\">[logout]</a>");
+      			getUserTags();
       		}
     	  },
     	  dataType: "text",
@@ -141,6 +142,7 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js"],
 	      		console.log("User logged in: " + data);
 	      		data = JSON.parse(data);
 	      		$("#login-status").html("Hello " + data.Email + " <a id=\"logout-user\" href=\"\">[logout]</a>");
+	      		getUserTags();
 	    	  },
 	    	  dataType: "text",
 	    	  contentType : "application/json; charset=utf-8"
@@ -170,6 +172,7 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js"],
 	      		  if(!data.error) {	
 	      			  console.log("User logged out");
 	      			  $("#login-status").html("Hello Guest");
+	      			$(".tags").html('');
 	      		  } else {
 	      			  alert("Something went wrong: " + data.error);
 	      		  }
