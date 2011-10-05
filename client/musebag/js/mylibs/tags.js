@@ -14,7 +14,7 @@ define("mylibs/tags", function(){
       var $thisTag = $(this);
       var fontSize = $thisTag.attr('data-rank');
       $thisTag.css('font-size', fontSize + 'em');
-      $thisTag.css('margin-right:', '0.3em');
+      $thisTag.css('margin-right', '0.3em');
       tags.push($thisTag.text());
     });
     
