@@ -114,7 +114,6 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js"],
           $settingsPanel.hide(constants.slideUpAnimationTime);
     	  
     	  //Prevents the form submit to trigger a page reload
-          event.stopPropagation();
           return false;
       });
 	  
@@ -123,7 +122,7 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js"],
     	  
     	  event.preventDefault();
     	  
-    	  var serverURL = "http://isearch.ai.fh-erfurt.de/logout/"; 	  
+    	  var serverURL = "http://isearch.ai.fh-erfurt.de/login/"; 	  
     	  
     	  console.log("Logging out...");
     	  
