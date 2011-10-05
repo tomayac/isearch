@@ -66,8 +66,8 @@ define("main",
         });
         
         //Get tokens and load them as autosuggestion for the user
-        var tokens = tags.getTokens();
-        $("#query-field").tokenInput(tokens, {theme: "isearch"});
+        //var tokens = tags.getTokens();
+        //$("#query-field").tokenInput(tokens, {theme: "isearch"});
 
         //Close button of the panel
         $('.panel footer a').click(function(){

@@ -1,5 +1,5 @@
-define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js"],
-  function() {
+define("mylibs/config", ["mylibs/tags", "!js/mylibs/visualization/DefaultThumbRenderer.js"],
+  function(tags) {
     
     var constants = {
       //Menu parameters
@@ -85,7 +85,7 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js"],
                   	  type: "GET",
                   	  url: "http://isearch.ai.fh-erfurt.de/ptag/tagRecommendations?userID=" + data.ID,
                   	  success: function(data) {
-                    		//data = JSON.parse(data);
+                    		data = JSON.parse(data);
 
                     		var html = '';
                     		console.log(data);
@@ -94,7 +94,12 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js"],
                     		}
                     			
                     		$(".tags").html(html);
-                    			
+                    		
+                    		//Initializes the tagging system
+                            tags.init();
+                            //Get tokens and load them as autosuggestion for the user
+                            var tokens = tags.getTokens();
+                            $("#query-field").tokenInput(tokens, {theme: "isearch"});
                   	  },
                   	  dataType: "text",
                   	  contentType : "application/json; charset=utf-8"
@@ -172,7 +177,7 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js"],
 	      		  if(!data.error) {	
 	      			  console.log("User logged out");
 	      			  $("#login-status").html("Hello Guest");
-	      			$(".tags").html('');
+	      			  $(".tags").html('');
 	      		  } else {
 	      			  alert("Something went wrong: " + data.error);
 	      		  }
