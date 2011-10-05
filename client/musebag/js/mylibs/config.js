@@ -74,7 +74,7 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js"],
       //Get the user name if available
 	  $.ajax({
     	  type: "GET",
-    	  url: "http://localhost:8081/profile/Email",
+    	  url: "http://isearch.ai.fh-erfurt.de/profile/Email",
     	  success: function(data) {
       		data = JSON.parse(data);
 
@@ -89,7 +89,7 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js"],
       //Listen to button click to login
       $('#login-user').click(function(){
     	  
-    	  var serverURL = "http://localhost:8081/login/";
+    	  var serverURL = "http://isearch.ai.fh-erfurt.de/login/";
     	  
     	  var postData = {email: $settingsPanel.find("#email").val() || '',
     			          pw: $settingsPanel.find("#pw").val() || ''};
@@ -118,7 +118,7 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js"],
 	  //Listen to logout link click
       $('#logout-user').click(function(){
     	  
-    	  var serverURL = "http://localhost:8081/login/";
+    	  var serverURL = "http://isearch.ai.fh-erfurt.de/login/";
     	  
     	  var postData = {email: $settingsPanel.find("#email").val() || '',
     			          pw: $settingsPanel.find("#pw").val() || ''};
