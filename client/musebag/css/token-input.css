@@ -24,6 +24,9 @@ ul.token-input-list-isearch li input {
     padding: 3px 8px;
     background-color: white;
     margin: 2px 0;
+    font-size: 1.2em;
+    height: 1.9em;
+    line-height: 1.9em;
     -webkit-appearance: caret;
 }
 
