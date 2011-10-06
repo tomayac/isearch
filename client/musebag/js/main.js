@@ -67,7 +67,7 @@ define("main",
         
         //Get tokens and load them as autosuggestion for the user
         var tokens = tags.getTokens();
-        $("#query-field").tokenInput(tokens, {theme: "isearch"});
+        $("#query-field").tokenInput(tokens, {theme: "isearch"}, {preventDuplicates:true});
 
         //Close button of the panel
         $('.panel footer a').click(function(){

@@ -4,8 +4,7 @@
 
 define("mylibs/tags", function(){
   
-  var tags = [];
-  
+  var tags = []; 
   
   var init = function() {  
     
