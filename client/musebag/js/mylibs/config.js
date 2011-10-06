@@ -178,6 +178,8 @@ define("mylibs/config", ["mylibs/tags", "!js/mylibs/visualization/DefaultThumbRe
 	      		  if(!data.error) {	
 	      			  console.log("User logged out");
 	      			  $("#login-status").html("Hello Guest");
+	      			  //Clearing tags
+	      			  $("#query-field").tokenInput("clear");
 	      			  $(".tags").html('');
 	      		  } else {
 	      			  alert("Something went wrong: " + data.error);
