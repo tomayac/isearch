@@ -99,7 +99,8 @@ define("mylibs/config", ["mylibs/tags", "!js/mylibs/visualization/DefaultThumbRe
                             tags.init();
                             //Get tokens and load them as autosuggestion for the user
                             var tokens = tags.getTokens();
-                            $("#query-field").tokenInput(tokens, {theme: "isearch"});
+                            $("#query-field").tokenInput("clear");
+                            $("#query-field").tokenInput("add", tokens);
                   	  },
                   	  dataType: "text",
                   	  contentType : "application/json; charset=utf-8"
