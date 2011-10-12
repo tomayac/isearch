@@ -1,6 +1,6 @@
 define("mylibs/menu",
-  ["mylibs/config", "mylibs/uiiface", "mylibs/filedrop"],
-  function(config, uiiface, filedrop) {
+  ["mylibs/config", "mylibs/uiiface", "mylibs/filehandler"],
+  function(config, uiiface, filehandler) {
     
     var hasNav = false;
     var attachedModes = []; //Stock the attached events 
@@ -26,6 +26,10 @@ define("mylibs/menu",
       } else {
         removeControls();
       }
+    };
+    
+    var getQueryItemCount = function() {
+    	return $(".token-input-list-isearch li").size()-1;
     };
 
     var addControls = function() {
@@ -184,16 +188,37 @@ define("mylibs/menu",
     };
 
     var attach3dEvents = function() {
+    
+    	//Drag and Drop of files
+	    var handler = new filehandler.FileHandler('threedDrop',['dae','3ds'],'query/item',getQueryItemCount());
+	    var pictureIcon = $('nav li[data-mode="3d"]');
+	    
+	    uiiface.registerEvent('threedDrop','drop',function(event) {
+	    	
+	    	pictureIcon.addClass('uploading');
+	    	
+	    	$.proxy(handler.handleFiles(event.originalEvent),handler);
+	    	$('#threedDrop').removeClass("over");
+	    	
+	    	reset();
+	        attachedModes.push('3d');
+	    });
+	    
+	    //Invisible file input
+	    $('#threedUpload').change(function(event) {
+	    	
+	    	$.proxy(handler.handleFiles(event),handler);
+	    	
+			event.preventDefault();
+			return false; 
+	    });
+
+	  //Trigger button for file input  
       $('.panel.3d button').click(function(){
         console.log('Button 3d pressed');
-
-        var pictureIcon = $('nav li[data-mode="3d"]');
         pictureIcon.addClass('uploading');
 
-        //N.B: COMPLETELY FAKE!! 
-        $("#query-field").tokenInput('add',{id:"3d",name:"<img src='img/fake/fake-3d.jpg'/>"});
-        //Remove the "uploading style" | Note: this won't be visible, hopefully
-        pictureIcon.removeClass('uploading');
+        $('#threedUpload').click();
 
         reset();
         attachedModes.push('3d');
@@ -204,46 +229,43 @@ define("mylibs/menu",
     var attachPictureEvents = function() {
     	
     	//Drag and Drop of files
-	    var dropHandler = new filedrop.FileDrop('imageDrop',['jpg','png','gif'],'http://isearch.ai.fh-erfurt.de/query/item');
+	    var handler = new filehandler.FileHandler('imageDrop',['jpg','png','gif'],'query/item',getQueryItemCount());
+	    var pictureIcon = $('nav li[data-mode="picture"]');
 	    
+	    //Drop trigger for image upload
 	    uiiface.registerEvent('imageDrop','drop',function(event) {
-	    	$.proxy(dropHandler.handleFiles(event.originalEvent),dropHandler);
+	    	
+	    	pictureIcon.addClass('uploading');
+	    	
+	    	$.proxy(handler.handleFiles(event.originalEvent),handler);
 	    	$('#imageDrop').removeClass("over");
+	    	
+	    	reset();
+	        attachedModes.push('3d');
 	    });
 	    
+	    //Invisible file input
 	    $('#imageUpload').change(function(event) {
 	    	
-	    	var xhr    = new XMLHttpRequest();
-	        formData   = new FormData();
-			$.each(event.target.files, function(i, file){
-				formData.append('file-' + i, file);
-			});
-			
-			var success = function(event) {
-				var fileInfo = JSON.parse(data);
-				console.log("Image uploaded...");
-				$("#query-field").tokenInput('add',{id:"cat",name:"<img src='" + fileInfo.path + "'/>"});
-				//Remove the "uploading style" | Note: this won't be visible, hopefully
-				$('.panel.picture button.upload').removeClass('uploading');
-			};
-			
-			xhr.upload.addEventListener("load", success, false); 
-			xhr.open("POST", "query/item", true);
-			xhr.send(formData);
+	    	$.proxy(handler.handleFiles(event),handler);
 
 			event.preventDefault();
 			return false; 
 	    });
-	    
+	    //Trigger button for file input
 	    $('.panel.picture button.upload').click(function(){
-	    	$('.panel.picture button.upload').addClass('uploading');
+	    	
+	        pictureIcon.addClass('uploading');
+	        
 	    	$('#imageUpload').click();
+	    	
+	    	reset();
+	        attachedModes.push('picture');
 	    });
 	    
       $('.panel.picture button.shoot').click(function(){
         console.log('Button "Shoot picture" pressed');
 
-        var pictureIcon = $('nav li[data-mode="picture"]');
         pictureIcon.addClass('uploading');
 
         $("#query-field").tokenInput('add',{id:"cat",name:"<img src='img/fake/fake-picture.jpg'/>"});
@@ -257,7 +279,9 @@ define("mylibs/menu",
     };
     
     var attachSketchEvents = function() {
-
+    	
+    	var handler = new filehandler.FileHandler('',['png'],'query/item',getQueryItemCount());
+    	
     	uiiface.registerEvent('sketch','sketch', function(event, pen) {
 	    	//console.dir(pen);
 	    	var canvas = $('#sketch')[0];
@@ -291,24 +315,10 @@ define("mylibs/menu",
         sketchIcon.addClass('uploading');
         
         //----
-        var xhr    = new XMLHttpRequest(),
-            formData   = new FormData(),
-            canvas = $('#sketch')[0];
+        $('#sketch')[0].toBlob(function(blob){
+        	$.proxy(handler.handleCanvasData(blob),handler);
+        },"image/png");
         
-        var imgData = canvas.toDataURL("image/png");
-        imgData.replace(/^data:image\/(png|jpg);base64,/, "");
-		formData.append('file', imgData);
-		
-		var success = function(event) {
-			var fileInfo = JSON.parse(data);
-			$("#query-field").tokenInput('add',{id:"cat",name:"<img src='" + fileInfo.path + "'/>"});
-			//Remove the "uploading style" | Note: this won't be visible, hopefully
-	        sketchIcon.removeClass('uploading');
-		};
-		
-		xhr.upload.addEventListener("load", success, false); 
-		xhr.open("POST", "query/item", true);
-		xhr.send(formData);
 
 		event.preventDefault();
 		return false; 
@@ -321,21 +331,42 @@ define("mylibs/menu",
     };
     
     var attachSoundEvents = function() {
-      $('.panel.sound button').click(function(){
-        console.log('Button in sound panel pressed');
+    	
+    	//Drag and Drop of files
+	    var handler = new filehandler.FileHandler('soundDrop',['oga','ogg','mp3','wav'],'query/item',getQueryItemCount());
+	    var pictureIcon = $('nav li[data-mode="sound"]');
+	    
+	    uiiface.registerEvent('soundDrop','drop',function(event) {
+	    	
+	    	pictureIcon.addClass('uploading');
+	    	
+	    	$.proxy(handler.handleFiles(event.originalEvent),handler);
+	    	$('#soundDrop').removeClass("over");
+	    	
+	    	reset();
+	        attachedModes.push('sound');
+	    });
+	    
+	    //Invisible file input
+	    $('#soundUpload').change(function(event) {
+	    	
+	    	$.proxy(handler.handleFiles(event),handler);
 
-        var pictureIcon = $('nav li[data-mode="sound"]');
-        pictureIcon.addClass('uploading');
-
-        //N.B: COMPLETELY FAKE!! 
-        $("#query-field").tokenInput('add',{id:"sound",name:"<img src='img/fake/fake-sound.jpg'/>"});
-        //Remove the "uploading style" | Note: this won't be visible, hopefully
-        pictureIcon.removeClass('uploading');
-
-        reset();
-        attachedModes.push('sound');
-
-      });
+			event.preventDefault();
+			return false; 
+	    });
+	    
+	    //Trigger button for file input
+	    $('.panel.sound button.upload').click(function(){
+	    	
+	        pictureIcon.addClass('uploading');
+	        
+	    	$('#soundUpload').click();
+	    	
+	    	reset();
+	        attachedModes.push('sound');
+	    });
+    	
     };
 
     /*

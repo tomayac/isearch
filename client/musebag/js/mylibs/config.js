@@ -74,7 +74,7 @@ define("mylibs/config", ["mylibs/tags", "!js/mylibs/visualization/DefaultThumbRe
       var getUserTags = function() {
     	  $.ajax({
         	  type: "GET",
-        	  url: "http://isearch.ai.fh-erfurt.de/profile/ID",
+        	  url: "profile/ID",
         	  success: function(data) {
           		data = JSON.parse(data);
 
@@ -83,7 +83,7 @@ define("mylibs/config", ["mylibs/tags", "!js/mylibs/visualization/DefaultThumbRe
           			//Ask for tag recommendations
           			$.ajax({
                   	  type: "GET",
-                  	  url: "http://isearch.ai.fh-erfurt.de/ptag/tagRecommendations?userID=" + data.ID,
+                  	  url: "ptag/tagRecommendations?userID=" + data.ID,
                   	  success: function(data) {
                     		data = JSON.parse(data);
 
@@ -118,7 +118,7 @@ define("mylibs/config", ["mylibs/tags", "!js/mylibs/visualization/DefaultThumbRe
       //Get the user name if available
 	  $.ajax({
     	  type: "GET",
-    	  url: "http://isearch.ai.fh-erfurt.de/profile/Email",
+    	  url: "profile/Email",
     	  success: function(data) {
       		data = JSON.parse(data);
 
@@ -136,7 +136,7 @@ define("mylibs/config", ["mylibs/tags", "!js/mylibs/visualization/DefaultThumbRe
     	  
     	  event.preventDefault();
     	  
-    	  var serverURL = "http://isearch.ai.fh-erfurt.de/login/";
+    	  var serverURL = "login";
     	  
     	  var postData = {email: $settingsPanel.find("#email").val() || '',
     			          pw: $settingsPanel.find("#pw").val() || ''};
@@ -168,7 +168,7 @@ define("mylibs/config", ["mylibs/tags", "!js/mylibs/visualization/DefaultThumbRe
     	  
     	  event.preventDefault();
     	  
-    	  var serverURL = "http://isearch.ai.fh-erfurt.de/login/"; 	  
+    	  var serverURL = "login"; 	  
     	  
     	  console.log("Logging out...");
     	  

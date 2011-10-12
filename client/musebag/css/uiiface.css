@@ -1,30 +1,8 @@
-.dropContainer.over {
-    background-color: #eee;
+.token-input-token-isearch img {
+    max-height: 2.5em;
 }
 
-.dropContainer {
-	max-height: 200px;
-	padding: 10px;
-}
-
-.dropContainer span {
-    display:block;
-}
-
-.dropContainer .component {
-    display: inline-block;
-    margin: 5px auto 5px auto;
-    position: relative;
-    z-index: 2;
-    opacity: 0.5;
-    padding: 0 5px;
-}
-
-.dropContainer .component img {
-    max-height: 200px;
-}
-
-.dropContainer .component .progressBar {
+.token-input-token-isearch .progressBar {
     position: absolute;
     top:50%;
     left: 50%;
@@ -37,7 +15,7 @@
     box-shadow: 1px 1px 2px #fff;
 }
 
-.dropContainer .component .progressBar p
+.token-input-token-isearch .progressBar p
 {
     width: 20px;
     height: 20px;
@@ -47,17 +25,18 @@
     background-color: #1E528C;
 }
 
-.dropContainer .loaded {
+.token-input-token-isearch .loaded {
     opacity: 1;
 }
 
-.dropContainer .loaded .progressBar {
+.token-input-token-isearch .loaded .progressBar {
     display: none;
 }
 
-.dropContainer .component canvas,
-.dropContainer .component audio {
-	 position: relative;
+.token-input-token-isearch  canvas,
+.token-input-token-isearch  audio,
+.token-input-token-isearch  video {
+	   position: relative;
      border: 1px solid #aaa;  
 }
 

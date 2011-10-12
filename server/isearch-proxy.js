@@ -5,8 +5,8 @@
  * on this server:
  * 
  * - pTag as Personal Content Tagging Service for I-SEARCH
- * - CoFind as Collaborativ Search Service for I-SEARCH
- * - CoFetch for Semi-automatic Content Object creation based on the FHE 3D Model Database
+ * - CoFind as Collaborative Search Service for I-SEARCH
+ * - CoFetch for Semi-automatic Content Object creation based on the FHE 3D Model Database or 3D Warehouse of Google
  * - Multimodal Search Interface as general GUI for I-SEARCH
  *    
  * @author Jonas Etzold
@@ -14,6 +14,8 @@
  */
 //Required packages
 var httpProxy = require('http-proxy');
+var server = 'isearch.ai.fh-erfurt.de';
+var port   = 80;
 
 //Configuration variables
 var options = {
@@ -27,5 +29,5 @@ var options = {
 
 //Server, Router setup
 var proxyServer = httpProxy.createServer(options);
-proxyServer.listen(80);
-console.log("I-SEARCH proxy is listing on port 80 at isearch.ai.fh-erfurt.de");
+proxyServer.listen(port);
+console.log("I-SEARCH proxy is listing on port " + port + " at " + server);

@@ -255,6 +255,13 @@ nav a img { width: 46px; height: 46px; }
 .panel { background-color: #f1f1f1; width: 100%; display:none; }
 .panel.visible { display: block; }
 .panel .instruction { text-align: center; margin: 4px; padding: 10px; }
+
+.over {
+  border: 1px solid #999;
+  background-color: #CFA;
+  color: #222;
+} 
+
 .panel .instruction:after {
   content: 'OR';
   color: #ec6175;
@@ -264,8 +271,10 @@ nav a img { width: 46px; height: 46px; }
   width: 100%;
   border-bottom: 1px #ccc solid;
   margin-top: 1em;
-  }
+  } 
 .panel .instruction:last-of-type:after { content:''; border:none; }
+
+
 .panel button { 
   display: inline; 
   color: white; 

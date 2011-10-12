@@ -156,11 +156,13 @@
       </nav>
 
       <section class="panel sound">
-        <p class="instruction">
+        <p class="instruction" id="soundDrop">
           Grab an audio file and drop it here
         </p>
         <p class="instruction">
-          Upload a file with this button: <button>Upload</button>
+          Upload a file with this button: 
+          <input type="file" id="soundUpload" style="display:none;"/>
+          <button class="upload">Upload</button>
         </p>
         <p class="instruction">
           Use your device and start to say/sing something: <button>Start</button>
@@ -197,11 +199,13 @@
       </section>
 
       <section class="panel 3d">
-        <p class="instruction">
+        <p class="instruction" id="threedDrop">
           Drag'n'drop one of your 3D model here
         </p>
         <p class="instruction">
-          Upload a 3D file with this button: <button>Upload</button>
+          Upload a 3D file with this button:
+          <input type="file" id="threedUpload" style="display:none;"/>
+          <button class="upload">Upload</button>
         </p>
         <footer><a href="#">close</a></footer>
       </section>
