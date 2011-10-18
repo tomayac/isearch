@@ -76,41 +76,41 @@ your Linux server:
      - follow this instructions for fast install, without setup: http://rediscookbook.org/install_with_installer.html
      - Make sure the redis-cli binary is running on the server
    - Intall connect module via 
-     npm install connect -g
+     `npm install connect -g`
    - Install connect-redis module via
-     npm install connect-redis -g
+     `npm install connect-redis -g`
    - Install express module via
-     npm install express -g
+     `npm install express -g`
    - Install eyes module via
-     npm install eyes -g    
+     `npm install eyes -g`    
    - Install formidable module via
-     npm install formidable -g          
+     `npm install formidable -g`          
    - Install now module via
-     npm install now -g
+     `npm install now -g`
    - Install restler module via
-     npm install restler -g
+     `npm install restler -g`
    - Install webservice module via
-     npm install webservice -g
+     `npm install webservice -g`
    - Install step module via
-     npm install step -g
+     `npm install step -g`
    - Install forever module via
-     npm install forever -g  
+     `npm install forever -g`  
 4. Create a folder for the I-SEARCH GUI framework on your server under "/var/www/isearch"
 5. Pull this github repository into this folder by changing into the directory "/var/www/isearch" and typing
-   git clone git://github.com/tomayac/isearch.git
-6. Make sure you reserve 1 public port (dafault: 80) for the GUI Frameswork as well as 5 local ports for GUI services (default: 8081,8082,8083,8084,8085)
+   `git clone git://github.com/tomayac/isearch.git`
+6. Make sure you reserve 1 public port (default: 80) for the GUI Framework as well as 5 local ports for GUI services (default: 8081,8082,8083,8084,8085)
 7. Please change the paths in the following Javascript files within the repository and replace all "isearch.ai.fh-erfurt.de" and "http://isearch.ai.fh-erfurt.de" with your server URL/IP address:
    server/isearch-proxy.js
    client/cofetch/js/libs/cofetchHandler.js
 8. Start the server scripts for the GUI framework:
    - change directory to /var/www/isearch/server/pTag
-   - enter: forever start index-ptag.js
+   - enter: `forever start index-ptag.js`
    - change directory to /var/www/isearch/server/musebag
-   - enter: forever start index.js
+   - enter: `forever start index.js`
    - change directory to /var/www/isearch/server
-   - enter: forever start isearch-proxy.js
+   - enter: `forever start isearch-proxy.js`
    - if any errors occur during this procedure please check the error
-     messages for missing modules and try to install them with "npm install <module_name>" in the folder
+     messages for missing modules and try to install them with `npm install <module_name>` in the folder
      where the error occured
 9. You're done! Try your server URL and port in your browser.
    If any unexpected issues occur please feel free to list them as **issue** here on **github**.
