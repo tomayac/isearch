@@ -110,7 +110,7 @@ var threedMethods = {
 	}
 };
 
-var fetchThreed = function(query, geo, callback) {
+var fetchThreed = function(query, callback) {
 	//Creates the job
 	var threedJob = new nodeio.Job({timeout:10}, threedMethods);
 	nodeio.start(threedJob, {args: [query,geo]}, callback, true);
@@ -118,5 +118,5 @@ var fetchThreed = function(query, geo, callback) {
 
 //Exposes it publicly
 if (typeof module !== 'undefined' && "exports" in module) {
-	  module.exports.fetch3D = fetchThreed; 
+	  module.exports.fetchThreed = fetchThreed; 
 }   
