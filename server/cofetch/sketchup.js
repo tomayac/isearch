@@ -92,7 +92,7 @@ var threedMethods = {
 					"Extension": 'zip',
 					"License": 'Google 3D Warehouse License', 
 					"LicenseURL": 'http://sketchup.google.com/intl/en/3dwh/tos.html',
-					"Author": models[i]['author']['name']['$t'] + '(' + models[i]['author']['uri']['$t'] + ')',
+					"Author": models[i]['author'][0]['name']['$t'] + '(' + models[i]['author'][0]['uri']['$t'] + ')',
 					"Date": models[i]['published']['$t'],
 					"Size": models[i]['media$group']['media$content'][0]['fileSize'],
 					"URL": url,
