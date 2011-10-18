@@ -220,16 +220,20 @@ var publishRUCoD = function(data, outputPath, callback) {
 			if(data.Files[f].Type == 'Text') {
 				continue;
 			}
-			//Prepare the creation date of the media item for use in RWML 
-			var rawDateParts = data.Files[f].Date.split(" ");
-			var dateParts = (rawDateParts[0] || "2011-08-01").split("-");
-			var timeParts = (rawDateParts[1] || "12:01:01").split(":");
-			var rwmlDate = new Date(parseInt(dateParts[0]),parseInt(dateParts[1].replace(/0(\d\/)/g,'')),parseInt(dateParts[2].replace(/0(\d\/)/g,'')),parseInt(timeParts[0].replace(/0(\d\/)/g,'')),parseInt(timeParts[1].replace(/0(\d\/)/g,'')),parseInt(timeParts[2].replace(/0(\d\/)/g,'')));
+			//Prepare the creation date of the media item for use in RWML
+			var rwmlDate = data.Files[f].Date;
 			
+			if(data.Files[f].Date.indexOf('.000Z') == -1) {
+				var rawDateParts = data.Files[f].Date.split(" ");
+				var dateParts = (rawDateParts[0] || "2011-08-01").split("-");
+				var timeParts = (rawDateParts[1] || "12:01:01").split(":");
+				rwmlDate = new Date(parseInt(dateParts[0]),parseInt(dateParts[1].replace(/0(\d\/)/g,'')),parseInt(dateParts[2].replace(/0(\d\/)/g,'')),parseInt(timeParts[0].replace(/0(\d\/)/g,'')),parseInt(timeParts[1].replace(/0(\d\/)/g,'')),parseInt(timeParts[2].replace(/0(\d\/)/g,'')));
+				rwmlDate = getISODateString(rwmlDate);
+			}
 			//Create the RWML file
 			   rwml += '<ContextSlice>' +
 			           '<DateTime>' +
-			           '<Date>' + getISODateString(rwmlDate) + '</Date>' +	
+			           '<Date>' + rwmlDate + '</Date>' +	
 			           '</DateTime>';
 			//Do we have GPS
 			if(data.Files[f].Location.length > 1) {
