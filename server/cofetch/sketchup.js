@@ -113,7 +113,7 @@ var threedMethods = {
 var fetchThreed = function(query, callback) {
 	//Creates the job
 	var threedJob = new nodeio.Job({timeout:10}, threedMethods);
-	nodeio.start(threedJob, {args: [query,geo]}, callback, true);
+	nodeio.start(threedJob, {args: [query]}, callback, true);
 };
 
 //Exposes it publicly
