@@ -1,13 +1,19 @@
-var yt = require('./youtube');
+var skp = require('./sketchup');
+//var yt = require('./youtube');
 //var fs = require('./freesound');
 //var mdb = require('./modeldb');
 //var dbpedia = require('./dbpedia');
 
-//Uncomment this if you want to test Video
-yt.fetchVideo('cow', function(error, data){
-  //results is now filled in with YouTube videos
+skp.fetchThreed('cow', function(error, data){
+  //results is now filled in with 3d models from google warehouse
   console.log(data);
 });
+
+//Uncomment this if you want to test Video
+//yt.fetchVideo('cow', function(error, data){
+//  //results is now filled in with YouTube videos
+//  console.log(data);
+//});
 
 //Uncomment that if you want to test Audio
 //var audioResults = [];
