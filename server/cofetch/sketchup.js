@@ -71,16 +71,24 @@ var threedMethods = {
 				
 				//Store the model IDs
 				var modelId = models[i]['id']['$t'];
-				var url = models[i]['media$group']['media$content'][0]['url'];
-				    url = url.replace(/rtyp=s7/g,'rtyp=zip');
-				    url = url.replace(/rtyp=s6/g,'rtyp=zip');
-				    url = url.replace(/rtyp=s/g,'rtyp=zip');
 				
+				var fileinfo = models[i]['media$group']['media$content'][models[i]['media$group']['media$content'].length];
+				var url = fileinfo['url'];
+				var filesize = fileinfo['fileSize'];  
+				
+				if(fileinfo['type'].search(/.kmz/g) != -1) {
+					url = url.replace(/rtyp=k2/g,'rtyp=zip');
+					url = url.replace(/rtyp=s7/g,'rtyp=zip');
+				} 
+				
+				var filesize = fileinfo['fileSize'];    
+				    
 				var gml = '0 0';
 				
 				if(models[i]['gml$Point']) {
 					gml = models[i]['gml$Point']['gml$pos']['$t'];
 				}
+				gml = gml.split(' ');
 				    
 				var result = {
 					"Type": "Object3d",
@@ -92,9 +100,9 @@ var threedMethods = {
 					"Extension": 'zip',
 					"License": 'Google 3D Warehouse License', 
 					"LicenseURL": 'http://sketchup.google.com/intl/en/3dwh/tos.html',
-					"Author": models[i]['author'][0]['name']['$t'] + '(' + models[i]['author'][0]['uri']['$t'] + ')',
+					"Author": models[i]['author'][0]['name']['$t'] + ' (' + models[i]['author'][0]['uri']['$t'] + ')',
 					"Date": models[i]['published']['$t'],
-					"Size": models[i]['media$group']['media$content'][0]['fileSize'],
+					"Size": filesize,
 					"URL": url,
 					"Preview": models[i]['media$group']['media$thumbnail'][0]['url'],
 					"Emotions": [],
