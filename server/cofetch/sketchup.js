@@ -72,7 +72,7 @@ var threedMethods = {
 				//Store the model IDs
 				var modelId = models[i]['id']['$t'];
 				
-				var fileinfo = models[i]['media$group']['media$content'][models[i]['media$group']['media$content'].length];
+				var fileinfo = models[i]['media$group']['media$content'][models[i]['media$group']['media$content'].length-1];
 				var url = fileinfo['url'];
 				var filesize = fileinfo['fileSize'];  
 				
