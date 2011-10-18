@@ -75,11 +75,15 @@ var threedMethods = {
 				var fileinfo = models[i]['media$group']['media$content'][models[i]['media$group']['media$content'].length-1];
 				var url = fileinfo['url'];
 				var filesize = fileinfo['fileSize'];  
+				var ext = 'zip';
 				
 				if(fileinfo['type'].search(/.kmz/g) != -1) {
 					url = url.replace(/rtyp=k2/g,'rtyp=zip');
+					url = url.replace(/rtyp=s6/g,'rtyp=zip');
 					url = url.replace(/rtyp=s7/g,'rtyp=zip');
-				} 
+				} else {
+					ext = fileinfo['type'].substr(fileinfo['type'].lastIndexOf('.')+1);
+				}
 				
 				var filesize = fileinfo['fileSize'];    
 				    
@@ -97,7 +101,7 @@ var threedMethods = {
 					"Name": models[i]['title']['$t'],
 					"Description": models[i]['summary']['$t'],
 					"Tags": [],
-					"Extension": 'zip',
+					"Extension": ext,
 					"License": 'Google 3D Warehouse License', 
 					"LicenseURL": 'http://sketchup.google.com/intl/en/3dwh/tos.html',
 					"Author": models[i]['author'][0]['name']['$t'] + ' (' + models[i]['author'][0]['uri']['$t'] + ')',
