@@ -76,8 +76,11 @@ var threedMethods = {
 				    url = url.replace(/rtyp=s6/g,'rtyp=zip');
 				    url = url.replace(/rtyp=s/g,'rtyp=zip');
 				
-				var gml = models[i]['gml$Point']['gml$pos']['$t'] || '0 0';
-				    gml = gml.split(' ');
+				var gml = '0 0';
+				
+				if(models[i]['gml$Point']) {
+					gml = models[i]['gml$Point']['gml$pos']['$t'];
+				}
 				    
 				var result = {
 					"Type": "Object3d",
