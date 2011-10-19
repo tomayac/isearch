@@ -18,7 +18,7 @@ var cofetchHandler = (function() {
   var iSou = 0, souDir = 1;
   
   var fetchCategories = function() {
-	  var serverURL = "/getCat";
+	  var serverURL = "/cofetch/getCat";
 	  console.log('fetchCategories');
 
 	  $.ajax({
