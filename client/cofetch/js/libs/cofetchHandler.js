@@ -18,15 +18,16 @@ var cofetchHandler = (function() {
   var iSou = 0, souDir = 1;
   
   var fetchCategories = function() {
-	  var serverURL = "http://gdv.fh-erfurt.de/modeldb/?do=getCategoryPaths";
+	  var serverURL = "/getCat";
 	  console.log('fetchCategories');
+
 	  $.ajax({
     	  type: "GET",
     	  url: serverURL,
-    	  dataType: "json",
     	  success: function(data) {
-      		data = JSON.parse(data);
-      		console.log(data);
+    		console.log(data);
+    		//data = JSON.parse(data);
+    		  
       		$.each(data, function(val) {
       		    $('#search-category').append(
       		        $('<option></option>').val(val).html(val)

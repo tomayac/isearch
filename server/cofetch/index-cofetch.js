@@ -4,6 +4,7 @@
 var http      = require('http'),
     url       = require('url'),
     fileserve = require('node-static'),
+    restler   = require('restler'),
     qs        = require('querystring'),
     fetch     = require('./fetch'),
     rucod     = require('./store');
@@ -155,6 +156,30 @@ http.createServer(function (request, response) {
 				 response.end(); 
         	 });
              	
+	    } else if(parameters[0] == 'getCat') {
+	    
+	    	var serverURL = "http://gdv.fh-erfurt.de/modeldb/?do=getCategoryPaths";
+	    	
+	    	restler
+	    	.get(serverURL)
+	    	.on('complete', function(data) {		
+	    		
+	    		data = JSON.stringify(data);
+	    		
+	    		response.writeHead(status.code,status.message,{ 
+                	'Content-Length': Buffer.byteLength(data,'utf8'),
+				  	'Content-Type'  : 'application/json; charset=utf8',
+				  	'Access-Control-Max-Age': '3628800',
+				  	'Access-Control-Allow-Methods':'GET'
+			    });
+				response.write(data);
+				response.end();
+	    		
+	    	})
+	    	.on('error', function(error) {
+	    		handleError(error);
+	    	});
+	    	
 	    } else {
 		    // Handle normal static site requests
 			if(request.url === '/') {
