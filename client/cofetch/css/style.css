@@ -178,7 +178,7 @@ button, input[type="button"], input[type="reset"], input[type="submit"] { cursor
  * Consistent box sizing and appearance
  */
 
-input[type="checkbox"], input[type="radio"] { box-sizing: border-box; }
+input[type="checkbox"], input[type="radio"] { box-sizing: border-box; display:inline; }
 input[type="search"] { -webkit-appearance: textfield; -moz-box-sizing: content-box; -webkit-box-sizing: content-box; box-sizing: content-box; }
 input[type="search"]::-webkit-search-decoration { -webkit-appearance: none; }
 
@@ -238,8 +238,19 @@ input, label { display: block;}
 
 /* =============================================================================
    Primary styles
-   Author: Arnaud
+   Author: Arnaud, Jonas
    ========================================================================== */
+
+html, body {
+  height: 100%;
+}
+
+#container {
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  margin: 0 auto -30px; /* the bottom margin is the negative value of the footer's height */
+}
 
 header{
   text-align: center;
@@ -253,7 +264,7 @@ header{
   z-index:9;
 }
 
-header nav { overflow: auto; width: 300px; margin: auto; }
+header nav { overflow: auto; width: 350px; margin: auto; }
 header nav li {
   background-color: #fff;
   border: 1px #999 solid;
@@ -270,7 +281,12 @@ header nav a {
   padding: 10px;
 }
 
+footer, .push {
+  height: 30px; /* .push must be the same height as .footer */
+}
+
 footer {
+  height: 30px;
   text-align: center;
   padding: 5px;
   background-color: #444;
@@ -278,9 +294,13 @@ footer {
   border-top: 2px #ab2011 solid;
 }
 
-#main { width: 660px; margin: 200px auto; margin-bottom: 20px; }
-audio, img, iframe { display: block; margin: 5px 5px 10px 5px; }
+#main { width: 750px; margin: 200px auto; margin-bottom: 20px; }
+audio, img, iframe { display: block; margin: 5px 5px 10px 5px; max-width: 300px; }
 
+h3 { margin-top: 0; }
+section { margin: 10px;}
+
+#script-start { font-size: 1.6em; padding: 10px 40px; }
 
 .inline { display: inline}
 

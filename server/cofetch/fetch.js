@@ -1,13 +1,14 @@
 /*
  * This script collects and manages all data for a content objects
  */
-var step    = require('./step');
-    modeldb = require('./modeldb');
-    dbpedia = require('./dbpedia');
-    flickr  = require('./flickr');
-    youtube = require('./youtube'),
-    sound   = require('./freesound'),
-    weather = require('./wunderground');
+var step     = require('./step');
+    sketchup = require('./sketchup');
+    modeldb  = require('./modeldb');
+    dbpedia  = require('./dbpedia');
+    flickr   = require('./flickr');
+    youtube  = require('./youtube'),
+    sound    = require('./freesound'),
+    weather  = require('./wunderground');
 
 var Fetch = function() {	
 };  
@@ -31,6 +32,25 @@ Fetch.prototype.getPart = function(type, query, callback) {
 	};
 	
 	switch(type) {
+		case '3d':
+			step(
+				function init() {
+					//Fetch 3d model data
+					sketchup.fetchThreed(query, this);
+				},
+				function getResult(error,data) {
+					//Be sure to have data before going on
+					if(!error && data.length < 1) {
+						error = 'No data could be retrieved.';
+					}
+					if(error) {
+						console.log('error: ' + error);
+						callback(error,[]);
+					}
+					callback(null,data);
+				}
+			);
+			break;
 		case 'text':
 			step(
 				function init() {

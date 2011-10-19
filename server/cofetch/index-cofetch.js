@@ -57,8 +57,11 @@ http.createServer(function (request, response) {
 	    //
 	    if(parameters[0] == 'get') {
 	    	
-	    	var index = parseInt(parameters[1]);
-	    	
+	    	console.log(parameters);
+	    	var keywords = parameters[1].split(',');
+	    	var category = parameters[2];
+	    	var automatic = parameters[3];
+	    	console.log('k:' + keywords + ' c:' + category + ' a:' + automatic);
 	    	if(isNaN(index)) {
 	    		
 	    		handleError("Missing index parameter.");

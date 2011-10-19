@@ -6,11 +6,12 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
   <title>Cofetch - let's rock this party!</title>
-  <meta name="description" content="">
-  <meta name="author" content="">
+  <meta name="description" content="Automatic content object generation and retrieval script">
+  <meta name="author" content="Arnaud Brousseau and Jonas Etzold">
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
-
+  
+  <link rel="stylesheet" href="css/jquery-ui-1.8.16.custom.css">
   <link rel="stylesheet" href="css/style.css">
 
   <script src="js/libs/modernizr-2.0.6.min.js"></script>
@@ -30,32 +31,77 @@
       </nav>
     </header>
     <div id="main" role="main">
-      <form method="post" action="">
+      <form method="post" action="" id="script-tabs">
         
-        <label for="main-name">Content Object Name</label>
-        <input type="text" name="main-name" value="" id="main-name" class="title" />
+        <ul>
+          <li><a href="#script">Start</a></li>
+          <li><a href="#basic">Basic Information</a></li>
+          <li><a href="#text">Text Item</a></li>
+          <li><a href="#threed">3D Item</a></li>
+          <li><a href="#image">Image Item</a></li>
+          <li><a href="#audio">Audio Item</a></li>
+          <li><a href="#video">Video Item</a></li>
+        </ul>  
         
-        <label for="main-screenshot">Content Object Preview: </label>
-        <select name="main-screenshot" id="main-screenshot" size="1">
-          <option value="image">Image Preview</option>
-          <option value="3d">Original 3d Preview</option>
-          <option value="video">Video Thumbnail</option>
-          <option value="sound">Sound Waves</option>
-        </select>
+        <section id="script">
+          <h3>Script Start</h3>
+          
+          <p>Please enter a comma separated list of keywords for which this script should
+          search public media sources in order to create content objects. Further please
+          specify a category for the first entered keywords. Be aware that all keywords fit to the
+          specified category.<br/>
+          At the end please specify if you want the script to automatically finish the creation
+          process, or if you want to supervise the retrieved content before a content object is
+          finally stored.</p>
+          
+          <label for="script-keywords">Search Keywords</label>
+          <input type="text" name="script-keywords" value="" id="script-keywords" class="title" />
+          
+          <label for="script-category">Category</label>
+          <select name="script-category" id="script-category">
+            <option value="">Not set</option>
+          </select>
+          
+          <label for="script-automatic">
+          <input type="checkbox" name="script-automatic" id="script-automatic" /> run automatic    
+          
+          <p>
+          <button id="script-start">Start</button>
+          </p>
+        </section>
+          
+        <section id="basic">
+          <h3>Basic Information</h3>
+          
+          <label for="main-name">Content Object Name</label>
+          <input type="text" name="main-name" value="" id="main-name" class="title" />
+          
+          <label for="main-screenshot">Content Object Preview: </label>
+          <select name="main-screenshot" id="main-screenshot" size="1">
+            <option value="image">Image Preview</option>
+            <option value="3d">Original 3d Preview</option>
+            <option value="video">Video Thumbnail</option>
+            <option value="sound">Sound Waves</option>
+          </select>
+          
+          <label for="main-categoryPath">Category Path: </label>
+          <input type="text" name="main-categoryPath" value="" id="main-categoryPath" />
+        </section>
         
-        <label for="main-categoryPath">Category Path: </label>
-        <input type="text" name="main-categoryPath" value="" id="main-categoryPath" />
-        
-        <fieldset>
-          <legend>Text Item</legend>
+        <section id="text">
+          <h3>Text Item</h3>
           
           <input type="text" name="search-text-phrase" value="" id="search-text-phrase" class="inline" /> <button id="search-text">Search new</button><br/>
           
           <textarea name="text-content" id="text-content" cols="30" rows="10"></textarea>
-        </fieldset>
+        </section>
         
-        <fieldset>
-          <legend>3D Item</legend>
+        <section id="threed">
+          <h3>3D Item</h3>
+          
+          <button id="change-threed">Change</button>
+          or <input type="text" name="search-threed-phrase" value="" id="search-threed-phrase" class="inline" /> <button id="search-threed">Search new</button>
+          
                     
           <img src="http://gdv.fh-erfurt.de/modeldb/media/model/BulueMarlin0.jpg" id="threed-visualPreview" alt="" />
           
@@ -124,10 +170,10 @@
           
           <label for="threed-weather-humidity">Humidity</label>
           <input type="text" name="threed-weather-humidity" value="" id="threed-weather-humidity" />
-        </fieldset>
+        </section>
         
-        <fieldset>
-          <legend>Image Item</legend>
+        <section id="image">
+          <h3>Image Item</h3>
           
           <button id="change-image">Change</button>
           or <input type="text" name="search-image-phrase" value="" id="search-image-phrase" class="inline" /> <button id="search-image">Search new</button>
@@ -206,9 +252,9 @@
           <label for="image-weather-humidity">Humidity</label>
           <input type="text" name="image-weather-humidity" value="" id="image-weather-humidity" />
           
-        </fieldset>
-        <fieldset>
-          <legend>Audio Item</legend>
+        </section>
+        <section id="audio">
+          <h3>Audio Item</h3>
           
           <button id="change-sound">Change</button>
           or <input type="text" name="search-sound-phrase" value="" id="search-sound-phrase" class="inline" /> <button id="search-sound">Search new</button>
@@ -286,10 +332,10 @@
           
           <label for="sound-weather-humidity">Humidity</label>
           <input type="text" name="sound-weather-humidity" value="" id="sound-weather-humidity" />
-        </fieldset>
-        <fieldset>
+        </section>
+        <section id="video">
           
-          <legend>Video Item</legend>
+          <h3>Video Item</h3>
         
           <button id="change-video">Change</button> 
           or <input type="text" name="search-video-phrase" value="" id="search-video-phrase" class="inline" /> <button id="search-video">Search new</button> 
@@ -371,14 +417,18 @@
 
           <label for="video-weather-humidity">Humidity</label>
           <input type="text" name="video-weather-humidity" value="" id="video-weather-humidity" />
-        </fieldset>
+        </section>
       
       </form>
+      
     </div>
-    <footer>
-      &copy; 2011 CoFetch Corp.
-    </footer>
+    <div class="push"></div>
+
   </div> 
+  
+  <footer>
+      &copy; 2011 CoFetch Corp.
+  </footer>
   
   <div id="loading">
      <p><img src="ajax-loader.gif" alt="loading..." /> Please Wait</p>
@@ -386,18 +436,10 @@
   
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
   <script>window.jQuery || document.write('<script src="js/libs/jquery-1.6.2.min.js"><\/script>')</script>
-
+  <script defer src="js/libs/jquery-ui-1.8.16.custom.min.js"></script>
+   
   <script defer src="js/libs/cofetchHandler.js"></script>
   <script defer src="js/script.js"></script>
-
-	
-  <!-- mathiasbynens.be/notes/async-analytics-snippet Change UA-XXXXX-X to be your site's ID -->
-  <script>
-    var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview'],['_trackPageLoadTime']];
-    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.async=1;
-    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-    s.parentNode.insertBefore(g,s)}(document,'script'));
-  </script>
 
 
   <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.

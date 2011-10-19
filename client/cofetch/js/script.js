@@ -13,15 +13,36 @@ $(document).ready(function(){
     console.log(currentID);
     
     //Fetch the data and populate the form
-    cofetchHandler.fetch(currentID);
+    //cofetchHandler.fetch(currentID);
+    cofetchHandler.fetchCategories();
+    
+    $( "#script-tabs" ).tabs({panelTemplate: '<section></section>'});
     
   /*===================================
     Registering all the events handlers
     ===================================*/
-
+  $("#script-start").click(function(){
+	if($("#script-keywords").val().length < 3 || $("#script-category").val() == "") {
+		alert("Please specify at least one search keyword as well as the search category!");
+	} else {
+		cofetchHandler.fetch($("#script-keywords").val(),$("#script-category").val(),$("#script-automatic").val());
+	}
+	return false;
+  });
+  
   $("#search-text").click(function(){
     cofetchHandler.getText($("#search-text-phrase").val());
     return false;
+  });  
+  
+  $("#change-threed").click(function(){
+	cofetchHandler.set3d(true);
+	return false;
+  });
+  
+  $("#search-threed").click(function(){
+	cofetchHandler.get3d($("#search-threed-phrase").val());
+	return false;
   });  
     
   $("#change-image").click(function(){
@@ -83,7 +104,7 @@ $(document).ready(function(){
 	
 	//post JSON to the correct handler server
     var sent = cofetchHandler.save();
-    alert(sent);
+    
     //load next 
     /*
     var currentLocation = window.location;

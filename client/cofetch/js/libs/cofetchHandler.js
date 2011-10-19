@@ -17,47 +17,77 @@ var cofetchHandler = (function() {
   var iVid = 0, vidDir = 1;
   var iSou = 0, souDir = 1;
   
-  var fetch = function(id) {
+  var fetchCategories = function() {
+	  var serverURL = "http://gdv.fh-erfurt.de/modeldb/?do=getCategoryPaths";
+	  console.log('fetchCategories');
+	  $.ajax({
+    	  type: "GET",
+    	  url: serverURL,
+    	  dataType: "json",
+    	  success: function(data) {
+      		data = JSON.parse(data);
+      		console.log(data);
+      		$.each(data, function(val) {
+      		    $('#search-category').append(
+      		        $('<option></option>').val(val).html(val)
+      		    );
+      		});
+
+    	  },
+    	  error: function(jqXHR, textStatus, errorThrown) {
+    		  console.log("fetchCategories error. " + errorThrown);
+    	  }
+      });
+  };
+  
+  var fetch = function(query,category,automatic) {
     
-	var serverURL = "http://isearch.ai.fh-erfurt.de/cofetch/get/";
-	  
-    contentObjectID = id;
-    console.log('Waiting results for object #' + id);
+	var serverURL = "http://isearch.ai.fh-erfurt.de/cofetch/get"
+		          + "/" + query
+		          + "/" + category
+		          + "/" + automatic;
+	
+    console.log('Waiting results for query "' + query + '"');
     $("#loading").show();
     
     //Request our data
     $.ajax({
-      url: serverURL + contentObjectID,
+      url: serverURL,
       dataType: "jsonp",
       jsonpCallback: "_cofetchcb",
       timeout: 80000,
       success: function(data) {
-        console.log('Data for CO #' + id + ' successfully fetched.');
-                
-        //Store the returned data
-        scraperData.push(data.response);
-        console.log("Scraped data: ",scraperData);
-        
-        //Now, let's sort the files according to their type
-        var files = scraperData[0].Files;
-        $.each(files, function(index, file){
-          if (file.Type === "ImageType") {
-            images.push(file);
-          } else if (file.Type === "Object3d") {
-            threed.push(file);
-            console.log("Threed variable",threed);
-          } else if (file.Type === "VideoType") {
-            videos.push(file);
-          } else if (file.Type === "SoundType") {
-            sounds.push(file);
-          } else if (file.Type === "TextType") {
-            text.push(file);
-          }
-        });
-        
-        //Populate the form
-        populateForm();
-        
+    	
+    	if(automatic) {
+    		console.log('Data for keywords "' + query + '" successfully fetched and stored as RUCoD.');
+    	} else {
+    		
+	        console.log('Data for keywords "' + query + '" successfully fetched.');
+	                
+	        //Store the returned data
+	        scraperData.push(data.response);
+	        console.log("Scraped data: ",scraperData);
+	        
+	        //Now, let's sort the files according to their type
+	        var files = scraperData[0].Files;
+	        $.each(files, function(index, file){
+	          if (file.Type === "ImageType") {
+	            images.push(file);
+	          } else if (file.Type === "Object3d") {
+	            threed.push(file);
+	            console.log("Threed variable",threed);
+	          } else if (file.Type === "VideoType") {
+	            videos.push(file);
+	          } else if (file.Type === "SoundType") {
+	            sounds.push(file);
+	          } else if (file.Type === "TextType") {
+	            text.push(file);
+	          }
+	        });
+	        
+	        //Populate the form
+	        populateForm();
+    	}
         $("#loading").hide();
         
       },
@@ -135,6 +165,17 @@ var cofetchHandler = (function() {
 	        	  if(sounds.length > 0) {
 	        		  setSound();
 	        	  }
+	          } else if (type === "3d") {
+	        	  //Reset the old result
+	        	  threed = [];
+	        	  
+	        	  $.each(files, function(index, file){  
+	        		  threed.push(file);
+	        	  });
+	        	  
+	        	  if(threed.length > 0) {
+	        		  set3d();
+	        	  }
 	          }
         
       },
@@ -178,32 +219,57 @@ var cofetchHandler = (function() {
        set(changes);
   };
   
-  var set3d = function() {
+  var get3d = function(searchPhrase) {
+	  if (typeof searchPhrase !== "undefined") {
+		  fetchPart('3d',searchPhrase);
+	  }
+  }; 
+  
+  var set3d = function(shift) {
     
+    if (typeof shift !== "undefined") {
+        
+        if (iTd == (threed.length-1)) {
+        	tdDir = 0;
+        	alert('No other 3D models to see, going back');
+        } else if(iTd == 0){
+        	tdDir = 1; 
+        }
+        
+        if(tdDir == 1) {
+          iTd++;
+        } else {
+      	  iTd--;
+        }
+     }
+      
+    //Take the first video of the Array
+    var model = threed[iTd];  
+	  
     //Set the preview image to the right SRC
     $('#threed-visualPreview').attr(
-      {'src': threed[0].Preview}
+      {'src': model.Preview}
     );
 
     //Let's prepare the array of changes
     var changes = [
-      {id: "threed-name", value: threed[0].Name},
-      {id: "threed-desc", value: threed[0].Description},
-      {id: "threed-tags", value: threed[0].Tags},
-      {id: "threed-extension", value: threed[0].Extension},
-      {id: "threed-license", value: threed[0].License},
-      {id: "threed-licenseURL", value: threed[0].LicenseURL},
-      {id: "threed-author", value: threed[0].Author},
-      {id: "threed-date", value: threed[0].Date},
-      {id: "threed-size", value: threed[0].Size},
-      {id: "threed-url", value: threed[0].URL},
-      {id: "threed-preview", value: threed[0].Preview},
-      {id: "threed-emotions", value: threed[0].Emotions.join(",")},
-      {id: "threed-location", value: threed[0].Location.join(",")},
-      {id: "threed-weather-condition", value: threed[0].Weather.condition},
-      {id: "threed-weather-wind", value: threed[0].Weather.wind},
-      {id: "threed-weather-temperature", value: threed[0].Weather.temperature},
-      {id: "threed-weather-humidity", value: threed[0].Weather.humidity},
+      {id: "threed-name", value: model.Name},
+      {id: "threed-desc", value: model.Description},
+      {id: "threed-tags", value: model.Tags},
+      {id: "threed-extension", value: model.Extension},
+      {id: "threed-license", value: model.License},
+      {id: "threed-licenseURL", value: model.LicenseURL},
+      {id: "threed-author", value: model.Author},
+      {id: "threed-date", value: model.Date},
+      {id: "threed-size", value: model.Size},
+      {id: "threed-url", value: model.URL},
+      {id: "threed-preview", value: model.Preview},
+      {id: "threed-emotions", value: model.Emotions.join(",")},
+      {id: "threed-location", value: model.Location.join(",")},
+      {id: "threed-weather-condition", value: model.Weather.condition},
+      {id: "threed-weather-wind", value: model.Weather.wind},
+      {id: "threed-weather-temperature", value: model.Weather.temperature},
+      {id: "threed-weather-humidity", value: model.Weather.humidity},
     ];
     
     //And apply them
@@ -610,11 +676,14 @@ var cofetchHandler = (function() {
   }
   
   return {
+	fetchCategories: fetchCategories, 
     fetch: fetch,
     fetchPart: fetchPart,
     populateForm: populateForm,
     getText: getText,
     setText: setText,
+    get3d: get3d,
+    set3d: set3d,
     getVideo: getVideo,
     setVideo: setVideo,
     getSound: getSound,
