@@ -19,14 +19,13 @@ var cofetchHandler = (function() {
   
   var fetchCategories = function() {
 	  var serverURL = "/cofetch/getCat";
-	  console.log('fetchCategories');
 
 	  $.ajax({
     	  type: "GET",
     	  url: serverURL,
     	  success: function(data) {
-    		console.log(data);
-    		//data = JSON.parse(data);
+    		
+    		data = JSON.parse(data);
     		  
       		$.each(data, function(val) {
       		    $('#search-category').append(
