@@ -18,16 +18,16 @@ var cofetchHandler = (function() {
   var iSou = 0, souDir = 1;
   
   var fetchCategories = function() {
-	  var serverURL = "/cofetch/getCat";
-
+	  var serverURL = "/cofetch/getCat";  
+	  
 	  $.ajax({
     	  type: "GET",
     	  url: serverURL,
     	  success: function(data) {
     		  
       		$.each(data.paths, function(key,val) {
-      			console.log(key + ' - ' + val);
-      		    $('#search-category')
+      			//console.log(key + ' - ' + val);
+      		    $('#script-category')
       		    	.append($('<option>', { value : val })
       		        .text(val)); 
       		});
