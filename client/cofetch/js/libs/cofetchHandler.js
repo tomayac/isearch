@@ -25,7 +25,7 @@ var cofetchHandler = (function() {
     	  url: serverURL,
     	  success: function(data) {
     		
-    		data = JSON.parse(data);
+    		//data = JSON.parse(data);
     		console.log(data);  
       		$.each(data.paths, function(key,val) {
       			console.log(key + ' - ' + val);
