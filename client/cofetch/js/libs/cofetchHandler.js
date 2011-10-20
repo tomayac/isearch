@@ -26,7 +26,7 @@ var cofetchHandler = (function() {
     	  success: function(data) {
     		
     		data = JSON.parse(data);
-    		  
+    		console.log(data);  
       		$.each(data.paths, function(key,val) {
       			console.log(key + ' - ' + val);
       		    $('#search-category').append(
