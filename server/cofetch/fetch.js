@@ -342,13 +342,13 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 			} else { 
 			
 				console.log('6. Composed Sound data fetched!');
-				console.log(data[0]);
+				
 				//If automatic mode is on, than just store the first retrieved sound (e.g. the most relevant)
 				if(automatic === 1) {
-					contentObject.Files.push(data[0][0]);
+					contentObject.Files.push(data[0]);
 				} else {
 					for(var s=0; s < data.length; s++) {
-						contentObject.Files.push(data[s][0]);
+						contentObject.Files.push(data[s]);
 					}
 				}
 			}
