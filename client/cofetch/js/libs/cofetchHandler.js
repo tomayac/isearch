@@ -44,7 +44,7 @@ var cofetchHandler = (function() {
 	var serverURL = "http://isearch.ai.fh-erfurt.de/cofetch/get"
 		          + "/" + $.trim(query)
 		          + "/" + encodeURIComponent(category)
-		          + "/" + (automatic === 'on' ? '1' : '0');
+		          + "/" + (automatic !== undefined ? '1' : '0');
 	
     console.log('Waiting for results for query "' + query + '"');
     $("#loading").show();
