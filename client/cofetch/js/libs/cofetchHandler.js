@@ -42,11 +42,11 @@ var cofetchHandler = (function() {
   var fetch = function(query,category,automatic) {
     
 	var serverURL = "http://isearch.ai.fh-erfurt.de/cofetch/get"
-		          + "/" + query
-		          + "/" + category
-		          + "/" + automatic;
+		          + "/" + $.trim(query)
+		          + "/" + encodeURIComponent(category)
+		          + "/" + (automatic === 'on' ? '1' : '0');
 	
-    console.log('Waiting results for query "' + query + '"');
+    console.log('Waiting for results for query "' + query + '"');
     $("#loading").show();
     
     //Request our data
@@ -57,15 +57,15 @@ var cofetchHandler = (function() {
       timeout: 80000,
       success: function(data) {
     	
-    	if(automatic) {
+    	//Store the returned data
+	    scraperData.push(data.response);
+	    console.log("Scraped data: ",scraperData);  
+    	  
+    	if(automatic && scraperData.success) {
     		console.log('Data for keywords "' + query + '" successfully fetched and stored as RUCoD.');
     	} else {
     		
 	        console.log('Data for keywords "' + query + '" successfully fetched.');
-	                
-	        //Store the returned data
-	        scraperData.push(data.response);
-	        console.log("Scraped data: ",scraperData);
 	        
 	        //Now, let's sort the files according to their type
 	        var files = scraperData[0].Files;
