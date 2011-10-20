@@ -396,8 +396,12 @@ exports.storeAutomaticInput = function(data, callback) {
 			callback(error, null);
 		} else {
 			
-			index++;
-			store(data[index],false,storeCallback);
+			if(index < data.length) {
+				index++;
+				store(data[index],false,storeCallback);
+			} else {
+				callback(null,{success: true});
+			}
 		}
 	};
 	
