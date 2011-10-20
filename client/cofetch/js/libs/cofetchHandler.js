@@ -40,15 +40,14 @@ var cofetchHandler = (function() {
   };
   
   var fetch = function(query,category,automatic) {
-    
-	  console.log(automatic);
-	if(automatic == "on") {
+
+	if(automatic !== undefined) {
 		automatic = 1;
 	} else {
 		automatic = 0;
 	}
-	console.log(automatic); 
-	var serverURL = "http://isearch.ai.fh-erfurt.de/cofetch/get"
+
+	var serverURL = "/cofetch/get"
 		          + "/" + $.trim(query)
 		          + "/" + encodeURIComponent(category)
 		          + "/" + automatic;
@@ -107,7 +106,7 @@ var cofetchHandler = (function() {
   
   var fetchPart = function(type, query) {
 	  
-	  var serverURL = "http://isearch.ai.fh-erfurt.de/cofetch/getPart/";
+	  var serverURL = "/cofetch/getPart/";
 	  //var serverURL = "http://localhost:8082/get/";
 	  
 	  console.log('Waiting for results for ' + type + ' search with query "' + query + '"');
@@ -468,7 +467,7 @@ var cofetchHandler = (function() {
   
   var save = function() {
     
-	var serverURL = "http://isearch.ai.fh-erfurt.de/cofetch/post/";  
+	var serverURL = "/cofetch/post/";  
 	
 	var tags = $('#threed-tags').val().split(",");
 	for(var t=0; t < tags.length; t++) {

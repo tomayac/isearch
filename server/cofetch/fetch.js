@@ -208,7 +208,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 				
 				//Use the preview image of the first 3D model as preview for the content object
 				contentObject.Screenshot = data[0].Preview;
-				
+				console.log("automatic: "+ automatic);
 				//If automatic mode is on, than just store the first retrieved model (e.g. the most relevant)
 				if(automatic === 1) {
 					//Push the 3D model to the files array of the content object

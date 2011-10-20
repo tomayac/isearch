@@ -25,7 +25,7 @@ $(document).ready(function(){
 	if($("#script-keywords").val().length < 3 || $("#script-category").val() == "") {
 		alert("Please specify at least one search keyword as well as the search category!");
 	} else {
-		cofetchHandler.fetch($("#script-keywords").val(),$("#script-category").val(),$("#script-automatic").val());
+		cofetchHandler.fetch($("#script-keywords").val(),$("#script-category").val(),$("#script-automatic").attr("checked"));
 	}
 	return false;
   });
