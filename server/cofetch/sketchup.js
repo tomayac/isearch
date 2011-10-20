@@ -35,7 +35,7 @@ var threedMethods = {
 			+ '&alt=json';
 		
 		//add "is%3Ageo+" to q= parameter to filter search for geo tagged models
-		console.log(searchURL);
+		//console.log(searchURL);
 		
 		//Store the current context
 	    var context = this;
@@ -53,7 +53,12 @@ var threedMethods = {
 			try {
 				//Get the photo search result
 				//console.log(data);
-				models = JSON.parse(data).feed.entry;
+				data = JSON.parse(data);
+				
+				if(data.feed["openSearch$totalResults"]["$t"] != 0) {
+					models = data.feed.entry;
+				}
+				
 			} catch(e) {}
 			
 			//No sounds found, get back
