@@ -50,7 +50,7 @@ var weatherMethods = {
 			/*
 			    RA	Rain
 				SN	Snow
-				GR	Grêle - hail
+				GR	Grï¿½le - hail
 				FG	Fog
 				NSC	No cloud
 				FEW	1/8 to 2/8 of cloud coverage
@@ -209,34 +209,41 @@ var weatherMethods = {
 						});
 						
 						//Get the temperature for the most fitting time (usually 1st column)
-						temperature = weatherTable[targetRow].children[dataColumns.temperature].children[0].children[0].children[0].data;
-						temperature = parseFloat(temperature).toFixed(1);
+						try {
+							temperature = weatherTable[targetRow].children[dataColumns.temperature].children[0].children[0].children[0].data;
+							temperature = parseFloat(temperature).toFixed(1);
+						} catch(e) {}
 						
 						//Get the humidity for the most fitting time (usually 3rd column)
-						humidity = weatherTable[targetRow].children[dataColumns.humidity].children[0].data;
-						humidity = parseInt(humidity);
+						try {
+							humidity = weatherTable[targetRow].children[dataColumns.humidity].children[0].data;
+							humidity = parseInt(humidity);
+						} catch(e) {}
 						
 						//Get the windspeed for the most fitting time
-						var winddata = weatherTable[targetRow].children[dataColumns.windspeed].children[0].data.replace(/^\s*|\s*$/g,'');
-						windspeed = (winddata == 'Calm' || winddata == '-') ? parseFloat('0.0') : Math.round(parseFloat(weatherTable[targetRow].children[dataColumns.windspeed].children[0].children[0].children[0].data));
+						try {
+							var winddata = weatherTable[targetRow].children[dataColumns.windspeed].children[0].data.replace(/^\s*|\s*$/g,'');
+							windspeed = (winddata == 'Calm' || winddata == '-') ? parseFloat('0.0') : Math.round(parseFloat(weatherTable[targetRow].children[dataColumns.windspeed].children[0].children[0].children[0].data));
+							
+			                //Calculate the beaufort number for the determined windspeed
+			                for(var b=0; b < beaufortScale.length; b++) {
+			                    if(windspeed >= beaufortScale[b].min && windspeed <= beaufortScale[b].max) {
+			                        windspeed = beaufortScale[b].id;
+			                        break;
+			                    }
+			                }
+						} catch(e) {}
 						
-		                //Calculate the beaufort number for the determined windspeed
-		                for(var b=0; b < beaufortScale.length; b++) {
-		                    if(windspeed >= beaufortScale[b].min && windspeed <= beaufortScale[b].max) {
-		                        windspeed = beaufortScale[b].id;
-		                        break;
-		                    }
-		                }
-		                
 		                //Get the condition for the most fitting time
-		                condition = weatherTable[targetRow].children[dataColumns.condition].children[0].data.replace(/^\s+|\s+$/g,"");
-		                condition = condition.replace('Light ','');
-		                condition = condition.replace('Heavy ','');
-		                //Get the condition identifier for the determined condition
-		                if(weatherCondition[condition]) {
-		                    condition = weatherCondition[condition];
-		                }
-		                
+		                try {
+			                condition = weatherTable[targetRow].children[dataColumns.condition].children[0].data.replace(/^\s+|\s+$/g,"");
+			                condition = condition.replace('Light ','');
+			                condition = condition.replace('Heavy ','');
+			                //Get the condition identifier for the determined condition
+			                if(weatherCondition[condition]) {
+			                    condition = weatherCondition[condition];
+			                }
+		                } catch(e) {}
 		                //Set the gathered weather values to the current result
 		                input.Weather = {"condition": condition, "wind": windspeed, "temperature": temperature, "humidity": humidity};
 					
