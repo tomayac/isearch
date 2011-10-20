@@ -41,10 +41,17 @@ var cofetchHandler = (function() {
   
   var fetch = function(query,category,automatic) {
     
+	  console.log(automatic);
+	if(automatic == "on") {
+		automatic = 1;
+	} else {
+		automatic = 0;
+	}
+	console.log(automatic); 
 	var serverURL = "http://isearch.ai.fh-erfurt.de/cofetch/get"
 		          + "/" + $.trim(query)
 		          + "/" + encodeURIComponent(category)
-		          + "/" + (automatic !== undefined ? '1' : '0');
+		          + "/" + automatic;
 	
     console.log('Waiting for results for query "' + query + '"');
     $("#loading").show();
