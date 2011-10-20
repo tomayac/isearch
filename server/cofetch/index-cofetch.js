@@ -59,8 +59,8 @@ http.createServer(function (request, response) {
 	    if(parameters[0] == 'get') {
 	    	
 	    	console.log(parameters);
-	    	var keywords = parameters[1].split(',');
-	    	var category = parameters[2];
+	    	var keywords = decodeURI(parameters[1]).split(',');
+	    	var category = decodeURIComponent(parameters[2]);
 	    	var automatic = parameters[3];
 	    	console.log('k:' + keywords + ' c:' + category + ' a:' + automatic);
 	    	if(isNaN(index)) {
