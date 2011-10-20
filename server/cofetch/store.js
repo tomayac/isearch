@@ -148,10 +148,11 @@ var publishRUCoD = function(data, outputPath, callback) {
 		if(data.Files[f].Type == 'Video') {
 			hasVideo = true;
 		};
-		console.log("Tags:");
-		console.log(data.Files[f].Tags);
-		for(var t=0; t < data.Files[f].Tags.length; t++) {
-			tagArray.push(data.Files[f].Tags[t]);
+	    
+		if(data.Files[f].Tags !== undefined) {
+			for(var t=0; t < data.Files[f].Tags.length; t++) {
+				tagArray.push(data.Files[f].Tags[t]);
+			}
 		}
 	}
 	//Filtering the Array to have only unique tags in there
