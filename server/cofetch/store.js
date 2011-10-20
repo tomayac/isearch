@@ -398,13 +398,13 @@ exports.storeAutomaticInput = function(data, callback) {
 			
 			if(index < data.length) {
 				index++;
-				store(data[index],false,storeCallback);
+				exports.store(data[index],false,storeCallback);
 			} else {
 				callback(null,{success: true});
 			}
 		}
 	};
 	
-	store(data[index],false,storeCallback);
+	exports.store(data[index],false,storeCallback);
 	
 };

@@ -168,11 +168,13 @@ Fetch.prototype.getPart = function(type, query, callback) {
 	}
 };
 
-Fetch.prototype.get = function(keyword, category, index, automatic, callback) {
+Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback) {
 	
 	var queryAdjustment = {};
 	queryAdjustment['Fish'] = ' underwater';
 	
+	var category = categoryPath.split("/");
+	console.log(category);
 	//content object data storage
 	var contentObject = {
 			  "ID": index + '-' + new Date().getTime(),
@@ -180,8 +182,8 @@ Fetch.prototype.get = function(keyword, category, index, automatic, callback) {
 				    	return letter.toUpperCase();
 			  		  }),
 			  "Screenshot": "",
-			  "Category": category.split("/")[category.length-1],
-			  "CategoryPath": category, 
+			  "Category": category[category.length-1],
+			  "CategoryPath": categoryPath, 
 			  "Files": []
 	};
 	
