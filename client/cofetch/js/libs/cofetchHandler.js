@@ -24,14 +24,12 @@ var cofetchHandler = (function() {
     	  type: "GET",
     	  url: serverURL,
     	  success: function(data) {
-    		
-    		//data = JSON.parse(data);
-    		console.log(data);  
+    		  
       		$.each(data.paths, function(key,val) {
       			console.log(key + ' - ' + val);
-      		    $('#search-category').append(
-      		        $('<option></option>').val(val).html(val)
-      		    );
+      		    $('#search-category')
+      		    	.append($('<option>', { value : val })
+      		        .text(val)); 
       		});
 
     	  },
