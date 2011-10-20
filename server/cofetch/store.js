@@ -328,13 +328,13 @@ var publishRUCoD = function(data, outputPath, callback) {
 	}
 };
 
-
 /**
  * Stores the given JSON data as file on the servers file system.
  * @param the Content Object data in JSON format
  * @param overwrite indicates weather an existing file for content object should be overwritten or not
  */
 exports.store = function(data, overwrite, callback) {
+	
 	//Get the category path of the CO json
 	var catpath = data.CategoryPath.split('/');
 	//And check if the folders for those categories exist
@@ -378,4 +378,29 @@ exports.store = function(data, overwrite, callback) {
 		
 		
 	});
+};
+
+/**
+ * Stores a given JSON array containing multiple Content Object data as file on the servers file system.
+ * The function should be applied for automatic retrieved content object data, e.g. content object data which
+ * was not revised by an user.
+ * @param an array of Content Object data in JSON format
+ * @param callback the function which should be called upon finishing of the storing process
+ */
+exports.storeAutomaticInput = function(data, callback) {
+	
+	console.log("Start automatic storing of " + data.length + " Content Objects...");
+	var index = 0;
+	var storeCallback = function(error,data) {
+		if(error) {
+			callback(error, null);
+		} else {
+			
+			index++;
+			store(data[index],false,storeCallback);
+		}
+	};
+	
+	store(data[index],false,storeCallback);
+	
 };

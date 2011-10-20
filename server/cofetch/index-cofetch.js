@@ -18,23 +18,91 @@ var file = new(fileserve.Server)('/var/www/isearch/client/cofetch');
 
 http.createServer(function (request, response) {     
  
- //Error handle function
- var handleError = function(error) {
-	 
-	 var data   = '{"error":1,"message":"'+error+'"}';
-     var status = {"code":404,"message":"Not found"};
-	 
-	 response.writeHead(status.code,status.message,{ 
-     	    'Content-Length': Buffer.byteLength(data,'utf8'),
-		  	'Content-Type'  : 'application/json; charset=utf8',
-		  	'Access-Control-Max-Age': '3628800',
-		  	'Access-Control-Allow-Methods':'GET'
-	 });
-	 response.write(data);
-	 response.end();
-	 return;
- };
- 
+	//Error handle function
+	var handleError = function(error) {
+		 
+		 var data   = '{"error":1,"message":"'+error+'"}';
+	    var status = {"code":404,"message":"Not found"};
+		 
+		 response.writeHead(status.code,status.message,{ 
+	    	    'Content-Length': Buffer.byteLength(data,'utf8'),
+			  	'Content-Type'  : 'application/json; charset=utf8',
+			  	'Access-Control-Max-Age': '3628800',
+			  	'Access-Control-Allow-Methods':'GET'
+		 });
+		 response.write(data);
+		 response.end();
+		 return;
+	};
+	
+	//Fetch helper function
+	var handleFetch = function(keywords, category, index, automatic) {
+		
+		var cofetcher = new fetch.Fetch();
+		var result = [];
+		
+		var fetchCallback = function(error, data) {
+			
+			if(error) {
+				handleError(error);
+			} else {
+				
+				//Add retrieved content object data to result array
+				result.push(data);
+				console.log("Content Object Data fetched for query '" + keywords[index] + "' with index " + index + "!");
+				
+				if(index < keywords.length) {
+					//Go for the next search keyword
+					index++;
+					console.log("Fetching data for query " + index +" of " + keywords.length + "'" + keywords[index] + "'...");
+					cofetcher.get(keywords[index], category, index, automatic, fetchCallback);
+				
+				} else {
+					
+					console.log("Fetched all content object data!");
+					
+					//Decide weather to send data back for user verification or store the data directly as RUCoD
+					if(automatic) {
+
+			        	rucod.storeAutomaticInput(result, function(error, data) {
+			        		 
+			        		if(error) {
+			    				handleError('Automatic storing error: ' + error);
+			    			} else {
+			    				
+								data = '_cofetchcb({"response":' + JSON.stringify(data) + '})';
+								 
+								response.writeHead(status.code,status.message,{ 
+									'Content-Length': Buffer.byteLength(data,'utf8'),
+								    'Content-Type'  : 'plain/text; charset=utf8'
+								});
+								response.write(info);
+								response.end(); 
+			    			}
+			        	 });
+			        	
+					} else {	
+						
+						data = '_cofetchcb({"response":' + JSON.stringify(result) + '})';
+			    		
+			    		response.writeHead(status.code,status.message,{ 
+			    			                	'Content-Length': Buffer.byteLength(data,'utf8'),
+											  	'Content-Type'  : 'application/json; charset=utf8',
+											  	'Access-Control-Max-Age': '3628800',
+											  	'Access-Control-Allow-Methods':'GET'
+										   });
+						response.write(data);
+						response.end();
+					} // End automatic
+					
+				} //End fetch if	
+			} //End error if
+		}; //End fetchCallback function
+		
+		cofetcher.get(keywords[index], category, index, automatic, fetchCallback);
+		
+	};	
+	
  var reqpath = url.parse(request.url).pathname;
  //Get the parameters of the request
  var parameters = reqpath.replace('/','').split('/');
@@ -58,62 +126,25 @@ http.createServer(function (request, response) {
 	    //
 	    if(parameters[0] == 'get') {
 	    	
-	    	console.log(parameters);
-	    	var keywords = decodeURI(parameters[1]).split(',');
+	    	var keywords = decodeURI(parameters[1]);
+	    	    keywords = keywords.split(",");
 	    	var category = decodeURIComponent(parameters[2]);
 	    	var automatic = parameters[3];
+	    	
 	    	console.log('k:' + keywords + ' c:' + category + ' a:' + automatic);
-	    	if(isNaN(index)) {
+	    	
+	    	if(keywords.length < 3 || category.length < 3 || isNaN(automatic)) {
 	    		
-	    		handleError("Missing index parameter.");
+	    		handleError("Missing or wrong parameters. Please verify that you submitted at least one keyword and the corresponding category.");
 	    		
 	    	} else {
 	    		
-	    		var userQueries = {};
-	    		//Check if we want to use special queries for each media type
-	    		if(parameters.indexOf('text') != -1) {
-	    			var ti = parameters.indexOf('text') +1;
-	    			userQueries.Text = parameters[ti].replace(/[+]/g,' ');
-	    		}
-	    		if(parameters.indexOf('image') != -1) {
-	    			var ii = parameters.indexOf('image') +1;
-	    			userQueries.Image = parameters[ii].replace(/[+]/g,' ');
-	    		}
-	    		if(parameters.indexOf('video') != -1) {
-	    			var vi = parameters.indexOf('video') +1;
-	    			userQueries.Video = parameters[vi].replace(/[+]/g,' ');
-	    		}
-	    		if(parameters.indexOf('sound') != -1) {
-	    			var si = parameters.indexOf('sound') +1;
-	    			userQueries.Sound = parameters[si].replace(/[+]/g,' ');
-	    		}
+	    		handleFetch(keywords, category, 0, automatic);
 	    		
-	    		var cofetcher = new fetch.Fetch();
-	    		cofetcher.get(index, userQueries, function(error, data){
-		    		
-		    		if(error) {
-		    			
-		    			handleError(error);
-		    			
-		    		} else {
-		    		
-			    		console.log("Content Object Data fetched!");
-			    		
-			    		data = '_cofetchcb({"response":' + JSON.stringify(data) + '})';
-			    		
-			    		response.writeHead(status.code,status.message,{ 
-			    			                	'Content-Length': Buffer.byteLength(data,'utf8'),
-											  	'Content-Type'  : 'application/json; charset=utf8',
-											  	'Access-Control-Max-Age': '3628800',
-											  	'Access-Control-Allow-Methods':'GET'
-										   });
-						response.write(data);
-						response.end();
-		    		}
-		    	});
 	    	}
 	    	
 	    } else if (parameters[0] == 'getPart') {
+	    	
 	    	var type  = parameters[1] || '';
 	    	var query = parameters[2].replace(/[+]/g,' ') || '';
 	    	

@@ -168,34 +168,29 @@ Fetch.prototype.getPart = function(type, query, callback) {
 	}
 };
 
-Fetch.prototype.get = function(index, queries, callback) {
-	
-	var userQuery = {
-			'Text':queries.Text ? queries.Text : null, 
-			'Image':queries.Image ? queries.Image : null,
-			'Video':queries.Video ? queries.Video : null,
-			'Sound':queries.Sound ? queries.Sound : null
-	};
+Fetch.prototype.get = function(keyword, category, index, automatic, callback) {
 	
 	var queryAdjustment = {};
 	queryAdjustment['Fish'] = ' underwater';
 	
 	//content object data storage
 	var contentObject = {
-			  "ID": index,
-			  "Name": "",
+			  "ID": index + '-' + new Date().getTime(),
+			  "Name": keyword.toLowerCase().replace(/\b[a-z]/g, function(letter) {
+				    	return letter.toUpperCase();
+			  		  }),
 			  "Screenshot": "",
-			  "Category": "",
-			  "CategoryPath": "", 
+			  "Category": category.split("/")[category.length-1],
+			  "CategoryPath": category, 
 			  "Files": []
 	};
 	
 	//Step through the content object data collection
 	step(
 		function getModelData() {	
-			console.log('1. Start fetching Content Object data for 3D model with index '+index);
 			
-			modeldb.fetchModel(index, this);
+			console.log('1. Start fetching Content Object data for 3D models with query "' + keyword + '"');
+			sketchup.fetchThreed(keyword, this);
 		},
 		function getTextData(error,data) {
 			//Be sure to have data before going on
@@ -203,29 +198,26 @@ Fetch.prototype.get = function(index, queries, callback) {
 				error = 'No model data could be retrieved.';
 			}
 			if(error) {
-				console.log('modeldb error: ' + error);
+				console.log('SketchUp error: ' + error);
 				return [];
 			}
 			
-			console.log('2. Model data fetched!');
-
-			contentObject.Name = data[0].Name;
+			console.log('2. 3D model data fetched!');
+			
+			//Use the preview image of the first 3D model as preview for the content object
 			contentObject.Screenshot = data[0].Preview;
-			contentObject.CategoryPath = data[0].CategoryPath;
-			contentObject.Category = data[0].Category;
 			
-			//We wont need the category path in the individual files
-			delete data[0].Category;
-			delete data[0].CategoryPath;
-			
-			//Push the 3D model to the files array of the content object
-			contentObject.Files.push(data[0]);
+			//If automatic mode is on, than just store the first retrieved model (e.g. the most relevant)
+			if(automatic === 1) {
+				//Push the 3D model to the files array of the content object
+				contentObject.Files.push(data[0]);
+			} else {
+				for(var m=0; m < data.length; m++) {
+					contentObject.Files.push(data[m]);
+				}
+			}
 			
 			var dbpediaQuery = contentObject.Name;
-			
-			if(userQuery.Text) {
-				dbpediaQuery = userQuery.Text;
-			}
 			
 			//Fetch free text data for the model
 			dbpedia.fetchText(dbpediaQuery, contentObject.Category, this);
@@ -246,9 +238,7 @@ Fetch.prototype.get = function(index, queries, callback) {
 			
 			var flickrQuery = contentObject.Name;
 			
-			if(userQuery.Image) {
-				flickrQuery = userQuery.Image;
-			} else if (queryAdjustment[contentObject.Category]) {
+			if (queryAdjustment[contentObject.Category]) {
 				flickrQuery += queryAdjustment[contentObject.Category];
 			} else {
 				flickrQuery += ' '+contentObject.Category;
@@ -280,15 +270,18 @@ Fetch.prototype.get = function(index, queries, callback) {
 			}
 			console.log('4.1. Weather data for flickr images fetched!');
 			
-			for(var w=0; w < data.length; w++) {
-				contentObject.Files.push(data[w][0]);
+			//If automatic mode is on, than just store the first retrieved image (e.g. the most relevant)
+			if(automatic === 1) {
+				contentObject.Files.push(data[0][0]);
+			} else {
+				for(var w=0; w < data.length; w++) {
+					contentObject.Files.push(data[w][0]);
+				}
 			}
 			//Some query adjustments for youtube
 			var youtubeQuery = contentObject.Name;
 			
-			if(userQuery.Video) {
-				youtubeQuery = userQuery.Video;
-			} else if(queryAdjustment[contentObject.Category]) {
+			if(queryAdjustment[contentObject.Category]) {
 				youtubeQuery += queryAdjustment[contentObject.Category];
 			} else {
 				youtubeQuery += ' '+contentObject.Category;
@@ -308,15 +301,16 @@ Fetch.prototype.get = function(index, queries, callback) {
 			}
 			console.log('5. YouTube data fetched!');
 			
-			for(var y=0; y < data.length; y++) {
-				contentObject.Files.push(data[y]);
+			//If automatic mode is on, than just store the first retrieved video (e.g. the most relevant)
+			if(automatic === 1) {
+				contentObject.Files.push(data[0]);
+			} else {
+				for(var y=0; y < data.length; y++) {
+					contentObject.Files.push(data[y]);
+				}
 			}
 			
-			var soundQuery = contentObject.Name;
-			
-			if(userQuery.Sound) {
-				soundQuery = userQuery.Sound;
-			} 
+			var soundQuery = contentObject.Name; 
 			
 			//Get audio for content object
 			sound.fetchSound(soundQuery, true, this);
@@ -329,11 +323,7 @@ Fetch.prototype.get = function(index, queries, callback) {
 			
 			if(data.length < 1) {
 				
-				var soundQuery = contentObject.Name;
-				
-				if(userQuery.Sound) {
-					soundQuery = userQuery.Sound;
-				} 
+				var soundQuery = contentObject.Name; 
 				
 				//Get audio for content object
 				sound.fetchSound(soundQuery, false, this);
@@ -353,8 +343,13 @@ Fetch.prototype.get = function(index, queries, callback) {
 			} else { 
 			
 				console.log('6. Composed Sound data fetched!');
-				for(var s=0; s < data.length; s++) {
-					contentObject.Files.push(data[s][0]);
+				//If automatic mode is on, than just store the first retrieved sound (e.g. the most relevant)
+				if(automatic === 1) {
+					contentObject.Files.push(data[0][0]);
+				} else {
+					for(var s=0; s < data.length; s++) {
+						contentObject.Files.push(data[s][0]);
+					}
 				}
 			}
 			
