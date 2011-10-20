@@ -193,30 +193,32 @@ Fetch.prototype.get = function(keyword, category, index, automatic, callback) {
 			sketchup.fetchThreed(keyword, this);
 		},
 		function getTextData(error,data) {
-			//Be sure to have data before going on
+			
+			//Be sure to have data before storing something which is not there
 			if(!error && data.length < 1) {
 				error = 'No model data could be retrieved.';
 			}
 			if(error) {
 				console.log('SketchUp error: ' + error);
-				return [];
-			}
-			
-			console.log('2. 3D model data fetched!');
-			
-			//Use the preview image of the first 3D model as preview for the content object
-			contentObject.Screenshot = data[0].Preview;
-			
-			//If automatic mode is on, than just store the first retrieved model (e.g. the most relevant)
-			if(automatic === 1) {
-				//Push the 3D model to the files array of the content object
-				contentObject.Files.push(data[0]);
 			} else {
-				for(var m=0; m < data.length; m++) {
-					contentObject.Files.push(data[m]);
+				//Nothing went wrong so possibly we have something to store
+				console.log('2. 3D model data fetched!');
+				
+				//Use the preview image of the first 3D model as preview for the content object
+				contentObject.Screenshot = data[0].Preview;
+				
+				//If automatic mode is on, than just store the first retrieved model (e.g. the most relevant)
+				if(automatic === 1) {
+					//Push the 3D model to the files array of the content object
+					contentObject.Files.push(data[0]);
+				} else {
+					for(var m=0; m < data.length; m++) {
+						contentObject.Files.push(data[m]);
+					}
 				}
 			}
 			
+			//Even if nothing was found for 3D, go on ant try to find some text
 			var dbpediaQuery = contentObject.Name;
 			
 			//Fetch free text data for the model
@@ -229,12 +231,12 @@ Fetch.prototype.get = function(keyword, category, index, automatic, callback) {
 			}
 			if(error) {
 				console.log('dbpedia error: '+error);
-				return [];
+			} else {
+				
+				console.log('3. Text data fetched!');
+				//Push the text data in the Files array because it will be treated as MediaItem in RUCoD
+				contentObject.Files.push(data[0]);
 			}
-			
-			console.log('3. Text data fetched!');
-			//Push the text data in the Files array because it will be treated as MediaItem in RUCoD
-			contentObject.Files.push(data[0]);
 			
 			var flickrQuery = contentObject.Name;
 			
@@ -266,18 +268,19 @@ Fetch.prototype.get = function(keyword, category, index, automatic, callback) {
 			}
 			if(error) {
 				console.log('weather error: '+error);
-				return [];
-			}
-			console.log('4.1. Weather data for flickr images fetched!');
-			
-			//If automatic mode is on, than just store the first retrieved image (e.g. the most relevant)
-			if(automatic === 1) {
-				contentObject.Files.push(data[0][0]);
 			} else {
-				for(var w=0; w < data.length; w++) {
-					contentObject.Files.push(data[w][0]);
+				console.log('4.1. Weather data for flickr images fetched!');
+				
+				//If automatic mode is on, than just store the first retrieved image (e.g. the most relevant)
+				if(automatic === 1) {
+					contentObject.Files.push(data[0][0]);
+				} else {
+					for(var w=0; w < data.length; w++) {
+						contentObject.Files.push(data[w][0]);
+					}
 				}
 			}
+			
 			//Some query adjustments for youtube
 			var youtubeQuery = contentObject.Name;
 			
@@ -297,19 +300,18 @@ Fetch.prototype.get = function(keyword, category, index, automatic, callback) {
 			}
 			if(error) {
 				console.log('youtube error: '+error);
-				return [];
-			}
-			console.log('5. YouTube data fetched!');
-			
-			//If automatic mode is on, than just store the first retrieved video (e.g. the most relevant)
-			if(automatic === 1) {
-				contentObject.Files.push(data[0]);
 			} else {
-				for(var y=0; y < data.length; y++) {
-					contentObject.Files.push(data[y]);
+				console.log('5. YouTube data fetched!');
+				
+				//If automatic mode is on, than just store the first retrieved video (e.g. the most relevant)
+				if(automatic === 1) {
+					contentObject.Files.push(data[0]);
+				} else {
+					for(var y=0; y < data.length; y++) {
+						contentObject.Files.push(data[y]);
+					}
 				}
 			}
-			
 			var soundQuery = contentObject.Name; 
 			
 			//Get audio for content object
@@ -318,7 +320,6 @@ Fetch.prototype.get = function(keyword, category, index, automatic, callback) {
 		function evaluateSoundData(error,data) {
 			if(error) {
 				console.log('sound error: '+error);
-				return [];
 			}
 			
 			if(data.length < 1) {
