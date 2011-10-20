@@ -174,7 +174,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 	queryAdjustment['Fish'] = ' underwater';
 	
 	var category = categoryPath.split("/");
-	console.log(category);
+	
 	//content object data storage
 	var contentObject = {
 			  "ID": index + '-' + new Date().getTime(),

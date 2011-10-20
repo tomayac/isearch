@@ -24,7 +24,7 @@ var soundMethods = {
         freesoundURL += '&f=is_geotagged:true';
       }
       
-      console.log(freesoundURL);
+      //console.log(freesoundURL);
       //Store the current context
       var that = this;
       

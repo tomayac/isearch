@@ -9,28 +9,18 @@ var threedMethods = {
 			this.exit('No arguments were given to the Google SketchUp job');
 		}
 		//console.log(this.options.args);
+		var modelTag = this.options.args[0].split(" ");
+		    modelTag = modelTag[modelTag.length-1];
 		
 		var query = this.options.args[0].replace(/\s/g,'+');
 		var results = new Array();
 
 		var maxResults = 10;
-		
-		var licenses = [
-	                   { "name": "All Rights Reserved", "url": "" },
-	                   { "name": "Attribution-NonCommercial-ShareAlike License", "url": "http://creativecommons.org/licenses/by-nc-sa/2.0/"},
-	                   { "name": "Attribution-NonCommercial License", "url": "http://creativecommons.org/licenses/by-nc/2.0/"},
-	                   { "name": "Attribution-NonCommercial-NoDerivs License", "url": "http://creativecommons.org/licenses/by-nc-nd/2.0/" },
-	                   { "name": "Attribution License", "url": "http://creativecommons.org/licenses/by/2.0/" },
-	                   { "name": "Attribution-ShareAlike License", "url": "http://creativecommons.org/licenses/by-sa/2.0/" },
-	                   { "name": "Attribution-NoDerivs License", "url": "http://creativecommons.org/licenses/by-nd/2.0/" },
-	                   { "name": "No known copyright restrictions", "url": "http://www.flickr.com/commons/usage/" },
-	                   { "name": "United States Government Work", "url": "http://www.usa.gov/copyright.shtml" }
-	               ];
 
 		var searchURL = "http://sketchup.google.com/3dwarehouse/data/entities?"
 			+ 'q=title%3A' + query + '+is%3Amodel+filetype%3Azip'
 			+ '&scoring=t'
-			+ '&max-results=10'
+			+ '&max-results=' + maxResults
 			+ '&file=zip'
 			+ '&alt=json';
 		
@@ -106,7 +96,7 @@ var threedMethods = {
 		            "CategoryPath": "",
 					"Name": models[i]['title']['$t'],
 					"Description": models[i]['summary']['$t'],
-					"Tags": [],
+					"Tags": [modelTag],
 					"Extension": ext,
 					"License": 'Google 3D Warehouse License', 
 					"LicenseURL": 'http://sketchup.google.com/intl/en/3dwh/tos.html',
