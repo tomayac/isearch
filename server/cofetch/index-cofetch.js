@@ -129,7 +129,7 @@ http.createServer(function (request, response) {
 	    	var keywords = decodeURI(parameters[1]);
 	    	    keywords = keywords.split(",");
 	    	var category = decodeURIComponent(parameters[2]);
-	    	var automatic = parameters[3];
+	    	var automatic = parseInt(parameters[3]);
 	    	
 	    	console.log('k:' + keywords + ' c:' + category + ' a:' + automatic);
 	    	
