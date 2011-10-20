@@ -208,7 +208,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 				
 				//Use the preview image of the first 3D model as preview for the content object
 				contentObject.Screenshot = data[0].Preview;
-				console.log("automatic: "+ automatic);
+				
 				//If automatic mode is on, than just store the first retrieved model (e.g. the most relevant)
 				if(automatic === 1) {
 					//Push the 3D model to the files array of the content object
@@ -244,8 +244,6 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 			
 			if (queryAdjustment[contentObject.Category]) {
 				flickrQuery += queryAdjustment[contentObject.Category];
-			} else {
-				flickrQuery += ' '+contentObject.Category;
 			}
 			
 			flickr.fetchImage(flickrQuery,1,this);
@@ -288,9 +286,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 			
 			if(queryAdjustment[contentObject.Category]) {
 				youtubeQuery += queryAdjustment[contentObject.Category];
-			} else {
-				youtubeQuery += ' '+contentObject.Category;
-			}
+			} 
 			
 			//Get videos for content object
 			youtube.fetchVideo(youtubeQuery,this);
@@ -346,6 +342,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 			} else { 
 			
 				console.log('6. Composed Sound data fetched!');
+				console.log(data[0]);
 				//If automatic mode is on, than just store the first retrieved sound (e.g. the most relevant)
 				if(automatic === 1) {
 					contentObject.Files.push(data[0][0]);
