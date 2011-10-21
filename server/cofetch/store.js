@@ -80,19 +80,25 @@ var getVideoSourceUrl = function(youtubeLink, id, callback) {
 	                this.exit(err);
 	            } else {
 	            	
-	            	var vInfoResponse = querystring.parse(data);
-	                var vInfoUrls = vInfoResponse['url_encoded_fmt_stream_map'].split(',');
-	                var vDataUrl = '';
-	                
-	                for(var u=0; u < vInfoUrls.length; u++) {
-	                	vInfoUrls[u] = decodeURIComponent(vInfoUrls[u].replace(/\+/g,  " "));
-	                	vInfoUrls[u] = vInfoUrls[u].substring(vInfoUrls[u].indexOf('=')+1,vInfoUrls[u].lastIndexOf(';') < 0 ? vInfoUrls[u].length : vInfoUrls[u].lastIndexOf(';'));
-	                	if(vInfoUrls[u].indexOf('video/mp4') > 0) {
-	                		vDataUrl = vInfoUrls[u];
-	                	}
-	                }
+	            	try {
 	            	
-	                this.emit(vDataUrl);
+		            	var vInfoResponse = querystring.parse(data);
+		                var vInfoUrls = vInfoResponse['url_encoded_fmt_stream_map'].split(',');
+		                var vDataUrl = '';
+		                
+		                for(var u=0; u < vInfoUrls.length; u++) {
+		                	vInfoUrls[u] = decodeURIComponent(vInfoUrls[u].replace(/\+/g,  " "));
+		                	vInfoUrls[u] = vInfoUrls[u].substring(vInfoUrls[u].indexOf('=')+1,vInfoUrls[u].lastIndexOf(';') < 0 ? vInfoUrls[u].length : vInfoUrls[u].lastIndexOf(';'));
+		                	if(vInfoUrls[u].indexOf('video/mp4') > 0) {
+		                		vDataUrl = vInfoUrls[u];
+		                	}
+		                }
+		            	
+		                this.emit(vDataUrl);
+		                
+	            	} catch(e) {
+	            		this.exit(e);
+	            	}
 	            }
 	        });
 	    }
