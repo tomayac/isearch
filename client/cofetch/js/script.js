@@ -94,7 +94,8 @@ $(document).ready(function(){
   
   $("#previous").click(function(){
     //Load the previous co
-	if(!cofetchHandler.setPrevious()) {
+	var prev = cofetchHandler.setPrevious();  
+	if(prev === false || prev === 0) {
 		$('#previous').attr('disabled', 'disabled');
 		$('#next').removeAttr('disabled');
 	} else {
@@ -106,7 +107,8 @@ $(document).ready(function(){
   
   $("#next").click(function(){
     //load next co
-	if(!cofetchHandler.setNext()) {
+	var next = cofetchHandler.setNext();  
+	if(next === false || next === 0) {
 		$('#next').attr('disabled', 'disabled');
 		$('#previous').removeAttr('disabled');
 	} else {

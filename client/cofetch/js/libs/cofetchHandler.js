@@ -249,7 +249,7 @@ var cofetchHandler = (function() {
   //-------------------------------------------------------------
   var populateForm = function(index) {
     
-    console.log(scraperData[0][index]);
+    //console.log(scraperData[0][index]);
     
     var changes = [
       {id: "main-name", value: scraperData[0][index].Name},
@@ -553,7 +553,7 @@ var cofetchHandler = (function() {
 	  manualIndex++;
 	  if(manualIndex < scraperData[0].length) {
 		  setScraperData(manualIndex);
-		  return true;
+		  return (scraperData[0].length - 1 - manualIndex);
 	  } else {
 		  return false;
 	  }
@@ -564,7 +564,7 @@ var cofetchHandler = (function() {
 	  manualIndex--;
 	  if(manualIndex > 0) {
 		  setScraperData(manualIndex);
-		  return true;
+		  return (manualIndex-1);
 	  } else {
 		  return false;
 	  }
