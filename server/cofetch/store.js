@@ -81,8 +81,10 @@ var getVideoSourceUrl = function(youtubeLink, id, callback) {
 	            } else {
 	            	
 	            	try {
-	            	
+	            	    
 		            	var vInfoResponse = querystring.parse(data);
+		            	console.log('infoResponse: ');
+		            	console.log(vInfoResponse);
 		                var vInfoUrls = vInfoResponse['url_encoded_fmt_stream_map'].split(',');
 		                var vDataUrl = '';
 		                
@@ -107,7 +109,7 @@ var getVideoSourceUrl = function(youtubeLink, id, callback) {
 	nodeio.start(job, {args: [infoUrl]}, function(error,data) {
 		
 		if(error) {
-			callback('error: ' + error, null);
+			callback('error: ' + error, null, null);
 			return;
 		}
 
@@ -331,7 +333,12 @@ var publishRUCoD = function(data, outputPath, callback) {
 		for(var f=0; f < data.Files.length; f++) {
 			if (data.Files[f].Type == 'VideoType') {
 				getVideoSourceUrl(data.Files[f].URL, f, function(error, id, url) {
-				
+					
+					if(error) {
+						callback(error,null);
+						return;
+					}
+					
 					data.Files[id].URL = url;
 					saveRucodMedia(rucodBody, data, outputPath, callback);
 					
