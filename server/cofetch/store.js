@@ -439,7 +439,7 @@ exports.storeAutomaticInput = function(codata, callback) {
 		
 		if(index < codata.length) {
 			exports.store(codata[index], true, storeCallback);
-		} else if(endError.length > 1) {
+		} else if(endError) {
 			callback(endError,null);
 		} else { 
 			callback(null,{success: endData});
