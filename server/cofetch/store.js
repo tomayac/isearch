@@ -252,7 +252,8 @@ var publishRUCoD = function(data, outputPath, callback) {
 			           '</Direction>';
 			}
 			//Do we have weather
-			if(data.Files[f].Weather.temperature) {
+			console.log(data.Files[f].Weather);
+			if(data.Files[f].Weather.temperature !== undefined) {
 				if(data.Files[f].Weather.temperature.length > 1) {
 				   rwml += '<Weather>' +
 	                       '<Condition>' + data.Files[f].Weather.condition + '</Condition>' +
