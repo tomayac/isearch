@@ -252,16 +252,18 @@ var publishRUCoD = function(data, outputPath, callback) {
 			           '</Direction>';
 			}
 			//Do we have weather
-			if(data.Files[f].Weather.temperature.length > 1) {
-			   rwml += '<Weather>' +
-                       '<Condition>' + data.Files[f].Weather.condition + '</Condition>' +
-                       '<Temperature>' + data.Files[f].Weather.temperature + '</Temperature>' +
-                       '<WindSpeed>' + data.Files[f].Weather.wind + '</WindSpeed>' +
-                       '<Humidity>' + data.Files[f].Weather.humidity + '</Humidity>' +
-                       '</Weather>';	
+			if(data.Files[f].Weather.temperature) {
+				if(data.Files[f].Weather.temperature.length > 1) {
+				   rwml += '<Weather>' +
+	                       '<Condition>' + data.Files[f].Weather.condition + '</Condition>' +
+	                       '<Temperature>' + data.Files[f].Weather.temperature + '</Temperature>' +
+	                       '<WindSpeed>' + data.Files[f].Weather.wind + '</WindSpeed>' +
+	                       '<Humidity>' + data.Files[f].Weather.humidity + '</Humidity>' +
+	                       '</Weather>';	
+				}
 			}
 			
-			   rwml += '</ContextSlice>';
+			rwml += '</ContextSlice>';
 		} // End for loop for RWML
 		
 		rwml += '</RWML>';
