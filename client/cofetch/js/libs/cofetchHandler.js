@@ -104,8 +104,10 @@ var cofetchHandler = (function() {
       },
       error: errorFunction,
       statusCode: {
-    	  418: errorFunction,
-    	  500: errorFunction
+    	  500: function(jqXHR, textStatus, errorThrown) {
+    		  console.log("500 error");
+    		  console.log(jqXHR);
+    	  }
       }
     });
     
