@@ -721,6 +721,10 @@ var cofetchHandler = (function() {
     			  }
     		  } 
     	  },
+    	  error: function(jqXHR, textStatus, errorThrown) {
+        	  
+        	  alert("An error occured: " + errorThrown + "\n\rPlease try again or contact the administrator under jonas.etzold@fh-erfurt.de.");
+          },
     	  traditional: true,
     	  dataType: "text",
     	  contentType : "application/json; charset=utf-8"
