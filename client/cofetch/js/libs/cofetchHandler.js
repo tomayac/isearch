@@ -97,8 +97,8 @@ var cofetchHandler = (function() {
         
       },
       error: function(jqXHR, textStatus, errorThrown) {
-    	  console.log(jqXHR);
-    	  alert(textStatus + " " + errorThrown);
+    	  errorData = JSON.parse(jqXHR.responseText);
+    	  alert("An error occured: " + errorData.message || errorThrown + "\n\rPlease indicate if this error is relevant to your expected result. If yes, please try again or contact the administrator under jonas.etzold@fh-erfurt.de .");
     	  $("#loading").hide();
       }
     });

@@ -39,7 +39,7 @@ var textMethods = {
         parser.on('end', function(res) {    	
         	
         	var result = {
-        			"Type":"TextType",
+        			"Type":"Text",
         			"Name":"",
         			"FreeText":"",
         			"URL":""

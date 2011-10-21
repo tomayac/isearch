@@ -125,7 +125,7 @@ var publishRUCoD = function(data, outputPath, callback) {
 	                 '<ContentObjectName xml:lang="en-US">' + data.Name + '</ContentObjectName>' +
 	                 '<ContentObjectCreationInformation>' +
 			         '<Creator>' +
-				     '<Name>Jonas Etzold and Arnaud Brousseau</Name>' +
+				     '<Name>CoFetch Script</Name>' +
 			         '</Creator>' +
 			         '<Contributor>' +
 				     '<Name>FHE and Google</Name>' +
@@ -145,15 +145,12 @@ var publishRUCoD = function(data, outputPath, callback) {
 			continue;
 		};
 		//We need to know if there is video since the way to get the video source url is quite complicated
-		if(data.Files[f].Type == 'Video') {
+		if(data.Files[f].Type == 'VideoType') {
 			hasVideo = true;
 		};
 	    
-		console.log(data.Files[f]);
-		if(data.Files[f].Tags !== undefined) {
-			for(var t=0; t < data.Files[f].Tags.length; t++) {
+		for(var t=0; t < data.Files[f].Tags.length; t++) {
 				tagArray.push(data.Files[f].Tags[t]);
-			}
 		}
 	}
 	//Filtering the Array to have only unique tags in there
@@ -395,16 +392,22 @@ exports.storeAutomaticInput = function(data, callback) {
 	
 	console.log("Start automatic storing of " + data.length + " Content Objects...");
 	var index = 0;
+	var endError = null;
+	
 	var storeCallback = function(error,data) {
 		if(error) {
-			callback(error, null);
+			endError += "Error CO " + index + ": " + error + "\n\r"; 
 		} else {
 			
 			if(index < data.length) {
 				index++;
 				exports.store(data[index],false,storeCallback);
 			} else {
-				callback(null,{success: true});
+				if(endError !== null) {
+					callback(endError,null);
+				} else { 
+					callback(null,{success: true});
+				}
 			}
 		}
 	};
