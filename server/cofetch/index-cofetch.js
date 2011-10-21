@@ -21,20 +21,17 @@ http.createServer(function (request, response) {
 	//Error handle function
 	var handleError = function(error) {
 
-		var data   = '{"error":1,"message":"test"}';
+		var data   = '{"error":1,"message":"'+JSON.stringify(error)+'"}';
 	    var status = {"code":200,"message":"OK"};
-		 
-	    //data = '_cofetchcb({"response":' + JSON.stringify(data) + '})';
 	    
-		 response.writeHead(status.code,status.message,{ 
+		response.writeHead(status.code,status.message,{ 
 	    	    'Content-Length': Buffer.byteLength(data,'utf8'),
 			  	'Content-Type'  : 'application/json; charset=utf8',
 			  	'Access-Control-Max-Age': '3628800',
 			  	'Access-Control-Allow-Methods':'GET'
-		 });
-		 response.write(data);
-		 response.end();
-		 
+		});
+		response.write(data);
+		response.end();
 	};
 	
 	//Fetch helper function

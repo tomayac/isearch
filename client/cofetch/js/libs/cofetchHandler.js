@@ -13,15 +13,10 @@ var cofetchHandler = (function() {
   var sounds = [];
   var images = [];
   
+  var iTd = 0, tdDir = 1;
   var iImg = 0, imgDir = 1;
   var iVid = 0, vidDir = 1;
   var iSou = 0, souDir = 1;
-  
-  var errorFunction = function(jqXHR, textStatus, errorThrown) {
-	  errorData = JSON.parse(jqXHR.responseText);
-	  alert("An error occured: " + errorData.message || errorThrown + "\n\rPlease indicate if this error is relevant to your expected result. If yes, please try again or contact the administrator under jonas.etzold@fh-erfurt.de .");
-	  $("#loading").hide();
-  };
   
   var fetchCategories = function() {
 	  var serverURL = "/cofetch/getCat";  
@@ -102,12 +97,10 @@ var cofetchHandler = (function() {
         $("#loading").hide();
         
       },
-      error: errorFunction,
-      statusCode: {
-    	  500: function(jqXHR, textStatus, errorThrown) {
-    		  console.log("500 error");
-    		  console.log(jqXHR);
-    	  }
+      error: function(jqXHR, textStatus, errorThrown) {
+    	  errorData = JSON.parse(jqXHR.responseText);
+    	  alert("An error occured: " + errorData.message || errorThrown + "\n\rPlease indicate if this error is relevant to your expected result. If yes, please try again or contact the administrator under jonas.etzold@fh-erfurt.de .");
+    	  $("#loading").hide();
       }
     });
     
