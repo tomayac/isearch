@@ -3,11 +3,9 @@
 $(document).ready(function(){
   
   /*===============================
-    Load Data and populate the form
+    Initialize the script
     ===============================*/
     
-    //Fetch the data and populate the form
-    //cofetchHandler.fetch(currentID);
     cofetchHandler.fetchCategories();
     
     $( "#script-tabs" ).tabs({panelTemplate: '<section></section>'});

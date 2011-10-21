@@ -749,13 +749,13 @@ var cofetchHandler = (function() {
   var resetForm = function() {
 	  $('#script-tabs').each (function(){
 		  if($(this).attr('id') == "script-keywords") {
-			  continue;
+			  return;
 		  }
 		  if($(this).attr('id') == "script-category") {
-			  continue;
+			  return;
 		  }
 		  if($(this).attr('id') == "script-automatic") {
-			  continue;
+			  return;
 		  }
 		  this.reset();
 	  });
