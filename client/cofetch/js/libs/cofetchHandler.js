@@ -224,24 +224,24 @@ var cofetchHandler = (function() {
 		  videos.push(file);
 		} else if (file.Type === "SoundType") {
 		  sounds.push(file);
-		} else if (file.Type === "TextType") {
+		} else if (file.Type === "Text") {
 		  text.push(file);
 		}
 	    
 	  });
   
 	  //Populate the form
-	  populateForm();
+	  populateForm(index);
   };
   
   //-------------------------------------------------------------
-  var populateForm = function() {
+  var populateForm = function(index) {
     
-    console.log(scraperData);
+    console.log(scraperData[0][index]);
     
     var changes = [
-      {id: "main-name", value: scraperData[0].Name},
-      {id: "main-categoryPath", value: scraperData[0].CategoryPath},
+      {id: "main-name", value: scraperData[0][index].Name},
+      {id: "main-categoryPath", value: scraperData[0][index].CategoryPath},
       {id: "main-screenshot", value: "3d"}, //defaut: 3d screenshot
       {id: "text-content", value: text[0].FreeText}
     ];
