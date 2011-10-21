@@ -100,8 +100,7 @@ http.createServer(function (request, response) {
 		 if (parameters[0] == 'post') {
 			 postData += data;	
 	     }
-	 });
- 
+	 }); 
  }
 	
  request.addListener('end', function () {
@@ -157,11 +156,11 @@ http.createServer(function (request, response) {
 							data = '_cofetchcb({"response":' + JSON.stringify(result) + '})';
 				    		
 				    		response.writeHead(status.code,status.message,{ 
-				    			                	'Content-Length': Buffer.byteLength(data,'utf8'),
-												  	'Content-Type'  : 'application/json; charset=utf8',
-												  	'Access-Control-Max-Age': '3628800',
-												  	'Access-Control-Allow-Methods':'GET'
-											   });
+			                	'Content-Length': Buffer.byteLength(data,'utf8'),
+							  	'Content-Type'  : 'application/json; charset=utf8',
+							  	'Access-Control-Max-Age': '3628800',
+							  	'Access-Control-Allow-Methods':'GET'
+						    });
 							response.write(data);
 							response.end();
 						} // End automatic if
@@ -179,9 +178,7 @@ http.createServer(function (request, response) {
     		cofetcher.getPart(type, query, function(error, data){
 	    		
 	    		if(error) {
-	    			
 	    			handleError(error);
-	    			
 	    		} else {
 	    		
 		    		console.log("Results for '" + type + "' with query '" + query + "' retrieved!");
@@ -189,11 +186,11 @@ http.createServer(function (request, response) {
 		    		data = '_cofetchcb({"response":' + JSON.stringify(data) + '})';
 		    		
 		    		response.writeHead(status.code,status.message,{ 
-		    			                	'Content-Length': Buffer.byteLength(data,'utf8'),
-										  	'Content-Type'  : 'application/json; charset=utf8',
-										  	'Access-Control-Max-Age': '3628800',
-										  	'Access-Control-Allow-Methods':'GET'
-									   });
+	                	'Content-Length': Buffer.byteLength(data,'utf8'),
+					  	'Content-Type'  : 'application/json; charset=utf8',
+					  	'Access-Control-Max-Age': '3628800',
+					  	'Access-Control-Allow-Methods':'GET'
+				    });
 					response.write(data);
 					response.end();
 	    		}
@@ -205,13 +202,17 @@ http.createServer(function (request, response) {
         	 //console.log(postData);
         	 var coJson = JSON.parse(postData);
         	 
-        	 rucod.store(coJson, true, function(info) {
-        		 response.writeHead(status.code,status.message,{ 
+        	 rucod.store(coJson, true, function(error,info) {
+        		 if(error) {
+        			 handleError(error);
+        		 } else {
+	        		 response.writeHead(status.code,status.message,{ 
 	                	'Content-Length': Buffer.byteLength(info,'utf8'),
 					  	'Content-Type'  : 'plain/text; charset=utf8'
-				 });
-				 response.write(info);
-				 response.end(); 
+					 });
+					 response.write(info);
+					 response.end();
+        		 }
         	 });
              	
 	    } else if(parameters[0] == 'getCat') {
