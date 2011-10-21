@@ -22,7 +22,7 @@ http.createServer(function (request, response) {
 	var handleError = function(error) {
 
 		var data   = '{"error":1,"message":"'+error+'"}';
-	    var status = {"code":200,"message":"OK"};
+	    var status = {"code":418,"message":"I'm a Teapot"};
 		 
 		 response.writeHead(status.code,status.message,{ 
 	    	    'Content-Length': Buffer.byteLength(data,'utf8'),

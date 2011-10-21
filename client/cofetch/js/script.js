@@ -16,7 +16,7 @@ $(document).ready(function(){
     Registering all the events handlers
     ===================================*/
   $("#script-start").click(function(){
-	if($("#script-keywords").val().length < 2 || $("#script-category").val() == "") {
+	if($("#script-keywords").val().length < 3 || $("#script-category").val() == "") {
 		alert("Please specify at least one search keyword as well as the search category!");
 	} else {
 		cofetchHandler.fetch($("#script-keywords").val(),$("#script-category").val(),$("#script-automatic").attr("checked"));
