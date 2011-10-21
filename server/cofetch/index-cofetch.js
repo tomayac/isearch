@@ -21,6 +21,7 @@ http.createServer(function (request, response) {
 	//Error handle function
 	var handleError = function(error) {
 		console.log((typeof(response) == 'object') ? 'response exists' : 'no response object found');
+		console.log(response);
 		var data   = '{"error":1,"message":"'+error+'"}';
 	    var status = {"code":200,"message":"OK"};
 		 
@@ -94,7 +95,7 @@ http.createServer(function (request, response) {
 			        	 });
 			        	
 					} else {	
-						
+						//Do it with verification of user
 						data = '_cofetchcb({"response":' + JSON.stringify(result) + '})';
 			    		
 			    		response.writeHead(status.code,status.message,{ 
@@ -105,7 +106,7 @@ http.createServer(function (request, response) {
 										   });
 						response.write(data);
 						response.end();
-					} // End automatic
+					} // End automatic if
 					
 				} //End fetch if	
 			} //End error if
