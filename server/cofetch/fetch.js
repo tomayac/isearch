@@ -19,18 +19,6 @@ Fetch.prototype.getPart = function(type, query, callback) {
 		callback('Missing parameter', []);
 	}
 	
-	var handleResult = function(error,data) {
-		//Be sure to have data before going on
-		if(!error && data.length < 1) {
-			error = 'No data could be retrieved.';
-		}
-		if(error) {
-			callback('error: ' + error,[]);
-		}
-		
-		callback(null,data);
-	};
-	
 	switch(type) {
 		case '3d':
 			step(
@@ -46,8 +34,9 @@ Fetch.prototype.getPart = function(type, query, callback) {
 					if(error) {
 						console.log('error: ' + error);
 						callback(error,[]);
-					}
-					callback(null,data);
+					} else {
+						callback(null,data);
+					}	
 				}
 			);
 			break;
@@ -65,8 +54,9 @@ Fetch.prototype.getPart = function(type, query, callback) {
 					if(error) {
 						console.log('error: ' + error);
 						callback(error,[]);
-					}
-					callback(null,data);
+					} else {
+						callback(null,data);
+					}	
 				}
 			);
 			break;
@@ -84,8 +74,9 @@ Fetch.prototype.getPart = function(type, query, callback) {
 					if(error) {
 						console.log('error: ' + error);
 						callback(error,[]);
-					}
-					weather.fetchWeather(data,this);
+					} else {
+						weather.fetchWeather(data,this);
+					}	
 				},
 				function getResult(error,data) {
 					//Be sure to have data before going on
@@ -95,14 +86,14 @@ Fetch.prototype.getPart = function(type, query, callback) {
 					if(error) {
 						console.log('error: ' + error);
 						callback(error,[]);
+					} else {
+						var result = [];
+						for(var w=0; w < data.length; w++) {
+							result.push(data[w][0]);
+						}
+						
+						callback(null,result);
 					}
-					
-					var result = [];
-					for(var w=0; w < data.length; w++) {
-						result.push(data[w][0]);
-					}
-					
-					callback(null,result);
 				}
 			);
 			break;
@@ -120,8 +111,9 @@ Fetch.prototype.getPart = function(type, query, callback) {
 					if(error) {
 						console.log('error: ' + error);
 						callback(error,[]);
-					}
-					callback(null,data);
+					} else {
+						callback(null,data);
+					}	
 				}
 			);
 			break;
@@ -135,11 +127,12 @@ Fetch.prototype.getPart = function(type, query, callback) {
 					if(error) {
 						console.log('error: ' + error);
 						callback(error,[]);
-					}
-					if(data.length < 1) {
-						sound.fetchSound(query, false, this);
 					} else {
-						weather.fetchWeather(data,this);
+						if(data.length < 1) {
+							sound.fetchSound(query, false, this);
+						} else {
+							weather.fetchWeather(data,this);
+						}
 					}
 				},
 				function getResult(error,data) {
@@ -150,19 +143,19 @@ Fetch.prototype.getPart = function(type, query, callback) {
 					if(error) {
 						console.log('error: ' + error);
 						callback(error,[]);
-					}
-					
-					var result = [];
-					console.log("SoundData:");
-					console.log(data);
-					if(data[0][0]) {
-						for(var w=0; w < data.length; w++) {
-							result.push(data[w][0]);
-						}
 					} else {
-						result = data;
+					
+						var result = [];
+						
+						if(data[0][0]) {
+							for(var w=0; w < data.length; w++) {
+								result.push(data[w][0]);
+							}
+						} else {
+							result = data;
+						}
+						callback(null,result);
 					}
-					callback(null,result);
 				}
 			);
 			break;
