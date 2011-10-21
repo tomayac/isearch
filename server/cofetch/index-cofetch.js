@@ -20,8 +20,8 @@ http.createServer(function (request, response) {
  
 	//Error handle function
 	var handleError = function(error) {
-		 
-		 var data   = '{"error":1,"message":"'+error+'"}';
+		console.log('error hanle function'); 
+		var data   = '{"error":1,"message":"'+error+'"}';
 	    var status = {"code":404,"message":"Not found"};
 		 
 		 response.writeHead(status.code,status.message,{ 
@@ -59,10 +59,10 @@ http.createServer(function (request, response) {
 					//If data for the given keyword already exists, we do not need to get it again
 					rucod.exists(keywords[index], category, function(data) {
 						if(data != undefined) {
-							console.log("Stored data loaded for query " + index +" of " + keywords.length + ": '" + keywords[index] + "'...");
+							console.log("Stored data loaded for query " + (index+1) +" of " + keywords.length + ": '" + keywords[index] + "'...");
 							fetchCallback(null,data);
 						} else {
-							console.log("Fetching data for query " + index +" of " + keywords.length + ": '" + keywords[index] + "'...");
+							console.log("Fetching data for query " + (index+1) +" of " + keywords.length + ": '" + keywords[index] + "'...");
 							cofetcher.get(keywords[index], category, index, automatic, fetchCallback);
 						}
 					});
@@ -76,7 +76,8 @@ http.createServer(function (request, response) {
 
 			        	rucod.storeAutomaticInput(result, function(error, data) {
 			        		console.log("automatic input callback: " + error + " data: " + data); 
-			        		if(error) {
+			        		if(error.length > 1) {
+			        			console.log("ERROR PROCESSING");
 			    				handleError('Automatic storing ended with errors listed below:\n\r' + error);
 			    			} else {
 			    				console.log("FINISHED PROCESSING");
@@ -113,10 +114,10 @@ http.createServer(function (request, response) {
 		//If data for the given keyword already exists, we do not need to get it again
 		rucod.exists(keywords[index], category, function(data) {
 			if(data != undefined) {
-				console.log("Stored data loaded for query " + index +" of " + keywords.length + ": '" + keywords[index] + "'...");
+				console.log("Stored data loaded for query " + (index+1) +" of " + keywords.length + ": '" + keywords[index] + "'...");
 				fetchCallback(null,data);
 			} else {
-				console.log("Fetching data for query " + index +" of " + keywords.length + ": '" + keywords[index] + "'...");
+				console.log("Fetching data for query " + (index+1) +" of " + keywords.length + ": '" + keywords[index] + "'...");
 				cofetcher.get(keywords[index], category, index, automatic, fetchCallback);
 			}
 		});

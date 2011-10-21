@@ -417,7 +417,7 @@ exports.storeAutomaticInput = function(codata, callback) {
 	
 	console.log("Start automatic storing of " + codata.length + " Content Objects...");
 	var index = 0;
-	var endError = null;
+	var endError = '';
 	
 	var storeCallback = function(error,data) {
 		if(error) {
