@@ -330,9 +330,34 @@ var publishRUCoD = function(data, outputPath, callback) {
 };
 
 /**
+ * Checks wether the given CO name already exists and returns the CO data if so.
+ * @param name - the name of the content object
+ * @param categoryPath - the category path of the content object
+ * @param callback
+ */
+exports.exists = function(name, categoryPath, callback) {
+	
+	var fileOutputPath = basepath + '/' + categoryPath + '/';
+	var coName = name.replace(/\s/g,'_');
+	
+	//Check if the folder for this content object already exists
+	path.exists(fileOutputPath + coName + '.json', function (exists) {
+		if(exists) {
+			var fileContents = fs.readFileSync(fileOutputPath + coName + '.json','utf8');
+			var data = JSON.parse(fileContents); 
+			callback(data);
+		} else {
+			callback(undefined);
+		}
+	});
+	
+};
+
+/**
  * Stores the given JSON data as file on the servers file system.
- * @param the Content Object data in JSON format
- * @param overwrite indicates weather an existing file for content object should be overwritten or not
+ * @param data - the Content Object data in JSON format
+ * @param overwrite - indicates weather an existing file for content object should be overwritten or not
+ * @param callback
  */
 exports.store = function(data, overwrite, callback) {
 	
@@ -385,8 +410,8 @@ exports.store = function(data, overwrite, callback) {
  * Stores a given JSON array containing multiple Content Object data as file on the servers file system.
  * The function should be applied for automatic retrieved content object data, e.g. content object data which
  * was not revised by an user.
- * @param an array of Content Object data in JSON format
- * @param callback the function which should be called upon finishing of the storing process
+ * @param codata - an array of Content Object data in JSON format
+ * @param callback - the function which should be called upon finishing of the storing process
  */
 exports.storeAutomaticInput = function(codata, callback) {
 	
@@ -402,7 +427,7 @@ exports.storeAutomaticInput = function(codata, callback) {
 		index++;
 		
 		if(index < codata.length) {
-			exports.store(codata[index],false,storeCallback);
+			exports.store(codata[index],true,storeCallback);
 		} else if(endError !== null) {
 			callback(endError,null);
 		} else { 
