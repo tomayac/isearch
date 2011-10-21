@@ -20,7 +20,6 @@ http.createServer(function (request, response) {
  
 	//Error handle function
 	var handleError = function(error) {
-		console.log((typeof(response) == 'object') ? 'response exists' : 'no response object found');
 
 		var data   = '{"error":1,"message":"'+error+'"}';
 	    var status = {"code":500,"message":"Internal Server Error"};
@@ -136,12 +135,13 @@ http.createServer(function (request, response) {
 						if(automatic) {
 	
 				        	rucod.storeAutomaticInput(result, function(error, data) {
-				        		console.log("automatic input callback: " + error + " data: " + data); 
+				        		 
 				        		if(error.length > 1) {
-				        			console.log("ERROR PROCESSING");
-				    				handleError('Automatic storing ended with errors listed below:\n\r' + error);
-				    			} else {
-				    				console.log("FINISHED PROCESSING");
+
+				        			handleError('Automatic storing ended with errors listed below:\n\r' + error);
+				    			
+				        		} else {
+
 				    				console.log((typeof(response) == 'object') ? 'response exists' : 'no response object found');
 									data = '_cofetchcb({"response":' + JSON.stringify(data) + '})';
 									 

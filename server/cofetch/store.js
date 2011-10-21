@@ -385,8 +385,7 @@ exports.store = function(data, overwrite, callback) {
 	//Check if the folder for this content object already exists
 	path.exists(fileOutputPath + baseName + '.json', function (exists) {
 		//Pre check
-		console.log('overwrite: ' + overwrite + ' exists: ' + exists);
-		if(exists && (overwrite === false)) {
+		if(exists && overwrite === false) {
 			console.log('File exists!');
 			callback('File already exists and overwrite was not allowed');
 			return;
@@ -422,13 +421,13 @@ exports.storeAutomaticInput = function(codata, callback) {
 	
 	var storeCallback = function(error,data) {
 		if(error) {
-			endError += "Error CO " + (index+1) + ": " + error + "\n\r"; 
+			endError += "Error CO '" + codata[index].Name + "': " + error + "\n\r"; 
 		} 
 		
 		index++;
 		
 		if(index < codata.length) {
-			exports.store(codata[index],true,storeCallback);
+			exports.store(codata[index], true, storeCallback);
 		} else if(endError !== null) {
 			callback(endError,null);
 		} else { 
@@ -437,6 +436,6 @@ exports.storeAutomaticInput = function(codata, callback) {
 		
 	};
 	
-	exports.store(codata[index],false,storeCallback);
+	exports.store(codata[index], false, storeCallback);
 	
 };
