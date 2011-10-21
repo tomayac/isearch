@@ -60,6 +60,9 @@ var cofetchHandler = (function() {
     console.log('Waiting for results for query "' + query + '"');
     $("#loading").show();
     
+    //Reset scraper data
+    scraperData = [];
+    
     //Request our data
     $.ajax({
       url: serverURL,
