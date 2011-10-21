@@ -564,7 +564,7 @@ var cofetchHandler = (function() {
 	  manualIndex--;
 	  if(manualIndex > 0) {
 		  setScraperData(manualIndex);
-		  return (manualIndex-1);
+		  return manualIndex;
 	  } else {
 		  return false;
 	  }
@@ -837,6 +837,7 @@ var cofetchHandler = (function() {
     setNext: setNext,
     setPrevious: setPrevious,
     save: save, 
+    resetForm: resetForm,
     getParameterByName: getParameterByName,
     //For debug purpose, this could be useful
     scraperData: scraperData,
