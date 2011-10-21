@@ -388,9 +388,9 @@ exports.store = function(data, overwrite, callback) {
  * @param an array of Content Object data in JSON format
  * @param callback the function which should be called upon finishing of the storing process
  */
-exports.storeAutomaticInput = function(data, callback) {
+exports.storeAutomaticInput = function(codata, callback) {
 	
-	console.log("Start automatic storing of " + data.length + " Content Objects...");
+	console.log("Start automatic storing of " + codata.length + " Content Objects...");
 	var index = 0;
 	var endError = null;
 	
@@ -399,9 +399,9 @@ exports.storeAutomaticInput = function(data, callback) {
 			endError += "Error CO " + index + ": " + error + "\n\r"; 
 		} 
 			
-		if(index < data.length) {
+		if(index < codata.length) {
 			index++;
-			exports.store(data[index],false,storeCallback);
+			exports.store(codata[index],false,storeCallback);
 		} else if(endError !== null) {
 			callback(endError,null);
 		} else { 
