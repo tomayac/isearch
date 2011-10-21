@@ -20,9 +20,9 @@ http.createServer(function (request, response) {
  
 	//Error handle function
 	var handleError = function(error) {
-		console.log('error hanle function'); 
+		console.log((typeof(response) == 'object') ? 'response exists' : 'no response object found');
 		var data   = '{"error":1,"message":"'+error+'"}';
-	    var status = {"code":404,"message":"Not found"};
+	    var status = {"code":200,"message":"OK"};
 		 
 		 response.writeHead(status.code,status.message,{ 
 	    	    'Content-Length': Buffer.byteLength(data,'utf8'),
@@ -32,7 +32,7 @@ http.createServer(function (request, response) {
 		 });
 		 response.write(data);
 		 response.end();
-		 return;
+		 
 	};
 	
 	//Fetch helper function
