@@ -64,8 +64,7 @@ var cofetchHandler = (function() {
     //Request our data
     $.ajax({
       url: serverURL,
-      dataType: "jsonp",
-      jsonpCallback: "_cofetchcb",
+      dataType: "text",
       timeout: 300000,
       success: function(data) {
     	
