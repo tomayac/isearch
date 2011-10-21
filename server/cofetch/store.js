@@ -150,9 +150,8 @@ var publishRUCoD = function(data, outputPath, callback) {
 		};
 
 		for(var t=0; t < data.Files[f].Tags.length; t++) {
-			tag = data.Files[f].Tags[t].toLowerCase().replace(/\b[a-z]/g, function(letter) {
-		    	  	return letter.toUpperCase();
-	  		  	  });
+			tag = data.Files[f].Tags[t].replace(/^\s*|\s*$/g,'');
+			tag = tag.charAt(0).toUpperCase() + tag.slice(1);
 			tagArray.push(tag);
 		}
 	}
