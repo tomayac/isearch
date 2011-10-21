@@ -252,7 +252,6 @@ var publishRUCoD = function(data, outputPath, callback) {
 			           '</Direction>';
 			}
 			//Do we have weather
-			console.log(data.Files[f].Weather);
 			if(data.Files[f].Weather.temperature !== undefined) {
 				if(data.Files[f].Weather.temperature.length > 1) {
 				   rwml += '<Weather>' +
@@ -300,16 +299,22 @@ var publishRUCoD = function(data, outputPath, callback) {
 	    console.log("Temporary RUCoD data collected. Writing files...");
 		//Write RWML file
 		fs.writeFile(outputPath+ baseName + '.rwml', rwml, function (error) {
-			if (error) throw error;
-			console.log('RWML file created or overwritten under ' + outputPath + baseName + '.rwml');
-			
-			//Write RUCoD file
-			fs.writeFile(outputPath + baseName + '_rucod.xml', (rucodHeadS + rucodBody + rucodHeadE), function (error) {
-				if (error) throw error;
-				console.log('RUCoD file created or overwritten under ' + outputPath + baseName + '_rucod.xml');
+			if (error) {
+				callback(error,null);
+			} else {
+				console.log('RWML file created or overwritten under ' + outputPath + baseName + '.rwml');
 				
-				callback('JSON and RUCoD files successfully saved.');
-			});
+				//Write RUCoD file
+				fs.writeFile(outputPath + baseName + '_rucod.xml', (rucodHeadS + rucodBody + rucodHeadE), function (error) {
+					if (error) {
+						callback(error,null);
+					} else {
+						console.log('RUCoD file created or overwritten under ' + outputPath + baseName + '_rucod.xml');
+						
+						callback(null,{success:'JSON and RUCoD files successfully saved.'});
+					}
+				});
+			}
 		});
 	}; //Function saveRucodMedia end
 	
@@ -390,7 +395,7 @@ exports.store = function(data, overwrite, callback) {
 		//Pre check
 		if(exists && overwrite === false) {
 			console.log('File exists!');
-			callback('File already exists and overwrite was not allowed');
+			callback('File already exists and overwrite was not allowed', null);
 			return;
 		} 
 		
@@ -434,7 +439,7 @@ exports.storeAutomaticInput = function(codata, callback) {
 		} else if(endError !== null) {
 			callback(endError,null);
 		} else { 
-			callback(null,{success: true});
+			callback(null,data);
 		}
 		
 	};
