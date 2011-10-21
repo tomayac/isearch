@@ -16,6 +16,16 @@ $(document).ready(function(){
     	$(".datatab").hide();
     }
     
+    if(!cofetchHandler.hasScraperData) {
+    	$("#save").attr('disabled', 'disabled');
+    	$('#next').attr('disabled', 'disabled');
+    	$('#previous').attr('disabled', 'disabled');
+    } else {
+    	$('#save').removeAttr('disabled');
+    	$('#next').removeAttr('disabled');
+    	$('#previous').removeAttr('disabled');
+    }
+    
   /*===================================
     Registering all the events handlers
     ===================================*/
@@ -83,25 +93,24 @@ $(document).ready(function(){
   });
   
   $("#previous").click(function(){
-    //Load the previous URL
-    //i.e take the parameter, decrement it, and load the page
-    var currentLocation = window.location;
-    var newLocation = window.location.href.substring(0,window.location.href.indexOf("?"));
-    newID = parseInt(currentID) - 1;
-    newLocation += "?id=" + newID ;
-    console.log(newLocation);
-    window.location = newLocation;
+    //Load the previous co
+	if(!cofetchHandler.setPrevious()) {
+		$('#previous').attr('disabled', 'disabled');
+		$('#next').removeAttr('disabled');
+	} else {
+		$('#previous').removeAttr('disabled');
+	}
     return false;
   });
   
   $("#next").click(function(){
-    //load next
-    var currentLocation = window.location;
-    var newLocation = window.location.href.substring(0,window.location.href.indexOf("?"));
-    newID = parseInt(currentID) + 1;
-    newLocation += "?id=" + newID ;
-    console.log(newLocation);
-    window.location = newLocation;
+    //load next co
+	if(!cofetchHandler.setNext()) {
+		$('#next').attr('disabled', 'disabled');
+	} else {
+		$('#previous').removeAttr('disabled');
+		$('#next').removeAttr('disabled');
+	} 
     return false;
   });
   
@@ -110,17 +119,8 @@ $(document).ready(function(){
 	e.preventDefault();  
 	
 	//post JSON to the correct handler server
-    var sent = cofetchHandler.save();
+    cofetchHandler.save();
     
-    //load next 
-    /*
-    var currentLocation = window.location;
-    var newLocation = window.location.href.substring(0,window.location.href.indexOf("?"));
-    newID = parseInt(currentID) + 1;
-    newLocation += "?id=" + newID ;
-    console.log(newLocation);
-    window.location = newLocation;
-    */
     return false;
   });
   

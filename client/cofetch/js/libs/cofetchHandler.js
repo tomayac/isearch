@@ -7,6 +7,8 @@ var cofetchHandler = (function() {
   var scraperData = []; //I don't know why a simple empty object "{}" does not
                         //work here. It seems the script does have access to the
                         //variable inly if it's array. W.E.I.R.D ^^
+  var manualIndex = 0;
+  
   var threed = [];
   var text = [];
   var videos = [];
@@ -18,6 +20,7 @@ var cofetchHandler = (function() {
   var iVid = 0, vidDir = 1;
   var iSou = 0, souDir = 1;
   
+  //-------------------------------------------------------------  
   var fetchCategories = function() {
 	  var serverURL = "/cofetch/getCat";  
 	  
@@ -40,6 +43,7 @@ var cofetchHandler = (function() {
       });
   };
   
+  //-------------------------------------------------------------  
   var fetch = function(query,category,automatic) {
 
 	if(automatic !== undefined) {
@@ -71,8 +75,6 @@ var cofetchHandler = (function() {
     	if(automatic && scraperData.success) {
     		console.log('Data for keywords "' + query + '" successfully fetched and stored as RUCoD.');
     	} else {
-    		
-	        console.log('Data for keywords "' + query + '" successfully fetched.');
 	        
 	        if(automatic === 1) {
 	        	
@@ -80,25 +82,18 @@ var cofetchHandler = (function() {
 	        	
 	        } else {
 	        	
-	        	//Now, let's sort the files according to their type
-		        var files = scraperData[0].Files;
-		        $.each(files, function(index, file){
-		          if (file.Type === "ImageType") {
-		            images.push(file);
-		          } else if (file.Type === "Object3d") {
-		            threed.push(file);
-		            console.log("Threed variable",threed);
-		          } else if (file.Type === "VideoType") {
-		            videos.push(file);
-		          } else if (file.Type === "SoundType") {
-		            sounds.push(file);
-		          } else if (file.Type === "TextType") {
-		            text.push(file);
-		          }
-		        });
-		        
-		        //Populate the form
-		        populateForm();
+	        	console.log('Data for keywords "' + query + '" successfully fetched.');
+	        	
+	        	if(scraperData[0].length > 0) {
+	        		$('#save').removeAttr('disabled');
+	        	}
+	        	if(scraperData[0].length > 1) {
+	        		$('#next').removeAttr('disabled');
+	        	}
+	        	
+	        	manualIndex = 0;
+	        	setScraperData(manualIndex);
+	        	
 	        }
     	}
         $("#loading").hide();
@@ -113,6 +108,7 @@ var cofetchHandler = (function() {
     
   };
   
+  //-------------------------------------------------------------  
   var fetchPart = function(type, query) {
 	  
 	  var serverURL = "/cofetch/getPart/";
@@ -200,6 +196,42 @@ var cofetchHandler = (function() {
     });
   };
   
+  //-------------------------------------------------------------
+  var hasScraperData = function() {
+	  if(scraperData.length > 0) {
+		  return true;
+	  } else {
+		  return false;
+	  }
+  };
+  
+  //-------------------------------------------------------------
+  var setScraperData = function(index) {
+	  
+	  //Now, let's sort the files according to their type
+	  var files = scraperData[0][index].Files;
+	  
+	  $.each(files, function(index, file){
+		  
+	    if (file.Type === "ImageType") {
+		  images.push(file);
+		} else if (file.Type === "Object3d") {
+		  threed.push(file);
+		} else if (file.Type === "VideoType") {
+		  videos.push(file);
+		} else if (file.Type === "SoundType") {
+		  sounds.push(file);
+		} else if (file.Type === "TextType") {
+		  text.push(file);
+		}
+	    
+	  });
+  
+	  //Populate the form
+	  populateForm();
+  };
+  
+  //-------------------------------------------------------------
   var populateForm = function() {
     
     console.log(scraperData);
@@ -220,13 +252,15 @@ var cofetchHandler = (function() {
     if(images.length > 0) { setImage(); }
     
   };
-  
+
+  //-------------------------------------------------------------
   var getText = function(searchPhrase) {
 	  if (typeof searchPhrase !== "undefined") {
 		  fetchPart('text',searchPhrase);
 	  }
   }; 
-  
+
+  //-------------------------------------------------------------  
   var setText = function() {
 	  var changes = [
          {id: "text-content", value: text[0].FreeText}
@@ -234,12 +268,14 @@ var cofetchHandler = (function() {
        set(changes);
   };
   
+  //-------------------------------------------------------------  
   var get3d = function(searchPhrase) {
 	  if (typeof searchPhrase !== "undefined") {
 		  fetchPart('3d',searchPhrase);
 	  }
   }; 
   
+  //-------------------------------------------------------------  
   var set3d = function(shift) {
     
     if (typeof shift !== "undefined") {
@@ -292,12 +328,14 @@ var cofetchHandler = (function() {
     
   };
   
+  //-------------------------------------------------------------  
   var getVideo = function(searchPhrase) {
 	  if (typeof searchPhrase !== "undefined") {
 		  fetchPart('video',searchPhrase);
 	  }
   }; 
   
+  //-------------------------------------------------------------  
   var setVideo = function(shift) {
     if (typeof shift !== "undefined") {
       //if the "shift" argument is set, we must change the video
@@ -356,12 +394,14 @@ var cofetchHandler = (function() {
     
   };
   
+  //-------------------------------------------------------------  
   var getSound = function(searchPhrase) {
 	  if (typeof searchPhrase !== "undefined") {
 		  fetchPart('sound',searchPhrase);
 	  }
   }; 
   
+  //-------------------------------------------------------------  
   var setSound = function(shift) {
     if (typeof shift !== "undefined") {
         //if the "shift" argument is set, we must change the video
@@ -415,12 +455,14 @@ var cofetchHandler = (function() {
     set(changes);
   };
   
+  //-------------------------------------------------------------  
   var getImage = function(searchPhrase) {
 	  if (typeof searchPhrase !== "undefined") {
 		  fetchPart('image',searchPhrase);
 	  }
   }; 
   
+  //-------------------------------------------------------------
   var setImage = function(shift) {
     if (typeof shift !== "undefined") {
       //if the "shift" argument is set, we must change the video
@@ -474,7 +516,30 @@ var cofetchHandler = (function() {
     set(changes);
   };
   
-  var save = function() {
+  //-------------------------------------------------------------
+  var setNext = function() {
+	  manualIndex++;
+	  if(manualIndex < scraperData[0].length) {
+		  setScraperData(manualIndex);
+		  return true;
+	  } else {
+		  return false;
+	  }
+  };
+  
+  //-------------------------------------------------------------
+  var setPrevious = function() {
+	  manualIndex--;
+	  if(manualIndex > 0) {
+		  setScraperData(manualIndex);
+		  return true;
+	  } else {
+		  return false;
+	  }
+  };
+  
+  //-------------------------------------------------------------  
+  var save = function(callback) {
     
 	var serverURL = "/cofetch/post/";  
 	
@@ -627,17 +692,23 @@ var cofetchHandler = (function() {
     	  url: serverURL,
     	  data: JSON.stringify(jsonFile),
     	  success: function(data) {
-      		console.log("CO saved: " + data);
+    		  callback('Successfully saved! ('+data+')');
+    		  scraperData[0].splice(manualIndex,1);
+    		  if(!setNext()) {
+    			  if(!setPrevious()) {
+    				  alert('You revised every fetched Content Object. Please start a new search. Page will reload.');
+    				  window.location.reload();
+    			  }
+    		  } 
     	  },
     	  traditional: true,
     	  dataType: "text",
     	  contentType : "application/json; charset=utf-8"
     });
     
-    
-    return 'Successfully saved!';
   };
   
+  //-------------------------------------------------------------  
   var getScreenshot = function() {
     
     var screenshotValue = $('#main-screenshot').val();
@@ -656,6 +727,7 @@ var cofetchHandler = (function() {
     }   
   };
   
+  //-------------------------------------------------------------  
   var set = function(changes) {
     //"changes" is an array of {id: id, value: value}
     if (changes.length === 0) {
@@ -671,6 +743,7 @@ var cofetchHandler = (function() {
     }
   };
   
+  //-------------------------------------------------------------  
   var setField = function(id, value) {
     
     //jQuery is awesome. Whether it be a select, a multiple select or a simple text field, 
@@ -679,6 +752,7 @@ var cofetchHandler = (function() {
 
   };
   
+  //-------------------------------------------------------------  
   function getParameterByName(name) {
     name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
     var regexS = "[\\?&]" + name + "=([^&#]*)";
@@ -690,10 +764,12 @@ var cofetchHandler = (function() {
       return decodeURIComponent(results[1].replace(/\+/g, " "));
   }
   
+  //-------------------------------------------------------------  
   return {
 	fetchCategories: fetchCategories, 
     fetch: fetch,
     fetchPart: fetchPart,
+    hasScraperData: hasScraperData,
     populateForm: populateForm,
     getText: getText,
     setText: setText,
@@ -705,6 +781,8 @@ var cofetchHandler = (function() {
     setSound: setSound,
     getImage: getImage,
     setImage: setImage,
+    setNext: setNext,
+    setPrevious: setPrevious,
     save: save, 
     getParameterByName: getParameterByName,
     //For debug purpose, this could be useful

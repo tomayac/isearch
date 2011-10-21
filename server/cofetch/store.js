@@ -271,7 +271,7 @@ var publishRUCoD = function(data, outputPath, callback) {
 		
 		//Add the RWML to the RUCoD
 		rucodBody += '<RealWorldInfo>' +
-					 '<MetadataUri filetype="rwml">' + publicOutputUrl + '/' + baseName + '.rwml</MetadataUri> ' +
+					 '<MetadataUri filetype="rwml">' + baseName + '.rwml</MetadataUri> ' +
 					 '</RealWorldInfo>';   
 		
 		//Find and add emotion if there are some
