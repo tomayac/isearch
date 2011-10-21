@@ -732,6 +732,7 @@ var cofetchHandler = (function() {
     			  }
     		  }
     		  alert('Successfully saved! ('+data+')');
+    		  resetForm();
     	  },
     	  error: function(jqXHR, textStatus, errorThrown) {
         	  
@@ -742,6 +743,22 @@ var cofetchHandler = (function() {
     	  contentType : "application/json; charset=utf-8"
     });
     
+  };
+  
+  //-------------------------------------------------------------  
+  var resetForm = function() {
+	  $('#script-tabs').each (function(){
+		  if($(this).attr('id') == "script-keywords") {
+			  continue;
+		  }
+		  if($(this).attr('id') == "script-category") {
+			  continue;
+		  }
+		  if($(this).attr('id') == "script-automatic") {
+			  continue;
+		  }
+		  this.reset();
+	  });
   };
   
   //-------------------------------------------------------------  
