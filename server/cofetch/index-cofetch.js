@@ -23,7 +23,7 @@ http.createServer(function (request, response) {
 		console.log((typeof(response) == 'object') ? 'response exists' : 'no response object found');
 
 		var data   = '{"error":1,"message":"'+error+'"}';
-	    var status = {"code":200,"message":"OK"};
+	    var status = {"code":500,"message":"Internal Server Error"};
 		 
 		 response.writeHead(status.code,status.message,{ 
 	    	    'Content-Length': Buffer.byteLength(data,'utf8'),
@@ -37,7 +37,7 @@ http.createServer(function (request, response) {
 	};
 	
 	//Fetch helper function
-	var handleFetch = function(keywords, category, index, automatic) {
+	var handleFetch = function(keywords, category, index, automatic, callback) {
 		
 		var cofetcher = new fetch.Fetch();
 		var result = [];
@@ -45,7 +45,7 @@ http.createServer(function (request, response) {
 		var fetchCallback = function(error, data) {
 			
 			if(error) {
-				handleError(error);
+				callback(error, null);
 			} else {
 				
 				//Add retrieved content object data to result array
@@ -71,42 +71,7 @@ http.createServer(function (request, response) {
 				} else {
 					
 					console.log("Fetched all content object data!");
-					
-					//Decide weather to send data back for user verification or store the data directly as RUCoD
-					if(automatic) {
-
-			        	rucod.storeAutomaticInput(result, function(error, data) {
-			        		console.log("automatic input callback: " + error + " data: " + data); 
-			        		if(error.length > 1) {
-			        			console.log("ERROR PROCESSING");
-			    				handleError('Automatic storing ended with errors listed below:\n\r' + error);
-			    			} else {
-			    				console.log("FINISHED PROCESSING");
-			    				console.log((typeof(response) == 'object') ? 'response exists' : 'no response object found');
-								data = '_cofetchcb({"response":' + JSON.stringify(data) + '})';
-								 
-								response.writeHead(status.code,status.message,{ 
-									'Content-Length': Buffer.byteLength(data,'utf8'),
-								    'Content-Type'  : 'plain/text; charset=utf8'
-								});
-								response.write(data);
-								response.end(); 
-			    			}
-			        	 });
-			        	
-					} else {	
-						//Do it with verification of user
-						data = '_cofetchcb({"response":' + JSON.stringify(result) + '})';
-			    		
-			    		response.writeHead(status.code,status.message,{ 
-			    			                	'Content-Length': Buffer.byteLength(data,'utf8'),
-											  	'Content-Type'  : 'application/json; charset=utf8',
-											  	'Access-Control-Max-Age': '3628800',
-											  	'Access-Control-Allow-Methods':'GET'
-										   });
-						response.write(data);
-						response.end();
-					} // End automatic if
+					callback(null, result);
 					
 				} //End fetch if	
 			} //End error if
@@ -161,7 +126,49 @@ http.createServer(function (request, response) {
 	    		
 	    	} else {
 	    		
-	    		handleFetch(keywords, category, 0, automatic);
+	    		handleFetch(keywords, category, 0, automatic, function(error, result) {
+	    			
+	    			if(error) {
+	    				handleError(error);
+	    			} else {
+	    			
+		    			//Decide weather to send data back for user verification or store the data directly as RUCoD
+						if(automatic) {
+	
+				        	rucod.storeAutomaticInput(result, function(error, data) {
+				        		console.log("automatic input callback: " + error + " data: " + data); 
+				        		if(error.length > 1) {
+				        			console.log("ERROR PROCESSING");
+				    				handleError('Automatic storing ended with errors listed below:\n\r' + error);
+				    			} else {
+				    				console.log("FINISHED PROCESSING");
+				    				console.log((typeof(response) == 'object') ? 'response exists' : 'no response object found');
+									data = '_cofetchcb({"response":' + JSON.stringify(data) + '})';
+									 
+									response.writeHead(status.code,status.message,{ 
+										'Content-Length': Buffer.byteLength(data,'utf8'),
+									    'Content-Type'  : 'plain/text; charset=utf8'
+									});
+									response.write(data);
+									response.end(); 
+				    			}
+				        	 });
+				        	
+						} else {	
+							//Do it with verification of user
+							data = '_cofetchcb({"response":' + JSON.stringify(result) + '})';
+				    		
+				    		response.writeHead(status.code,status.message,{ 
+				    			                	'Content-Length': Buffer.byteLength(data,'utf8'),
+												  	'Content-Type'  : 'application/json; charset=utf8',
+												  	'Access-Control-Max-Age': '3628800',
+												  	'Access-Control-Allow-Methods':'GET'
+											   });
+							response.write(data);
+							response.end();
+						} // End automatic if
+	    			} //End error if
+	    		});
 	    		
 	    	}
 	    	
@@ -253,6 +260,7 @@ http.createServer(function (request, response) {
 		    });
 	    }
 	});
+ 
 }).listen(port);
 
 console.log('Cofetch Server running at port ' + port);
