@@ -21,10 +21,10 @@ http.createServer(function (request, response) {
 	//Error handle function
 	var handleError = function(error) {
 
-		var data   = '{"error":1,"message":"'+error+'"}';
+		var data   = '{"error":1,"message":"test"}';
 	    var status = {"code":200,"message":"OK"};
 		 
-	    data = '_cofetchcb({"response":' + JSON.stringify(data) + '})';
+	    //data = '_cofetchcb({"response":' + JSON.stringify(data) + '})';
 	    
 		 response.writeHead(status.code,status.message,{ 
 	    	    'Content-Length': Buffer.byteLength(data,'utf8'),
