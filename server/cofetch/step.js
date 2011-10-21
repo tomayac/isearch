@@ -34,8 +34,8 @@ function Step() {
     // Check if there are no steps left
     if (steps.length === 0) {
       // Throw uncaught errors
-      if (arguments[0]) {
-        throw arguments[0];
+      if (arguments[0]) {	  
+        console.log('Step error: ' + arguments[0]);
       }
       return;
     }
