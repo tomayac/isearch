@@ -402,12 +402,10 @@ exports.storeAutomaticInput = function(data, callback) {
 			if(index < data.length) {
 				index++;
 				exports.store(data[index],false,storeCallback);
-			} else {
-				if(endError !== null) {
-					callback(endError,null);
-				} else { 
-					callback(null,{success: true});
-				}
+			} else if(endError !== null) {
+				callback(endError,null);
+			} else { 
+				callback(null,{success: true});
 			}
 		}
 	};

@@ -65,9 +65,9 @@ http.createServer(function (request, response) {
 					if(automatic) {
 
 			        	rucod.storeAutomaticInput(result, function(error, data) {
-			        		 
+			        		console.log("automatic input callback: " + error || data); 
 			        		if(error) {
-			    				handleError('Automatic storing error: ' + error);
+			    				handleError('Automatic storing ended with errors listed below:\n\r' + error);
 			    			} else {
 			    				
 								data = '_cofetchcb({"response":' + JSON.stringify(data) + '})';
