@@ -149,6 +149,7 @@ var publishRUCoD = function(data, outputPath, callback) {
 			hasVideo = true;
 		};
 	    
+		console.log(data.Files[f]);
 		if(data.Files[f].Tags !== undefined) {
 			for(var t=0; t < data.Files[f].Tags.length; t++) {
 				tagArray.push(data.Files[f].Tags[t]);
