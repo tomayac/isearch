@@ -385,7 +385,8 @@ exports.store = function(data, overwrite, callback) {
 	//Check if the folder for this content object already exists
 	path.exists(fileOutputPath + baseName + '.json', function (exists) {
 		//Pre check
-		if(exists && overwrite === false) {
+		console.log('overwrite: ' + overwrite + ' exists: ' + exists);
+		if(exists && (overwrite === false)) {
 			console.log('File exists!');
 			callback('File already exists and overwrite was not allowed');
 			return;
@@ -421,7 +422,7 @@ exports.storeAutomaticInput = function(codata, callback) {
 	
 	var storeCallback = function(error,data) {
 		if(error) {
-			endError += "Error CO " + index + ": " + error + "\n\r"; 
+			endError += "Error CO " + (index+1) + ": " + error + "\n\r"; 
 		} 
 		
 		index++;
