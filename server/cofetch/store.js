@@ -436,6 +436,6 @@ exports.storeAutomaticInput = function(codata, callback) {
 		
 	};
 	
-	exports.store(codata[index], false, storeCallback);
+	exports.store(codata[index], true, storeCallback);
 	
 };

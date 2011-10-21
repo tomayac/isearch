@@ -22,7 +22,7 @@ http.createServer(function (request, response) {
 	var handleError = function(error) {
 
 		var data   = JSON.stringify({error:1,message: error});
-	    var status = {"code":200,"message":"OK"};
+	    var status = {"code":500,"message":"Internal Server Error"};
 	    
 		response.writeHead(status.code,status.message,{ 
 	    	    'Content-Length': Buffer.byteLength(data,'utf8'),
