@@ -98,6 +98,7 @@ $(document).ready(function(){
 		$('#previous').attr('disabled', 'disabled');
 		$('#next').removeAttr('disabled');
 	} else {
+		$('#next').removeAttr('disabled');
 		$('#previous').removeAttr('disabled');
 	}
     return false;
@@ -110,6 +111,7 @@ $(document).ready(function(){
 		$('#previous').removeAttr('disabled');
 	} else {
 		$('#next').removeAttr('disabled');
+		$('#previous').removeAttr('disabled');
 	} 
     return false;
   });
