@@ -136,6 +136,7 @@ var cofetchHandler = (function() {
 	          if (type === "image") {
 	        	  //Reset the old result
 	        	  images = [];
+	        	  iImg = 0;
 	        	  
 	        	  $.each(files, function(index, file){  
 	        		  images.push(file);
@@ -160,6 +161,7 @@ var cofetchHandler = (function() {
 	          } else if (type === "video") {
 	        	  //Reset the old result
 	        	  videos = [];
+	        	  iVid = 0;
 	        	  
 	        	  $.each(files, function(index, file){  
 	        		  videos.push(file);
@@ -171,6 +173,7 @@ var cofetchHandler = (function() {
 	          } else if (type === "sound") {
 	        	  //Reset the old result
 	        	  sounds = [];
+	        	  iSou = 0;
 	        	  
 	        	  $.each(files, function(index, file){  
 	        		  sounds.push(file);
@@ -182,6 +185,7 @@ var cofetchHandler = (function() {
 	          } else if (type === "3d") {
 	        	  //Reset the old result
 	        	  threed = [];
+	        	  iTd = 0;
 	        	  
 	        	  $.each(files, function(index, file){  
 	        		  threed.push(file);
@@ -194,7 +198,8 @@ var cofetchHandler = (function() {
         
       },
       error: function(jqXHR, textStatus, errorThrown) {
-        alert('error ' + textStatus + " " + errorThrown);    
+    	  errorData = JSON.parse(jqXHR.responseText);
+    	  alert("An error occured: " + errorData.message || errorThrown + "\n\rPlease try again or contact the administrator under jonas.etzold@fh-erfurt.de .");  
       }
     });
   };
