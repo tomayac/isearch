@@ -65,52 +65,56 @@ var threedMethods = {
 			//Iterate through every found photo
 			for (var i=0;i<maxResults;i++) {
 				
-				//Store the model IDs
-				var modelId = models[i]['id']['$t'];
-				
-				var fileinfo = models[i]['media$group']['media$content'][models[i]['media$group']['media$content'].length-1];
-				var url = fileinfo['url'];
-				var filesize = fileinfo['fileSize'];  
-				var ext = 'zip';
-				
-				if(fileinfo['type'].search(/.kmz/g) != -1) {
-					url = url.replace(/rtyp=k2/g,'rtyp=zip');
-					url = url.replace(/rtyp=s6/g,'rtyp=zip');
-					url = url.replace(/rtyp=s7/g,'rtyp=zip');
-				} else {
-					ext = fileinfo['type'].substr(fileinfo['type'].lastIndexOf('.')+1);
+				try {
+					//Store the model IDs
+					var modelId = models[i]['id']['$t'];
+					
+					var fileinfo = models[i]['media$group']['media$content'][models[i]['media$group']['media$content'].length-1];
+					var url = fileinfo['url'];
+					var filesize = fileinfo['fileSize'];  
+					var ext = 'zip';
+					
+					if(fileinfo['type'].search(/.kmz/g) != -1) {
+						url = url.replace(/rtyp=k2/g,'rtyp=zip');
+						url = url.replace(/rtyp=s6/g,'rtyp=zip');
+						url = url.replace(/rtyp=s7/g,'rtyp=zip');
+					} else {
+						ext = fileinfo['type'].substr(fileinfo['type'].lastIndexOf('.')+1);
+					}
+					
+					var filesize = fileinfo['fileSize'];    
+					    
+					var gml = '0 0';
+					
+					if(models[i]['gml$Point']) {
+						gml = models[i]['gml$Point']['gml$pos']['$t'];
+					}
+					gml = gml.split(' ');
+					    
+					var result = {
+						"Type": "Object3d",
+						"Category": "",
+			            "CategoryPath": "",
+						"Name": models[i]['title']['$t'],
+						"Description": models[i]['summary']['$t'],
+						"Tags": [modelTag],
+						"Extension": ext,
+						"License": 'Google 3D Warehouse License', 
+						"LicenseURL": 'http://sketchup.google.com/intl/en/3dwh/tos.html',
+						"Author": models[i]['author'][0]['name']['$t'] + ' (' + models[i]['author'][0]['uri']['$t'] + ')',
+						"Date": models[i]['published']['$t'],
+						"Size": filesize,
+						"URL": url,
+						"Preview": models[i]['media$group']['media$thumbnail'][0]['url'],
+						"Emotions": [],
+						"Location": [gml[0],gml[1],0,0],
+						"Weather": {}
+					};
+					
+					results.push(result);
+				} catch(e) {
+					console.log('SketchUp: Something was missing in the result number ' + i);
 				}
-				
-				var filesize = fileinfo['fileSize'];    
-				    
-				var gml = '0 0';
-				
-				if(models[i]['gml$Point']) {
-					gml = models[i]['gml$Point']['gml$pos']['$t'];
-				}
-				gml = gml.split(' ');
-				    
-				var result = {
-					"Type": "Object3d",
-					"Category": "",
-		            "CategoryPath": "",
-					"Name": models[i]['title']['$t'],
-					"Description": models[i]['summary']['$t'],
-					"Tags": [modelTag],
-					"Extension": ext,
-					"License": 'Google 3D Warehouse License', 
-					"LicenseURL": 'http://sketchup.google.com/intl/en/3dwh/tos.html',
-					"Author": models[i]['author'][0]['name']['$t'] + ' (' + models[i]['author'][0]['uri']['$t'] + ')',
-					"Date": models[i]['published']['$t'],
-					"Size": filesize,
-					"URL": url,
-					"Preview": models[i]['media$group']['media$thumbnail'][0]['url'],
-					"Emotions": [],
-					"Location": [gml[0],gml[1],0,0],
-					"Weather": {}
-				};
-				
-				results.push(result);
 				
 			} // end for 
 			
