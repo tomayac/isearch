@@ -748,16 +748,17 @@ var cofetchHandler = (function() {
   //-------------------------------------------------------------  
   var resetForm = function() {
 	  $('#script-tabs').each (function(){
-		  if($(this).attr('id') == "script-keywords") {
-			  return;
-		  }
-		  if($(this).attr('id') == "script-category") {
-			  return;
-		  }
-		  if($(this).attr('id') == "script-automatic") {
-			  return;
-		  }
+		  
+		  var key = $('#script-keywords').val();
+		  var cat = $('#script-category').val();
+		  var aut = $('#script-automatic').attr("checked");
+		
 		  this.reset();
+		  
+		  $('#script-keywords').val(key);
+		  $('#script-category').val(cat);
+		  $('#script-automatic').attr("checked", aut);
+		  
 	  });
   };
   
