@@ -397,17 +397,17 @@ exports.storeAutomaticInput = function(data, callback) {
 	var storeCallback = function(error,data) {
 		if(error) {
 			endError += "Error CO " + index + ": " + error + "\n\r"; 
-		} else {
+		} 
 			
-			if(index < data.length) {
-				index++;
-				exports.store(data[index],false,storeCallback);
-			} else if(endError !== null) {
-				callback(endError,null);
-			} else { 
-				callback(null,{success: true});
-			}
+		if(index < data.length) {
+			index++;
+			exports.store(data[index],false,storeCallback);
+		} else if(endError !== null) {
+			callback(endError,null);
+		} else { 
+			callback(null,{success: true});
 		}
+		
 	};
 	
 	exports.store(data[index],false,storeCallback);
