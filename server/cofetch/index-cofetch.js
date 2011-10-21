@@ -155,7 +155,7 @@ http.createServer(function (request, response) {
 	    	
 	    	console.log('k:' + keywords + ' c:' + category + ' a:' + automatic);
 	    	
-	    	if(keywords.length < 1 || category.length < 3 || isNaN(automatic)) {
+	    	if(keywords.length < 1 || (keywords.length > 0 && keywords[0].length < 3) || category.length < 3 || isNaN(automatic)) {
 	    		
 	    		handleError("Missing or wrong parameters. Please verify that you submitted at least one keyword and the corresponding category.");
 	    		

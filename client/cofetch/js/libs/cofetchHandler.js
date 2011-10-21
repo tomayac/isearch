@@ -97,6 +97,7 @@ var cofetchHandler = (function() {
         
       },
       complete: function(data) {
+    	console.log('xhr complete');  
     	console.log(data);  
       },
       error: function(jqXHR, textStatus, errorThrown) {

@@ -1,16 +1,10 @@
-/* Author: Arnaud */
+/* Author: Arnaud, Jonas */
 
 $(document).ready(function(){
   
   /*===============================
     Load Data and populate the form
     ===============================*/
-    
-    var currentID = cofetchHandler.getParameterByName('id');
-    if (currentID === "") {
-      currentID = 1;
-    };
-    console.log(currentID);
     
     //Fetch the data and populate the form
     //cofetchHandler.fetch(currentID);
