@@ -22,7 +22,7 @@ http.createServer(function (request, response) {
 	var handleError = function(error) {
 
 		var data   = '{"error":1,"message":"'+error+'"}';
-	    var status = {"code":418,"message":"I'm a Teapot"};
+	    var status = {"code":500,"message":"Internal Server Error"};
 		 
 		 response.writeHead(status.code,status.message,{ 
 	    	    'Content-Length': Buffer.byteLength(data,'utf8'),
@@ -142,7 +142,6 @@ http.createServer(function (request, response) {
 				    			
 				        		} else {
 
-				    				console.log((typeof(response) == 'object') ? 'response exists' : 'no response object found');
 									data = '_cofetchcb({"response":' + JSON.stringify(data) + '})';
 									 
 									response.writeHead(status.code,status.message,{ 
