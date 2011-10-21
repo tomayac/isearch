@@ -153,7 +153,8 @@ Fetch.prototype.getPart = function(type, query, callback) {
 					}
 					
 					var result = [];
-					
+					console.log("SoundData:");
+					console.log(data);
 					if(data[0][0]) {
 						for(var w=0; w < data.length; w++) {
 							result.push(data[w][0]);

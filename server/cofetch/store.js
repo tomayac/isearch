@@ -150,7 +150,10 @@ var publishRUCoD = function(data, outputPath, callback) {
 		};
 
 		for(var t=0; t < data.Files[f].Tags.length; t++) {
-				tagArray.push(data.Files[f].Tags[t]);
+			tag = data.Files[f].Tags[t].toLowerCase().replace(/\b[a-z]/g, function(letter) {
+		    	  	return letter.toUpperCase();
+	  		  	  });
+			tagArray.push(tag);
 		}
 	}
 	//Filtering the Array to have only unique tags in there
