@@ -21,7 +21,7 @@ http.createServer(function (request, response) {
 	//Error handle function
 	var handleError = function(error) {
 
-		var data   = '{"error":1,"message":"'+JSON.stringify(error)+'"}';
+		var data   = JSON.stringify({error:1,message: error});
 	    var status = {"code":200,"message":"OK"};
 	    
 		response.writeHead(status.code,status.message,{ 
