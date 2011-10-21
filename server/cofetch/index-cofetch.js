@@ -135,7 +135,7 @@ http.createServer(function (request, response) {
 	
 				        	rucod.storeAutomaticInput(result, function(error, data) {
 				        		 
-				        		if(error.length > 1) {
+				        		if(error) {
 
 				        			handleError('Automatic storing ended with errors listed below:\n\r' + error);
 				    			
