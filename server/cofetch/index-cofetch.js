@@ -22,8 +22,10 @@ http.createServer(function (request, response) {
 	var handleError = function(error) {
 
 		var data   = '{"error":1,"message":"'+error+'"}';
-	    var status = {"code":500,"message":"Internal Server Error"};
+	    var status = {"code":200,"message":"OK"};
 		 
+	    data = '_cofetchcb({"response":' + JSON.stringify(data) + '})';
+	    
 		 response.writeHead(status.code,status.message,{ 
 	    	    'Content-Length': Buffer.byteLength(data,'utf8'),
 			  	'Content-Type'  : 'application/json; charset=utf8',
