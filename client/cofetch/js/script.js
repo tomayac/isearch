@@ -107,8 +107,8 @@ $(document).ready(function(){
     //load next co
 	if(!cofetchHandler.setNext()) {
 		$('#next').attr('disabled', 'disabled');
-	} else {
 		$('#previous').removeAttr('disabled');
+	} else {
 		$('#next').removeAttr('disabled');
 	} 
     return false;

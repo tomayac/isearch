@@ -208,7 +208,7 @@ var cofetchHandler = (function() {
   //-------------------------------------------------------------
   var hasScraperData = function() {
 	  if(scraperData.length > 0) {
-		  return true;
+		  return scraperData.length;
 	  } else {
 		  return false;
 	  }
@@ -219,6 +219,12 @@ var cofetchHandler = (function() {
 	  
 	  //Now, let's sort the files according to their type
 	  var files = scraperData[0][index].Files;
+	  
+	  images = [];
+	  threed = [];
+	  videos = [];
+	  sounds = [];
+	  text   = [];
 	  
 	  $.each(files, function(index, file){
 		  
