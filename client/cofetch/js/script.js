@@ -16,7 +16,7 @@ $(document).ready(function(){
     	$(".datatab").hide();
     }
     
-    if(!cofetchHandler.hasScraperData) {
+    if(!cofetchHandler.hasScraperData()) {
     	$("#save").attr('disabled', 'disabled');
     	$('#next').attr('disabled', 'disabled');
     	$('#previous').attr('disabled', 'disabled');
