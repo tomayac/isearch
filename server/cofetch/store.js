@@ -398,9 +398,10 @@ exports.storeAutomaticInput = function(codata, callback) {
 		if(error) {
 			endError += "Error CO " + index + ": " + error + "\n\r"; 
 		} 
-			
+		
+		index++;
+		
 		if(index < codata.length) {
-			index++;
 			exports.store(codata[index],false,storeCallback);
 		} else if(endError !== null) {
 			callback(endError,null);

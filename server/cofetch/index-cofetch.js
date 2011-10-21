@@ -51,9 +51,11 @@ http.createServer(function (request, response) {
 				result.push(data);
 				console.log("Content Object Data fetched for query '" + keywords[index] + "' with index " + index + "!");
 				
-				if((index+1) < keywords.length) {
-					//Go for the next search keyword
-					index++;
+				//Go for the next search keyword
+				index++;
+				
+				if(index < keywords.length) {
+					
 					console.log("Fetching data for query " + index +" of " + keywords.length + ": '" + keywords[index] + "'...");
 					cofetcher.get(keywords[index], category, index, automatic, fetchCallback);
 				
@@ -99,6 +101,7 @@ http.createServer(function (request, response) {
 			} //End error if
 		}; //End fetchCallback function
 		
+		console.log("Fetching data for query " + index +" of " + keywords.length + ": '" + keywords[index] + "'...");
 		cofetcher.get(keywords[index], category, index, automatic, fetchCallback);
 		
 	};	
