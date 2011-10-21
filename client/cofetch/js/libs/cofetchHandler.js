@@ -97,6 +97,7 @@ var cofetchHandler = (function() {
         
       },
       error: function(jqXHR, textStatus, errorThrown) {
+    	  console.log(jqXHR);
     	  alert(textStatus + " " + errorThrown);
     	  $("#loading").hide();
       }
