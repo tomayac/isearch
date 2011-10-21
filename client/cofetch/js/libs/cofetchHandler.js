@@ -561,10 +561,8 @@ var cofetchHandler = (function() {
   
   //-------------------------------------------------------------
   var setPrevious = function() {
-	  console.log('Prev1: '+manualIndex);
 	  manualIndex--;
-	  console.log('Prev2: '+manualIndex);
-	  if(manualIndex > 0) {
+	  if(manualIndex >= 0) {
 		  setScraperData(manualIndex);
 		  return manualIndex;
 	  } else {
