@@ -97,6 +97,7 @@ var cofetchHandler = (function() {
 	        	manualIndex = 0;
 	        	setScraperData(manualIndex);
 	        	
+	        	alert("All results fetched!\n\rPlease verify them with the tabs provided and click the 'Save' button on the top if satisfied.");
 	        }
     	}
         $("#loading").hide();
