@@ -83,8 +83,12 @@ var getVideoSourceUrl = function(youtubeLink, id, callback) {
 	            	try {
 	            	    
 		            	var vInfoResponse = querystring.parse(data);
-		            	console.log('infoResponse: ');
-		            	console.log(vInfoResponse);
+		            	var jsonResponse = JSON.parse(vInfoResponse);
+		            	if(typeof(jsonResponse) === 'object') {
+		            		if(jsonResponse.reason) {
+		            			throw jsonResponse.reason;
+		            		}
+		            	}
 		                var vInfoUrls = vInfoResponse['url_encoded_fmt_stream_map'].split(',');
 		                var vDataUrl = '';
 		                
