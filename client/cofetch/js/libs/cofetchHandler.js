@@ -559,7 +559,7 @@ var cofetchHandler = (function() {
   };
   
   //-------------------------------------------------------------  
-  var save = function(callback) {
+  var save = function() {
     
 	var serverURL = "/cofetch/post/";  
 	
@@ -712,14 +712,14 @@ var cofetchHandler = (function() {
     	  url: serverURL,
     	  data: JSON.stringify(jsonFile),
     	  success: function(data) {
-    		  callback('Successfully saved! ('+data+')');
     		  scraperData[0].splice(manualIndex,1);
     		  if(!setNext()) {
     			  if(!setPrevious()) {
-    				  alert('You revised every fetched Content Object. Please start a new search. Page will reload.');
+    				  alert('You revised and saved every fetched Content Object. Please start a new search. Page will reload.');
     				  window.location.reload();
     			  }
-    		  } 
+    		  }
+    		  alert('Successfully saved! ('+data+')');
     	  },
     	  error: function(jqXHR, textStatus, errorThrown) {
         	  
