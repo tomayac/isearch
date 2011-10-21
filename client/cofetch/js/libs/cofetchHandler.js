@@ -60,7 +60,7 @@ var cofetchHandler = (function() {
       url: serverURL,
       dataType: "jsonp",
       jsonpCallback: "_cofetchcb",
-      timeout: 300000,
+      timeout: 80000,
       success: function(data) {
     	
     	//Store the returned data
@@ -95,6 +95,9 @@ var cofetchHandler = (function() {
     	}
         $("#loading").hide();
         
+      },
+      complete: function(data) {
+    	console.log(data);  
       },
       error: function(jqXHR, textStatus, errorThrown) {
     	  errorData = JSON.parse(jqXHR.responseText);

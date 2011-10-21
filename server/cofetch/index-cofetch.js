@@ -21,7 +21,7 @@ http.createServer(function (request, response) {
 	//Error handle function
 	var handleError = function(error) {
 		console.log((typeof(response) == 'object') ? 'response exists' : 'no response object found');
-		console.log(response);
+
 		var data   = '{"error":1,"message":"'+error+'"}';
 	    var status = {"code":200,"message":"OK"};
 		 
