@@ -280,9 +280,14 @@ var cofetchHandler = (function() {
   
   //-------------------------------------------------------------  
   var set3d = function(shift) {
-    console.log("3d: "+threed.length + " iTd: "+iTd + " tdDir: "+tdDir);
+    
     if (typeof shift !== "undefined") {
-        
+    	
+    	if(threed.length <= 1) {
+    		alert("No other 3D models fetched.");
+    		return;
+    	}
+    	
         if (iTd == (threed.length-1)) {
         	tdDir = 0;
         	alert('No other 3D models to see, going back');
@@ -343,7 +348,11 @@ var cofetchHandler = (function() {
     if (typeof shift !== "undefined") {
       //if the "shift" argument is set, we must change the video
       //We do so by removing the first element of the array "videos"
-      
+      if(videos.length <= 1) {
+    	  alert("No other videos fetched.");
+    	  return;
+      }
+    	
       if (iVid == (videos.length-1)) {
     	vidDir = 0;
         alert('No other videos to see, going back');
@@ -409,7 +418,11 @@ var cofetchHandler = (function() {
     if (typeof shift !== "undefined") {
         //if the "shift" argument is set, we must change the video
         //We do so by removing the first element of the array "sounds"
-      
+    	if(sounds.length <= 1) {
+      	  alert("No other sounds fetched.");
+      	  return;
+        }
+    	
     	if (iSou == (sounds.length-1)) {
     		souDir = 0;
             alert('No other sounds to hear, going back');
@@ -470,7 +483,11 @@ var cofetchHandler = (function() {
     if (typeof shift !== "undefined") {
       //if the "shift" argument is set, we must change the video
       //We do so by removing the first element of the array "images"
-      
+    	if(images.length <= 1) {
+        	alert("No other images fetched.");
+        	return;
+        }
+    	
     	if (iImg == (images.length-1)) {
     		imgDir = 0;
             alert('No other images to see, going back');
