@@ -280,7 +280,7 @@ var cofetchHandler = (function() {
   
   //-------------------------------------------------------------  
   var set3d = function(shift) {
-    
+    console.log("3d: "+threed.length + " iTd: "+iTd + " tdDir: "+tdDir);
     if (typeof shift !== "undefined") {
         
         if (iTd == (threed.length-1)) {
@@ -363,7 +363,7 @@ var cofetchHandler = (function() {
     
     //Extract the ID of the YouTube video
     var videoID = video.URL.substring(video.URL.indexOf("=")+1);
-    console.log(videoID);
+    
     //Set the YouTube IFRAME to the right URL
     $('#video-previewYT').attr(
       {'src': 'http://www.youtube.com/embed/' + videoID}
