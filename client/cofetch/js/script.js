@@ -12,9 +12,22 @@ $(document).ready(function(){
     
     $( "#script-tabs" ).tabs({panelTemplate: '<section></section>'});
     
+    if($("#script-automatic").attr("checked") !== undefined) {
+    	$(".datatab").hide();
+    }
+    
   /*===================================
     Registering all the events handlers
     ===================================*/
+  
+  $("#script-automatic").change(function(event){
+	  if(event.target.checked === true) {
+		 $(".datatab").hide(); 
+	  } else {
+		 $(".datatab").show();
+	  }
+  });  
+    
   $("#script-start").click(function(){
 	if($("#script-keywords").val().length < 3 || $("#script-category").val() == "") {
 		alert("Please specify at least one search keyword as well as the search category!");

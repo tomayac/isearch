@@ -311,7 +311,7 @@ var publishRUCoD = function(data, outputPath, callback) {
 					} else {
 						console.log('RUCoD file created or overwritten under ' + outputPath + baseName + '_rucod.xml');
 						
-						callback(null,{success:'JSON and RUCoD files successfully saved.'});
+						callback(null,'JSON and RUCoD files successfully saved.');
 					}
 				});
 			}
@@ -426,20 +426,23 @@ exports.storeAutomaticInput = function(codata, callback) {
 	console.log("Start automatic storing of " + codata.length + " Content Objects...");
 	var index = 0;
 	var endError = '';
+	var endData = '';
 	
 	var storeCallback = function(error,data) {
 		if(error) {
 			endError += "Error CO '" + codata[index].Name + "': " + error + "\n\r"; 
-		} 
+		} else {
+			endData += "CO '" + codata[index].Name + "': " + data + "\n\r";
+		}
 		
 		index++;
 		
 		if(index < codata.length) {
 			exports.store(codata[index], true, storeCallback);
-		} else if(endError !== null) {
+		} else if(endError.length > 1) {
 			callback(endError,null);
 		} else { 
-			callback(null,data);
+			callback(null,{success: endData});
 		}
 		
 	};

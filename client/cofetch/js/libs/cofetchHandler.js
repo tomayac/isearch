@@ -74,25 +74,32 @@ var cofetchHandler = (function() {
     		
 	        console.log('Data for keywords "' + query + '" successfully fetched.');
 	        
-	        //Now, let's sort the files according to their type
-	        var files = scraperData[0].Files;
-	        $.each(files, function(index, file){
-	          if (file.Type === "ImageType") {
-	            images.push(file);
-	          } else if (file.Type === "Object3d") {
-	            threed.push(file);
-	            console.log("Threed variable",threed);
-	          } else if (file.Type === "VideoType") {
-	            videos.push(file);
-	          } else if (file.Type === "SoundType") {
-	            sounds.push(file);
-	          } else if (file.Type === "TextType") {
-	            text.push(file);
-	          }
-	        });
-	        
-	        //Populate the form
-	        populateForm();
+	        if(automatic === 1) {
+	        	
+	        	alert(scraperData[0].success);
+	        	
+	        } else {
+	        	
+	        	//Now, let's sort the files according to their type
+		        var files = scraperData[0].Files;
+		        $.each(files, function(index, file){
+		          if (file.Type === "ImageType") {
+		            images.push(file);
+		          } else if (file.Type === "Object3d") {
+		            threed.push(file);
+		            console.log("Threed variable",threed);
+		          } else if (file.Type === "VideoType") {
+		            videos.push(file);
+		          } else if (file.Type === "SoundType") {
+		            sounds.push(file);
+		          } else if (file.Type === "TextType") {
+		            text.push(file);
+		          }
+		        });
+		        
+		        //Populate the form
+		        populateForm();
+	        }
     	}
         $("#loading").hide();
         
