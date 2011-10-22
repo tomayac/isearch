@@ -83,9 +83,9 @@ var getVideoSourceUrl = function(youtubeLink, id, callback) {
 	            	try {
 	            	    
 		            	var vInfoResponse = querystring.parse(data);
-		            	console.log(vInfoResponse[0]);
-		            	var jsonResponse = JSON.parse(vInfoResponse[0]);
-		            	if(vInfoResponse[0].search(/fail/g) !== -1) {
+		            	console.log(vInfoResponse.toString());
+		            	var jsonResponse = JSON.parse(vInfoResponse.toString());
+		            	if(vInfoResponse.toString().search(/fail/g) !== -1) {
 		            		throw 'The video seems to be unavaiable in your country. Please choose another one.';
 		            	}
 		            	
