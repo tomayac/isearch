@@ -735,8 +735,8 @@ var cofetchHandler = (function() {
     		  resetForm();
     	  },
     	  error: function(jqXHR, textStatus, errorThrown) {
-        	  
-        	  alert("An error occured: " + errorThrown + "\n\rPlease try again or contact the administrator under jonas.etzold@fh-erfurt.de.");
+    	   	  errorData = JSON.parse(jqXHR.responseText);
+        	  alert("An error occured: " + errorData.message || errorThrown + "\n\rPlease try again or contact the administrator under jonas.etzold@fh-erfurt.de .");  
           },
     	  traditional: true,
     	  dataType: "text",
