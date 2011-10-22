@@ -112,7 +112,7 @@ var getVideoSourceUrl = function(youtubeLink, id, callback) {
 	nodeio.start(job, {args: [infoUrl]}, function(error,data) {
 		
 		if(error) {
-			callback('error: ' + error, null, null);
+			callback(error, null, null);
 			return;
 		}
 
