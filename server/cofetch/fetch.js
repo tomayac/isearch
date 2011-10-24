@@ -15,7 +15,9 @@ var Fetch = function() {
 
 Fetch.prototype.cleanResult = function(result, callback) {
 	var cleanResult = new Array();
+	
 	for(var i=0; i < result.length; i++) {
+		console.log(result[i]);
 		if(result[i][0]) {
 			cleanResult[i] = result[i][0];
 		}
