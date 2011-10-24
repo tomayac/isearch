@@ -724,15 +724,19 @@ var cofetchHandler = (function() {
     	  url: serverURL,
     	  data: JSON.stringify(jsonFile),
     	  success: function(data) {
+    		  //Remove the saved CO from the temporary data array
     		  scraperData[0].splice(manualIndex,1);
+    		  manualIndex = 0;
+    		  $('#previous').attr('disabled', 'disabled');
+    		  
     		  if(!setNext()) {
-    			  if(!setPrevious()) {
-    				  alert('You revised and saved every fetched Content Object. Please start a new search. Page will reload.');
-    				  window.location.reload();
-    			  }
+    			  $('#next').attr('disabled', 'disabled');
+    			  alert('You revised and saved every fetched Content Object. Please start a new search. Page will reload.');
+    			  window.location.reload();
+    		  } else {
+    			  alert('Successfully saved! ('+data+')');
+    			  resetForm();
     		  }
-    		  alert('Successfully saved! ('+data+')');
-    		  resetForm();
     	  },
     	  error: function(jqXHR, textStatus, errorThrown) {
     	   	  errorData = JSON.parse(jqXHR.responseText);
@@ -760,6 +764,8 @@ var cofetchHandler = (function() {
 		  $('#script-automatic').attr("checked", aut);
 		  
 	  });
+	  
+	  $("#script-tabs").tabs( "select" , 0);
   };
   
   //-------------------------------------------------------------  

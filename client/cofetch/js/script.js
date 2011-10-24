@@ -8,7 +8,7 @@ $(document).ready(function(){
     
     cofetchHandler.fetchCategories();
     
-    $( "#script-tabs" ).tabs({panelTemplate: '<section></section>'});
+    $("#script-tabs").tabs({panelTemplate: '<section></section>'});
     
     if($("#script-automatic").attr("checked") !== undefined) {
     	$(".datatab").hide();
