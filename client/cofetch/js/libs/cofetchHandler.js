@@ -726,6 +726,8 @@ var cofetchHandler = (function() {
     	  success: function(data) {
     		  //Remove the saved CO from the temporary data array
     		  scraperData[0].splice(manualIndex,1);
+    		  console.log(scraperData[0]);
+    		  console.log(scraperData[0].length);
     		  manualIndex = 0;
     		  $('#previous').attr('disabled', 'disabled');
     		  
