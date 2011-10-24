@@ -217,8 +217,8 @@ var cofetchHandler = (function() {
   
   //-------------------------------------------------------------
   var hasScraperData = function() {
-	  if(scraperData.length > 0) {
-		  return scraperData.length;
+	  if(scraperData[0].length > 0) {
+		  return scraperData[0].length;
 	  } else {
 		  return false;
 	  }
@@ -744,10 +744,10 @@ var cofetchHandler = (function() {
     		  manualIndex = -1;
     		  $('#previous').attr('disabled', 'disabled');
     		  resetForm();
-    		  console.log('sd: '+scraperData[0].length);
+
     		  var restData = hasScraperData();
-    		  console.log(restData);
-    		  if(restData === false) {
+
+    		  if(restData < 1 || restData == false) {
     			  
     			  alert('You revised and saved every fetched Content Object. Please start a new search. Page will reload.');
     			  window.location.reload();
