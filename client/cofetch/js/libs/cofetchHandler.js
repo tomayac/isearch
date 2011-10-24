@@ -726,16 +726,17 @@ var cofetchHandler = (function() {
     	  success: function(data) {
     		  //Remove the saved CO from the temporary data array
     		  scraperData[0].splice(manualIndex,1);
-    		  console.log(scraperData[0]);
-    		  console.log(scraperData[0].length);
     		  manualIndex = 0;
     		  $('#previous').attr('disabled', 'disabled');
     		  
-    		  if(!setNext()) {
-    			  $('#next').attr('disabled', 'disabled');
+    		  var restData = hasScraperData();
+    		  if(restData === false) {
     			  alert('You revised and saved every fetched Content Object. Please start a new search. Page will reload.');
     			  window.location.reload();
     		  } else {
+    			  if(restData < 2) {
+    				  $('#next').attr('disabled', 'disabled');
+    			  } 
     			  alert('Successfully saved! ('+data+')');
     			  resetForm();
     		  }
