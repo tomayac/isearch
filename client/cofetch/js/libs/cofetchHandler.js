@@ -582,8 +582,13 @@ var cofetchHandler = (function() {
   
   //-------------------------------------------------------------  
   var save = function() {
-    
+	  
 	var serverURL = "/cofetch/post/";  
+	
+	if($('#main-name').val().length < 2) {
+		alert("You need at least a valid name for the Content Object in order to save it!");
+		return;
+	}
 	
 	var tags = $('#threed-tags').val().split(",");
 	for(var t=0; t < tags.length; t++) {
@@ -739,8 +744,9 @@ var cofetchHandler = (function() {
     		  manualIndex = -1;
     		  $('#previous').attr('disabled', 'disabled');
     		  resetForm();
-    		  
+    		  console.log('sd: '+scraperData[0].length);
     		  var restData = hasScraperData();
+    		  console.log(restData);
     		  if(restData === false) {
     			  
     			  alert('You revised and saved every fetched Content Object. Please start a new search. Page will reload.');
