@@ -17,10 +17,11 @@ Fetch.prototype.cleanResult = function(result, callback) {
 	var cleanResult = new Array();
 	
 	for(var i=0; i < result.length; i++) {
-		console.log(result[i][0]);
 		console.log('---------------------------');
-		if(result[i][0]) {
-			cleanResult.push(result[i][0]);
+		if(typeof result[i][0] === 'object') {
+			console.log(result[i][0].Name);
+			cleanResult[i] = result[i][0].slice(0);
+			console.log(cleanResult[i]);
 		}
 	}
 	console.log(result.length+ ' --- ' +cleanResult.length);
