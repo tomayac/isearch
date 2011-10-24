@@ -13,6 +13,20 @@ var step     = require('./step');
 var Fetch = function() {	
 };
 
+Fetch.prototype.cleanResult = function(result, callback) {
+	var cleanResult = new Array();
+	for(var i=0; i < result.length; i++) {
+		if(result[i][0]) {
+			cleanResult[i] = result[i][0];
+		}
+	}
+	if(cleanResult.length != result.length) {
+		callback(result);
+	} else {
+		callback(cleanResult);
+	}
+};
+
 Fetch.prototype.getBestMatch = function(query, results, callback) {
 	
 	var levenDistance = function(v1, v2){
@@ -208,12 +222,10 @@ Fetch.prototype.getPart = function(type, query, callback) {
 						console.log('error: ' + error);
 						callback(error,[]);
 					} else {
-						var result = [];
-						for(var w=0; w < data.length; w++) {
-							result.push(data[w][0]);
-						}
 						
-						callback(null,result);
+						cleanResult(data,function(result) {
+							callback(null,result);
+						});
 					}
 				}
 			);
@@ -266,16 +278,9 @@ Fetch.prototype.getPart = function(type, query, callback) {
 						callback(error,[]);
 					} else {
 					
-						var result = [];
-						
-						if(data[0][0]) {
-							for(var w=0; w < data.length; w++) {
-								result.push(data[w][0]);
-							}
-						} else {
-							result = data;
-						}
-						callback(null,result);
+						cleanResult(data,function(result) {
+							callback(null,result);
+						});
 					}
 				}
 			);
@@ -327,7 +332,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 				//If automatic mode is on, than just store the best matching retrieved model (e.g. the most relevant)
 				if(automatic === 1) {
 					//Push the best matching 3D model to the files array of the content object
-					getBestMatch(keyword, data, function(error, model) {
+					getBestMatch(contentObject.Name, data, function(error, model) {
 						if(error || typeof model !== 'object') {
 							contentObject.Files.push(data[0]);
 						} else {
@@ -346,7 +351,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 			var dbpediaQuery = contentObject.Name;
 			
 			//Fetch free text data for the model
-			dbpedia.fetchText(dbpediaQuery, contentObject.Category, this);
+			dbpedia.fetchText(dbpediaQuery, '', this);
 		},
 		function getImageData(error,data) {
 			//Be sure to have data before going on
@@ -393,22 +398,25 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 			} else {
 				console.log('4.1. Weather data for flickr images fetched!');
 				
-				//If automatic mode is on, than just store the first retrieved image (e.g. the most relevant)
-				if(automatic === 1) {
-					//Push the best matching image to the files array of the content object
-					getBestMatch(keyword, data[0], function(error, image) {
-						if(error || typeof image !== 'object') {
-							contentObject.Files.push(data[0][0]);
-						} else {
-							contentObject.Files.push(image);
+				cleanResult(data,function(result) {
+
+					//If automatic mode is on, than just store the first retrieved image (e.g. the most relevant)
+					if(automatic === 1) {
+						//Push the best matching image to the files array of the content object
+						getBestMatch(contentObject.Name, result, function(error, image) {
+							if(error || typeof image !== 'object') {
+								contentObject.Files.push(result[0]);
+							} else {
+								contentObject.Files.push(image);
+							}
+						});
+						
+					} else {
+						for(var w=0; w < result.length; w++) {
+							contentObject.Files.push(result[0]);
 						}
-					});
-					
-				} else {
-					for(var w=0; w < data.length; w++) {
-						contentObject.Files.push(data[w][0]);
 					}
-				}
+				});
 			}
 			
 			//Some query adjustments for youtube
@@ -434,7 +442,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 				//If automatic mode is on, than just store the first retrieved video (e.g. the most relevant)
 				if(automatic === 1) {
 					//Push the best matching video to the files array of the content object
-					getBestMatch(keyword, data, function(error, video) {
+					getBestMatch(contentObject.Name, data, function(error, video) {
 						if(error || typeof video !== 'object') {
 							contentObject.Files.push(data[0]);
 						} else {
@@ -480,22 +488,24 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 			
 				console.log('6. Composed Sound data fetched!');
 				
-				//If automatic mode is on, than just store the first retrieved sound (e.g. the most relevant)
-				if(automatic === 1) {
-					//Push the best matching sound to the files array of the content object
-					getBestMatch(keyword, data, function(error, sound) {
-						if(error || typeof sound !== 'object') {
-							contentObject.Files.push(data[0]);
-						} else {
-							contentObject.Files.push(sound);
+				cleanResult(data,function(result) {
+					//If automatic mode is on, than just store the first retrieved sound (e.g. the most relevant)
+					if(automatic === 1) {
+						//Push the best matching sound to the files array of the content object
+						getBestMatch(contentObject.Name, result, function(error, sound) {
+							if(error || typeof sound !== 'object') {
+								contentObject.Files.push(result[0]);
+							} else {
+								contentObject.Files.push(sound);
+							}
+						});
+	
+					} else {
+						for(var s=0; s < result.length; s++) {
+							contentObject.Files.push(result[0]);
 						}
-					});
-
-				} else {
-					for(var s=0; s < data.length; s++) {
-						contentObject.Files.push(data[s]);
 					}
-				}
+				});
 			}
 			
 			delete contentObject.Category;
