@@ -328,7 +328,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 				if(automatic === 1) {
 					//Push the best matching 3D model to the files array of the content object
 					getBestMatch(keyword, data, function(error, model) {
-						if(error || typeof(model) !== 'object') {
+						if(error || typeof model !== 'object') {
 							contentObject.Files.push(data[0]);
 						} else {
 							contentObject.Files.push(model);
@@ -397,7 +397,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 				if(automatic === 1) {
 					//Push the best matching image to the files array of the content object
 					getBestMatch(keyword, data[0], function(error, image) {
-						if(error || typeof(image) !== 'object') {
+						if(error || typeof image !== 'object') {
 							contentObject.Files.push(data[0][0]);
 						} else {
 							contentObject.Files.push(image);
@@ -435,7 +435,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 				if(automatic === 1) {
 					//Push the best matching video to the files array of the content object
 					getBestMatch(keyword, data, function(error, video) {
-						if(error || typeof(video) !== 'object') {
+						if(error || typeof video !== 'object') {
 							contentObject.Files.push(data[0]);
 						} else {
 							contentObject.Files.push(video);
@@ -484,7 +484,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 				if(automatic === 1) {
 					//Push the best matching sound to the files array of the content object
 					getBestMatch(keyword, data, function(error, sound) {
-						if(error || typeof(sound) !== 'object') {
+						if(error || typeof sound !== 'object') {
 							contentObject.Files.push(data[0]);
 						} else {
 							contentObject.Files.push(sound);

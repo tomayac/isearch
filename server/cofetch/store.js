@@ -420,14 +420,12 @@ exports.store = function(data, overwrite, callback) {
 		//Write JSON file
 		fs.writeFile(fileOutputPath + baseName + '.json', JSON.stringify(data), function (error) {
 		  if (error) throw error;
-		  console.log('JSON file created or overwritten under ' + fileOutputPath + baseName + '.json');
+		  console.log('JSON file ' + (exists === false ? 'created' : 'overwritten') + ' under ' + fileOutputPath + baseName + '.json');
 		  
 		  //Create RUCoD for Content Object data
 		  publishRUCoD(data,fileOutputPath,callback);
 		  
-		});
-		
-		
+		});	
 		
 	});
 };

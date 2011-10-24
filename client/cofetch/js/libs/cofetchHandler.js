@@ -254,13 +254,13 @@ var cofetchHandler = (function() {
     var changes = [
       {id: "main-name", value: scraperData[0][index].Name},
       {id: "main-categoryPath", value: scraperData[0][index].CategoryPath},
-      {id: "main-screenshot", value: "3d"}, //defaut: 3d screenshot
-      {id: "text-content", value: text[0].FreeText}
+      {id: "main-screenshot", value: "3d"} //defaut: 3d screenshot
     ];
     set(changes);
     
     console.log('Will set the individual mode fieldsets');
     
+    if(text.length > 0)   { setText(); }
     if(threed.length > 0) { set3d(); }
     if(videos.length > 0) { setVideo(); }
     if(sounds.length > 0) { setSound(); }
