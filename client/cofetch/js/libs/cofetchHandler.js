@@ -736,19 +736,26 @@ var cofetchHandler = (function() {
     	  success: function(data) {
     		  //Remove the saved CO from the temporary data array
     		  scraperData[0].splice(manualIndex,1);
-    		  manualIndex = 0;
+    		  manualIndex = -1;
     		  $('#previous').attr('disabled', 'disabled');
+    		  resetForm();
     		  
     		  var restData = hasScraperData();
     		  if(restData === false) {
+    			  
     			  alert('You revised and saved every fetched Content Object. Please start a new search. Page will reload.');
     			  window.location.reload();
+    			  
     		  } else {
-    			  if(restData < 2) {
+    			  
+    			  var next = setNext();  
+    			  if(next === false || next === 0) {
     				  $('#next').attr('disabled', 'disabled');
-    			  } 
+    			  } else {
+    				  $('#next').removeAttr('disabled');
+    			  }
+    			  
     			  alert('Successfully saved! ('+data+')');
-    			  resetForm();
     		  }
     	  },
     	  error: function(jqXHR, textStatus, errorThrown) {
