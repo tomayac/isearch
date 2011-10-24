@@ -104,7 +104,12 @@ var cofetchHandler = (function() {
         
       },
       error: function(jqXHR, textStatus, errorThrown) {
-    	  errorData = JSON.parse(jqXHR.responseText);
+    	  var errorData = {};
+    	  
+    	  try {
+    		  errorData = JSON.parse(jqXHR.responseText);
+    	  } catch (e) {}
+    	  
     	  alert("An error occured: " + errorData.message || errorThrown + "\n\rPlease indicate if this error is relevant to your expected result. If yes, please try again or contact the administrator under jonas.etzold@fh-erfurt.de .");
     	  $("#loading").hide();
       }
@@ -199,7 +204,12 @@ var cofetchHandler = (function() {
         
       },
       error: function(jqXHR, textStatus, errorThrown) {
-    	  errorData = JSON.parse(jqXHR.responseText);
+    	  var errorData = {};
+    	  
+    	  try {
+    		  errorData = JSON.parse(jqXHR.responseText);
+    	  } catch (e) {}
+    	  
     	  alert("An error occured: " + errorData.message || errorThrown + "\n\rPlease try again or contact the administrator under jonas.etzold@fh-erfurt.de .");  
       }
     });
@@ -742,7 +752,11 @@ var cofetchHandler = (function() {
     		  }
     	  },
     	  error: function(jqXHR, textStatus, errorThrown) {
-    	   	  errorData = JSON.parse(jqXHR.responseText);
+    		  var errorData = {};
+        	  try {
+        		  errorData = JSON.parse(jqXHR.responseText);
+        	  } catch (e) {}
+        	  
         	  alert("An error occured: " + errorData.message || errorThrown + "\n\rPlease try again or contact the administrator under jonas.etzold@fh-erfurt.de .");  
           },
     	  traditional: true,
