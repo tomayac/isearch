@@ -17,14 +17,11 @@ Fetch.prototype.cleanResult = function(result, callback) {
 	var cleanResult = new Array();
 	
 	for(var i=0; i < result.length; i++) {
-		console.log('---------------------------');
 		if(typeof result[i][0] === 'object') {
-			console.log(result[i][0].Name);
-			cleanResult[i] = result[i].slice(0);
-			console.log(cleanResult[i]);
+			cleanResult[i] = result[i][0];
 		}
 	}
-	console.log(result.length+ ' --- ' +cleanResult.length);
+	
 	if(cleanResult.length != result.length) {
 		callback(result);
 	} else {
@@ -420,7 +417,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 						
 					} else {
 						for(var w=0; w < result.length; w++) {
-							contentObject.Files.push(result[0]);
+							contentObject.Files.push(result[w]);
 						}
 					}
 				});
@@ -509,7 +506,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 	
 					} else {
 						for(var s=0; s < result.length; s++) {
-							contentObject.Files.push(result[0]);
+							contentObject.Files.push(result[s]);
 						}
 					}
 				});
