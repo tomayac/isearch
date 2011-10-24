@@ -156,6 +156,8 @@ Fetch.prototype.getPart = function(type, query, callback) {
 		callback('Missing parameter', []);
 	}
 	
+	var context = this;
+	
 	switch(type) {
 		case '3d':
 			step(
@@ -225,7 +227,7 @@ Fetch.prototype.getPart = function(type, query, callback) {
 						callback(error,[]);
 					} else {
 						
-						cleanResult(data,function(result) {
+						context.cleanResult(data,function(result) {
 							callback(null,result);
 						});
 					}
@@ -280,7 +282,7 @@ Fetch.prototype.getPart = function(type, query, callback) {
 						callback(error,[]);
 					} else {
 					
-						cleanResult(data,function(result) {
+						context.cleanResult(data,function(result) {
 							callback(null,result);
 						});
 					}
