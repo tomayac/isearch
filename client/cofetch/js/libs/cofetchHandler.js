@@ -217,6 +217,10 @@ var cofetchHandler = (function() {
   
   //-------------------------------------------------------------
   var hasScraperData = function() {
+	  if(scraperData[0] === undefined) {
+		  return false;
+	  }
+	  
 	  if(scraperData[0].length > 0) {
 		  return scraperData[0].length;
 	  } else {
