@@ -11,7 +11,128 @@ var step     = require('./step');
     weather  = require('./wunderground');
 
 var Fetch = function() {	
-};  
+};
+
+Fetch.prototype.getBestMatch = function(query, results, callback) {
+	
+	var levenDistance = function(v1, v2){
+        d = [];
+        
+        for( i=0; i < v1.length; i++)
+				d[i] = [];
+				
+		if (v1[0] != v2[0])
+			d[0][0] = 1;
+		else
+			d[0][0] = 0;
+
+        for( i=1; i < v1.length; i++)
+            d[i][0] = d[i-1][0] + 1;
+		
+        for( j=1; j < v2.length; j++)
+			d[0][j] = d[0][j-1] + 1;
+            
+        for( i=1; i < v1.length; i++)
+		{
+            for( j=1; j < v2.length; j++)
+            {
+                cost = 0;
+                if (v1[i] != v2[j])
+                    cost = 1;
+                
+                d[i][j] = d[i-1][j] + 1;
+                if ( d[i][j] > d[i][j-1]+1 ) d[i][j] = d[i][j-1] + 1;
+                if ( d[i][j] > d[i-1][j-1]+cost ) d[i][j] = d[i-1][j-1] + cost;
+            }
+		}
+
+        return d[v1.length-1][v2.length-1] || 0;
+    };
+	
+	var q = query || '';
+	var r = results || [];
+	var matchList = [];
+	
+	if(q.length < 3 || r.length < 1) {
+		callback('Missing Input', null);
+	} else {
+		//Get all words of query
+		var qwords = q.split(" ");
+		//Remove query words shorter than 3 characters (e.g. "is" or "a")
+		var removeShort = function(words) {
+			for(var i=0; i < words.length; i++) {
+				if(words[i].length < 3) {
+					words.splice(i,1);
+					removeShort(words);
+				}
+			}
+			return words;
+		};
+		qwords = removeShort(qwords);
+
+		//For each result item
+		for(var i=0; i < r.length; i++) {
+			//For each relevant query word
+			for(var w=0; w < qwords.length; w++) {
+				//Find if the query word exists in the result item name
+				var rx = new RegExp(qwords[w],"gi");
+				//And add a point for this result item if so	
+				if(r[i].Name.search(rx) !== -1) {
+					matchList[i] = (isNaN(matchList[i]) ? 1 : matchList[i] + 1);
+				} else {
+					matchList[i] = 0;
+				}
+			}
+		}
+		
+		var joinedQuery = qwords.join(' ');
+		var realMatches = 0;
+		
+		var w1 = [0,0], 
+		    w2 = [0,0];
+		var wd1 = 1000, 
+		    wd2 = 1000;
+		
+		for(var m=0; m < matchList.length; m++) {
+			if(matchList[m] > 0) {
+				realMatches++;
+			}
+		}
+
+		//Check what result item has at least the two highest matching result item indexes with the query
+		if(realMatches > 1) {
+			for(var i=0; i < matchList.length; i++) {
+				if(matchList[i] > w1[1]) {
+					w2 = new Array(w1[0],w1[1]);
+					w1[0] = i;
+					w1[1] = matchList[i];
+				}
+			}
+
+			//Get most similar candidate with a Levenstein distance calculation
+			wd1 = levenDistance(r[w1[0]].Name,joinedQuery);
+			wd2 = levenDistance(r[w2[0]].Name,joinedQuery);
+			
+		} else {
+			
+			var td = 0;
+			for(var i=0; i < r.length; i++) {
+				td = levenDistance(r[i].Name,joinedQuery);
+				if(td < wd1) {
+					wd2 = wd1;
+					wd1 = td;
+				}
+			}
+		}
+
+		//return the closest result item
+		if( wd1 <= wd2 ){
+			callback(null, r[w1[0]]);
+		} else {
+			callback(null, r[w2[0]]);
+		}
+	}
+};
 
 Fetch.prototype.getPart = function(type, query, callback) {
 	
@@ -203,10 +324,17 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 				//Use the preview image of the first 3D model as preview for the content object
 				contentObject.Screenshot = data[0].Preview;
 				
-				//If automatic mode is on, than just store the first retrieved model (e.g. the most relevant)
+				//If automatic mode is on, than just store the best matching retrieved model (e.g. the most relevant)
 				if(automatic === 1) {
-					//Push the 3D model to the files array of the content object
-					contentObject.Files.push(data[0]);
+					//Push the best matching 3D model to the files array of the content object
+					getBestMatch(keyword, data, function(error, model) {
+						if(error || typeof(model) !== 'object') {
+							contentObject.Files.push(data[0]);
+						} else {
+							contentObject.Files.push(model);
+						}
+					});
+					
 				} else {
 					for(var m=0; m < data.length; m++) {
 						contentObject.Files.push(data[m]);
@@ -267,7 +395,15 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 				
 				//If automatic mode is on, than just store the first retrieved image (e.g. the most relevant)
 				if(automatic === 1) {
-					contentObject.Files.push(data[0][0]);
+					//Push the best matching image to the files array of the content object
+					getBestMatch(keyword, data[0], function(error, image) {
+						if(error || typeof(image) !== 'object') {
+							contentObject.Files.push(data[0][0]);
+						} else {
+							contentObject.Files.push(image);
+						}
+					});
+					
 				} else {
 					for(var w=0; w < data.length; w++) {
 						contentObject.Files.push(data[w][0]);
@@ -297,7 +433,14 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 				
 				//If automatic mode is on, than just store the first retrieved video (e.g. the most relevant)
 				if(automatic === 1) {
-					contentObject.Files.push(data[0]);
+					//Push the best matching video to the files array of the content object
+					getBestMatch(keyword, data, function(error, video) {
+						if(error || typeof(video) !== 'object') {
+							contentObject.Files.push(data[0]);
+						} else {
+							contentObject.Files.push(video);
+						}
+					});
 				} else {
 					for(var y=0; y < data.length; y++) {
 						contentObject.Files.push(data[y]);
@@ -339,7 +482,15 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 				
 				//If automatic mode is on, than just store the first retrieved sound (e.g. the most relevant)
 				if(automatic === 1) {
-					contentObject.Files.push(data[0]);
+					//Push the best matching sound to the files array of the content object
+					getBestMatch(keyword, data, function(error, sound) {
+						if(error || typeof(sound) !== 'object') {
+							contentObject.Files.push(data[0]);
+						} else {
+							contentObject.Files.push(sound);
+						}
+					});
+
 				} else {
 					for(var s=0; s < data.length; s++) {
 						contentObject.Files.push(data[s]);
