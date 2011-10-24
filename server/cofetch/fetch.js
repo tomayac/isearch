@@ -20,7 +20,7 @@ Fetch.prototype.cleanResult = function(result, callback) {
 		console.log('---------------------------');
 		if(typeof result[i][0] === 'object') {
 			console.log(result[i][0].Name);
-			cleanResult[i] = result[i][0].slice(0);
+			cleanResult[i] = result[i].slice(0);
 			console.log(cleanResult[i]);
 		}
 	}
