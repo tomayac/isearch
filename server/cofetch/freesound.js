@@ -79,6 +79,13 @@ var soundMethods = {
 	            
 	            if(soundResponse) {
 		            soundData = JSON.parse(soundResponse);
+		            
+		            var location = [0, 0, 0, 0];
+		            if(soundData.geotag !== undefined) {
+		            	location[0] = soundData.geotag[0];
+		            	location[1] = soundData.geotag[1];
+		            }
+		            
 		            result = {
 		              "Type": "SoundType",
 		              "Name": soundData['original_filename'],
@@ -90,12 +97,12 @@ var soundMethods = {
 		              "Author": soundData.user.username,
 		              "Date": soundData.created,
 		              "Size": soundData.filesize,
-		              "URL": soundData.url,
+		              "URL": soundData.serve + "?api_key=" + APIKey,
 		              "Preview": soundData.waveform_m,
 		              "PreviewOGG": soundData['preview-lq-ogg'],
 		              "Length": soundData.duration,
 		              "Emotions": [],
-		              "Location": [],
+		              "Location": location,
 		              "Weather": {}
 		            };
 	            }
