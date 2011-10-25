@@ -453,6 +453,8 @@ exports.store = function(data, overwrite, automatic, onlyJson, callback) {
 		  if(onlyJson !== true) {
 			  //Create RUCoD for Content Object data
 			  publishRUCoD(data, fileOutputPath, automatic, callback);
+		  } else {
+			  callback(null, "JSON successfully saved.");
 		  }
 		  
 		});	
