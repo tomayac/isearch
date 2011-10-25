@@ -301,6 +301,9 @@ var publishRUCoD = function(data, outputPath, automatic, callback) {
 		var emoIndex = -1;
 		
 		for(var f=0; f < data.Files.length; f++) {
+			if(data.Files[f].Type === undefined) {
+				continue;
+			}
 			if(data.Files[f].Type == 'Text') {
 				continue;
 			}
