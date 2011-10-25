@@ -408,9 +408,12 @@ exports.exists = function(name, categoryPath, callback) {
  * @param data - the Content Object data in JSON format
  * @param overwrite - indicates wether an existing file for content object should be overwritten or not
  * @param automatic - indicates wether the store routine is part of an automatic storing process
+ * @param onlyJson - indicates weather to store only json files without creating RUCoD
  * @param callback
  */
-exports.store = function(data, overwrite, automatic, callback) {
+exports.store = function(data, overwrite, automatic, onlyJson, callback) {
+	
+	var onlyJson = onlyJson || false;
 	
 	//Get the category path of the CO json
 	var catpath = data.CategoryPath.split('/');
@@ -447,8 +450,10 @@ exports.store = function(data, overwrite, automatic, callback) {
 		  if (error) throw error;
 		  console.log('JSON file ' + (exists === false ? 'created' : 'overwritten') + ' under ' + fileOutputPath + baseName + '.json');
 		  
-		  //Create RUCoD for Content Object data
-		  publishRUCoD(data, fileOutputPath, automatic, callback);
+		  if(onlyJson === false) {
+			  //Create RUCoD for Content Object data
+			  publishRUCoD(data, fileOutputPath, automatic, callback);
+		  }
 		  
 		});	
 		
@@ -460,9 +465,10 @@ exports.store = function(data, overwrite, automatic, callback) {
  * The function should be applied for automatic retrieved content object data, e.g. content object data which
  * was not revised by an user.
  * @param codata - an array of Content Object data in JSON format
+ * @param onlyJson - indicates weather to store only json files without creating RUCoD
  * @param callback - the function which should be called upon finishing of the storing process
  */
-exports.storeAutomaticInput = function(codata, callback) {
+exports.storeAutomaticInput = function(codata, onlyJson, callback) {
 	
 	console.log("Start automatic storing of " + codata.length + " Content Objects...");
 	var index = 0;
@@ -479,7 +485,7 @@ exports.storeAutomaticInput = function(codata, callback) {
 		index++;
 		
 		if(index < codata.length) {
-			exports.store(codata[index], true, true, storeCallback);
+			exports.store(codata[index], true, true, onlyJson, storeCallback);
 		} else if(endError) {
 			callback(endError,null);
 		} else { 
@@ -488,6 +494,6 @@ exports.storeAutomaticInput = function(codata, callback) {
 		
 	};
 	
-	exports.store(codata[index], true, true, storeCallback);
+	exports.store(codata[index], true, true, onlyJson, storeCallback);
 	
 };

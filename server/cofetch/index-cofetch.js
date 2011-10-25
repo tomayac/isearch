@@ -126,11 +126,9 @@ http.createServer(function (request, response) {
 	    		
 	    	} else {
 	    		
-	    		request.pause();
+	    		response.writeContinue();
 	    		
 	    		handleFetch(keywords, category, 0, automatic, function(error, result) {
-	    			
-	    			request.resume();
 	    			
 	    			if(error) {
 	    				handleError(error);
@@ -139,7 +137,7 @@ http.createServer(function (request, response) {
 		    			//Decide weather to send data back for user verification or store the data directly as RUCoD
 						if(automatic) {
 	
-				        	rucod.storeAutomaticInput(result, function(error, data) {
+				        	rucod.storeAutomaticInput(result, false, function(error, data) {
 				        		 
 				        		if(error) {
 
@@ -158,7 +156,17 @@ http.createServer(function (request, response) {
 				    			}
 				        	 });
 				        	
-						} else {	
+						} else {
+							
+							//Store all results as JSON files
+							rucod.storeAutomaticInput(result, true, function(error, data) {
+								if(error) {
+									console.log('Error while storing the JSON files for the corrosponding results.');
+								} else {
+									console.log('Fetched result stored in JSON files.');
+								}
+							});
+							
 							//Do it with verification of user
 							data = '_cofetchcb({"response":' + JSON.stringify(result) + '})';
 				    		
@@ -209,7 +217,7 @@ http.createServer(function (request, response) {
         	 //console.log(postData);
         	 var coJson = JSON.parse(postData);
         	 
-        	 rucod.store(coJson, true, false, function(error,info) {
+        	 rucod.store(coJson, true, false, false, function(error,info) {
         		 if(error) {
         			 handleError(error);
         		 } else {
