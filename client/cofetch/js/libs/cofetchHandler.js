@@ -754,6 +754,7 @@ var cofetchHandler = (function() {
     		  if(restData < 1 || restData == false) {
     			  
     			  alert('You revised and saved every fetched Content Object. Please start a new search. Page will reload.');
+    			  $('#script-keywords').val('');
     			  window.location.reload();
     			  
     		  } else {
