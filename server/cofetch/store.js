@@ -241,7 +241,7 @@ var publishRUCoD = function(data, outputPath, automatic, callback) {
 				continue;
 			}
 			//Text does not has any real world information
-			if(data.Files[f].Type === undefineddata.Files[f].Type == 'Text') {
+			if(data.Files[f].Type == 'Text') {
 				continue;
 			}
 			//Prepare the creation date of the media item for use in RWML
