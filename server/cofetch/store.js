@@ -184,6 +184,11 @@ var publishRUCoD = function(data, outputPath, automatic, callback) {
 		
 		//Fitting the media files into RUCoD
 		for(var f=0; f < data.Files.length; f++) {
+			
+			if(data.Files[f].Type === undefined) {
+				continue;
+			}
+			
 			rucodBody += '<MultimediaContent xsi:type="' + data.Files[f].Type + '">';
 			
 			if(data.Files[f].Type == 'Text') {
@@ -232,8 +237,11 @@ var publishRUCoD = function(data, outputPath, automatic, callback) {
 		var rwml = '<RWML>';
 		
 		for(var f=0; f < data.Files.length; f++) {
+			if(data.Files[f].Type === undefined) {
+				continue;
+			}
 			//Text does not has any real world information
-			if(data.Files[f].Type == 'Text') {
+			if(data.Files[f].Type === undefineddata.Files[f].Type == 'Text') {
 				continue;
 			}
 			//Prepare the creation date of the media item for use in RWML
@@ -346,7 +354,7 @@ var publishRUCoD = function(data, outputPath, automatic, callback) {
 							callback(error,null);
 						} else {
 							//Otherwise just remove the video item from the files array
-							data.Files.splice(id,1);
+							data.Files[id] = {};
 						}
 						return;
 					} else {
