@@ -126,8 +126,10 @@ var getVideoSourceUrl = function(youtubeLink, id, callback) {
 /**
  * Converts the given Content Object data in JSON format into XML RUCoD format with their
  * respective RWML files.
+ * 
+ * @param automatic - indicates wether the publishRUCoD routine is part of an automatic storing process
  */
-var publishRUCoD = function(data, outputPath, callback) {
+var publishRUCoD = function(data, outputPath, automatic, callback) {
     	
 	//Set the static structure of the RUCoD XML file
 	var rucodHeadS = '<?xml version="1.0" encoding="UTF-8"?>' +
@@ -338,11 +340,20 @@ var publishRUCoD = function(data, outputPath, callback) {
 				getVideoSourceUrl(data.Files[f].URL, f, function(error, id, url) {
 					
 					if(error) {
-						callback(error,null);
+						
+						if(!automatic) {
+							//If not in automatic mode, give the error back
+							callback(error,null);
+						} else {
+							//Otherwise just remove the video item from the files array
+							data.Files.splice(id,1);
+						}
 						return;
+					} else {
+						//If no error occured store the video data url in the files array
+						data.Files[id].URL = url;
 					}
-					
-					data.Files[id].URL = url;
+					//Save the rucod
 					saveRucodMedia(rucodBody, data, outputPath, callback);
 					
 				}); //End asynchronous call
@@ -382,10 +393,11 @@ exports.exists = function(name, categoryPath, callback) {
 /**
  * Stores the given JSON data as file on the servers file system.
  * @param data - the Content Object data in JSON format
- * @param overwrite - indicates weather an existing file for content object should be overwritten or not
+ * @param overwrite - indicates wether an existing file for content object should be overwritten or not
+ * @param automatic - indicates wether the store routine is part of an automatic storing process
  * @param callback
  */
-exports.store = function(data, overwrite, callback) {
+exports.store = function(data, overwrite, automatic, callback) {
 	
 	//Get the category path of the CO json
 	var catpath = data.CategoryPath.split('/');
@@ -423,7 +435,7 @@ exports.store = function(data, overwrite, callback) {
 		  console.log('JSON file ' + (exists === false ? 'created' : 'overwritten') + ' under ' + fileOutputPath + baseName + '.json');
 		  
 		  //Create RUCoD for Content Object data
-		  publishRUCoD(data,fileOutputPath,callback);
+		  publishRUCoD(data,fileOutputPath,automatic,callback);
 		  
 		});	
 		
@@ -454,7 +466,7 @@ exports.storeAutomaticInput = function(codata, callback) {
 		index++;
 		
 		if(index < codata.length) {
-			exports.store(codata[index], true, storeCallback);
+			exports.store(codata[index], true, true, storeCallback);
 		} else if(endError) {
 			callback(endError,null);
 		} else { 
@@ -463,6 +475,6 @@ exports.storeAutomaticInput = function(codata, callback) {
 		
 	};
 	
-	exports.store(codata[index], true, storeCallback);
+	exports.store(codata[index], true, true, storeCallback);
 	
 };
