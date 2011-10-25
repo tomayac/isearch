@@ -352,14 +352,16 @@ var publishRUCoD = function(data, outputPath, automatic, callback) {
 					
 					if(error) {
 						
-						if(!automatic) {
+						if(automatic !== true) {
 							//If not in automatic mode, give the error back
 							callback(error,null);
+							return;
+							
 						} else {
 							//Otherwise just remove the video item from the files array
 							data.Files[id] = {};
 						}
-						return;
+						
 					} else {
 						//If no error occured store the video data url in the files array
 						data.Files[id].URL = url;
@@ -446,7 +448,7 @@ exports.store = function(data, overwrite, automatic, callback) {
 		  console.log('JSON file ' + (exists === false ? 'created' : 'overwritten') + ' under ' + fileOutputPath + baseName + '.json');
 		  
 		  //Create RUCoD for Content Object data
-		  publishRUCoD(data,fileOutputPath,automatic,callback);
+		  publishRUCoD(data, fileOutputPath, automatic, callback);
 		  
 		});	
 		
