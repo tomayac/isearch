@@ -414,7 +414,7 @@ exports.exists = function(name, categoryPath, callback) {
 exports.store = function(data, overwrite, automatic, onlyJson, callback) {
 	
 	var onlyJson = onlyJson || false;
-	console.log(data);
+	
 	//Get the category path of the CO json
 	var catpath = data.CategoryPath.split('/');
 	//And check if the folders for those categories exist
