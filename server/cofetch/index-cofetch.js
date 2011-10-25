@@ -17,7 +17,9 @@ var port      = 8085;
 var file = new(fileserve.Server)('/var/www/isearch/client/cofetch');   
 
 http.createServer(function (request, response) {     
- 
+	//Set response timeout to 5 min
+	request.socket.setTimeout((5 * 60 * 1000));
+	
 	//Error handle function
 	var handleError = function(error) {
 
