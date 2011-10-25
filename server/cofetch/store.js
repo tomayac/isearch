@@ -483,7 +483,7 @@ exports.storeAutomaticInput = function(codata, callback) {
 		
 		index++;
 		
-		if(index < codata.length) {
+		if(index <= codata.length) {
 			exports.store(codata[index], true, true, false, storeCallback);
 		} else if(endError) {
 			callback(endError,null);
@@ -519,7 +519,7 @@ exports.storeJsonInput = function(codata, callback) {
 		
 		index++;
 		
-		if(index < codata.length) {
+		if(index <= codata.length) {
 			exports.store(codata[index], true, false, true, storeCallback);
 		} else if(endError) {
 			callback(endError,null);
