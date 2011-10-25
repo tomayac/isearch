@@ -159,7 +159,7 @@ http.createServer(function (request, response) {
 						} else {
 							
 							//Store all results as JSON files
-							rucod.storeAutomaticInput(result, true, function(error, data) {
+							rucod.storeJsonInput(result, function(error, data) {
 								if(error) {
 									console.log('Error while storing the JSON files for the corrosponding results.');
 								} else {
