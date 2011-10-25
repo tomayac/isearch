@@ -450,7 +450,7 @@ exports.store = function(data, overwrite, automatic, onlyJson, callback) {
 		  if (error) throw error;
 		  console.log('JSON file ' + (exists === false ? 'created' : 'overwritten') + ' under ' + fileOutputPath + baseName + '.json');
 		  
-		  if(onlyJson === false) {
+		  if(onlyJson !== true) {
 			  //Create RUCoD for Content Object data
 			  publishRUCoD(data, fileOutputPath, automatic, callback);
 		  }
@@ -465,10 +465,9 @@ exports.store = function(data, overwrite, automatic, onlyJson, callback) {
  * The function should be applied for automatic retrieved content object data, e.g. content object data which
  * was not revised by an user.
  * @param codata - an array of Content Object data in JSON format
- * @param onlyJson - indicates weather to store only json files without creating RUCoD
  * @param callback - the function which should be called upon finishing of the storing process
  */
-exports.storeAutomaticInput = function(codata, onlyJson, callback) {
+exports.storeAutomaticInput = function(codata, callback) {
 	
 	console.log("Start automatic storing of " + codata.length + " Content Objects...");
 	var index = 0;
@@ -485,7 +484,7 @@ exports.storeAutomaticInput = function(codata, onlyJson, callback) {
 		index++;
 		
 		if(index < codata.length) {
-			exports.store(codata[index], true, true, onlyJson, storeCallback);
+			exports.store(codata[index], true, true, false, storeCallback);
 		} else if(endError) {
 			callback(endError,null);
 		} else { 
@@ -494,6 +493,41 @@ exports.storeAutomaticInput = function(codata, onlyJson, callback) {
 		
 	};
 	
-	exports.store(codata[index], true, true, onlyJson, storeCallback);
+	exports.store(codata[index], true, true, false, storeCallback);
 	
+};
+
+/**
+ * Stores a given JSON array containing multiple Content Object data as JSON file on the servers file system.
+ * The function should be applied for manual retrieved content object data.
+ * @param codata - an array of Content Object data in JSON format
+ * @param callback - the function which should be called upon finishing of the storing process
+ */
+exports.storeJsonInput = function(codata, callback) {
+	
+	console.log("Start JSON storing of " + codata.length + " Content Objects...");
+	var index = 0;
+	var endError = '';
+	var endData = '';
+	
+	var storeCallback = function(error,data) {
+		if(error) {
+			endError += "Error JSON '" + codata[index].Name + "': " + error + "\n\r"; 
+		} else {
+			endData += "JSON '" + codata[index].Name + "': " + data + "\n\r";
+		}
+		
+		index++;
+		
+		if(index < codata.length) {
+			exports.store(codata[index], true, false, true, storeCallback);
+		} else if(endError) {
+			callback(endError,null);
+		} else { 
+			callback(null,{success: endData});
+		}
+		
+	};
+	
+	exports.store(codata[index], true, false, true, storeCallback);	
 };
