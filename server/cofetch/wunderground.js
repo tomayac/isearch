@@ -20,11 +20,11 @@ var weatherMethods = {
 			
 			if(start < data.length) {
 				//Return the current result object
-				console.log('Process weather data for input item: '+start);
+				//console.log('Process weather data for input item: '+start);
 				callback([data[start]]);
 				
 			} else {
-				console.log('End of fetching weather data');
+				//console.log('End of fetching weather data');
 				//There is nothing left for the job, so stop it
 				callback(null,false);
 			}
