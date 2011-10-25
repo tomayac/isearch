@@ -187,7 +187,8 @@ http.createServer(function (request, response) {
 	    } else if (parameters[0] == 'getPart') {
 	    	
 	    	var type  = parameters[1] || '';
-	    	var query = parameters[2].replace(/[+]/g,' ') || '';
+	    	var query = parameters[2] || '';
+	    	    query = query.replace(/[+]/g,' ');
 	    	
 	    	var cofetcher = new fetch.Fetch();
     		cofetcher.getPart(type, query, function(error, data){
