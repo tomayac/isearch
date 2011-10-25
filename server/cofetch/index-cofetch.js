@@ -125,12 +125,12 @@ http.createServer(function (request, response) {
 	    		handleError("Missing or wrong parameters. Please verify that you submitted at least one keyword and the corresponding category.");
 	    		
 	    	} else {
-	    		console.log(util.inspect(response,true,2));
-	    		//response.pause();
+	    		
+	    		request.pause();
 	    		
 	    		handleFetch(keywords, category, 0, automatic, function(error, result) {
 	    			
-	    			//response.resume();
+	    			request.resume();
 	    			
 	    			if(error) {
 	    				handleError(error);
