@@ -7,6 +7,7 @@ var http      = require('http'),
     restler   = require('restler'),
     qs        = require('querystring'),
     fetch     = require('./fetch'),
+    util      = require('util'),
     rucod     = require('./store');
 
 var port      = 8085;
@@ -124,7 +125,7 @@ http.createServer(function (request, response) {
 	    		handleError("Missing or wrong parameters. Please verify that you submitted at least one keyword and the corresponding category.");
 	    		
 	    	} else {
-	    		
+	    		util.inspect(response,true,2);
 	    		//response.pause();
 	    		
 	    		handleFetch(keywords, category, 0, automatic, function(error, result) {
