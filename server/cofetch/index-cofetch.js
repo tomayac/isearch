@@ -125,11 +125,11 @@ http.createServer(function (request, response) {
 	    		
 	    	} else {
 	    		
-	    		response.pause();
+	    		//response.pause();
 	    		
 	    		handleFetch(keywords, category, 0, automatic, function(error, result) {
 	    			
-	    			response.resume();
+	    			//response.resume();
 	    			
 	    			if(error) {
 	    				handleError(error);
