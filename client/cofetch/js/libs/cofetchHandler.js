@@ -68,7 +68,7 @@ var cofetchHandler = (function() {
       url: serverURL,
       dataType: "jsonp",
       jsonpCallback: "_cofetchcb",
-      timeout: 500000,
+      timeout: 1000000,
       success: function(data) {
     	
     	//Store the returned data
