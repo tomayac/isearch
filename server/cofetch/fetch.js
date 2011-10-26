@@ -364,7 +364,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 		},
 		function getImageData(error,data) {
 			//Be sure to have data before going on
-			if(!error && data.length < 1) {
+			if(!error && data[0].Type === undefined) {
 				error = 'No text data could be retrieved.';
 			}
 			if(error) {

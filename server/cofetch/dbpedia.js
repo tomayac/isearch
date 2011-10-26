@@ -38,21 +38,26 @@ var textMethods = {
         //The function where the transformed JSON data comes in
         parser.on('end', function(res) {    	
         	
-        	var result = {
-        			"Type":"Text",
-        			"Name":"",
-        			"FreeText":"",
-        			"URL":""
-        	};
-        	
         	if(res.Result) {
+        		
+        		var result = {
+            			"Type":"Text",
+            			"Name":"",
+            			"FreeText":"",
+            			"URL":""
+            	};
+        		
         		result.Name = res.Result.Label;
         		result.FreeText = res.Result.Description;
         		result.URL = 'http://en.wikipedia.org/wiki/' + res.Result.URI.substring((res.Result.URI.lastIndexOf('/')+1),res.Result.URI.length);
-        	}
+        		
+        		//Exit the Job returning the results array
+            	context.emit(result);
+        	} else {
+        		context.emit({});
+        	} 
         	
-        	//Exit the Job returning the results array
-        	context.emit(result);
+        	
         });
         //http://dbpedia.org/data/Atlantic_blue_marlin.json -- http://xmlns.com/foaf/0.1/page
         

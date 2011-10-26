@@ -49,9 +49,14 @@ http.createServer(function (request, response) {
 				callback(error, null);
 			} else {
 				
-				//Add retrieved content object data to result array
-				result.push(data);
-				console.log("Content Object Data fetched for query '" + keywords[index] + "' with index " + index + "!");
+				//Check if content object is valid, e.g. contains files
+				if(data.Files.length >= 1) {
+					//Add retrieved content object data to result array
+					result.push(data);
+					console.log("Content Object Data fetched for query '" + keywords[index] + "' with index " + index + "!");
+				} else {
+					console.log("No Content Object Data could be fetched for query '" + keywords[index] + "' with index " + index + "!");
+				}
 				
 				//Go for the next search keyword
 				index++;
