@@ -140,12 +140,17 @@ Fetch.prototype.getBestMatch = function(query, results, callback) {
 				}
 			}
 		}
-
-		//return the closest result item
-		if( wd1 <= wd2 ){
-			callback(null, r[w1[0]]);
+		
+		if( wd1 > 25 && wd2 > 25) {
+			//if no really close result could be found, just ignore it
+			callback(null, null);
 		} else {
-			callback(null, r[w2[0]]);
+			//return the closest result item
+			if( wd1 <= wd2 ){
+				callback(null, r[w1[0]]);
+			} else {
+				callback(null, r[w2[0]]);
+			}
 		}
 	}
 };
@@ -339,11 +344,9 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 				if(automatic === 1) {
 					//Push the best matching 3D model to the files array of the content object
 					context.getBestMatch(contentObject.Name, data, function(error, model) {
-						if(error || typeof model !== 'object') {
-							contentObject.Files.push(data[0]);
-						} else {
+						if(!error && typeof model === 'object') {
 							contentObject.Files.push(model);
-						}
+						} 
 					});
 					
 				} else {
@@ -410,11 +413,9 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 					if(automatic === 1) {
 						//Push the best matching image to the files array of the content object
 						context.getBestMatch(contentObject.Name, result, function(error, image) {
-							if(error || typeof image !== 'object') {
-								contentObject.Files.push(result[0]);
-							} else {
+							if(!error && typeof image === 'object') {
 								contentObject.Files.push(image);
-							}
+							} 
 						});
 						
 					} else {
@@ -449,11 +450,9 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 				if(automatic === 1) {
 					//Push the best matching video to the files array of the content object
 					context.getBestMatch(contentObject.Name, data, function(error, video) {
-						if(error || typeof video !== 'object') {
-							contentObject.Files.push(data[0]);
-						} else {
+						if(!error && typeof video === 'object') {
 							contentObject.Files.push(video);
-						}
+						} 
 					});
 				} else {
 					for(var y=0; y < data.length; y++) {
@@ -499,11 +498,9 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 					if(automatic === 1) {
 						//Push the best matching sound to the files array of the content object
 						context.getBestMatch(contentObject.Name, result, function(error, sound) {
-							if(error || typeof sound !== 'object') {
-								contentObject.Files.push(result[0]);
-							} else {
+							if(!error && typeof sound === 'object') {
 								contentObject.Files.push(sound);
-							}
+							} 
 						});
 	
 					} else {
