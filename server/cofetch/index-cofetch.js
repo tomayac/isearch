@@ -142,7 +142,7 @@ http.createServer(function (request, response) {
 		    			//Decide weather to send data back for user verification or store the data directly as RUCoD
 						if(automatic) {
 	
-				        	rucod.storeAutomaticInput(result, false, function(error, data) {
+				        	rucod.storeAutomaticInput(result, function(error, data) {
 				        		 
 				        		if(error) {
 

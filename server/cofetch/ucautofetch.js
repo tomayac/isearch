@@ -1,5 +1,4 @@
 var fetch     = require('./fetch'),
-	util      = require('util'),
 	rucod     = require('./store');
 
 //Fetch helper function
@@ -59,9 +58,54 @@ var handleFetch = function(keywords, category, index, automatic, callback) {
 		}
 	});
 	
-};	
+};
 
-var data = [{category: 'Humanoid/Human',
+var handleFetchCluster = function(clusters, clusterIndex) {
+	
+	var fetchCallback = function(error, result) {
+		
+		if(error) {
+			console.log(error);
+		} else {
+			
+	    	rucod.storeAutomaticInput(result, function(error, messages) {
+	    		if(error) {
+	    			console.log('Automatic storing ended with errors listed below:\n\r' + error);
+	    		} else {
+					console.log(messages);
+					
+					//Go for the next search keyword
+					clusterIndex++;
+					
+					if(clusterIndex < clusters.length) {
+						
+						var keywords = clusters[clusterIndex].keywords.split(',');
+						var category = clusters[clusterIndex].category;
+						
+						console.log(" ");
+						console.log("-------------------------------------------------------------------------");
+						console.log("Start new keyword sequence for category '" + category + "'");
+						console.log("-------------------------------------------------------------------------");
+						
+						handleFetch(keywords, category, 0, true, fetchCallback);
+					}
+				}
+	    	});
+		} //End error if
+	};
+	
+	var keywords = clusters[clusterIndex].keywords.split(',');
+	var category = clusters[clusterIndex].category;
+	
+	console.log(" ");
+	console.log("-------------------------------------------------------------------------");
+	console.log("Start new keyword sequence for category '" + category + "'");
+	console.log("-------------------------------------------------------------------------");
+	
+	handleFetch(keywords, category, 0, true, fetchCallback);
+};
+
+var ucdata = [{category: 'Humanoid/Human',
 	         keywords: 'Crusade Knight,CABALLERO,Greek Horse Archer,The Roman Army - Auxiliary Heavy Infantry,The Roman Army - Auxiliary Light Infantry Skirmisher,The Roman Army - Legionary Centurion,The Roman Army - Legionary Optio,The Roman Army - Legionary Infantry Soldier,The Roman Army - Republican Legionary Infantry Soldier,The Roman Army - Equites Legionis Roman Cavalry Officer,Roman Marching Camp - Legionary Soldier on the March,The Roman Army - Equites Legionis Roman Praefectus Equitum,Greek Archer chariots,Templar,Ancient Greek Hoplite,Lara Croft - Tomb Raider,Guy WITH A CABLE REEL,Guy WITH A PAIR OF STOLEN BUTTERFLY WINGS,Guy HIT ME,Guy ON THE GLOBAL WAY OF LIFE,Guy as a Tree'},
 	        {category: 'Humanoid/Fantasy',
 	         keywords: 'Green Goblin,Green Arrow,The Kraven,The Thing,Punisher,Mr. Fantastic,Red Tornado,x-men storm,x-men Magneto,Nosferatu,STAR WARS CLONE TROOPER,Pucca,Puppetmon,Omnimon,TigerVespamon,Chaosdramon,Beetlemon,zelda Red Bokoblin,Blood Elf,wow Nachtelf Priesterin,wow Furor-Krieger,wow Sukkubus,wow lich king,wow Nachtelf Todesritter,wow human warrior,wow Illidan Sturmgrimm,wow Nachtelf Schurke,wow Kaelthas,The Blind Archer,Sono io quando andavo all\'asilo,Paperino depresso,Ironman,Wizardmon,Hawkman,Captain America hero,x-men wolverine,bart simpson,homer simpson,lisa simpson,Agent Zero,DIP Snarfblak alien,Vam Hellson,Jay and Silent Bob,Cheech and Chong,Ghosts,Eric Cartman,World of Warcraft Goblin,World of Warcraft Worgen,Star Trek Captain Picard,hulk,Fantastic Four silver surfer,x-men Nightcrawler,Cowboy Character,Swat male,Hispanic female Character,wow tauren,Space Girl,Rocket Girl,star trek uhura,Star Trek Deanna Troi,borg queen,starfleet female,lara croft,halo Master Chief,Gandalf,halo 3 spartan,megaman,Samus Aran,smurf,Tinker Bell,cartoon Inspector Clouseau,War Machine Master Chief,Centaur,Narsil Gundam,Ancient Greek Hoplite,Cheap spartanNarsil Gundam sword,SAURON,Terminator T800 Model 101 Endoskeleton,The Blind Archer,Transformers - Bumblebee,Transformers - Optimus Prime,Transformers - Jazz,Transformers - Ironhide,Transformers - Starscream,Transformers - Barricade,Transformers - Brawl,Transformers - Blackout,Transformers - Megatron,Transformers - Optimus Prime attacking,STAR WARS CLONE TROOPER,halo Grunty-Bomb,zimé purpule witch,witch red fina'},
@@ -102,29 +146,5 @@ var data = [{category: 'Humanoid/Human',
 			{category: 'Infrastructure/Bulding/Hall',
 			 keywords: 'Garage,Work shop Garage MOT Station,repar shop,Hayes Family Auto Provo Utah,T.P. Brake & Muffler,North Lincs Tyres,A premium Workshop,Automotive Workshop & Showroom'}];
 
-for(var i=0; i < data.length; i++) {
-	
-	var keywords = data[i].keywords.split(',');
-	var category = data[i].category;
-	
-	console.log(" ");
-	console.log("---------------------------------------------------------------------------------------");
-	console.log("Start new keyword sequence for category '" + category + "'");
-	console.log("---------------------------------------------------------------------------------------");
-	
-	handleFetch(keywords, category, 0, true, function(error, result) {
-		
-		if(error) {
-			handleError(error);
-		} else {
-		
-	    	rucod.storeAutomaticInput(result, false, function(error, data) {
-	    		if(error) {
-	    			handleError('Automatic storing ended with errors listed below:\n\r' + error);
-	    		} else {
-					console.log(data);
-				}
-	    	 });
-		} //End error if
-	});
-}
+//Starting point for script
+handleFetchCluster(ucdata,0);
