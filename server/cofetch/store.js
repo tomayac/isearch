@@ -473,20 +473,25 @@ exports.storeAutomaticInput = function(codata, callback) {
 	
 	console.log("Start automatic storing of " + codata.length + " Content Objects...");
 	var index = 0;
+	var storeData = codata;
 	var endError = '';
 	var endData = '';
 	
 	var storeCallback = function(error,data) {
 		if(error) {
-			endError += "Error CO '" + codata[index].Name + "': " + error + "\n\r"; 
+			endError += "Error CO '" + storeData[index].Name + "': " + error + "\n\r"; 
 		} else {
-			endData += "CO '" + codata[index].Name + "': " + data + "\n\r";
+			if(storeData[index].Name !== undefined) {
+				endData += "CO '" + storeData[index].Name + "': " + data + "\n\r";
+			} else {
+				endData += "CO 'unknown': " + data + "\n\r";
+			}
 		}
 		
 		index++;
 		
-		if(index < codata.length) {
-			exports.store(codata[index], true, true, false, storeCallback);
+		if(index < storeData.length) {
+			exports.store(storeData[index], true, true, false, storeCallback);
 		} else if(endError) {
 			callback(endError,null);
 		} else { 
@@ -495,7 +500,7 @@ exports.storeAutomaticInput = function(codata, callback) {
 		
 	};
 	
-	exports.store(codata[index], true, true, false, storeCallback);
+	exports.store(storeData[index], true, true, false, storeCallback);
 	
 };
 
