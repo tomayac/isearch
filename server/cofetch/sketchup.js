@@ -18,7 +18,7 @@ var threedMethods = {
 		var maxResults = 10;
 
 		var searchURL = "http://sketchup.google.com/3dwarehouse/data/entities?"
-			+ 'q=title%3A' + query + '+is%3Amodel+filetype%3Azip'
+			+ 'q=' + query + '+is%3Amodel+filetype%3Azip'
 			+ '&scoring=t'
 			+ '&max-results=' + maxResults
 			+ '&file=zip'
