@@ -17,24 +17,24 @@ var handleFetch = function(keywords, category, index, automatic, callback) {
 			if(data.Files.length >= 1) {
 				//Add retrieved content object data to result array
 				result.push(data);
-				console.log("Content Object Data fetched for query '" + keywords[findex] + "' with findex " + findex + "!");
+				console.log("Content Object Data fetched for query '" + keywords[fIndex] + "' with fIndex " + fIndex + "!");
 			} else {
-				console.log("No Content Object Data could be fetched for query '" + keywords[findex] + "' with findex " + findex + "!");
+				console.log("No Content Object Data could be fetched for query '" + keywords[fIndex] + "' with fIndex " + fIndex + "!");
 			}
 			
 			//Go for the next search keyword
-			findex++;
+			fIndex++;
 			
-			if(findex < keywords.length) {
+			if(fIndex < keywords.length) {
 				
 				//If data for the given keyword already exists, we do not need to get it again
-				rucod.exists(keywords[findex], category, function(data) {
+				rucod.exists(keywords[fIndex], category, function(data) {
 					if(data != undefined) {
-						console.log("Stored data loaded for query " + (findex+1) +" of " + keywords.length + ": '" + keywords[findex] + "'...");
-						fetchCallback(null,data,findex);
+						console.log("Stored data loaded for query " + (fIndex+1) +" of " + keywords.length + ": '" + keywords[fIndex] + "'...");
+						fetchCallback(null,data,fIndex);
 					} else {
-						console.log("Fetching data for query " + (findex+1) +" of " + keywords.length + ": '" + keywords[findex] + "'...");
-						cofetcher.get(keywords[findex], category, findex, automatic, fetchCallback);
+						console.log("Fetching data for query " + (fIndex+1) +" of " + keywords.length + ": '" + keywords[fIndex] + "'...");
+						cofetcher.get(keywords[fIndex], category, fIndex, automatic, fetchCallback);
 					}
 				});
 			
