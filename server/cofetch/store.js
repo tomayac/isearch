@@ -492,7 +492,10 @@ exports.storeAutomaticInput = function(codata, callback) {
 			}
 		}
 		
+		console.log('sIndex 1: ' + sIndex);
 		sIndex++;
+		console.log('sIndex 2: ' + sIndex);
+		console.log('storeData l: ' + storeData.length);
 		
 		if(sIndex < storeData.length) {
 			exports.store(storeData[sIndex], sIndex, true, true, false, storeCallback);
