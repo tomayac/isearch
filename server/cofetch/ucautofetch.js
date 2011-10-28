@@ -6,7 +6,7 @@ var fetch  = require('./fetch'),
 var handleFetch = function(keywords, category, automatic, callback) {
 	
 	var options = {
-	    timeout: 30,   //Timeout after 30 seconds
+	    timeout: 180,   //Timeout after 3 minutes
 	    max: 1,        //Run 1 thread concurrently (when run() is async)
 	    retries: 3,    //Threads can retry 3 times before failing
 	    flatten: false
@@ -97,7 +97,7 @@ var handleFetch = function(keywords, category, automatic, callback) {
 var handleFetchCluster = function(cluster) {
 	
 	var options = {
-	    timeout: 1200,  //Timeout after 20min
+	    timeout: 1800,  //Timeout after 30min
 	    max: 1,        //Run 1 thread concurrently (when run() is async)
 	    retries: 3,    //Threads can retry 3 times before failing
 	    flatten: false
