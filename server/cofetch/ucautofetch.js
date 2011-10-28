@@ -5,13 +5,12 @@ var fetch     = require('./fetch'),
 var handleFetch = function(keywords, category, index, automatic, callback) {
 	
 	var cofetcher = new fetch.Fetch();
-	var findex = index;
 	var result = [];
 	
-	var fetchCallback = function(error, data) {
+	var fetchCallback = function(error, data, fIndex) {
 		
 		if(error) {
-			callback(error, null);
+			callback(error, null, fIndex);
 		} else {
 			
 			//Check if content object is valid, e.g. contains files
@@ -32,7 +31,7 @@ var handleFetch = function(keywords, category, index, automatic, callback) {
 				rucod.exists(keywords[findex], category, function(data) {
 					if(data != undefined) {
 						console.log("Stored data loaded for query " + (findex+1) +" of " + keywords.length + ": '" + keywords[findex] + "'...");
-						fetchCallback(null,data);
+						fetchCallback(null,data,findex);
 					} else {
 						console.log("Fetching data for query " + (findex+1) +" of " + keywords.length + ": '" + keywords[findex] + "'...");
 						cofetcher.get(keywords[findex], category, findex, automatic, fetchCallback);
@@ -49,13 +48,13 @@ var handleFetch = function(keywords, category, index, automatic, callback) {
 	}; //End fetchCallback function
 	
 	//If data for the given keyword already exists, we do not need to get it again
-	rucod.exists(keywords[findex], category, function(data) {
+	rucod.exists(keywords[index], category, function(data) {
 		if(data != undefined) {
-			console.log("Stored data loaded for query " + (findex+1) +" of " + keywords.length + ": '" + keywords[findex] + "'...");
-			fetchCallback(null,data);
+			console.log("Stored data loaded for query " + (index+1) +" of " + keywords.length + ": '" + keywords[index] + "'...");
+			fetchCallback(null,data,index);
 		} else {
-			console.log("Fetching data for query " + (findex+1) +" of " + keywords.length + ": '" + keywords[findex] + "'...");
-			cofetcher.get(keywords[findex], category, findex, automatic, fetchCallback);
+			console.log("Fetching data for query " + (index+1) +" of " + keywords.length + ": '" + keywords[index] + "'...");
+			cofetcher.get(keywords[index], category, index, automatic, fetchCallback);
 		}
 	});
 	

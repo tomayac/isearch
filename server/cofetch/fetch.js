@@ -518,7 +518,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 			console.log('Finished!');
 			
 			//Return the collected content object
-			callback(null, contentObject);
+			callback(null, contentObject, index);
 		}
 	);
 };    

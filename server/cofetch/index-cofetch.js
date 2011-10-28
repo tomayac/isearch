@@ -43,7 +43,7 @@ http.createServer(function (request, response) {
 		var cofetcher = new fetch.Fetch();
 		var result = [];
 		
-		var fetchCallback = function(error, data) {
+		var fetchCallback = function(error, data, fIndex) {
 			
 			if(error) {
 				callback(error, null);
@@ -53,24 +53,24 @@ http.createServer(function (request, response) {
 				if(data.Files.length >= 1) {
 					//Add retrieved content object data to result array
 					result.push(data);
-					console.log("Content Object Data fetched for query '" + keywords[index] + "' with index " + index + "!");
+					console.log("Content Object Data fetched for query '" + keywords[fIndex] + "' with index " + fIndex + "!");
 				} else {
-					console.log("No Content Object Data could be fetched for query '" + keywords[index] + "' with index " + index + "!");
+					console.log("No Content Object Data could be fetched for query '" + keywords[fIndex] + "' with index " + fIndex + "!");
 				}
 				
 				//Go for the next search keyword
-				index++;
+				fIndex++;
 				
-				if(index < keywords.length) {
+				if(fIndex < keywords.length) {
 					
 					//If data for the given keyword already exists, we do not need to get it again
-					rucod.exists(keywords[index], category, function(data) {
+					rucod.exists(keywords[fIndex], category, function(data) {
 						if(data != undefined) {
-							console.log("Stored data loaded for query " + (index+1) +" of " + keywords.length + ": '" + keywords[index] + "'...");
+							console.log("Stored data loaded for query " + (fIndex+1) +" of " + keywords.length + ": '" + keywords[fIndex] + "'...");
 							fetchCallback(null,data);
 						} else {
-							console.log("Fetching data for query " + (index+1) +" of " + keywords.length + ": '" + keywords[index] + "'...");
-							cofetcher.get(keywords[index], category, index, automatic, fetchCallback);
+							console.log("Fetching data for query " + (fIndex+1) +" of " + keywords.length + ": '" + keywords[fIndex] + "'...");
+							cofetcher.get(keywords[fIndex], category, fIndex, automatic, fetchCallback);
 						}
 					});
 				
@@ -87,7 +87,7 @@ http.createServer(function (request, response) {
 		rucod.exists(keywords[index], category, function(data) {
 			if(data != undefined) {
 				console.log("Stored data loaded for query " + (index+1) +" of " + keywords.length + ": '" + keywords[index] + "'...");
-				fetchCallback(null,data);
+				fetchCallback(null,data,index);
 			} else {
 				console.log("Fetching data for query " + (index+1) +" of " + keywords.length + ": '" + keywords[index] + "'...");
 				cofetcher.get(keywords[index], category, index, automatic, fetchCallback);

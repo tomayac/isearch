@@ -477,17 +477,16 @@ exports.store = function(data, index, overwrite, automatic, onlyJson, callback) 
 exports.storeAutomaticInput = function(codata, callback) {
 	
 	console.log("Start automatic storing of " + codata.length + " Content Objects...");
-	var sIndex = 0;
 	var storeData = codata;
 	var endError = '';
 	var endData = '';
 	
-	var storeCallback = function(error,data,index) {
+	var storeCallback = function(error,data,sIndex) {
 		if(error) {
-			endError += "Error CO '" + storeData[index].Name + "': " + error + "\n\r"; 
+			endError += "Error CO '" + storeData[sIndex].Name + "': " + error + "\n\r"; 
 		} else {
-			if(storeData[index].Name !== undefined) {
-				endData += "CO '" + storeData[index].Name + "': " + data + "\n\r";
+			if(storeData[sIndex].Name !== undefined) {
+				endData += "CO '" + storeData[sIndex].Name + "': " + data + "\n\r";
 			} else {
 				endData += "CO 'unknown': " + data + "\n\r";
 			}
@@ -495,7 +494,7 @@ exports.storeAutomaticInput = function(codata, callback) {
 		
 		sIndex++;
 		
-		if(sIndex < storeData.length) {
+		if(index < storeData.length) {
 			exports.store(storeData[sIndex], sIndex, true, true, false, storeCallback);
 		} else if(endError) {
 			callback(endError,null);
@@ -505,7 +504,7 @@ exports.storeAutomaticInput = function(codata, callback) {
 		
 	};
 	
-	exports.store(storeData[sIndex], sIndex, true, true, false, storeCallback);
+	exports.store(storeData[0], 0, true, true, false, storeCallback);
 	
 };
 
@@ -518,11 +517,10 @@ exports.storeAutomaticInput = function(codata, callback) {
 exports.storeJsonInput = function(codata, callback) {
 	
 	console.log("Start JSON storing of " + codata.length + " Content Objects...");
-	var sIndex = 0;
 	var endError = '';
 	var endData = '';
 	
-	var storeCallback = function(error,data, index) {
+	var storeCallback = function(error,data, sIndex) {
 		if(error) {
 			endError += "Error JSON '" + codata[sIndex].Name + "': " + error + "\n\r"; 
 		} else {
@@ -541,5 +539,5 @@ exports.storeJsonInput = function(codata, callback) {
 		
 	};
 	
-	exports.store(codata[sIndex], sIndex, true, false, true, storeCallback);	
+	exports.store(codata[0], 0, true, false, true, storeCallback);	
 };
