@@ -149,19 +149,24 @@ var imageMethods = {
 						
 						var sizes = new Array;
 						
-						var sizeData = JSON.parse(data).sizes.size;
-						var sizecount = sizeData.length;
-						
-						//Get the biggest available image index
-						var sizeindex = sizecount-1;
-						if(sizeData[sizeindex].label == 'Original') {
-							sizeindex -= 1;
+						try {
+							var sizeData = JSON.parse(data).sizes.size;
+							var sizecount = sizeData.length;
+							
+							//Get the biggest available image index
+							var sizeindex = sizecount-1;
+							if(sizeData[sizeindex].label == 'Original') {
+								sizeindex -= 1;
+							}
+							
+							result.Preview = sizeData[0].source;
+							result.URL     = sizeData[sizeindex].source;
+							//Image size calculating: width x height x (24Bit = 3 Byte) / ( 5 = 1/5 of the bitmap size = the estimated jpg size)   
+							result.Size    = (sizeData[sizeindex].width * sizeData[sizeindex].height * 3) / 5;
+							
+						} catch(e) {
+							console.log("Error: while fetching sizes data for flickr image");
 						}
-						
-						result.Preview = sizeData[0].source;
-						result.URL     = sizeData[sizeindex ].source;
-						//Image size calculating: width x height x (24Bit = 3 Byte) / ( 5 = 1/5 of the bitmap size = the estimated jpg size)   
-						result.Size    = (sizeData[sizeindex].width * sizeData[sizeindex].height * 3) / 5;
 						
 						results.push(result);
 						
