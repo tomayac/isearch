@@ -32,7 +32,7 @@ var handleFetch = function(keywords, category, automatic, callback) {
 				
 				//Return the current result object
 				console.log("Fetching data for query " + (start+1) +" of " + keywords.length + ": '" + keywords[start] + "'...");
-				callback([keywords[start],category,automatic,start]);
+				callback([new Array(keywords[start],category,automatic,start)]);
 				
 			} else {
 				//There is nothing left for the job, so stop it
