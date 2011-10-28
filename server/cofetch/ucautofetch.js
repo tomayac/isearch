@@ -146,8 +146,7 @@ var handleFetchCluster = function(cluster) {
 				if(error) {
 					console.log(error);
 				} else {
-					console.log("clusterData: ");
-					console.log(data);
+
 					rucod.storeAutomaticInput(data, function(error, messages) {
 			    		if(error) {
 			    			console.log('Automatic storing ended with errors listed below:\n\r' + error);

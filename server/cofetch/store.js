@@ -464,8 +464,13 @@ exports.exists = function(name, categoryPath, callback) {
 	path.exists(fileOutputPath + coName + '.json', function (exists) {
 		if(exists) {
 			var fileContents = fs.readFileSync(fileOutputPath + coName + '.json','utf8');
-			var data = JSON.parse(fileContents); 
-			callback(data);
+			try {
+				var data = JSON.parse(fileContents);
+				callback(data);
+			} catch(e) {
+				callback(undefined);
+			}
+			
 		} else {
 			callback(undefined);
 		}
