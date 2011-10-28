@@ -40,7 +40,8 @@ var handleFetch = function(keywords, category, automatic, callback) {
 			}
 	    },
 	    run: function (input) {
-	    	
+	    	console.log("handleFetchInput:");
+	    	console.log(input);
 	    	var cofetcher = new fetch.Fetch();
 	    	
 	    	//Preserve the context of this function	
@@ -121,7 +122,7 @@ var handleFetchCluster = function(cluster) {
 			
 				console.log(" ");
 				console.log("-------------------------------------------------------------------------");
-				console.log("Start new keyword sequence for category '" + category + "'");
+				console.log("Start new keyword sequence for category '" + clusters[start].category + "'");
 				console.log("-------------------------------------------------------------------------");
 				
 				//Return the current result object
