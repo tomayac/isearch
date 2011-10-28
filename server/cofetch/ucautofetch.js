@@ -176,7 +176,7 @@ var handleFetchCluster = function(cluster) {
 // keywords: 'Crusade Knight,CABALLERO,Greek Horse Archer,The Roman Army - Auxiliary Heavy Infantry,The Roman Army - Auxiliary Light Infantry Skirmisher,The Roman Army - Legionary Centurion,The Roman Army - Legionary Optio,The Roman Army - Legionary Infantry Soldier,The Roman Army - Republican Legionary Infantry Soldier,The Roman Army - Equites Legionis Roman Cavalry Officer,Roman Marching Camp - Legionary Soldier on the March,The Roman Army - Equites Legionis Roman Praefectus Equitum,Greek Archer chariots,Templar,Ancient Greek Hoplite,Lara Croft - Tomb Raider,Guy WITH A CABLE REEL,Guy WITH A PAIR OF STOLEN BUTTERFLY WINGS,Guy HIT ME,Guy ON THE GLOBAL WAY OF LIFE,Guy as a Tree'},
 
 var ucdata = [{category: 'Humanoid/Fantasy',
-	           keywords: 'stargate Saria Nova,lexx Zev of B3K,northen water tribe young female,Autobot Arcee,witch red fina,The Lich Queen,'},
+	           keywords: 'stargate Saria Nova,lexx Zev of B3K,northen water tribe young female,Autobot Arcee,witch red fina,The Lich Queen'},
 	         {category: 'Humanoid/Human',
 		      keywords: 'a girl in red shoes,Yukie Kawamura,iClone Ximena torres,iClone Citizen Female 01,iClone Citizen Female 02,iClone Citizen Female 03,iClone Citizen Male 01,iClone Citizen Male 02,iClone Citizen Male 03,Female Green Lantern,Female Yellow Lantern,'},
 	        {category: 'Animal/Fantasy',
