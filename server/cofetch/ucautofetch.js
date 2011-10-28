@@ -40,8 +40,7 @@ var handleFetch = function(keywords, category, automatic, callback) {
 			}
 	    },
 	    run: function (input) {
-	    	console.log("handleFetchInput:");
-	    	console.log(input);
+
 	    	var cofetcher = new fetch.Fetch();
 	    	
 	    	//Preserve the context of this function	
@@ -72,7 +71,7 @@ var handleFetch = function(keywords, category, automatic, callback) {
 			rucod.exists(input[0], input[1], function(data) {
 				if(data != undefined) {
 					console.log("Stored data loaded for query '" + input[0] +"'.");
-					fetchCallback(null,input[0],input[3]);
+					fetchCallback(null,data,input[3]);
 				} else {
 					console.log("Fetching data for query '" + input[0] +"'...");
 					cofetcher.get(input[0], input[1], input[3], input[2], fetchCallback);
