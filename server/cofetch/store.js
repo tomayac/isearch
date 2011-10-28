@@ -494,7 +494,7 @@ exports.storeAutomaticInput = function(codata, callback) {
 		
 		sIndex++;
 		
-		if(index < storeData.length) {
+		if(sIndex < storeData.length) {
 			exports.store(storeData[sIndex], sIndex, true, true, false, storeCallback);
 		} else if(endError) {
 			callback(endError,null);
