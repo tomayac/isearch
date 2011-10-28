@@ -1,114 +1,176 @@
-var fetch     = require('./fetch'),
-	rucod     = require('./store');
+var fetch  = require('./fetch'),
+	rucod  = require('./store'),
+	nodeio = require('node.io');
 
 //Fetch helper function
-var handleFetch = function(keywords, category, index, automatic, callback) {
+var handleFetch = function(keywords, category, automatic, callback) {
 	
-	var cofetcher = new fetch.Fetch();
-	var result = [];
+	var options = {
+	    timeout: 30,   //Timeout after 30 seconds
+	    max: 1,        //Run 1 thread concurrently (when run() is async)
+	    retries: 3,    //Threads can retry 3 times before failing
+	    flatten: false
+	};
 	
-	var fetchCallback = function(error, data, fIndex) {
-		
-		if(error) {
-			callback(error, null, fIndex);
-		} else {
-			
-			//Check if content object is valid, e.g. contains files
-			if(data.Files.length >= 1) {
-				//Add retrieved content object data to result array
-				result.push(data);
-				console.log("Content Object Data fetched for query '" + keywords[fIndex] + "' with fIndex " + fIndex + "!");
-			} else {
-				console.log("No Content Object Data could be fetched for query '" + keywords[fIndex] + "' with fIndex " + fIndex + "!");
+	var job = new nodeio.Job(options, {
+	    input: function (start, num, callback) {
+	        //Handling the input
+			//Let's get the arguments passed to the script
+			if (!this.options.args[0] || !this.options.args[1] || !this.options.args[2]) {
+				this.exit('No arguments were given to the CO fetch job');
+			}
+			//We won't allow more than one input line to be processed as once
+			if(num > 1) {
+				this.exit('The take parameter can not be set higher than 1 for this job');
 			}
 			
-			//Go for the next search keyword
-			fIndex++;
+			var keywords = this.options.args[0];
+			var category = this.options.args[1];
+			var automatic = this.options.args[2];
 			
-			if(fIndex < keywords.length) {
+			if(start < keywords.length) {
 				
-				//If data for the given keyword already exists, we do not need to get it again
-				rucod.exists(keywords[fIndex], category, function(data) {
-					if(data != undefined) {
-						console.log("Stored data loaded for query " + (fIndex+1) +" of " + keywords.length + ": '" + keywords[fIndex] + "'...");
-						fetchCallback(null,data,fIndex);
-					} else {
-						console.log("Fetching data for query " + (fIndex+1) +" of " + keywords.length + ": '" + keywords[fIndex] + "'...");
-						cofetcher.get(keywords[fIndex], category, fIndex, automatic, fetchCallback);
-					}
-				});
-			
+				//Return the current result object
+				console.log("Fetching data for query " + (start+1) +" of " + keywords.length + ": '" + keywords[start] + "'...");
+				callback([keywords[start],category,automatic,start]);
+				
 			} else {
+				//There is nothing left for the job, so stop it
+				callback(null,false);
+			}
+	    },
+	    run: function (input) {
+	    	
+	    	var cofetcher = new fetch.Fetch();
+	    	
+	    	//Preserve the context of this function	
+			var context = this;
+	    	
+			var fetchCallback = function(error, data, index) {
 				
-				console.log("Fetched all content object data!");
-				callback(null, result);
-				
-			} //End fetch if	
-		} //End error if
-	}; //End fetchCallback function
-	
-	//If data for the given keyword already exists, we do not need to get it again
-	rucod.exists(keywords[index], category, function(data) {
-		if(data != undefined) {
-			console.log("Stored data loaded for query " + (index+1) +" of " + keywords.length + ": '" + keywords[index] + "'...");
-			fetchCallback(null,data,index);
-		} else {
-			console.log("Fetching data for query " + (index+1) +" of " + keywords.length + ": '" + keywords[index] + "'...");
-			cofetcher.get(keywords[index], category, index, automatic, fetchCallback);
-		}
+				if(error) {
+					context.emit(error);
+				} else {
+
+					//Check if content object is valid, e.g. contains files
+					if(data.Files.length >= 1) {
+						//Add retrieved content object data to result array
+						console.log("Content Object Data fetched for query '" + data.Name + "' with index " + index + "!");
+						//result.push(data);
+						context.emit(data);
+						
+					} else {
+						console.log("No Content Object Data could be fetched for query '" + data.Name + "' with index " + index + "!");
+						context.emit(null);
+					}
+					
+				} //End error if
+			}; //End fetchCallback function 
+			
+			//If data for the given keyword already exists, we do not need to get it again
+			rucod.exists(input[0], input[1], function(data) {
+				if(data != undefined) {
+					console.log("Stored data loaded for query '" + input[0] +"'.");
+					fetchCallback(null,input[0],input[3]);
+				} else {
+					console.log("Fetching data for query '" + input[0] +"'...");
+					cofetcher.get(input[0], input[1], input[3], input[2], fetchCallback);
+				}
+			});
+			
+	    } //End run function
 	});
+	
+	nodeio.start(job, {args: [keywords,category,automatic]}, function(error,data) {
+		
+		if(error) {
+			callback(error, null);
+			return;
+		}
+
+		callback(null, data[0]);
+		
+	}, true);
 	
 };
 
-var handleFetchCluster = function(clusters, clusterIndex) {
+var handleFetchCluster = function(cluster) {
 	
-	var fetchCallback = function(error, result) {
-		
-		if(error) {
-			console.log(error);
-		} else {
-			
-	    	rucod.storeAutomaticInput(result, function(error, messages) {
-	    		if(error) {
-	    			console.log('Automatic storing ended with errors listed below:\n\r' + error);
-	    		} else {
-	    			
-					console.log(messages);
-					
-					//Go for the next search keyword
-					clusterIndex++;
-					
-					if(clusterIndex < clusters.length) {
-						
-						var keywords = clusters[clusterIndex].keywords.split(',');
-						var category = clusters[clusterIndex].category;
-						
-						console.log(" ");
-						console.log("-------------------------------------------------------------------------");
-						console.log("Start new keyword sequence for category '" + category + "'");
-						console.log("-------------------------------------------------------------------------");
-						
-						handleFetch(keywords, category, 0, true, fetchCallback);
-					} else {
-						console.log(" ");
-						console.log("-------------------------------------------------------------------------");
-						console.log("FINISHED!");
-						console.log("-------------------------------------------------------------------------");
-					}
-				}
-	    	});
-		} //End error if
+	var options = {
+	    timeout: 1200,  //Timeout after 20min
+	    max: 1,        //Run 1 thread concurrently (when run() is async)
+	    retries: 3,    //Threads can retry 3 times before failing
+	    flatten: false
 	};
 	
-	var keywords = clusters[clusterIndex].keywords.split(',');
-	var category = clusters[clusterIndex].category;
+	var job = new nodeio.Job(options, {
+	    input: function (start, num, callback) {
+	        //Handling the input
+			//Let's get the arguments passed to the script
+			if (!this.options.args[0]) {
+				this.exit('No arguments were given to the fetchCluster job');
+			}
+			//We won't allow more than one input line to be processed as once
+			if(num > 1) {
+				this.exit('The take parameter can not be set higher than 1 for this job');
+			}
+			
+			var clusters = this.options.args[0];
+			
+			if(start < clusters.length) {
+			
+				console.log(" ");
+				console.log("-------------------------------------------------------------------------");
+				console.log("Start new keyword sequence for category '" + category + "'");
+				console.log("-------------------------------------------------------------------------");
+				
+				//Return the current result object
+				callback([clusters[start]]);
+				
+			} else {
+				
+				//There is nothing left for the job, so stop it
+				callback(null,false);
+			}
+	    },
+	    run: function (input) {
+	        
+	    	//Preserve the context of this function	
+			var context = this;
+	    	
+			var keywords = input.keywords.split(',');
+			var category = input.category;
+			
+			handleFetch(keywords, category, true, function(error,data) {
+				
+				if(error) {
+					console.log(error);
+				} else {
+					console.log("clusterData: ");
+					console.log(data);
+					rucod.storeAutomaticInput(data, function(error, messages) {
+			    		if(error) {
+			    			console.log('Automatic storing ended with errors listed below:\n\r' + error);
+			    		} else {
+			    			//All done emit the messages
+			    			console.log(messages);
+						}
+			    		context.emit(null);
+			    	});
+				}
+			});
+			
+	    }, //End run function
+	    output: function(output) {
+	    	console.log(" ");
+			console.log("-------------------------------------------------------------------------");
+			console.log("FINISHED!");
+			console.log("-------------------------------------------------------------------------");
+	    }
+	});
 	
-	console.log(" ");
-	console.log("-------------------------------------------------------------------------");
-	console.log("Start new keyword sequence for category '" + category + "'");
-	console.log("-------------------------------------------------------------------------");
+	nodeio.start(job, {args: [cluster]});
 	
-	handleFetch(keywords, category, 0, true, fetchCallback);
 };
 
 //{category: 'Humanoid/Human',
@@ -156,4 +218,4 @@ var ucdata = [{category: 'Humanoid/Fantasy',
 			 keywords: 'Garage,Work shop Garage MOT Station,repar shop,Hayes Family Auto Provo Utah,T.P. Brake & Muffler,North Lincs Tyres,A premium Workshop,Automotive Workshop & Showroom'}];
 
 //Starting point for script
-handleFetchCluster(ucdata,0);
+handleFetchCluster(ucdata);

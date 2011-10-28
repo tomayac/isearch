@@ -343,7 +343,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 				contentObject.Screenshot = data[0].Preview;
 				
 				//If automatic mode is on, than just store the best matching retrieved model (e.g. the most relevant)
-				if(automatic === 1) {
+				if(automatic === true) {
 					//Push the best matching 3D model to the files array of the content object
 					context.getBestMatch(contentObject.Name, data, function(error, model) {
 						if(!error && typeof model === 'object') {
@@ -412,7 +412,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 				context.cleanResult(data,function(result) {
 
 					//If automatic mode is on, than just store the first retrieved image (e.g. the most relevant)
-					if(automatic === 1) {
+					if(automatic === true) {
 						//Push the best matching image to the files array of the content object
 						context.getBestMatch(contentObject.Name, result, function(error, image) {
 							if(!error && typeof image === 'object') {
@@ -449,7 +449,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 				console.log('5. YouTube data fetched!');
 				
 				//If automatic mode is on, than just store the first retrieved video (e.g. the most relevant)
-				if(automatic === 1) {
+				if(automatic === true) {
 					//Push the best matching video to the files array of the content object
 					context.getBestMatch(contentObject.Name, data, function(error, video) {
 						if(!error && typeof video === 'object') {
@@ -497,7 +497,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 				
 				context.cleanResult(data,function(result) {
 					//If automatic mode is on, than just store the first retrieved sound (e.g. the most relevant)
-					if(automatic === 1) {
+					if(automatic === true) {
 						//Push the best matching sound to the files array of the content object
 						context.getBestMatch(contentObject.Name, result, function(error, sound) {
 							if(!error && typeof sound === 'object') {

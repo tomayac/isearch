@@ -123,6 +123,12 @@ http.createServer(function (request, response) {
 	    	var category = decodeURIComponent(parameters[2]);
 	    	var automatic = parseInt(parameters[3]);
 	    	
+	    	if(automatic === 1) {
+	    		automatic = true;
+	    	} else {
+	    		automatic = false;
+	    	}
+	    	
 	    	//console.log('k:' + keywords + ' c:' + category + ' a:' + automatic);
 	    	
 	    	if(keywords.length < 1 || (keywords.length > 0 && keywords[0].length < 3) || category.length < 3 || isNaN(automatic)) {
