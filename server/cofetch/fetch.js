@@ -316,6 +316,8 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 			  "Files": []
 	};
 	
+	console.log("FetchData: k=" + keyword + " c=" + categoryPath + " i=" + index +" a=" + automatic);
+	
 	var context = this;
 	
 	//Step through the content object data collection

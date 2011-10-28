@@ -127,9 +127,10 @@ var getVideoSourceUrl = function(youtubeLink, id, callback) {
  * Converts the given Content Object data in JSON format into XML RUCoD format with their
  * respective RWML files.
  * 
- * @param automatic - indicates wether the publishRUCoD routine is part of an automatic storing process
+ * @param index - the index of the data within a collection, will be returned with callback
+ * @param automatic - indicates whether the publishRUCoD routine is part of an automatic storing process
  */
-var publishRUCoD = function(data, outputPath, automatic, callback) {
+var publishRUCoD = function(data, index, outputPath, automatic, callback) {
     	
 	//Set the static structure of the RUCoD XML file
 	var rucodHeadS = '<?xml version="1.0" encoding="UTF-8"?>' +
@@ -178,7 +179,7 @@ var publishRUCoD = function(data, outputPath, automatic, callback) {
 	rucodBody += '</Tags>';
 	
 	//------------------------------------------------
-	var saveRucodMedia = function(rucodBody, data, outputPath, callback) {
+	var saveRucodMedia = function(rucodBody, data, index, outputPath, callback) {
 		
 		rucodBody += '<ContentObjectTypes>';
 		
@@ -326,18 +327,18 @@ var publishRUCoD = function(data, outputPath, automatic, callback) {
 		//Write RWML file
 		fs.writeFile(outputPath+ baseName + '.rwml', rwml, function (error) {
 			if (error) {
-				callback(error,null);
+				callback(error,null,index);
 			} else {
 				console.log('RWML file created or overwritten under ' + outputPath + baseName + '.rwml');
 				
 				//Write RUCoD file
 				fs.writeFile(outputPath + baseName + '_rucod.xml', (rucodHeadS + rucodBody + rucodHeadE), function (error) {
 					if (error) {
-						callback(error,null);
+						callback(error,null,index);
 					} else {
 						console.log('RUCoD file created or overwritten under ' + outputPath + baseName + '_rucod.xml');
 						
-						callback(null,'JSON and RUCoD files successfully saved.');
+						callback(null,'JSON and RUCoD files successfully saved.',index);
 					}
 				});
 			}
@@ -354,7 +355,7 @@ var publishRUCoD = function(data, outputPath, automatic, callback) {
 						
 						if(automatic !== true) {
 							//If not in automatic mode, give the error back
-							callback(error,null);
+							callback(error,null,index);
 							return;
 							
 						} else {
@@ -367,7 +368,7 @@ var publishRUCoD = function(data, outputPath, automatic, callback) {
 						data.Files[id].URL = url;
 					}
 					//Save the rucod
-					saveRucodMedia(rucodBody, data, outputPath, callback);
+					saveRucodMedia(rucodBody, data, index, outputPath, callback);
 					
 				}); //End asynchronous call
 			} 
@@ -375,7 +376,7 @@ var publishRUCoD = function(data, outputPath, automatic, callback) {
 		
 	} else {
 		//No video in JSON so don't go through the video source url retrieval path
-		saveRucodMedia(rucodBody, data, outputPath, callback);
+		saveRucodMedia(rucodBody, data, index, outputPath, callback);
 	}
 };
 
@@ -406,12 +407,13 @@ exports.exists = function(name, categoryPath, callback) {
 /**
  * Stores the given JSON data as file on the servers file system.
  * @param data - the Content Object data in JSON format
+ * @param index - the index of the data within a collection, will be returned with callback
  * @param overwrite - indicates wether an existing file for content object should be overwritten or not
  * @param automatic - indicates wether the store routine is part of an automatic storing process
  * @param onlyJson - indicates weather to store only json files without creating RUCoD
  * @param callback
  */
-exports.store = function(data, overwrite, automatic, onlyJson, callback) {
+exports.store = function(data, index, overwrite, automatic, onlyJson, callback) {
 	
 	var onlyJson = onlyJson || false;
 	
@@ -436,12 +438,15 @@ exports.store = function(data, overwrite, automatic, onlyJson, callback) {
 	//Set the general output path for this content object
 	fileOutputPath += '/';
 	
+	console.log("StoreData: i="+index+" o="+overwrite+" a="+automatic);
+	console.log(data.Name);
+	
 	//Check if the folder for this content object already exists
 	path.exists(fileOutputPath + baseName + '.json', function (exists) {
 		//Pre check
 		if(exists && overwrite === false) {
 			console.log('File exists!');
-			callback('File already exists and overwrite was not allowed', null);
+			callback('File already exists and overwrite was not allowed', null, index);
 			return;
 		} 
 		
@@ -452,9 +457,9 @@ exports.store = function(data, overwrite, automatic, onlyJson, callback) {
 		  
 		  if(onlyJson !== true) {
 			  //Create RUCoD for Content Object data
-			  publishRUCoD(data, fileOutputPath, automatic, callback);
+			  publishRUCoD(data, index, fileOutputPath, automatic, callback);
 		  } else {
-			  callback(null, "JSON successfully saved.");
+			  callback(null, "JSON successfully saved.", index);
 		  }
 		  
 		});	
@@ -472,12 +477,12 @@ exports.store = function(data, overwrite, automatic, onlyJson, callback) {
 exports.storeAutomaticInput = function(codata, callback) {
 	
 	console.log("Start automatic storing of " + codata.length + " Content Objects...");
-	var index = 0;
+	var sIndex = 0;
 	var storeData = codata;
 	var endError = '';
 	var endData = '';
 	
-	var storeCallback = function(error,data) {
+	var storeCallback = function(error,data,index) {
 		if(error) {
 			endError += "Error CO '" + storeData[index].Name + "': " + error + "\n\r"; 
 		} else {
@@ -488,10 +493,10 @@ exports.storeAutomaticInput = function(codata, callback) {
 			}
 		}
 		
-		index++;
+		sIndex++;
 		
-		if(index < storeData.length) {
-			exports.store(storeData[index], true, true, false, storeCallback);
+		if(sIndex < storeData.length) {
+			exports.store(storeData[sIndex], sIndex, true, true, false, storeCallback);
 		} else if(endError) {
 			callback(endError,null);
 		} else { 
@@ -500,7 +505,7 @@ exports.storeAutomaticInput = function(codata, callback) {
 		
 	};
 	
-	exports.store(storeData[index], true, true, false, storeCallback);
+	exports.store(storeData[sIndex], sIndex, true, true, false, storeCallback);
 	
 };
 
@@ -513,21 +518,21 @@ exports.storeAutomaticInput = function(codata, callback) {
 exports.storeJsonInput = function(codata, callback) {
 	
 	console.log("Start JSON storing of " + codata.length + " Content Objects...");
-	var index = 0;
+	var sIndex = 0;
 	var endError = '';
 	var endData = '';
 	
-	var storeCallback = function(error,data) {
+	var storeCallback = function(error,data, index) {
 		if(error) {
-			endError += "Error JSON '" + codata[index].Name + "': " + error + "\n\r"; 
+			endError += "Error JSON '" + codata[sIndex].Name + "': " + error + "\n\r"; 
 		} else {
-			endData += "JSON '" + codata[index].Name + "': " + data + "\n\r";
+			endData += "JSON '" + codata[sIndex].Name + "': " + data + "\n\r";
 		}
 		
-		index++;
+		sIndex++;
 		
-		if(index < codata.length) {
-			exports.store(codata[index], true, false, true, storeCallback);
+		if(sIndex < codata.length) {
+			exports.store(codata[sIndex], sIndex, true, false, true, storeCallback);
 		} else if(endError) {
 			callback(endError,null);
 		} else { 
@@ -536,5 +541,5 @@ exports.storeJsonInput = function(codata, callback) {
 		
 	};
 	
-	exports.store(codata[index], true, false, true, storeCallback);	
+	exports.store(codata[sIndex], sIndex, true, false, true, storeCallback);	
 };

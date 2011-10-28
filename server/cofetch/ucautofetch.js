@@ -5,6 +5,7 @@ var fetch     = require('./fetch'),
 var handleFetch = function(keywords, category, index, automatic, callback) {
 	
 	var cofetcher = new fetch.Fetch();
+	var findex = index;
 	var result = [];
 	
 	var fetchCallback = function(error, data) {
@@ -17,24 +18,24 @@ var handleFetch = function(keywords, category, index, automatic, callback) {
 			if(data.Files.length >= 1) {
 				//Add retrieved content object data to result array
 				result.push(data);
-				console.log("Content Object Data fetched for query '" + keywords[index] + "' with index " + index + "!");
+				console.log("Content Object Data fetched for query '" + keywords[findex] + "' with findex " + findex + "!");
 			} else {
-				console.log("No Content Object Data could be fetched for query '" + keywords[index] + "' with index " + index + "!");
+				console.log("No Content Object Data could be fetched for query '" + keywords[findex] + "' with findex " + findex + "!");
 			}
 			
 			//Go for the next search keyword
-			index++;
+			findex++;
 			
-			if(index < keywords.length) {
+			if(findex < keywords.length) {
 				
 				//If data for the given keyword already exists, we do not need to get it again
-				rucod.exists(keywords[index], category, function(data) {
+				rucod.exists(keywords[findex], category, function(data) {
 					if(data != undefined) {
-						console.log("Stored data loaded for query " + (index+1) +" of " + keywords.length + ": '" + keywords[index] + "'...");
+						console.log("Stored data loaded for query " + (findex+1) +" of " + keywords.length + ": '" + keywords[findex] + "'...");
 						fetchCallback(null,data);
 					} else {
-						console.log("Fetching data for query " + (index+1) +" of " + keywords.length + ": '" + keywords[index] + "'...");
-						cofetcher.get(keywords[index], category, index, automatic, fetchCallback);
+						console.log("Fetching data for query " + (findex+1) +" of " + keywords.length + ": '" + keywords[findex] + "'...");
+						cofetcher.get(keywords[findex], category, findex, automatic, fetchCallback);
 					}
 				});
 			
@@ -48,13 +49,13 @@ var handleFetch = function(keywords, category, index, automatic, callback) {
 	}; //End fetchCallback function
 	
 	//If data for the given keyword already exists, we do not need to get it again
-	rucod.exists(keywords[index], category, function(data) {
+	rucod.exists(keywords[findex], category, function(data) {
 		if(data != undefined) {
-			console.log("Stored data loaded for query " + (index+1) +" of " + keywords.length + ": '" + keywords[index] + "'...");
+			console.log("Stored data loaded for query " + (findex+1) +" of " + keywords.length + ": '" + keywords[findex] + "'...");
 			fetchCallback(null,data);
 		} else {
-			console.log("Fetching data for query " + (index+1) +" of " + keywords.length + ": '" + keywords[index] + "'...");
-			cofetcher.get(keywords[index], category, index, automatic, fetchCallback);
+			console.log("Fetching data for query " + (findex+1) +" of " + keywords.length + ": '" + keywords[findex] + "'...");
+			cofetcher.get(keywords[findex], category, findex, automatic, fetchCallback);
 		}
 	});
 	
@@ -72,6 +73,7 @@ var handleFetchCluster = function(clusters, clusterIndex) {
 	    		if(error) {
 	    			console.log('Automatic storing ended with errors listed below:\n\r' + error);
 	    		} else {
+	    			
 					console.log(messages);
 					
 					//Go for the next search keyword
@@ -88,6 +90,11 @@ var handleFetchCluster = function(clusters, clusterIndex) {
 						console.log("-------------------------------------------------------------------------");
 						
 						handleFetch(keywords, category, 0, true, fetchCallback);
+					} else {
+						console.log(" ");
+						console.log("-------------------------------------------------------------------------");
+						console.log("FINISHED!");
+						console.log("-------------------------------------------------------------------------");
 					}
 				}
 	    	});
@@ -108,16 +115,16 @@ var handleFetchCluster = function(clusters, clusterIndex) {
 //{category: 'Humanoid/Human',
 // keywords: 'Crusade Knight,CABALLERO,Greek Horse Archer,The Roman Army - Auxiliary Heavy Infantry,The Roman Army - Auxiliary Light Infantry Skirmisher,The Roman Army - Legionary Centurion,The Roman Army - Legionary Optio,The Roman Army - Legionary Infantry Soldier,The Roman Army - Republican Legionary Infantry Soldier,The Roman Army - Equites Legionis Roman Cavalry Officer,Roman Marching Camp - Legionary Soldier on the March,The Roman Army - Equites Legionis Roman Praefectus Equitum,Greek Archer chariots,Templar,Ancient Greek Hoplite,Lara Croft - Tomb Raider,Guy WITH A CABLE REEL,Guy WITH A PAIR OF STOLEN BUTTERFLY WINGS,Guy HIT ME,Guy ON THE GLOBAL WAY OF LIFE,Guy as a Tree'},
 
-
-var ucdata = [
-	        {category: 'Humanoid/Fantasy',
-	         keywords: 'Green Goblin,Green Arrow,The Kraven,The Thing,Punisher,Mr. Fantastic,Red Tornado,x-men storm,x-men Magneto,Nosferatu,STAR WARS CLONE TROOPER,Pucca,Puppetmon,Omnimon,TigerVespamon,Chaosdramon,Beetlemon,zelda Red Bokoblin,Blood Elf,wow Nachtelf Priesterin,wow Furor-Krieger,wow Sukkubus,wow lich king,wow Nachtelf Todesritter,wow human warrior,wow Illidan Sturmgrimm,wow Nachtelf Schurke,wow Kaelthas,The Blind Archer,Sono io quando andavo all\'asilo,Paperino depresso,Ironman,Wizardmon,Hawkman,Captain America hero,x-men wolverine,bart simpson,homer simpson,lisa simpson,Agent Zero,DIP Snarfblak alien,Vam Hellson,Jay and Silent Bob,Cheech and Chong,Ghosts,Eric Cartman,World of Warcraft Goblin,World of Warcraft Worgen,Star Trek Captain Picard,hulk,Fantastic Four silver surfer,x-men Nightcrawler,Cowboy Character,Swat male,Hispanic female Character,wow tauren,Space Girl,Rocket Girl,star trek uhura,Star Trek Deanna Troi,borg queen,starfleet female,lara croft,halo Master Chief,Gandalf,halo 3 spartan,megaman,Samus Aran,smurf,Tinker Bell,cartoon Inspector Clouseau,War Machine Master Chief,Centaur,Narsil Gundam,Ancient Greek Hoplite,Cheap spartanNarsil Gundam sword,SAURON,Terminator T800 Model 101 Endoskeleton,The Blind Archer,Transformers - Bumblebee,Transformers - Optimus Prime,Transformers - Jazz,Transformers - Ironhide,Transformers - Starscream,Transformers - Barricade,Transformers - Brawl,Transformers - Blackout,Transformers - Megatron,Transformers - Optimus Prime attacking,STAR WARS CLONE TROOPER,halo Grunty-Bomb,zimé purpule witch,witch red fina'},
+var ucdata = [{category: 'Humanoid/Fantasy',
+	           keywords: 'stargate Saria Nova,lexx Zev of B3K,northen water tribe young female,Autobot Arcee,witch red fina,The Lich Queen,'},
+	         {category: 'Humanoid/Human',
+		      keywords: 'a girl in red shoes,Yukie Kawamura,iClone Ximena torres,iClone Citizen Female 01,iClone Citizen Female 02,iClone Citizen Female 03,iClone Citizen Male 01,iClone Citizen Male 02,iClone Citizen Male 03,Female Green Lantern,Female Yellow Lantern,'},
 	        {category: 'Animal/Fantasy',
 		     keywords: 'Gryphomon,Megadramon,V-mon,Pikachu,Sonic the Hedgehog,Kirby,Waddle Dee,Meta Knight,Montey mole,Koopa troopa,Yoshi,cartoon penguin,cartoon rabbit,cartoon Duck,cartoon Lambert,cartoon dog,cartoon cowgirl,cartoon ladybug,cartoon tweety,mickey mouse,Pink Panther,Pinky and the Brain,donald duck,dragon'},
 		    {category: 'Animal/Reptile',
 		     keywords: 'Komodo Dragon,snake reptile'},
 		    {category: 'Weapon/Sword',
-			 keywords: 'Conan sword,wow Frostgram schwert,Samurai Sword,katana sword,fantasy sword,Nazgul SwordSword of the Witch King,Frodos Sword Sting,Glamdring sword,Gimlis Axe,Anime Sword,Valdris Blade KR8,Elite sword,Roman Mainz Gladias,Roman Short Sword,Scottish Claymore Sword and Targe,Warsock - halo difficulty logo,twilight princess swords and shields,Runescape Dragon Handed Sword,Sica Sword,Spartan Scimitar short sword,medievil claymore sword,sword of war,crystal destiny sword,Seran Claymore sword,Desane Claymore sword,Claymore Sword,Sephiroth masamune,Blade of Darkness sword,final fantasy Buster Sword,final fantasy cloud Sword,Zanbato sword'}, 
+			 keywords: 'Lei\'rajin keeper of balance,Conan sword,wow Frostgram schwert,Samurai Sword,katana sword,fantasy sword,Nazgul Sword,Sword of the Witch King,Frodos Sword Sting,Glamdring sword,Gimlis Axe,Anime Sword,Valdris Blade KR8,Elite sword,Roman Mainz Gladias,Roman Short Sword,Scottish Claymore Sword and Targe,Warsock halo difficulty logo,twilight princess swords and shields,Runescape Dragon Handed Sword,Sica Sword,Spartan Scimitar short sword,medievil claymore sword,sword of war,crystal destiny sword,Seran Claymore sword,Desane Claymore sword,Claymore Sword,Sephiroth masamune,Blade of Darkness sword,final fantasy Buster Sword,final fantasy cloud Sword,Zanbato sword,Frostmourne blade'}, 
 			{category: 'Weapon/Knife',
 			 keywords: 'Dragon Lord Knife,Phoenix Klingon Knife,Gil Hibben Knife'},
 			{category: 'Weapon',

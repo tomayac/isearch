@@ -223,7 +223,7 @@ http.createServer(function (request, response) {
         	 //console.log(postData);
         	 var coJson = JSON.parse(postData);
         	 
-        	 rucod.store(coJson, true, false, false, function(error,info) {
+        	 rucod.store(coJson, 0, true, false, false, function(error,info) {
         		 if(error) {
         			 handleError(error);
         		 } else {
