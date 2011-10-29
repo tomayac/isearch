@@ -156,6 +156,7 @@ var storeMultipleContentObjectData = function(data, onlyJson, callback) {
 	    },
 	    run: function (input) {
 	        
+	    	console.log(input);
 	    	var onlyJson = false;
 	    	
 	    	if (this.options.args[1]) {
