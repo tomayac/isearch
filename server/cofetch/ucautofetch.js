@@ -78,7 +78,11 @@ var handleFetch = function(keywords, category, automatic, callback) {
 				}
 			});
 			
-	    } //End run function
+	    }, //End run function
+	    output: function(output) {
+	    	console.log("output...");
+	    	console.log(output);
+	    }
 	});
 	
 	nodeio.start(job, {args: [keywords,category,automatic]}, function(error,data) {
