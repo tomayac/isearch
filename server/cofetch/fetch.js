@@ -147,31 +147,17 @@ Fetch.prototype.getBestMatch = function(query, results, callback) {
 		var isW1 = (r[w1[0]] && wd1 <= 25),
 		    isW2 = (r[w2[0]] && wd2 <= 25);
 		
-		console.log("isW1: " + isW1);
-		console.log("isW2: " + isW2);
-		
 		//If we have both winners, return both in an array
 		if(isW1 && isW2) {
-			console.log("Two winners:");
-			console.log("w1: ");
-			console.log(r[w1[0]]);
-			console.log("w2: ");
-			console.log(r[w2[0]]);
 			if( wd1 <= wd2 ){
 				callback(null, new Array(r[w1[0]],r[w2[0]]));
 			} else {
 				callback(null, new Array(r[w2[0]],r[w1[0]]));
 			}
-		//Else just return the avaiable winner	
+		//Else just return the available winner	
 		} else if(isW1){
-			console.log("One winner:");
-			console.log("w1: ");
-			console.log(r[w1[0]]);
 			callback(null, new Array(r[w1[0]]));
 		} else if(isW2) {
-			console.log("One winner:");
-			console.log("w2: ");
-			console.log(r[w2[0]]);
 			callback(null, new Array(r[w2[0]]));
 		//or nothing	
 		} else {
@@ -341,7 +327,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 			  "Files": []
 	};
 	
-	console.log("FetchData: k=" + keyword + " c=" + categoryPath + " i=" + index +" a=" + automatic);
+	//console.log("FetchData: k=" + keyword + " c=" + categoryPath + " i=" + index +" a=" + automatic);
 	
 	var context = this;
 	
@@ -371,7 +357,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 				if(automatic === true) {
 					//Push the best matching 3D model to the files array of the content object
 					context.getBestMatch(contentObject.Name, data, function(error, matches) {
-						if(!error && typeof matches === 'object') {
+						if(!error && matches !== null) {
 							for(var m=0; m < matches.length; m++) {
 								contentObject.Files.push(matches[m]);
 							}
@@ -443,7 +429,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 						//Push the best matching image to the files array of the content object
 						context.getBestMatch(contentObject.Name, result, function(error, matches) {
 							
-							if(!error && typeof matches === 'object') {
+							if(!error && matches !== null) {
 								for(var m=0; m < matches.length; m++) {
 									contentObject.Files.push(matches[m]);
 								}
@@ -483,7 +469,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 					//Push the best matching video to the files array of the content object
 					context.getBestMatch(contentObject.Name, data, function(error, matches) {
 	
-						if(!error && typeof matches === 'object') {
+						if(!error && matches !== null) {
 							for(var m=0; m < matches.length; m++) {
 								contentObject.Files.push(matches[m]);
 							}
@@ -534,7 +520,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 						//Push the best matching sound to the files array of the content object
 						context.getBestMatch(contentObject.Name, result, function(error, matches) {
 
-							if(!error && typeof matches === 'object') {
+							if(!error && matches !== null) {
 								for(var m=0; m < matches.length; m++) {
 									contentObject.Files.push(matches[m]);
 								}

@@ -129,6 +129,11 @@ var handleFetchCluster = function(cluster) {
 				
 			} else {
 				
+				console.log(" ");
+				console.log("-------------------------------------------------------------------------");
+				console.log("FINISHED!");
+				console.log("-------------------------------------------------------------------------");
+				
 				//There is nothing left for the job, so stop it
 				callback(null,false);
 			}
@@ -159,13 +164,7 @@ var handleFetchCluster = function(cluster) {
 				}
 			});
 			
-	    }, //End run function
-	    output: function(output) {
-	    	console.log(" ");
-			console.log("-------------------------------------------------------------------------");
-			console.log("FINISHED!");
-			console.log("-------------------------------------------------------------------------");
-	    }
+	    } //End run function
 	});
 	
 	nodeio.start(job, {args: [cluster]});
@@ -178,7 +177,7 @@ var handleFetchCluster = function(cluster) {
 var ucdata = [{category: 'Animal/Reptile',
 			   keywords: 'Komodo Dragon,snake reptile'},
 			  {category: 'Tool/Office utensil',
-			   keywords: 'DIXON pencil,Faber Castell Scale Ruler'}];
+			   keywords: 'DIXON pencil,Scale Ruler'}];
 //var ucdata = [{category: 'Humanoid/Fantasy',
 //	           keywords: 'Robot Head 790,stargate Saria Nova,lexx Zev of B3K,northen water tribe young female,Autobot Arcee,witch red fina,The Lich Queen,Female Green Lantern,Female Yellow Lantern,Green Goblin,Green Arrow,The Kraven,The Thing,Punisher,Mr. Fantastic,Red Tornado,x-men storm,x-men Magneto,Nosferatu,STAR WARS CLONE TROOPER,Pucca,Puppetmon,Omnimon,TigerVespamon,Chaosdramon,Beetlemon,zelda Red Bokoblin,Blood Elf,wow Nachtelf Priesterin,wow Furor-Krieger,wow Sukkubus,wow lich king,wow Nachtelf Todesritter,wow human warrior,wow Illidan Sturmgrimm,wow Nachtelf Schurke,wow Kaelthas,The Blind Archer,Sono io quando andavo all\'asilo,Paperino depresso,Ironman,Wizardmon,Hawkman,Captain America hero,x-men wolverine,bart simpson,homer simpson,lisa simpson,Agent Zero,DIP Snarfblak alien,Vam Hellson,Jay and Silent Bob,Cheech and Chong,Ghosts,Eric Cartman,World of Warcraft Goblin,World of Warcraft Worgen,Star Trek Captain Picard,hulk,Fantastic Four silver surfer,x-men Nightcrawler,Cowboy Character,Swat male,Hispanic female Character,wow tauren,Space Girl,Rocket Girl,star trek uhura,Star Trek Deanna Troi,borg queen,starfleet female,lara croft,halo Master Chief,Gandalf,halo 3 spartan,megaman,Samus Aran,smurf,Tinker Bell,cartoon Inspector Clouseau,War Machine Master Chief,Centaur,Narsil Gundam,Ancient Greek Hoplite,Cheap spartan,SAURON,Terminator T800 Model 101 Endoskeleton,The Blind Archer,Transformers Bumblebee,Transformers Optimus Prime,Transformers Jazz,Transformers Ironhide,Transformers Starscream,Transformers Barricade,Transformers Brawl,Transformers Blackout,Transformers Megatron,Transformers Optimus Prime attacking,STAR WARS CLONE TROOPER,halo Grunty-Bomb,zimé purpule witch'},
 //	         {category: 'Humanoid/Human',
@@ -216,7 +215,7 @@ var ucdata = [{category: 'Animal/Reptile',
 //			{category: 'Tool/Hand Tool',
 //			 keywords: 'Table VICE,Socket Spanner,Screwdriver (TX-10),SOCKET WRENCH,Snap-On 1/4" drive Ratchet,Snap-On wrench set,Screwdriver case and Screwdrivers,SCREWDRIVER PHILLIPS,Allen wrench set,Simple wrench,Pipe Wrench 90 Degree Offset,Llave inglesa,Simple Spanner,monkey wrench,ADJUSTABLE SPANNER,Snap-On 7/16" wrench,Snap-On sockets,Fire Extinguisher,Snap-On screw driver,Stanley 750 chisel,Blacksmith Sledge Hammer,CORROSION ASSESMENT TOOL HEX TOP ALAN-KEY,Teppichmesser,Masters Laser Screwdriver,Dovetail Saw,Screw driver slot,Flathead screwdriver,Gerber Nautilus,Red Screwdriver,screw driver bit,Snap-On Hammer Impact,Fire Axe,wrecker wheelift,wheel Lift Kit,Gray Pliers,Pince,pincers,Lineman pliers,Centre Punch,Lincoln Plasma Cutter,CAULK GUN,allen tools,Black and Decker BDSL30,Mop Bucket,Woodworking chisels'},
 //			{category: 'Tool/Office utensil',
-//			 keywords: 'DIXON pencil,Faber Castell Scale Ruler'},
+//			 keywords: 'DIXON pencil,Scale Ruler'},
 //			{category: 'Infrastructure/Bulding/Hall',
 //			 keywords: 'Garage,Work shop Garage MOT Station,repar shop,Hayes Family Auto Provo Utah,T.P. Brake & Muffler,North Lincs Tyres,A premium Workshop,Automotive Workshop & Showroom'}];
 

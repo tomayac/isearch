@@ -19,7 +19,7 @@ var videoMethods = {
           + '&v=2'
           + '&alt=json';
       
-      console.log("Now fetching " + maxResults + " YouTube videos for query '" + query + "'.");
+      //console.log("Now fetching " + maxResults + " YouTube videos for query '" + query + "'.");
       
       //Let's go and request our content
       this.get(youtubeURL, function(error, data, headers) {
