@@ -72,6 +72,8 @@ Fetch.prototype.getBestMatch = function(query, results, callback) {
 	if(q.length < 3 || r.length < 1) {
 		callback('Missing Input', null);
 	} else {
+		
+		
 		//Get all words of query
 		var qwords = q.split(" ");
 		//Remove query words shorter than 3 characters (e.g. "is" or "a")
@@ -141,16 +143,25 @@ Fetch.prototype.getBestMatch = function(query, results, callback) {
 			}
 		}
 		
-		if( wd1 > 25 && wd2 > 25) {
-			//if no really close result could be found, just ignore it
-			callback(null, null);
-		} else {
-			//return the closest result item
+		//Is there a first and a second result in the list and are they close enough to the query?
+		var isW1 = (r[w1[0]] && wd1 <= 25),
+		    isW2 = (r[w2[0]] && wd2 <= 25);
+		
+		//If we have both winners, return both in an array
+		if(isW1 && isW2) {
 			if( wd1 <= wd2 ){
-				callback(null, r[w1[0]]);
+				callback(null, new Array(r[w1[0]],r[w2[0]]));
 			} else {
-				callback(null, r[w2[0]]);
+				callback(null, new Array(r[w2[0]],r[w1[0]]));
 			}
+		//Else just return the avaiable winner	
+		} else if(isW1){
+			callback(null, new Array(r[w1[0]]));
+		} else if(isW2) {
+			callback(null, new Array(r[w2[0]]));
+		//or nothing	
+		} else {
+			callback(null, null);
 		}
 	}
 };
@@ -345,9 +356,11 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 				//If automatic mode is on, than just store the best matching retrieved model (e.g. the most relevant)
 				if(automatic === true) {
 					//Push the best matching 3D model to the files array of the content object
-					context.getBestMatch(contentObject.Name, data, function(error, model) {
-						if(!error && typeof model === 'object') {
-							contentObject.Files.push(model);
+					context.getBestMatch(contentObject.Name, data, function(error, matches) {
+						if(!error && typeof matches === 'object') {
+							for(var m=0; m < matches.length; m++) {
+								contentObject.Files.push(matches);
+							}
 						} 
 					});
 					
@@ -414,9 +427,11 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 					//If automatic mode is on, than just store the first retrieved image (e.g. the most relevant)
 					if(automatic === true) {
 						//Push the best matching image to the files array of the content object
-						context.getBestMatch(contentObject.Name, result, function(error, image) {
-							if(!error && typeof image === 'object') {
-								contentObject.Files.push(image);
+						context.getBestMatch(contentObject.Name, result, function(error, matches) {
+							if(!error && typeof matches === 'object') {
+								for(var m=0; m < matches.length; m++) {
+									contentObject.Files.push(matches);
+								}
 							} 
 						});
 						
@@ -451,9 +466,11 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 				//If automatic mode is on, than just store the first retrieved video (e.g. the most relevant)
 				if(automatic === true) {
 					//Push the best matching video to the files array of the content object
-					context.getBestMatch(contentObject.Name, data, function(error, video) {
-						if(!error && typeof video === 'object') {
-							contentObject.Files.push(video);
+					context.getBestMatch(contentObject.Name, data, function(error, matches) {
+						if(!error && typeof matches === 'object') {
+							for(var m=0; m < matches.length; m++) {
+								contentObject.Files.push(matches);
+							}
 						} 
 					});
 				} else {
@@ -499,9 +516,11 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 					//If automatic mode is on, than just store the first retrieved sound (e.g. the most relevant)
 					if(automatic === true) {
 						//Push the best matching sound to the files array of the content object
-						context.getBestMatch(contentObject.Name, result, function(error, sound) {
-							if(!error && typeof sound === 'object') {
-								contentObject.Files.push(sound);
+						context.getBestMatch(contentObject.Name, result, function(error, matches) {
+							if(!error && typeof matches === 'object') {
+								for(var m=0; m < matches.length; m++) {
+									contentObject.Files.push(matches);
+								}
 							} 
 						});
 	
