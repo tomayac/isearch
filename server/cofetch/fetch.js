@@ -371,12 +371,9 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 				if(automatic === true) {
 					//Push the best matching 3D model to the files array of the content object
 					context.getBestMatch(contentObject.Name, data, function(error, matches) {
-						console.log("Return of 3d model matches:");
-						console.log(typeof matches);
-						console.log(matches);
 						if(!error && typeof matches === 'object') {
 							for(var m=0; m < matches.length; m++) {
-								contentObject.Files.push(matches);
+								contentObject.Files.push(matches[m]);
 							}
 						} 
 					});
@@ -445,13 +442,10 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 					if(automatic === true) {
 						//Push the best matching image to the files array of the content object
 						context.getBestMatch(contentObject.Name, result, function(error, matches) {
-							console.log("Return of image matches:");
-							console.log(typeof matches);
-							console.log(matches);
 							
 							if(!error && typeof matches === 'object') {
 								for(var m=0; m < matches.length; m++) {
-									contentObject.Files.push(matches);
+									contentObject.Files.push(matches[m]);
 								}
 							} 
 						});
@@ -488,12 +482,10 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 				if(automatic === true) {
 					//Push the best matching video to the files array of the content object
 					context.getBestMatch(contentObject.Name, data, function(error, matches) {
-						console.log("Return of video matches:");
-						console.log(typeof matches);
-						console.log(matches);
+	
 						if(!error && typeof matches === 'object') {
 							for(var m=0; m < matches.length; m++) {
-								contentObject.Files.push(matches);
+								contentObject.Files.push(matches[m]);
 							}
 						} 
 					});
@@ -541,12 +533,10 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 					if(automatic === true) {
 						//Push the best matching sound to the files array of the content object
 						context.getBestMatch(contentObject.Name, result, function(error, matches) {
-							console.log("Return of sound matches:");
-							console.log(typeof matches);
-							console.log(matches);
+
 							if(!error && typeof matches === 'object') {
 								for(var m=0; m < matches.length; m++) {
-									contentObject.Files.push(matches);
+									contentObject.Files.push(matches[m]);
 								}
 							} 
 						});
