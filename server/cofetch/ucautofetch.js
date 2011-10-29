@@ -89,13 +89,11 @@ var handleFetch = function(keywords, category, automatic, callback) {
 		}
 		
 		var results = [];
-		console.log("handleFetch before data:");
-		console.log(data);
+
 		for(var r=0; r < data.length; r++) {
 			results.push(data[r][0]);
 		}
-		console.log("handleFetch data:");
-		console.log(results);
+
 		callback(null, results);
 		
 	}, true);
