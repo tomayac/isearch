@@ -94,7 +94,7 @@ var handleFetch = function(keywords, category, automatic, callback) {
 		
 		var results = [];
 		
-		for(var r=0; r < data[0]; r++) {
+		for(var r=0; r < data[0].length; r++) {
 			results.push(data[0][r]);
 		}
 		console.log("handleFetch data:");
