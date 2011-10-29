@@ -144,8 +144,8 @@ Fetch.prototype.getBestMatch = function(query, results, callback) {
 		}
 		
 		//Is there a first and a second result in the list and are they close enough to the query?
-		var isW1 = (r[w1[0]] && wd1 <= 25),
-		    isW2 = (r[w2[0]] && wd2 <= 25);
+		var isW1 = (r[w1[0]] && wd1 <= 30),
+		    isW2 = (r[w2[0]] && wd2 <= 30);
 		
 		//If we have both winners, return both in an array
 		if(isW1 && isW2) {
