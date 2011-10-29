@@ -91,9 +91,15 @@ var handleFetch = function(keywords, category, automatic, callback) {
 			callback(error, null);
 			return;
 		}
+		
+		var results = [];
+		
+		for(var r=0; r < data[0]; r++) {
+			results.push(data[0][r]);
+		}
 		console.log("handleFetch data:");
-		console.log(data);
-		callback(null, data[0]);
+		console.log(results);
+		callback(null, results);
 		
 	}, true);
 	
