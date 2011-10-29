@@ -78,11 +78,7 @@ var handleFetch = function(keywords, category, automatic, callback) {
 				}
 			});
 			
-	    }, //End run function
-	    output: function(output) {
-	    	console.log("output...");
-	    	console.log(output);
-	    }
+	    } //End run function
 	});
 	
 	nodeio.start(job, {args: [keywords,category,automatic]}, function(error,data) {
@@ -93,7 +89,8 @@ var handleFetch = function(keywords, category, automatic, callback) {
 		}
 		
 		var results = [];
-		
+		console.log("handleFetch before data:");
+		console.log(data[0]);
 		for(var r=0; r < data[0].length; r++) {
 			results.push(data[0][r]);
 		}
