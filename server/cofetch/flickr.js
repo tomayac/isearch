@@ -97,7 +97,16 @@ var imageMethods = {
 						context.exit(infoerror); 
 					}
 					
-					var infoData = JSON.parse(data).photo;
+					try {
+						
+						var infoData = JSON.parse(data).photo;
+						
+					} catch(e) {
+						console.log("Flickr Info Error: ");
+						console.log(data);
+						maxResults--;
+						return;
+					}
 					
 					var tags = new Array;
 					

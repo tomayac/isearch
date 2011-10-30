@@ -93,8 +93,6 @@ var threedMethods = {
 					    
 					var result = {
 						"Type": "Object3d",
-						"Category": "",
-			            "CategoryPath": "",
 						"Name": models[i]['title']['$t'],
 						"Description": models[i]['summary']['$t'],
 						"Tags": [modelTag],
