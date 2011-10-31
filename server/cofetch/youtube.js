@@ -49,7 +49,17 @@ var videoMethods = {
           }
         };
 
-        var youtubeResponse = JSON.parse(data);
+        var youtubeResponse = [];
+        
+        try {
+        	youtubeResponse = JSON.parse(data);
+        } catch(e) {
+        	console.log("Youtube data error: ");
+			console.log(data);
+			this.emit(results);
+        	return;
+        }
+        
         var videos = youtubeResponse['feed']['entry'];
         
         //No videos found, get back
