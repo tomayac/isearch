@@ -121,14 +121,14 @@ var weatherMethods = {
 			
 			//Only try to get weather data for items for which we have
 			//a date and a location
-			if(!input.Date) {
-				input.Date = "";
-			}
 			if(input.Date.length > 5 && input.Location[0] != 0) {
 				//Formatting the result date, assuming the format yyyy.mm.dd hh:mm:ss
 				var tempDate = input.Date.split(' ');
 				var resDate = tempDate[0].split('-');
-				var resTime = tempDate[1].split(':');
+				var resTime = ['12','00','00'];
+				if(tempDate[1] !== undefined) {
+					resTime = tempDate[1].split(':');	
+				}
 				resTime[0] = parseInt(resTime[0].replace(/0(\d\/)/g,''));
 				resTime[1] = parseInt(resTime[1].replace(/0(\d\/)/g,''));
 				resTime = new Date(2010,1,1,resTime[0],resTime[1],0);
