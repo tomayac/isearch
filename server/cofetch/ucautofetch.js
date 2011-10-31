@@ -90,8 +90,8 @@ var fetchUcData = function() {
 				if(error) {
 					console.log(error);
 					//Process next keyword
-					kIndex++;
-					fetchCo(kIndex);
+					index++;
+					fetchCo(index);
 				} else {
 					//Check if content object is valid, e.g. contains files
 					if(data.Files.length >= 1) {
@@ -104,15 +104,15 @@ var fetchUcData = function() {
 								console.log("SAVED: Content Object '"+data.Name+"' with message '" + message + "'");
 							}
 							//Process next keyword
-							kIndex++;
-							fetchCo(kIndex);
+							index++;
+							fetchCo(index);
 						});
 						
 					} else {
 						console.log("EMPTY: No Content Object Data could be fetched for query '" + data.Name + "' with index " + index + "!");
 						//Process next keyword
-						kIndex++;
-						fetchCo(kIndex);
+						index++;
+						fetchCo(index);
 					}
 					
 				} //End error if
