@@ -122,7 +122,7 @@ var weatherMethods = {
 			//Only try to get weather data for items for which we have
 			//a date and a location
 			if(input.Date && input.Location[0] != 0) {
-				
+				 console.log("Date: "+input.Date);
 				//Formatting the result date, assuming the format yyyy.mm.dd hh:mm:ss
 				var tempDate = input.Date.split(' ');
 				var resDate = tempDate[0].split('-');
