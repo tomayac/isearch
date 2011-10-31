@@ -52,6 +52,8 @@ var fetchUcData = function() {
 	
 	//Preserve the context of this function	
 	var context = this;
+	//initialize the fetch script for CO data
+	var cofetcher = new fetch.Fetch();
 	
 	var worker = function (cIndex) {
 		console.log("ClusterIndex: "+cIndex);
@@ -82,8 +84,6 @@ var fetchUcData = function() {
 				cIndex++;
 				worker(cIndex);
 			}
-			//initialize the fetch script for CO data
-			var cofetcher = new fetch.Fetch();
 			
 			var fetchCallback = function(error, data, index) {
 				console.log("CallbackKeywordIndex: "+index + " global: "+kIndex);
