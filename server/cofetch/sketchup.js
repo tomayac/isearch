@@ -112,7 +112,7 @@ var threedMethods = {
 					results.push(result);
 				} catch(e) {
 					console.log('SketchUp: Something was missing in the result number ' + i);
-					console.log(e);
+					console.log(models[i]['media$group']['media$content']);
 				}
 				
 			} // end for 

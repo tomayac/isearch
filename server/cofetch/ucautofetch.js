@@ -54,6 +54,7 @@ var fetchUcData = function() {
 	var context = this;
 	
 	var worker = function (cIndex) {
+		console.log("ClusterIndex: "+cIndex);
     	//Check if all clusters have been processed
 		if(cIndex >= ucdata.length) {
 			//Finished all work
@@ -74,6 +75,7 @@ var fetchUcData = function() {
 		
 		//Per cluster keyword fetch and store function
 		var fetchCo = function(kIndex) {
+			console.log("KeywordIndex: "+kIndex);
 			//Check if all keywords of cluster have been processed
 			if(kIndex >= keywords.length) {
 				//Finished this cluster and initialize the next one
@@ -84,9 +86,12 @@ var fetchUcData = function() {
 			var cofetcher = new fetch.Fetch();
 			
 			var fetchCallback = function(error, data, index) {
-				
+				console.log("CallbackKeywordIndex: "+index + " global: "+kIndex);
 				if(error) {
 					console.log(error);
+					//Process next keyword
+					kIndex++;
+					fetchCo(kIndex);
 				} else {
 					//Check if content object is valid, e.g. contains files
 					if(data.Files.length >= 1) {
@@ -99,15 +104,15 @@ var fetchUcData = function() {
 								console.log("SAVED: Content Object '"+data.Name+"' with message '" + message + "'");
 							}
 							//Process next keyword
-							index++;
-							fetchCo(index);
+							kIndex++;
+							fetchCo(kIndex);
 						});
 						
 					} else {
 						console.log("EMPTY: No Content Object Data could be fetched for query '" + data.Name + "' with index " + index + "!");
 						//Process next keyword
-						index++;
-						fetchCo(index);
+						kIndex++;
+						fetchCo(kIndex);
 					}
 					
 				} //End error if
