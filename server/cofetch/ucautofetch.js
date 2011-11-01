@@ -59,7 +59,12 @@ function getIt(keyword, categoryPath, index, automatic, callback) {
 	  }, timeout);
 	}
 
-
+function storeIt(data, overwrite, automatic, onlyJson, callback) {
+	timeout = Math.round(Math.random() * 1500);
+	setTimeout(function() {
+	    callback(null,"CO "+ data.Name + " successfully saved."); 
+	}, timeout);
+}
 
 //Define functions
 function prepareData(cluster, callback) {
@@ -115,13 +120,13 @@ step(
 			console.log(error.stack);
 			return;
 		} else {
-			console.log(cos);
+			
 			// Create a new group
 		    var group = this.group();
 		    
 		    cos.forEach(function(co) {
-		    	console.log("Store co " + co.Name);
 		    	//rucod.store(co, true, true, false, group());
+		    	storeIt(co, true, true, false, group());
 		    });
 		}
 	},
@@ -131,14 +136,14 @@ step(
 			console.log(error.message);
 			console.log(error.stack);
 		} 
-			
-		console.log(messages);
+		
+		messages.forEach(function(msg) {
+			console.log(msg);
+		});
 		
 		console.log(" ");
 		console.log("-------------------------------------------------------------------------");
 		console.log("FINISHED!");
 		console.log("-------------------------------------------------------------------------");
-		return;
-		
 	}
 ); //End step function
