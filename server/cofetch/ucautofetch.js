@@ -120,16 +120,15 @@ step(
 		if(error) {
 			console.log(error.message);
 			console.log(error.stack);
-			return;
-		} else {
+		} 
 			
-			console.log(messages);
-			
-			console.log(" ");
-			console.log("-------------------------------------------------------------------------");
-			console.log("FINISHED!");
-			console.log("-------------------------------------------------------------------------");
-			return;
-		}
+		console.log(messages);
+		
+		console.log(" ");
+		console.log("-------------------------------------------------------------------------");
+		console.log("FINISHED!");
+		console.log("-------------------------------------------------------------------------");
+		return;
+		
 	}
 ); //End step function

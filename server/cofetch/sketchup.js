@@ -136,6 +136,7 @@ var threedMethods = {
 					console.log('SketchUp: Something was missing in the result number ' + i);
 					console.log(e.message);
 					console.log(e.stack);
+					console.dir(models[i]);
 				}
 				
 			} // end for 
