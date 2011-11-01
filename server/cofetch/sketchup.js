@@ -68,16 +68,23 @@ var threedMethods = {
 				try {
 					
 					var mediaContent = {};
-					var mediaThumbnail = {};
 					
 					if(models[i]['media$group']['media$content'] !== undefined) {
 						mediaContent = models[i]['media$group']['media$content'];
-						mediaThumbnail = models[i]['media$group']['media$thumbnail'];
 					} else if(models[i]["'media$group'"]["'media$content'"] !== undefined) {
 						mediaContent = models[i]["'media$group'"]["'media$content'"];
+					} else {
+						throw "Invalid model content data";
+					}
+					
+					var mediaThumbnail = {};
+					
+					if(models[i]['media$group']['media$thumbnail'] !== undefined) {
+						mediaThumbnail = models[i]['media$group']['media$thumbnail'];
+					} else if(models[i]["'media$group'"]["'media$thumbnail'"] !== undefined) {
 						mediaThumbnail =  models[i]["'media$group'"]["'media$thumbnail'"];
 					} else {
-						throw "Invalid model data";
+						throw "Invalid model thumbnail data";
 					}
 					
 					//Store the model IDs
@@ -108,14 +115,14 @@ var threedMethods = {
 					    
 					var result = {
 						"Type": "Object3d",
-						"Name": models[i]['title']['$t'],
-						"Description": models[i]['summary']['$t'],
+						"Name": models[i]['title']['$t'] || models[i]['title']["'$t'"],
+						"Description": models[i]['summary']['$t'] || models[i]['summary']["'$t'"],
 						"Tags": [modelTag],
 						"Extension": ext,
 						"License": 'Google 3D Warehouse License', 
 						"LicenseURL": 'http://sketchup.google.com/intl/en/3dwh/tos.html',
-						"Author": models[i]['author'][0]['name']['$t'] + ' (' + models[i]['author'][0]['uri']['$t'] + ')',
-						"Date": models[i]['published']['$t'],
+						"Author": (models[i]['author'][0]['name']['$t'] || models[i]['author'][0]['name']["'$t'"]) + ' (' + (models[i]['author'][0]['uri']['$t'] || models[i]['author'][0]['uri']["'$t'"]) + ')',
+						"Date": models[i]['published']['$t'] || models[i]['published']["'$t'"],
 						"Size": filesize,
 						"URL": url,
 						"Preview": mediaThumbnail[0]['url'],
