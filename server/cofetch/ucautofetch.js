@@ -106,13 +106,13 @@ step(
 			console.log(error.stack);
 			return;
 		} else {
-		
+			console.log(cos);
 			// Create a new group
 		    var group = this.group();
-		
-			cos.forEach(function(co) {
-				rucod.store(co, true, true, false, group());
-			});
+		    
+		    for(var c=0; c < cos.length; c++) {
+		    	rucod.store(cos[c], true, true, false, group());
+		    }
 		}
 	},
 	function finalize(error, messages) {
