@@ -78,13 +78,13 @@ step(
 	function initialize() {
 		var self = this;
 		
-		ucdata.forEach(function(element) {
+		//ucdata.forEach(function(element) {
 			console.log(" ");
 			console.log("-------------------------------------------------------------------------");
-			console.log("Start new fetching keyword sequence for '" + element.category + "'");
+			console.log("Start new fetching keyword sequence for '" + ucdata[0].category + "'");
 			console.log("-------------------------------------------------------------------------");
-			prepareData(element,self);
-		});
+			prepareData(ucdata[0],self);
+		//});
 	},
 	function fetchCluster(error, cluster) {
 		
@@ -101,7 +101,6 @@ step(
 		    var index = 0;
 		    
 		    cluster.keywords.forEach(function(keyword) {
-		    	console.log("keyword: "+keyword);
 				//get data for keyword
 		    	getIt(keyword, cluster.category, index, true, self.parallel());
 				//increase the index for reference	
