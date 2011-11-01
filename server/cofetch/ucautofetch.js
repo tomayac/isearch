@@ -50,85 +50,80 @@ var ucdata = [{category: 'Vehicles/Car',
 			 keywords: 'Smith and Wesson Magnum,44 Magnum Revolver,IMI Desert Eagle,300 Winchester magnum sniper rifle,MP5K,Heckler & Koch MP-7,MP-45,Colt 45,H&K MP5 1981,Colt 1911,M38 Carbine,G43 Scoped,Star Trek Weapons Phase Pistol'}];
 
 //Define functions
-function start() {
-
-	//Prepare data array
-	for(var i=0; i<ucdata.length; i++) {
-		var tempKeywords = ucdata[i].keywords.split(',');
-		ucdata[i].keywords = tempKeywords;
-	}
-	
+function prepareData(cluster, callback) {
+	//Prepare keyword array
 	try {
-		step(
-			function initialize() {
-				
-				ucdata.forEach(function(element) {
-					console.log(" ");
-					console.log("-------------------------------------------------------------------------");
-					console.log("Start new fetching keyword sequence for '" + element.category + "'");
-					console.log("-------------------------------------------------------------------------");
-					return element;
-				});
-			},
-			function fetchCluster(error, cluster) {
-				if(error) {
-					console.log(error.message);
-					console.log(error.stack);
-					return;
-				} else {
-					
-					// Create a new group
-				    var group = this.group();
-				    var index = 0;
-				    
-				    cluster.keywords.forEach(function(keyword) {
-						//get data for keyword
-						cofetcher.get(keyword, cluster.category, index, true, group());
-						//increase the index for reference	
-						index++;
-					});
-				}
-			},
-			function storeCluster(error, cos) {
-				
-				if(error) {
-					console.log(error.message);
-					console.log(error.stack);
-					return;
-				} else {
-				
-					// Create a new group
-				    var group = this.group();
-				
-					cos.forEach(function(co) {
-						rucod.store(co, true, true, false, group());
-					});
-				}
-			},
-			function finalize(error, messages) {
-				if(error) {
-					console.log(error.message);
-					console.log(error.stack);
-					return;
-				} else {
-					messages.foeEach(function(msg) {
-						console.log(msg);
-					});
-					
-					console.log(" ");
-					console.log("-------------------------------------------------------------------------");
-					console.log("FINISHED!");
-					console.log("-------------------------------------------------------------------------");
-					return;
-				}
-			}
-		); //End step function
-	} catch (exception) {
-		console.log("Something went wrong during the step process:");
-		console.log(exception.message);
-		console.log(exception.stack);
+		var tempKeywords = cluster.keywords.split(',');
+		cluster.keywords = tempKeywords;
+		callback(null,cluster);
+	} catch(exception) {
+		callback(exception,null);
 	}
-}; //End start function
+}
 
 //Starting point for script
-start();
+step(
+	function initialize() {
+		var self = this;
+		
+		ucdata.forEach(function(element) {
+			console.log(" ");
+			console.log("-------------------------------------------------------------------------");
+			console.log("Start new fetching keyword sequence for '" + element.category + "'");
+			console.log("-------------------------------------------------------------------------");
+			prepareData(element,self);
+		});
+	},
+	function fetchCluster(error, cluster) {
+		if(error) {
+			console.log(error.message);
+			console.log(error.stack);
+			return;
+		} else {
+			
+			// Create a new group
+		    var group = this.group();
+		    var index = 0;
+		    
+		    cluster.keywords.forEach(function(keyword) {
+				//get data for keyword
+				cofetcher.get(keyword, cluster.category, index, true, group());
+				//increase the index for reference	
+				index++;
+			});
+		}
+	},
+	function storeCluster(error, cos) {
+		
+		if(error) {
+			console.log(error.message);
+			console.log(error.stack);
+			return;
+		} else {
+		
+			// Create a new group
+		    var group = this.group();
+		
+			cos.forEach(function(co) {
+				rucod.store(co, true, true, false, group());
+			});
+		}
+	},
+	function finalize(error, messages) {
+		if(error) {
+			console.log(error.message);
+			console.log(error.stack);
+			return;
+		} else {
+			messages.foeEach(function(msg) {
+				console.log(msg);
+			});
+			
+			console.log(" ");
+			console.log("-------------------------------------------------------------------------");
+			console.log("FINISHED!");
+			console.log("-------------------------------------------------------------------------");
+			return;
+		}
+	}
+); //End step function
