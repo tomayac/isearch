@@ -62,37 +62,16 @@ http.createServer(function (request, response) {
 				fIndex++;
 				
 				if(fIndex < keywords.length) {
-					
-					//If data for the given keyword already exists, we do not need to get it again
-					rucod.exists(keywords[fIndex], category, function(data) {
-						if(data != undefined) {
-							console.log("Stored data loaded for query " + (fIndex+1) +" of " + keywords.length + ": '" + keywords[fIndex] + "'...");
-							fetchCallback(null,data);
-						} else {
-							console.log("Fetching data for query " + (fIndex+1) +" of " + keywords.length + ": '" + keywords[fIndex] + "'...");
-							cofetcher.get(keywords[fIndex], category, fIndex, automatic, fetchCallback);
-						}
-					});
-				
+					cofetcher.get(keywords[fIndex], category, fIndex, automatic, fetchCallback);
 				} else {
-					
 					console.log("Fetched all content object data!");
 					callback(null, result);
-					
 				} //End fetch if	
 			} //End error if
 		}; //End fetchCallback function
 		
-		//If data for the given keyword already exists, we do not need to get it again
-		rucod.exists(keywords[index], category, function(data) {
-			if(data != undefined) {
-				console.log("Stored data loaded for query " + (index+1) +" of " + keywords.length + ": '" + keywords[index] + "'...");
-				fetchCallback(null,data,index);
-			} else {
-				console.log("Fetching data for query " + (index+1) +" of " + keywords.length + ": '" + keywords[index] + "'...");
-				cofetcher.get(keywords[index], category, index, automatic, fetchCallback);
-			}
-		});
+		//Fetch the data for this keyword
+		cofetcher.get(keywords[index], category, index, automatic, fetchCallback);
 		
 	};	
 	

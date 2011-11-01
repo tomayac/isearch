@@ -1,5 +1,6 @@
 var fetch  = require('./fetch'),
-	rucod  = require('./store');
+	rucod  = require('./store'),
+	step   = require('./step');
 
 //{category: 'Humanoid/Human',
 //keywords: 'Crusade Knight,CABALLERO,Greek Horse Archer,The Roman Army - Auxiliary Heavy Infantry,The Roman Army - Auxiliary Light Infantry Skirmisher,The Roman Army - Legionary Centurion,The Roman Army - Legionary Optio,The Roman Army - Legionary Infantry Soldier,The Roman Army - Republican Legionary Infantry Soldier,The Roman Army - Equites Legionis Roman Cavalry Officer,Roman Marching Camp - Legionary Soldier on the March,The Roman Army - Equites Legionis Roman Praefectus Equitum,Greek Archer chariots,Templar,Ancient Greek Hoplite,Lara Croft - Tomb Raider,Guy WITH A CABLE REEL,Guy WITH A PAIR OF STOLEN BUTTERFLY WINGS,Guy HIT ME,Guy ON THE GLOBAL WAY OF LIFE,Guy as a Tree'},
@@ -48,94 +49,70 @@ var ucdata = [{category: 'Vehicles/Car',
 			{category: 'Weapon/Gun',
 			 keywords: 'Smith and Wesson Magnum,44 Magnum Revolver,IMI Desert Eagle,300 Winchester magnum sniper rifle,MP5K,Heckler & Koch MP-7,MP-45,Colt 45,H&K MP5 1981,Colt 1911,M38 Carbine,G43 Scoped,Star Trek Weapons Phase Pistol'}];
 
-var fetchUcData = function() {
+//Define functions
+function start() {
+
+	//Prepare data array
+	for(var i=0; i<ucdata.length; i++) {
+		var tempKeywords = ucdata[i].keywords.split(',');
+		ucdata[i].keywords = tempKeywords;
+	}
 	
-	//Preserve the context of this function	
-	var context = this;
-	//initialize the fetch script for CO data
-	var cofetcher = new fetch.Fetch();
-	
-	var worker = function (cIndex) {
-		console.log("ClusterIndex: "+cIndex);
-    	//Check if all clusters have been processed
-		if(cIndex >= ucdata.length) {
-			//Finished all work
-			console.log(" ");
-			console.log("-------------------------------------------------------------------------");
-			console.log("FINISHED!");
-			console.log("-------------------------------------------------------------------------");
-		}
-		
-		//Start fetching and storing of cluster
-		var keywords = ucdata[cIndex].keywords.split(',');
-		var category = ucdata[cIndex].category;
-		
-		console.log(" ");
-		console.log("-------------------------------------------------------------------------");
-		console.log("Start new keyword sequence for category '" + category + "'");
-		console.log("-------------------------------------------------------------------------");
-		
-		//Per cluster keyword fetch and store function
-		var fetchCo = function(kIndex) {
-			console.log("KeywordIndex: "+kIndex);
-			//Check if all keywords of cluster have been processed
-			if(kIndex >= keywords.length) {
-				//Finished this cluster and initialize the next one
-				cIndex++;
-				worker(cIndex);
-			}
-			
-			var fetchCallback = function(error, data, index) {
-				console.log("CallbackKeywordIndex: "+index + " global: "+kIndex);
-				if(error) {
-					console.log(error);
-					//Process next keyword
-					index++;
-					fetchCo(index);
-				} else {
-					//Check if content object is valid, e.g. contains files
-					if(data.Files.length >= 1) {
-						//Add retrieved content object data to result array
-						console.log("FETCHED: Content Object Data for query '" + data.Name + "' with index " + index + "!");
-						rucod.store(data, true, true, false, function(error, message) {
-							if(error) {
-								console.log(error);
-							} else {
-								console.log("SAVED: Content Object '"+data.Name+"' with message '" + message + "'");
-							}
-							//Process next keyword
-							index++;
-							fetchCo(index);
-						});
-						
-					} else {
-						console.log("EMPTY: No Content Object Data could be fetched for query '" + data.Name + "' with index " + index + "!");
-						//Process next keyword
-						index++;
-						fetchCo(index);
-					}
-					
-				} //End error if
-			};
-			
-			//If data for the given keyword already exists, we do not need to get it again
-			rucod.exists(keywords[kIndex], category, function(data) {
-				if(data != undefined) {
-					console.log("LOADED: query data for '" + keywords[kIndex] +"'.");
-					fetchCallback(null,data,kIndex);
-				} else {
-					console.log("LOAD: data for query '" + keywords[kIndex] +"'...");
-					cofetcher.get(keywords[kIndex], category, kIndex, true, fetchCallback);
-				}
+	step(
+		function initialize() {
+			var self = this;
+			ucdata.forEach(function(element) {
+				console.log(" ");
+				console.log("-------------------------------------------------------------------------");
+				console.log("Start new fetching keyword sequence for '" + element.category + "'");
+				console.log("-------------------------------------------------------------------------");
+				fetchCluster(element, this);
 			});
-		};
-		
-		//Fetch data for first keyword of cluster
-		fetchCo(0);
-	};
-	//Start first keyword cluster
-	worker(0);
-};
+		},
+		function fetchCluster(error, cluster) {
+			var self = this;
+			// Create a new group
+		    var group = this.group();
+		    var index = 0;
+		    
+		    cluster.keywords.forEach(function(keyword) {
+				//get data for keyword
+				cofetcher.get(keyword, cluster.category, index, true, group());
+				//increase the index for reference	
+				index++;
+			});
+		},
+		function storeCluster(error, cos) {
+			
+			if(error) {
+				console.log(error);
+			} else {
+			
+				// Create a new group
+			    var group = this.group();
+			
+				cos.forEach(function(co) {
+					rucod.store(co, true, true, false, group());
+				});
+			}
+		},
+		function finalize(error, messages) {
+			if(error) {
+				console.log(error);
+			} else {
+				messages.foeEach(function(msg) {
+					console.log(msg);
+				});
+				
+				console.log(" ");
+				console.log("-------------------------------------------------------------------------");
+				console.log("FINISHED!");
+				console.log("-------------------------------------------------------------------------");
+				return;
+			}
+		}
+	); //End step function
+}; //End start function
 
 //Starting point for script
-fetchUcData();
+start();
