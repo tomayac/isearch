@@ -311,6 +311,8 @@ Fetch.prototype.getPart = function(type, query, callback) {
 
 Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback) {
 	
+	var context = this;
+	
 	//Check whether we need to fetch the data or can just retrieved a previous stored JSON object
 	rucod.exists(keyword, categoryPath, function(data) {
 	  if(data != undefined) {
@@ -339,8 +341,6 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 		};
 		
 		//console.log("FetchData: k=" + keyword + " c=" + categoryPath + " i=" + index +" a=" + automatic);
-		
-		var context = this;
 		
 		//Step through the content object data collection
 		step(
