@@ -214,13 +214,17 @@ var weatherMethods = {
 						try {
 							temperature = weatherTable[targetRow].children[dataColumns.temperature].children[0].children[0].children[0].data;
 							temperature = parseFloat(temperature).toFixed(1);
-						} catch(e) {}
+						} catch(e) {
+							console.log('Weather temperature Error: ' + e.message);
+						}
 						
 						//Get the humidity for the most fitting time (usually 3rd column)
 						try {
 							humidity = weatherTable[targetRow].children[dataColumns.humidity].children[0].data;
 							humidity = parseInt(humidity);
-						} catch(e) {}
+						} catch(e) {
+							console.log('Weather humidity Error: ' + e.message);
+						}
 						
 						//Get the windspeed for the most fitting time
 						try {
@@ -234,7 +238,9 @@ var weatherMethods = {
 			                        break;
 			                    }
 			                }
-						} catch(e) {}
+						} catch(e) {
+							console.log('Weather windspeed Error: ' + e.message);
+						}
 						
 		                //Get the condition for the most fitting time
 		                try {
@@ -245,7 +251,9 @@ var weatherMethods = {
 			                if(weatherCondition[condition]) {
 			                    condition = weatherCondition[condition];
 			                }
-		                } catch(e) {}
+		                } catch(e) {
+		                	console.log('Weather condition Error: ' + e.message);
+		                }
 		                //Set the gathered weather values to the current result
 		                input.Weather = {"condition": condition, "wind": windspeed, "temperature": temperature, "humidity": humidity};
 					
