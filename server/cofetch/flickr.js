@@ -63,7 +63,9 @@ var imageMethods = {
 			try {
 				//Get the photo search result
 				photos = JSON.parse(data).photos.photo;
-			} catch(e) {}
+			} catch(e) {
+				context.emit(results);
+			}
 			
 			//No sounds found, get back
 	        if(photos.length < 1) {
