@@ -120,7 +120,8 @@ step(
 		    var group = this.group();
 		    
 		    cos.forEach(function(co) {
-		    	rucod.store(cos[c], true, true, false, group());
+		    	console.log("Store co " + co.Name);
+		    	//rucod.store(co, true, true, false, group());
 		    });
 		}
 	},
