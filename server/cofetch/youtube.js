@@ -115,7 +115,7 @@ var videoMethods = {
 
 var fetchVideo = function(query, callback) {
 	//Creates the job
-	var videoJob = new nodeio.Job({timeout:10}, videoMethods);
+	var videoJob = new nodeio.Job({timeout:60}, videoMethods);
 	nodeio.start(videoJob, {args: [query]}, callback, true);
 };
 

@@ -264,7 +264,7 @@ var weatherMethods = {
 
 //Specify the options
 var options = {
-	    timeout: 20,   //Timeout after 20 seconds
+	    timeout: 60,   //Timeout after 60 seconds
 	    max: 1,        //Run 1 thread concurrently (when run() is async)
 	    retries: 3,    //Threads can retry 3 times before failing
 	    flatten: false

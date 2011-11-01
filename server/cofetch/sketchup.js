@@ -66,10 +66,16 @@ var threedMethods = {
 			for (var i=0;i<maxResults;i++) {
 				
 				try {
+					
+					if(models[i]['media$group']['media$content'] === undefined) {
+						throw "Invalid model data";
+					}
+					
 					//Store the model IDs
 					var modelId = models[i]['id']['$t'];
 					
-					var fileinfo = models[i]['media$group']['media$content'][models[i]['media$group']['media$content'].length-1];
+					var mediaIndex = models[i]['media$group']['media$content'].length-1;
+					var fileinfo = models[i]['media$group']['media$content'][mediaIndex];
 					var url = fileinfo['url'];
 					var filesize = fileinfo['fileSize'];  
 					var ext = 'zip';
@@ -112,7 +118,7 @@ var threedMethods = {
 					results.push(result);
 				} catch(e) {
 					console.log('SketchUp: Something was missing in the result number ' + i);
-					console.log(models[i]['media$group']['media$content']);
+					console.log(models[i]);
 				}
 				
 			} // end for 
@@ -126,7 +132,7 @@ var threedMethods = {
 
 var fetchThreed = function(query, callback) {
 	//Creates the job
-	var threedJob = new nodeio.Job({timeout:10}, threedMethods);
+	var threedJob = new nodeio.Job({timeout:60}, threedMethods);
 	nodeio.start(threedJob, {args: [query]}, callback, true);
 };
 
