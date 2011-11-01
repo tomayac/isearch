@@ -93,6 +93,7 @@ step(
 		    cluster.keywords.forEach(function(keyword) {
 		    	console.log("keyword: "+keyword);
 				//get data for keyword
+		    	var cofetcher = new fetch.Fetch();
 				cofetcher.get(keyword, cluster.category, index, true, group());
 				//increase the index for reference	
 				index++;
