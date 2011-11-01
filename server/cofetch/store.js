@@ -480,18 +480,18 @@ exports.exists = function(name, categoryPath, callback) {
 
 /**
  * Stores the given JSON data as file on the servers file system.
- * @param data - the Content Object data in JSON format
+ * @param co - the Content Object data in JSON format
  * @param overwrite - indicates wether an existing file for content object should be overwritten or not
  * @param automatic - indicates wether the store routine is part of an automatic storing process
  * @param onlyJson - indicates weather to store only json files without creating RUCoD
  * @param callback
  */
-exports.store = function(data, overwrite, automatic, onlyJson, callback) {
+exports.store = function(co, overwrite, automatic, onlyJson, callback) {
 	
 	var onlyJson = onlyJson || false;
 	
 	//Get the category path of the CO json
-	var catpath = data.CategoryPath.split('/');
+	var catpath = co.CategoryPath.split('/');
 	//And check if the folders for those categories exist
 	//in the file system, if not create them
 	var fileOutputPath = basepath;
@@ -506,12 +506,12 @@ exports.store = function(data, overwrite, automatic, onlyJson, callback) {
 		}
 	}
 	
-	baseName = data.Name.replace(/\s/g,'_');
+	baseName = co.Name.replace(/\s/g,'_');
 	
 	//Set the general output path for this content object
 	fileOutputPath += '/';
 	
-	console.log("StoreData: Name="+data.Name);
+	console.log("StoreData: Name="+co.Name);
 	
 	//Check if the folder for this content object already exists
 	path.exists(fileOutputPath + baseName + '.json', function (exists) {
@@ -523,7 +523,7 @@ exports.store = function(data, overwrite, automatic, onlyJson, callback) {
 		} 
 		
 		//Write JSON file
-		fs.writeFile(fileOutputPath + baseName + '.json', JSON.stringify(data), function (error) {
+		fs.writeFile(fileOutputPath + baseName + '.json', JSON.stringify(co), function (error) {
 		  if (error) {
 			  throw error;
 		  }
@@ -532,7 +532,7 @@ exports.store = function(data, overwrite, automatic, onlyJson, callback) {
 		  
 		  if(onlyJson !== true) {
 			  //Create RUCoD for Content Object data
-			  publishRUCoD(data, fileOutputPath, automatic, callback);
+			  publishRUCoD(co, fileOutputPath, automatic, callback);
 		  } else {
 			  callback(null, "JSON successfully saved.");
 		  }

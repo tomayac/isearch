@@ -124,11 +124,12 @@ function fetchCluster(index) {
 			} else {
 				
 				// Create a new group
-			    var group = this.group();
+			    //var group = this.group();
 			    
-			    cos.forEach(function(co) {
-			    	rucod.store(co, true, true, false, group());
-			    });
+			    //cos.forEach(function(co) {
+			    //	rucod.store(co, true, true, false, group());
+			    //});
+				rucod.storeAutomaticInput(cos, this);
 			}
 		},
 		function finalize(error, messages) {

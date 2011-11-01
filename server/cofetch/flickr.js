@@ -126,7 +126,7 @@ var imageMethods = {
 							"URL": "",
 							"Preview": "",
 							"Emotions": [],
-							"Location": [0,0,0,0],
+							"Location": [],
 							"Weather": {}
 						};
 						

@@ -80,10 +80,12 @@ var soundMethods = {
 	            if(soundResponse) {
 		            soundData = JSON.parse(soundResponse);
 		            
-		            var location = [0, 0, 0, 0];
+		            var location = [];
 		            if(soundData.geotag !== undefined) {
 		            	location[0] = soundData.geotag[0];
 		            	location[1] = soundData.geotag[1];
+		            	location[2] = 0;
+		            	location[3] = 0;
 		            }
 		            
 		            result = {

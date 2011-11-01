@@ -106,12 +106,12 @@ var threedMethods = {
 					
 					var filesize = fileinfo['fileSize'];    
 					    
-					var gml = '0 0';
+					var gml = [];
 					
 					if(models[i]['gml$Point']) {
 						gml = models[i]['gml$Point']['gml$pos']['$t'];
+						gml = gml.split(' ');
 					}
-					gml = gml.split(' ');
 					    
 					var result = {
 						"Type": "Object3d",
@@ -127,7 +127,7 @@ var threedMethods = {
 						"URL": url,
 						"Preview": mediaThumbnail[0]['url'],
 						"Emotions": [],
-						"Location": [gml[0],gml[1],0,0],
+						"Location": gml.length > 1 ? [parseInt(gml[0]),parseInt(gml[1]),0,0] : [],
 						"Weather": {}
 					};
 					
