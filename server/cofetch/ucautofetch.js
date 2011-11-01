@@ -115,9 +115,8 @@ step(
 			console.log(error.stack);
 			return;
 		} else {
-			messages.forEach(function(msg) {
-				console.log(msg);
-			});
+			
+			console.log(messages);
 			
 			console.log(" ");
 			console.log("-------------------------------------------------------------------------");
