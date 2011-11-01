@@ -107,6 +107,7 @@ function fetchCluster(index) {
 			    var kIndex = 0;
 			    
 			    cluster.keywords.forEach(function(keyword) {
+			    	
 					//get data for keyword
 			    	cofetcher.get(keyword, cluster.category, kIndex, true, group());
 					//increase the keyword index for reference	
