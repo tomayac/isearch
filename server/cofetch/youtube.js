@@ -54,8 +54,8 @@ var videoMethods = {
         try {
         	youtubeResponse = JSON.parse(data);
         } catch(e) {
-        	console.log("Youtube data error: ");
-			console.log(data);
+        	//console.log("Youtube data error: ");
+			//console.log(data);
 			this.emit(results);
         	return;
         }

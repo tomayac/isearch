@@ -133,8 +133,8 @@ var threedMethods = {
 					
 					results.push(result);
 				} catch(e) {
-					console.log('SketchUp: Something was missing in the result number ' + i);
-					console.log(e.message);
+					//console.log('SketchUp: Something was missing in the result number ' + i);
+					//console.log(e.message);
 				}
 				
 			} // end for 
