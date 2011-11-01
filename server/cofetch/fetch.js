@@ -312,6 +312,7 @@ Fetch.prototype.getPart = function(type, query, callback) {
 Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback) {
 	
 	var context = this;
+	keyword = keyword.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
 	
 	//Check whether we need to fetch the data or can just retrieved a previous stored JSON object
 	rucod.exists(keyword, categoryPath, function(data) {
@@ -548,10 +549,10 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 				
 				delete contentObject.Category;
 				
-				console.log('Finished!');
+				console.log('Finished with CO "' + contentObject.Name + '"!');
 				
 				//Return the collected content object
-				callback(null, contentObject, index);
+				callback(null, contentObject);
 			}
 		); //End step function
 	  } //End exists if
