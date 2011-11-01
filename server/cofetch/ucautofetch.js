@@ -58,6 +58,7 @@ function start() {
 		ucdata[i].keywords = tempKeywords;
 	}
 	
+	try {
 	step(
 		function initialize() {
 			var self = this;
@@ -66,26 +67,32 @@ function start() {
 				console.log("-------------------------------------------------------------------------");
 				console.log("Start new fetching keyword sequence for '" + element.category + "'");
 				console.log("-------------------------------------------------------------------------");
-				fetchCluster(element, this);
+				fetchCluster(element, self);
 			});
 		},
 		function fetchCluster(error, cluster) {
-			var self = this;
-			// Create a new group
-		    var group = this.group();
-		    var index = 0;
-		    
-		    cluster.keywords.forEach(function(keyword) {
-				//get data for keyword
-				cofetcher.get(keyword, cluster.category, index, true, group());
-				//increase the index for reference	
-				index++;
-			});
+			if(error) {
+				console.log(error);
+				return;
+			} else {
+				
+				// Create a new group
+			    var group = this.group();
+			    var index = 0;
+			    
+			    cluster.keywords.forEach(function(keyword) {
+					//get data for keyword
+					cofetcher.get(keyword, cluster.category, index, true, group());
+					//increase the index for reference	
+					index++;
+				});
+			}
 		},
 		function storeCluster(error, cos) {
 			
 			if(error) {
 				console.log(error);
+				return;
 			} else {
 			
 				// Create a new group
@@ -99,6 +106,7 @@ function start() {
 		function finalize(error, messages) {
 			if(error) {
 				console.log(error);
+				return;
 			} else {
 				messages.foeEach(function(msg) {
 					console.log(msg);
@@ -112,6 +120,10 @@ function start() {
 			}
 		}
 	); //End step function
+	} catch (exception) {
+		console.log("Something went wrong during the step process:");
+		console.log(exception);
+	}
 }; //End start function
 
 //Starting point for script
