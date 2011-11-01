@@ -59,70 +59,74 @@ function start() {
 	}
 	
 	try {
-	step(
-		function initialize() {
-			var self = this;
-			ucdata.forEach(function(element) {
-				console.log(" ");
-				console.log("-------------------------------------------------------------------------");
-				console.log("Start new fetching keyword sequence for '" + element.category + "'");
-				console.log("-------------------------------------------------------------------------");
-				fetchCluster(element, self);
-			});
-		},
-		function fetchCluster(error, cluster) {
-			if(error) {
-				console.log(error);
-				return;
-			} else {
+		step(
+			function initialize() {
 				
-				// Create a new group
-			    var group = this.group();
-			    var index = 0;
-			    
-			    cluster.keywords.forEach(function(keyword) {
-					//get data for keyword
-					cofetcher.get(keyword, cluster.category, index, true, group());
-					//increase the index for reference	
-					index++;
+				ucdata.forEach(function(element) {
+					console.log(" ");
+					console.log("-------------------------------------------------------------------------");
+					console.log("Start new fetching keyword sequence for '" + element.category + "'");
+					console.log("-------------------------------------------------------------------------");
+					return element;
 				});
-			}
-		},
-		function storeCluster(error, cos) {
-			
-			if(error) {
-				console.log(error);
-				return;
-			} else {
-			
-				// Create a new group
-			    var group = this.group();
-			
-				cos.forEach(function(co) {
-					rucod.store(co, true, true, false, group());
-				});
-			}
-		},
-		function finalize(error, messages) {
-			if(error) {
-				console.log(error);
-				return;
-			} else {
-				messages.foeEach(function(msg) {
-					console.log(msg);
-				});
+			},
+			function fetchCluster(error, cluster) {
+				if(error) {
+					console.log(error.message);
+					console.log(error.stack);
+					return;
+				} else {
+					
+					// Create a new group
+				    var group = this.group();
+				    var index = 0;
+				    
+				    cluster.keywords.forEach(function(keyword) {
+						//get data for keyword
+						cofetcher.get(keyword, cluster.category, index, true, group());
+						//increase the index for reference	
+						index++;
+					});
+				}
+			},
+			function storeCluster(error, cos) {
 				
-				console.log(" ");
-				console.log("-------------------------------------------------------------------------");
-				console.log("FINISHED!");
-				console.log("-------------------------------------------------------------------------");
-				return;
+				if(error) {
+					console.log(error.message);
+					console.log(error.stack);
+					return;
+				} else {
+				
+					// Create a new group
+				    var group = this.group();
+				
+					cos.forEach(function(co) {
+						rucod.store(co, true, true, false, group());
+					});
+				}
+			},
+			function finalize(error, messages) {
+				if(error) {
+					console.log(error.message);
+					console.log(error.stack);
+					return;
+				} else {
+					messages.foeEach(function(msg) {
+						console.log(msg);
+					});
+					
+					console.log(" ");
+					console.log("-------------------------------------------------------------------------");
+					console.log("FINISHED!");
+					console.log("-------------------------------------------------------------------------");
+					return;
+				}
 			}
-		}
-	); //End step function
+		); //End step function
 	} catch (exception) {
 		console.log("Something went wrong during the step process:");
-		console.log(exception);
+		console.log(exception.message);
+		console.log(exception.stack);
 	}
 }; //End start function
 
