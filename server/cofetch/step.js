@@ -35,7 +35,8 @@ function Step() {
     if (steps.length === 0) {
       // Throw uncaught errors
       if (arguments[0]) {	  
-        console.log('Step error: ' + arguments[0]);
+        //console.log('Step error: ' + arguments[0]);
+    	throw arguments[0];
       }
       return;
     }
