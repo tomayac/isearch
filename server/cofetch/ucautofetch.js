@@ -83,13 +83,13 @@ step(
 	function initialize() {
 		var self = this;
 		
-		//ucdata.forEach(function(element) {
+		ucdata.forEach(function(element) {
 			console.log(" ");
 			console.log("-------------------------------------------------------------------------");
-			console.log("Start new fetching keyword sequence for '" + ucdata[0].category + "'");
+			console.log("Start new fetching keyword sequence for '" + element.category + "'");
 			console.log("-------------------------------------------------------------------------");
-			prepareData(ucdata[0],self);
-		//});
+			prepareData(element,self.parallel());
+		});
 	},
 	function fetchCluster(error, cluster) {
 		
