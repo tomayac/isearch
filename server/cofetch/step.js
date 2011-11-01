@@ -97,8 +97,7 @@ function Step() {
     var error = undefined;
 
     function check() {
-      if (pending === 0) {
-    	--pending;  
+      if (pending === 0) {  
         // When group is done, call the callback
         localCallback(error, result);
       }

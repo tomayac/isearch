@@ -51,6 +51,16 @@ var ucdata = [{category: 'Vehicles/Car',
 
 var cofetcher = new fetch.Fetch();
 
+function getIt(keyword, categoryPath, index, automatic, callback) {
+	  timeout = Math.round(Math.random() * 3000);
+	  setTimeout(function() {
+	    console.log(keyword + ' is done with index ' + index);
+	    callback(null,{Name: keyword, Category: categoryPath});
+	  }, timeout);
+	}
+
+
+
 //Define functions
 function prepareData(cluster, callback) {
 	//Prepare keyword array
@@ -93,8 +103,7 @@ step(
 		    cluster.keywords.forEach(function(keyword) {
 		    	console.log("keyword: "+keyword);
 				//get data for keyword
-		    	var cofetcher = new fetch.Fetch();
-				cofetcher.get(keyword, cluster.category, index, true, group());
+		    	getIt(keyword, cluster.category, index, true, group());
 				//increase the index for reference	
 				index++;
 			});
@@ -111,9 +120,9 @@ step(
 			// Create a new group
 		    var group = this.group();
 		    
-		    for(var c=0; c < cos.length; c++) {
+		    cos.forEach(function(co) {
 		    	rucod.store(cos[c], true, true, false, group());
-		    }
+		    });
 		}
 	},
 	function finalize(error, messages) {
