@@ -48,20 +48,20 @@ var ucdata = [{category: 'Vehicles/Car',
 
 var cofetcher = new fetch.Fetch();
 
-function getIt(keyword, categoryPath, index, automatic, callback) {
-	  timeout = Math.round(Math.random() * 3000);
-	  setTimeout(function() {
-	    console.log(keyword + ' is done with index ' + index);
-	    callback(null,{Name: keyword, Category: categoryPath});
-	  }, timeout);
-	}
-
-function storeIt(data, overwrite, automatic, onlyJson, callback) {
-	timeout = Math.round(Math.random() * 1500);
-	setTimeout(function() {
-	    callback(null,"CO "+ data.Name + " successfully saved."); 
-	}, timeout);
-}
+//function getIt(keyword, categoryPath, index, automatic, callback) {
+//	  timeout = Math.round(Math.random() * 3000);
+//	  setTimeout(function() {
+//	    console.log(keyword + ' is done with index ' + index);
+//	    callback(null,{Name: keyword, Category: categoryPath});
+//	  }, timeout);
+//	}
+//
+//function storeIt(data, overwrite, automatic, onlyJson, callback) {
+//	timeout = Math.round(Math.random() * 1500);
+//	setTimeout(function() {
+//	    callback(null,"CO "+ data.Name + " successfully saved."); 
+//	}, timeout);
+//}
 
 //Define helper function
 function prepareData(cluster, callback) {
@@ -91,8 +91,6 @@ function fetchCluster(index) {
 		},
 		function fetchCluster(error, cluster) {
 			
-			console.log("fetchCluster");
-			
 			if(error) {
 				console.log(error.message);
 				console.log(error.stack);
@@ -105,14 +103,14 @@ function fetchCluster(index) {
 			    
 			    cluster.keywords.forEach(function(keyword) {
 					//get data for keyword
-			    	getIt(keyword, cluster.category, kIndex, true, group());
+			    	cofetcher.get(keyword, cluster.category, kIndex, true, group());
 					//increase the keyword index for reference	
 			    	kIndex++;
 				});
 			}
 		},
 		function storeCluster(error, cos) {
-			console.log("storeCluster");
+
 			if(error) {
 				console.log(error.message);
 				console.log(error.stack);
@@ -123,13 +121,12 @@ function fetchCluster(index) {
 			    var group = this.group();
 			    
 			    cos.forEach(function(co) {
-			    	//rucod.store(co, true, true, false, group());
-			    	storeIt(co, true, true, false, group());
+			    	rucod.store(co, true, true, false, group());
 			    });
 			}
 		},
 		function finalize(error, messages) {
-			console.log("finalize");
+
 			if(error) {
 				console.log(error.message);
 				console.log(error.stack);
