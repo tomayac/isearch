@@ -79,86 +79,77 @@ var imageMethods = {
 			//Iterate through every found photo
 			for (var i=0;i<maxResults;i++) {
 				
-				//Store the image IDs
-				var photoId = photos[i].id;
-				
-				//Get the image info for the current image
-				var infoURL = "http://api.flickr.com/services/rest/?"
-					+ 'method=flickr.photos.getInfo'
-					+ '&api_key=' + apiKey
-					+ '&photo_id=' + photoId
-					+ '&format=json'
-					+ '&nojsoncallback=1';
-				
-				context.get(infoURL, function(infoerror, data, headers) {
+				try {
+					//Store the image IDs
+					var photoId = photos[i].id;
 					
-					//Exit if there was a problem with the request
-					if (infoerror) {
-						context.exit(infoerror); 
-					}
-					
-					try {
-						
-						var infoData = JSON.parse(data).photo;
-						
-					} catch(e) {
-						console.log("Flickr Info Error: ");
-						console.log(data);
-						maxResults--;
-						return;
-					}
-					
-					var tags = new Array;
-					
-					for(var t=0; t < infoData.tags.tag.length; t++) {
-						tags.push(infoData.tags.tag[t]._content);
-						//make sure to get not too many tags
-			            if(i > 6) {
-			            	break;
-			            }
-					}
-					
-					var result = {
-						"Type": "ImageType",
-						"Name": infoData.title._content,
-						"Description": infoData.title._content,
-						"Tags": tags,
-						"Extension": infoData.originalformat || 'jpg',
-						"License": licenses[infoData.license].name, 
-						"LicenseURL": licenses[infoData.license].url,
-						"Author": infoData.owner.realname || infoData.owner.username,
-						"Date": infoData.dates.taken,
-						"Size": "",
-						"URL": "",
-						"Preview": "",
-						"Emotions": [],
-						"Location": [0,0,0,0],
-						"Weather": {}
-					};
-					
-					if(infoData.location) {
-						result.Location = [infoData.location.latitude || 0 ,infoData.location.longitude || 0,0,0];
-					}
-					
-					//Get the image sizes for the current image
-					var sizesURL = "http://api.flickr.com/services/rest/?"
-						+ 'method=flickr.photos.getSizes'
+					//Get the image info for the current image
+					var infoURL = "http://api.flickr.com/services/rest/?"
+						+ 'method=flickr.photos.getInfo'
 						+ '&api_key=' + apiKey
-						+ '&photo_id=' + infoData.id
+						+ '&photo_id=' + photoId
 						+ '&format=json'
 						+ '&nojsoncallback=1';
 					
-					
-					context.get(sizesURL, function(sizeserror, data, headers) {
+					context.get(infoURL, function(infoerror, data, headers) {
 						
 						//Exit if there was a problem with the request
-						if (sizeserror) {
-							context.exit(sizeserror); 
+						if (infoerror) {
+							throw infoerror; 
+						}
+							
+						var infoData = JSON.parse(data).photo;
+						
+						var tags = new Array;
+						
+						for(var t=0; t < infoData.tags.tag.length; t++) {
+							tags.push(infoData.tags.tag[t]._content);
+							//make sure to get not too many tags
+				            if(i > 6) {
+				            	break;
+				            }
 						}
 						
-						var sizes = new Array;
+						var result = {
+							"Type": "ImageType",
+							"Name": infoData.title._content,
+							"Description": infoData.title._content,
+							"Tags": tags,
+							"Extension": infoData.originalformat || 'jpg',
+							"License": licenses[infoData.license].name, 
+							"LicenseURL": licenses[infoData.license].url,
+							"Author": infoData.owner.realname || infoData.owner.username,
+							"Date": infoData.dates.taken,
+							"Size": "",
+							"URL": "",
+							"Preview": "",
+							"Emotions": [],
+							"Location": [0,0,0,0],
+							"Weather": {}
+						};
 						
-						try {
+						if(infoData.location) {
+							result.Location = [infoData.location.latitude || 0 ,infoData.location.longitude || 0,0,0];
+						}
+						
+						//Get the image sizes for the current image
+						var sizesURL = "http://api.flickr.com/services/rest/?"
+							+ 'method=flickr.photos.getSizes'
+							+ '&api_key=' + apiKey
+							+ '&photo_id=' + infoData.id
+							+ '&format=json'
+							+ '&nojsoncallback=1';
+						
+						
+						context.get(sizesURL, function(sizeserror, data, headers) {
+							
+							//Exit if there was a problem with the request
+							if (sizeserror) {
+								throw(sizeserror); 
+							}
+							
+							var sizes = new Array;
+							
 							var sizeData = JSON.parse(data).sizes.size;
 							var sizecount = sizeData.length;
 							
@@ -173,18 +164,25 @@ var imageMethods = {
 							//Image size calculating: width x height x (24Bit = 3 Byte) / ( 5 = 1/5 of the bitmap size = the estimated jpg size)   
 							result.Size    = (sizeData[sizeindex].width * sizeData[sizeindex].height * 3) / 5;
 							
-						} catch(e) {
-							console.log("Error: while fetching sizes data for flickr image");
-						}
 						
-						results.push(result);
-						
-						if (results.length === maxResults) {
-							//Exit the job if we're done, i.e Array full
-							context.emit(results);
-			            }
-					}); // end images sizes callback
-				}); // end image info callback
+							results.push(result);
+							
+							if (results.length === maxResults) {
+								//Exit the job if we're done, i.e Array full
+								context.emit(results);
+				            }
+						}); // end images sizes callback
+					}); // end image info callback
+					
+				} catch (e) {
+					console.log("Flickr Error: " + e.message);
+					maxResults--;
+					
+					if (results.length === maxResults) {
+						//Exit the job if we're done, i.e Array full
+						context.emit(results);
+		            }
+				}
 			} // end for 
 		}); // end image search callback
 	}
@@ -192,7 +190,7 @@ var imageMethods = {
 
 var fetchImage = function(query, geo, callback) {
 	//Creates the job
-	var imageJob = new nodeio.Job({timeout:60}, imageMethods);
+	var imageJob = new nodeio.Job({timeout:120}, imageMethods);
 	nodeio.start(imageJob, {args: [query,geo]}, callback, true);
 };
 

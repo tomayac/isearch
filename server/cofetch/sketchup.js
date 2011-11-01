@@ -67,15 +67,20 @@ var threedMethods = {
 				
 				try {
 					
-					if(models[i]['media$group']['media$content'] === undefined) {
+					var mediaContent = {};
+					if(models[i]['media$group']['media$content'] !== undefined) {
+						mediaContent = models[i]['media$group']['media$content'];
+					} else if(models[i]["'media$group'"]["'media$content'"] !== undefined) {
+						mediaContent = models[i]["'media$group'"]["'media$content'"];
+					} else {
 						throw "Invalid model data";
 					}
 					
 					//Store the model IDs
 					var modelId = models[i]['id']['$t'];
 					
-					var mediaIndex = models[i]['media$group']['media$content'].length-1;
-					var fileinfo = models[i]['media$group']['media$content'][mediaIndex];
+					var mediaIndex = mediaContent.length-1;
+					var fileinfo = mediaContent[mediaIndex];
 					var url = fileinfo['url'];
 					var filesize = fileinfo['fileSize'];  
 					var ext = 'zip';
@@ -118,6 +123,7 @@ var threedMethods = {
 					results.push(result);
 				} catch(e) {
 					console.log('SketchUp: Something was missing in the result number ' + i);
+					console.log(e.message);
 					console.log(models[i]);
 				}
 				
