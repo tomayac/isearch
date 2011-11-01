@@ -49,6 +49,8 @@ var ucdata = [{category: 'Vehicles/Car',
 			{category: 'Weapon/Gun',
 			 keywords: 'Smith and Wesson Magnum,44 Magnum Revolver,IMI Desert Eagle,300 Winchester magnum sniper rifle,MP5K,Heckler & Koch MP-7,MP-45,Colt 45,H&K MP5 1981,Colt 1911,M38 Carbine,G43 Scoped,Star Trek Weapons Phase Pistol'}];
 
+var cofetcher = new fetch.Fetch();
+
 //Define functions
 function prepareData(cluster, callback) {
 	//Prepare keyword array
