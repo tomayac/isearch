@@ -75,6 +75,9 @@ step(
 		});
 	},
 	function fetchCluster(error, cluster) {
+		
+		console.log("fetchCluster");
+		
 		if(error) {
 			console.log(error.message);
 			console.log(error.stack);
@@ -86,6 +89,7 @@ step(
 		    var index = 0;
 		    
 		    cluster.keywords.forEach(function(keyword) {
+		    	console.log("keyword: "+keyword);
 				//get data for keyword
 				cofetcher.get(keyword, cluster.category, index, true, group());
 				//increase the index for reference	
@@ -94,7 +98,7 @@ step(
 		}
 	},
 	function storeCluster(error, cos) {
-		
+		console.log("storeCluster");
 		if(error) {
 			console.log(error.message);
 			console.log(error.stack);
@@ -110,6 +114,7 @@ step(
 		}
 	},
 	function finalize(error, messages) {
+		console.log("finalize");
 		if(error) {
 			console.log(error.message);
 			console.log(error.stack);
