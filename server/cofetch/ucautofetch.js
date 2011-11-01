@@ -95,14 +95,14 @@ step(
 			console.log(error.stack);
 			return;
 		} else {
-			var self = this;
+			
 			// Create a new group
-		    //var group = this.group();
+		    var group = this.group();
 		    var index = 0;
 		    
 		    cluster.keywords.forEach(function(keyword) {
 				//get data for keyword
-		    	getIt(keyword, cluster.category, index, true, self.parallel());
+		    	getIt(keyword, cluster.category, index, true, group());
 				//increase the index for reference	
 				index++;
 			});
