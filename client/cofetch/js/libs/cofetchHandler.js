@@ -765,6 +765,8 @@ var cofetchHandler = (function() {
     		  var restData = hasScraperData();
     		  
     		  var dialogHtml = '';
+    		  
+    		  data = JSON.parse(data);
     		  if(typeof data === 'object') {
     			  dialogHtml += '<p><strong>' + data.message || 'Error' + '</strong></p>';
     			  if(data.urls) {
