@@ -170,9 +170,9 @@ var storeMultipleContentObjectData = function(data, onlyJson, callback) {
 				var endData = "";
 				
 				if(error) {
-					endData = "Error JSON '" + input.Name + "': " + error + "\n"; 
+					endData = "Error CO '" + input.Name + "' - " + error + "\n"; 
 				} else {
-					endData = "JSON '" + input.Name + "': " + data + "\n";
+					endData = "CO '" + input.Name + "' - " + data + "\n";
 				}
 				
 				context.emit(endData);
@@ -186,8 +186,9 @@ var storeMultipleContentObjectData = function(data, onlyJson, callback) {
 			callback(error, null);
 			return;
 		}
-
-		callback(null, data[0]);
+		
+		var msg = {success: data[0]};
+		callback(null, msg);
 		
 	}, true);
 	

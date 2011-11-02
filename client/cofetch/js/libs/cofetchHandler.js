@@ -759,6 +759,8 @@ var cofetchHandler = (function() {
     			  
     		  } else {
     			  
+    			  alert('Successfully saved! ('+data+')');
+    			  
     			  var next = setNext();  
     			  if(next === false || next === 0) {
     				  $('#next').attr('disabled', 'disabled');
@@ -766,7 +768,6 @@ var cofetchHandler = (function() {
     				  $('#next').removeAttr('disabled');
     			  }
     			  
-    			  alert('Successfully saved! ('+data+')');
     		  }
     	  },
     	  error: function(jqXHR, textStatus, errorThrown) {
