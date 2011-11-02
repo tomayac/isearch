@@ -84,6 +84,7 @@ var cofetchHandler = (function() {
 	        if(automatic === 1) {
 	        	console.log("sData:");
 	        	console.log(scraperData[0]);
+	        	console.log(typeof scraperData[0]);
 		  		if(typeof scraperData[0] === 'object') {
 		  			dialogHtml += '<p><strong>' + scraperData[0].message + '</strong></p>';
 		  			if(scraperData[0].urls) {
