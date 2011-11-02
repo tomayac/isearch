@@ -72,7 +72,7 @@ var cofetchHandler = (function() {
       success: function(data) {
     	
     	//Store the returned data
-	    scraperData.push(data.response);
+	    scraperData.push(data.response[0]);
 	    console.log("Scraped data: ",scraperData);  
 	    
 	    var dialogHtml = '';
