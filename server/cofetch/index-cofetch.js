@@ -214,7 +214,7 @@ http.createServer(function (request, response) {
         		 } else {
 	        		 response.writeHead(status.code,status.message,{ 
 	                	'Content-Length': Buffer.byteLength(info,'utf8'),
-					  	'Content-Type'  : 'plain/text; charset=utf8'
+					  	'Content-Type'  : 'application/json; charset=utf8'
 					 });
 					 response.write(info);
 					 response.end();

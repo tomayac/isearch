@@ -74,14 +74,28 @@ var cofetchHandler = (function() {
     	//Store the returned data
 	    scraperData.push(data.response);
 	    console.log("Scraped data: ",scraperData);  
-    	  
-    	if(automatic && scraperData.message) {
+	    
+	    var dialogHtml = '';
+	    
+    	if(automatic && scraperData[0].message) {
     		console.log('Data for keywords "' + query + '" successfully fetched and stored as RUCoD.');
     	} else {
 	        
 	        if(automatic === 1) {
 	        	
-	        	alert(scraperData[0]);
+		  		if(typeof scraperData[0] === 'object') {
+		  			dialogHtml += '<p><strong>' + scraperData[0].message || 'Error' + '</strong></p>';
+		  			if(scraperData[0].urls) {
+		  				dialogHtml += '<p>Generated files:</p><ul>';
+		  				for(var i=0; i < scraperData[0].urls.length; i++) {
+		  					dialogHtml += '<li><a href="' + scraperData[0].urls[i] + '">' + scraperData[0].urls[i] + '</a></li>';
+		  				}
+		  				dialogHtml += '</ul>';
+		  			}
+		  		}
+	        	
+		  		$("#dialog").html(dialogHtml);
+		  		$("#dialog").dialog('open');
 	        	
 	        } else {
 	        	
@@ -97,7 +111,7 @@ var cofetchHandler = (function() {
 	        	manualIndex = 0;
 	        	setScraperData(manualIndex);
 	        	
-	        	alert("All results fetched!\n\rPlease verify them with the tabs provided and click the 'Save' button on the top if satisfied.");
+	        	$("#dialog").html("<p><strong>All results fetched!</strong><br/>Please verify them with the tabs provided and click the 'Save' button on the top if satisfied.</p>");
 	        }
     	}
         $("#loading").hide();
@@ -750,16 +764,28 @@ var cofetchHandler = (function() {
     		  resetForm();
 
     		  var restData = hasScraperData();
-
+    		  
+    		  var dialogHtml = '';
+    		  if(typeof data === 'object') {
+    			  dialogHtml += '<p><strong>' + data.message || 'Error' + '</strong></p>';
+    			  if(data.urls) {
+    				  dialogHtml += '<p>Generated files:</p><ul>';
+    				  for(var i=0; i < data.urls.length; i++) {
+    					  dialogHtml += '<li><a href="' + data.urls[i] + '">' + data.urls[i] + '</a></li>';
+    				  }
+    				  dialogHtml += '</ul>';
+    			  }
+    		  }
+    		  
     		  if(restData < 1 || restData == false) {
     			  
-    			  alert('You revised and saved every fetched Content Object. Please start a new search. Page will reload.');
+    			  dialogHtml += '<p>You revised and saved every fetched Content Object. Please start a new search.</p>';
     			  $('#script-keywords').val('');
-    			  window.location.reload();
+    			  $("#dialog").html(dialogHtml);
     			  
     		  } else {
     			  
-    			  alert('Successfully saved! ('+data.message+')');
+    			  $("#dialog").html(dialogHtml);
     			  
     			  var next = setNext();  
     			  if(next === false || next === 0) {
@@ -769,6 +795,8 @@ var cofetchHandler = (function() {
     			  }
     			  
     		  }
+    		  
+    		  $("#dialog").dialog('open');
     	  },
     	  error: function(jqXHR, textStatus, errorThrown) {
     		  var errorData = {};

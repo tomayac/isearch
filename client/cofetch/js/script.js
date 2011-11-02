@@ -5,7 +5,8 @@ $(document).ready(function(){
   /*===============================
     Initialize the script
     ===============================*/
-    
+	$("#dialog").dialog({ autoOpen: false });
+	
     cofetchHandler.fetchCategories();
     
     $("#script-tabs").tabs({panelTemplate: '<section></section>'});
