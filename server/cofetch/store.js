@@ -11,7 +11,6 @@ var path   = require('path'),
     querystring = require('querystring');
 
 var basepath = '/var/www/isearch/client/cofetch/output';
-var fileOutputPath = '';
 var publicOutputUrl = 'http://isearch.ai.fh-erfurt.de/cofetch/output';
 var baseName = '';
 
@@ -201,7 +200,7 @@ var storeMultipleContentObjectData = function(data, onlyJson, callback) {
  * 
  * @param automatic - indicates whether the publishRUCoD routine is part of an automatic storing process
  */
-var publishRUCoD = function(data, outputPath, automatic, callback) {
+var publishRUCoD = function(data, outputPath, webOutputUrl, automatic, callback) {
     	
 	//Set the static structure of the RUCoD XML file
 	var rucodHeadS = '<?xml version="1.0" encoding="UTF-8"?>' +
@@ -404,14 +403,14 @@ var publishRUCoD = function(data, outputPath, automatic, callback) {
 				callback(error,null);
 			} else {
 				console.log('RWML file created or overwritten under ' + outputPath + baseName + '.rwml');
-				paths.push(publicOutputUrl + '/' + baseName + '.rwml');
+				paths.push(webOutputUrl + '/' + baseName + '.rwml');
 				//Write RUCoD file
 				fs.writeFile(outputPath + baseName + '_rucod.xml', (rucodHeadS + rucodBody + rucodHeadE), function (error) {
 					if (error) {
 						callback(error,null);
 					} else {
 						console.log('RUCoD file created or overwritten under ' + outputPath + baseName + '_rucod.xml');
-						paths.push(publicOutputUrl + '/' + baseName + '_rucod.xml');
+						paths.push(webOutputUrl + '/' + baseName + '_rucod.xml');
 						callback(null,{message:'JSON and RUCoD files successfully saved.',urls: paths});
 					}
 				});
@@ -500,10 +499,11 @@ exports.store = function(co, overwrite, automatic, onlyJson, callback) {
 	//And check if the folders for those categories exist
 	//in the file system, if not create them
 	var fileOutputPath = basepath;
+	var webOutputUrl = publicOutputUrl;
 	
 	for(var p=0; p < catpath.length; p++) {
 		fileOutputPath += '/' + catpath[p];
-		publicOutputUrl += '/' + catpath[p];
+		webOutputUrl += '/' + catpath[p];
 		if(!path.existsSync(fileOutputPath)) {
 			if(fs.mkdirSync(fileOutputPath, 0755)) {
 				break;
@@ -537,9 +537,9 @@ exports.store = function(co, overwrite, automatic, onlyJson, callback) {
 		  
 		  if(onlyJson !== true) {
 			  //Create RUCoD for Content Object data
-			  publishRUCoD(co, fileOutputPath, automatic, callback);
+			  publishRUCoD(co, fileOutputPath, webOutputUrl, automatic, callback);
 		  } else {
-			  callback(null, {message: "JSON successfully saved.",urls: [publicOutputUrl + '/' + baseName + '.json']});
+			  callback(null, {message: "JSON successfully saved.",urls: [webOutputUrl + '/' + baseName + '.json']});
 		  }
 		  
 		});	
