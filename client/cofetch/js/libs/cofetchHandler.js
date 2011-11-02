@@ -759,7 +759,7 @@ var cofetchHandler = (function() {
     			  
     		  } else {
     			  
-    			  alert('Successfully saved! ('+data+')');
+    			  alert('Successfully saved! ('+data.message+')');
     			  
     			  var next = setNext();  
     			  if(next === false || next === 0) {
