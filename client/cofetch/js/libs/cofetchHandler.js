@@ -89,7 +89,6 @@ var cofetchHandler = (function() {
 	  				dialogHtml += '</ul>';
 	  			}
 	  		}
-        	console.log(dialogHtml);
 	  		$("#dialog").html(dialogHtml);
 	  		$("#dialog").dialog('open');
         	
