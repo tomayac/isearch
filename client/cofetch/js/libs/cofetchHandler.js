@@ -72,24 +72,24 @@ var cofetchHandler = (function() {
       success: function(data) {
     	
     	//Store the returned data
-	    scraperData.push(data.response[0]);
+	    scraperData.push(data.response);
 	    console.log("Scraped data: ",scraperData);  
 	    
 	    var dialogHtml = '';
 	    
-    	if(automatic && scraperData.message) {
+    	if(automatic && scraperData[0].message) {
     		console.log('Data for keywords "' + query + '" successfully fetched and stored as RUCoD.');
     	} else {
 	        
 	        if(automatic === 1) {
 	        	console.log("sData:");
-	        	console.log(scraperData);
+	        	console.log(scraperData[0]);
 		  		if(typeof scraperData === 'object') {
-		  			dialogHtml += '<p><strong>' + scraperData.message || 'Error' + '</strong></p>';
-		  			if(scraperData.urls) {
+		  			dialogHtml += '<p><strong>' + scraperData[0].message || 'Error' + '</strong></p>';
+		  			if(scraperData[0].urls) {
 		  				dialogHtml += '<p>Generated files:</p><ul>';
-		  				for(var i=0; i < scraperData.urls.length; i++) {
-		  					dialogHtml += '<li><a href="' + scraperData.urls[i] + '">' + scraperData.urls[i] + '</a></li>';
+		  				for(var i=0; i < scraperData[0].urls.length; i++) {
+		  					dialogHtml += '<li><a href="' + scraperData[0].urls[i] + '">' + scraperData[0].urls[i] + '</a></li>';
 		  				}
 		  				dialogHtml += '</ul>';
 		  			}
