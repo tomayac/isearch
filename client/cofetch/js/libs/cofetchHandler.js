@@ -70,52 +70,50 @@ var cofetchHandler = (function() {
       jsonpCallback: "_cofetchcb",
       timeout: 1000000,
       success: function(data) {
-    	
-    	//Store the returned data
-	    scraperData.push(data.response[0]);
-	    console.log("Scraped data: ",scraperData);  
 	    
-	    var dialogHtml = '';
-	    
-    	if(automatic && scraperData[0].message) {
-    		console.log('Data for keywords "' + query + '" successfully fetched and stored as RUCoD.');
-    	} else {
-	        
-	        if(automatic === 1) {
-	        	console.log("sData:");
-	        	console.log(scraperData[0]);
-	        	console.log(typeof scraperData[0]);
-		  		if(typeof scraperData[0] === 'object') {
-		  			dialogHtml += '<p><strong>' + scraperData[0].message + '</strong></p>';
-		  			if(scraperData[0].urls) {
-		  				dialogHtml += '<p>Generated files:</p><ul>';
-		  				for(var i=0; i < scraperData[0].urls.length; i++) {
-		  					dialogHtml += '<li><a href="' + scraperData[0].urls[i] + '">' + scraperData[0].urls[i] + '</a></li>';
-		  				}
-		  				dialogHtml += '</ul>';
-		  			}
-		  		}
-	        	console.log(dialogHtml);
-		  		$("#dialog").html(dialogHtml);
-		  		$("#dialog").dialog('open');
-	        	
-	        } else {
-	        	
-	        	console.log('Data for keywords "' + query + '" successfully fetched.');
-	        	
-	        	if(scraperData[0].length > 0) {
-	        		$('#save').removeAttr('disabled');
-	        	}
-	        	if(scraperData[0].length > 1) {
-	        		$('#next').removeAttr('disabled');
-	        	}
-	        	
-	        	manualIndex = 0;
-	        	setScraperData(manualIndex);
-	        	
-	        	$("#dialog").html("<p><strong>All results fetched!</strong><br/>Please verify them with the tabs provided and click the 'Save' button on the top if satisfied.</p>");
-	        }
-    	}
+        if(automatic === 1) {
+        	
+        	var dialogHtml = '';
+        	
+        	//Store the returned data
+    	    scraperData.push(data.response[0]);
+    	    console.log("Scraped data: ",scraperData); 
+        	
+	  		if(typeof scraperData[0] === 'object') {
+	  			dialogHtml += '<p><strong>' + scraperData[0].message + '</strong></p>';
+	  			if(scraperData[0].urls) {
+	  				dialogHtml += '<p>Generated files:</p><ul>';
+	  				for(var i=0; i < scraperData[0].urls.length; i++) {
+	  					dialogHtml += '<li><a href="' + scraperData[0].urls[i] + '">' + scraperData[0].urls[i] + '</a></li>';
+	  				}
+	  				dialogHtml += '</ul>';
+	  			}
+	  		}
+        	console.log(dialogHtml);
+	  		$("#dialog").html(dialogHtml);
+	  		$("#dialog").dialog('open');
+        	
+        } else {
+        	
+        	//Store the returned data
+    	    scraperData.push(data.response);
+    	    console.log("Scraped data: ",scraperData); 
+        	
+        	console.log('Data for keywords "' + query + '" successfully fetched.');
+        	
+        	if(scraperData[0].length > 0) {
+        		$('#save').removeAttr('disabled');
+        	}
+        	if(scraperData[0].length > 1) {
+        		$('#next').removeAttr('disabled');
+        	}
+        	
+        	manualIndex = 0;
+        	setScraperData(manualIndex);
+        	
+        	$("#dialog").html("<p><strong>All results fetched!</strong><br/>Please verify them with the tabs provided and click the 'Save' button on the top if satisfied.</p>");
+        }
+        
         $("#loading").hide();
         
       },
