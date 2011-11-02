@@ -5,7 +5,7 @@ $(document).ready(function(){
   /*===============================
     Initialize the script
     ===============================*/
-	$("#dialog").dialog({ autoOpen: false });
+	$("#dialog").dialog({ autoOpen: false, modal: true });
 	
     cofetchHandler.fetchCategories();
     
