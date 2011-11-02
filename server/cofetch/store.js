@@ -172,10 +172,12 @@ var storeMultipleContentObjectData = function(data, onlyJson, callback) {
 				if(error) {
 					endData = "Error CO '" + input.Name + "' - " + error + "\n"; 
 				} else {
-					endData = "CO '" + input.Name + "' - " + data + "\n";
+					endData = "CO '" + input.Name + "' - " + data.message + "\n";
 				}
 				
-				context.emit(endData);
+				data.message = endData;
+				
+				context.emit(data);
 			});
 	    }
 	});
@@ -187,8 +189,7 @@ var storeMultipleContentObjectData = function(data, onlyJson, callback) {
 			return;
 		}
 		
-		var msg = {success: data[0]};
-		callback(null, msg);
+		callback(null, data[0]);
 		
 	}, true);
 	
@@ -394,21 +395,24 @@ var publishRUCoD = function(data, outputPath, automatic, callback) {
 		}
 		
 	    console.log("Temporary RUCoD data collected. Writing files...");
-		//Write RWML file
+		
+	    var paths = [];
+	    
+	    //Write RWML file
 		fs.writeFile(outputPath+ baseName + '.rwml', rwml, function (error) {
 			if (error) {
 				callback(error,null);
 			} else {
 				console.log('RWML file created or overwritten under ' + outputPath + baseName + '.rwml');
-				
+				paths.push(publicOutputUrl + '/' + baseName + '.rwml');
 				//Write RUCoD file
 				fs.writeFile(outputPath + baseName + '_rucod.xml', (rucodHeadS + rucodBody + rucodHeadE), function (error) {
 					if (error) {
 						callback(error,null);
 					} else {
 						console.log('RUCoD file created or overwritten under ' + outputPath + baseName + '_rucod.xml');
-						
-						callback(null,'JSON and RUCoD files successfully saved.');
+						paths.push(publicOutputUrl + '/' + baseName + '_rucod.xml');
+						callback(null,{message:'JSON and RUCoD files successfully saved.',urls: paths});
 					}
 				});
 			}
@@ -535,7 +539,7 @@ exports.store = function(co, overwrite, automatic, onlyJson, callback) {
 			  //Create RUCoD for Content Object data
 			  publishRUCoD(co, fileOutputPath, automatic, callback);
 		  } else {
-			  callback(null, "JSON successfully saved.");
+			  callback(null, {message: "JSON successfully saved.",urls: [publicOutputUrl + '/' + baseName + '.json']});
 		  }
 		  
 		});	

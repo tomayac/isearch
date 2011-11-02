@@ -75,13 +75,13 @@ var cofetchHandler = (function() {
 	    scraperData.push(data.response);
 	    console.log("Scraped data: ",scraperData);  
     	  
-    	if(automatic && scraperData.success) {
+    	if(automatic && scraperData.message) {
     		console.log('Data for keywords "' + query + '" successfully fetched and stored as RUCoD.');
     	} else {
 	        
 	        if(automatic === 1) {
 	        	
-	        	alert(scraperData[0].success);
+	        	alert(scraperData[0]);
 	        	
 	        } else {
 	        	
