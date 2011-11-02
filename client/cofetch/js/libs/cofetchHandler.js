@@ -82,7 +82,8 @@ var cofetchHandler = (function() {
     	} else {
 	        
 	        if(automatic === 1) {
-	        	
+	        	console.log("sData:");
+	        	console.log(scraperData[0]);
 		  		if(typeof scraperData[0] === 'object') {
 		  			dialogHtml += '<p><strong>' + scraperData[0].message || 'Error' + '</strong></p>';
 		  			if(scraperData[0].urls) {
