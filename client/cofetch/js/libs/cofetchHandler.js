@@ -85,7 +85,7 @@ var cofetchHandler = (function() {
 	        	console.log("sData:");
 	        	console.log(scraperData[0]);
 		  		if(typeof scraperData === 'object') {
-		  			dialogHtml += '<p><strong>' + scraperData[0].message || 'Error' + '</strong></p>';
+		  			dialogHtml += '<p><strong>' + scraperData[0].message + '</strong></p>';
 		  			if(scraperData[0].urls) {
 		  				dialogHtml += '<p>Generated files:</p><ul>';
 		  				for(var i=0; i < scraperData[0].urls.length; i++) {
