@@ -40,6 +40,7 @@ exports.login = function(req, res){
         if(!data.user) {
         	msg.error = 'The user data was delivered in an invalid format.';
         	res.send(JSON.stringify(msg));
+        	return;
         }
         
         //Store user data in session
