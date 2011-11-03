@@ -35,18 +35,17 @@ exports.login = function(req, res){
 	restler
 	.get(verifyURL)
 	.on('complete', function(data) {		
-		console.log(data);
+		
 		//Check if return data is ok
         if(!data.user) {
-        	msg.error = 'The user data was delivered in an invalid format.';
+        	msg.error = data.error;
         	res.send(JSON.stringify(msg));
-        	return;
+        } else {
+	        //Store user data in session
+			req.session.user = data.user;
+			//Return user data to client
+	        res.send(JSON.stringify(data.user));
         }
-        
-        //Store user data in session
-		req.session.user = data.user;
-		//Return user data to client
-        res.send(JSON.stringify(data.user));
 	})
 	.on('error', function(error) {
 		msg.error = error;
