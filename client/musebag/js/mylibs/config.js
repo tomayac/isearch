@@ -147,11 +147,18 @@ define("mylibs/config", ["mylibs/tags", "!js/mylibs/visualization/DefaultThumbRe
 	    	  url: serverURL,
 	    	  data: JSON.stringify(postData),
 	    	  success: function(data) {
+	    		  //parse the result
+	    		  try {
+	    			  data = JSON.parse(data);
+	    		  } catch(e) {
+	    			  data = {error: "The server gave me an invalid result."};  
+	    		  }
+	    		  
 	    		  if(data.error) {
-	    			console.log("Error during login: " + data.error);  
+	    			console.log("Error during login: " + data.error); 
+	    			alert("Sorry: " + data.error);
 	    		  } else {
 		      		console.log("User logged in: " + data);
-		      		data = JSON.parse(data);
 		      		$("#login-status").html("Hello " + data.Email + " <a id=\"logout-user\" href=\"\">[logout]</a>");
 		      		getUserTags();
 	    		  }
