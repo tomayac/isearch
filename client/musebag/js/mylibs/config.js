@@ -147,10 +147,14 @@ define("mylibs/config", ["mylibs/tags", "!js/mylibs/visualization/DefaultThumbRe
 	    	  url: serverURL,
 	    	  data: JSON.stringify(postData),
 	    	  success: function(data) {
-	      		console.log("User logged in: " + data);
-	      		data = JSON.parse(data);
-	      		$("#login-status").html("Hello " + data.Email + " <a id=\"logout-user\" href=\"\">[logout]</a>");
-	      		getUserTags();
+	    		  if(data.error) {
+	    			console.log("Error during login: " + data.error);  
+	    		  } else {
+		      		console.log("User logged in: " + data);
+		      		data = JSON.parse(data);
+		      		$("#login-status").html("Hello " + data.Email + " <a id=\"logout-user\" href=\"\">[logout]</a>");
+		      		getUserTags();
+	    		  }
 	    	  },
 	    	  dataType: "text",
 	    	  contentType : "application/json; charset=utf-8"
