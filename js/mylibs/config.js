@@ -1,4 +1,5 @@
-define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js"],
+define("mylibs/config", 
+	[	"!js/mylibs/visualization/DefaultThumbRenderer.js"	],
   function() {
     
     var constants = {
@@ -20,7 +21,9 @@ define("mylibs/config", ["!js/mylibs/visualization/DefaultThumbRenderer.js"],
 		method: "tmap", //tmap, htree, hpan or classic
 		thumbSize: 64, //16, 32, 48, 64
 		iconArrange: "grid",
-		thumbRenderer: new DefaultThumbRenderer
+		showFilterPane: true,
+		thumbRenderer: new DefaultThumbRenderer,
+	//	thumbRenderer: new DummyThumbRenderer
 		}
     };
     

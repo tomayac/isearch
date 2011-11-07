@@ -15,14 +15,16 @@ ThumbContainer = function(containerDiv, data, options) {
 	if ( options.thumbRenderer )
 		this.thumbRenderer = options.thumbRenderer ;
 		
+	if ( options.tagManager )
+		this.tagManager = options.tagManager ;
+		
 	this.containerDiv = containerDiv ;	
 
 	this.createCanvas() ;	
 
-	this.onMouseOver = this.showTooltip ;	
-	this.onMouseOut = this.hideTooltip ;	
-
 	this.thumbs = data ;	
+
+	
 	
 };	
 
@@ -40,8 +42,11 @@ ThumbContainer.margin = 4 ;
 ThumbContainer.navBarSize = 32 ;	
 ThumbContainer.thumbMargin = 4 ;
 
+ThumbContainer.wheelZoom = true ;
+
 ThumbContainer.menuItems = [ { text: "Google Map", icon: "world-icon-small", onClick: function(ctx) { ctx.showMap() ; }},
-							 { text: " Time line", icon: "clock-icon-small", onClick: function(ctx) { ctx.showTimeline() ; }}
+							 { text: "Time-Line", icon: "clock-icon-small", onClick: function(ctx) { ctx.showTimeline() ; }}
+							 
 						] ;
 
 p.containerDiv = null ;	
@@ -53,8 +58,8 @@ p.onMouseOver = null  ;
 p.onMouseOut = null ;	
 p.hoverItem = null ;	
 p.currentZoomScale = 2 ;	
-p.origWidth = 0;	
-p.origHeight = 0 ;	
+p.canvasWidth = 0;	
+p.canvasHeight = 0 ;	
 p.offsetX = 0 ;	
 p.offsetY = 0 ;	
 p.tooltipPending = false ;	
@@ -67,6 +72,7 @@ p.navBar = null ;
 p.menuBar = null ;
 p.thumbRenderer = null ;
 
+
 ThumbContainer.zoomScales = [0.25, 0.5, 1.0, 1.5, 2.0, 3.0, 4.0] ;	
   	
 p.createCanvas = function()	{	
@@ -76,9 +82,11 @@ p.createCanvas = function()	{
 	$(this.containerDiv).empty() ;	
 
 	// add navigation bar	
+	
 	if ( this.mode == ThumbContainer.GRID_MODE && this.navMode != ThumbContainer.NAV_HIDDEN ) {	
 		this.navBar = $("<div/>", { "class": "thumb-container-nav-bar", 	
 					  css: { 	"position": "absolute", 	
+								"z-index": 1,
 								"width": "100%", 	
 								"height": ThumbContainer.navBarSize,	
 								"display": ( this.navMode == ThumbContainer.NAV_HOVER ) ? "none" : "block",	
@@ -89,6 +97,8 @@ p.createCanvas = function()	{
 					}).	
 		appendTo($(this.containerDiv)) ;	
 	}	
+	
+	// add menu bar
 	
 	if ( ThumbContainer.menuItems.length > 0 ) 
 	{
@@ -107,13 +117,13 @@ p.createCanvas = function()	{
 			appendTo($(this.containerDiv)) ;
 		
 		
-		var that = this ;
+		
 		for( var i=0 ; i<ThumbContainer.menuItems.length ; i++ )
 		{
 			var  btn = $("<button/>", { text: ThumbContainer.menuItems[i].text } ).appendTo(mb) ;
 			btn.button( { icons: {	primary: ThumbContainer.menuItems[i].icon }, text: false } ) ;
 			btn.click( (function(item) { 
-							return function() { item.onClick(that) ; } 
+							return function() { item.onClick(obj) ; } 
 						})( ThumbContainer.menuItems[i]) ) ;
 		}
 	
@@ -123,9 +133,205 @@ p.createCanvas = function()	{
 		this.menuBar = mb ;
 	
 	}
+	
+	// add thumbnail viewport
+	this.thumbViewport = $('<div/>', { css: { overflow: "auto", width: $(this.containerDiv).width(), height: $(this.containerDiv).height() } }).appendTo(this.containerDiv) ;
+	
+	// add thumbnail view that may be larger than viewport when zoomed
+	this.thumbView = $('<div/>', { css: { position: "relative" }}).appendTo(this.thumbViewport) ; 
+	
+	
+	// on shift-click start selection rubberband
+	$(this.thumbViewport).bind("mousedown", function(e) {
+            if ( e.shiftKey ) 
+				obj.handleSelection(e) ;
+	});
+	
+	// setup zoom functionality using the mousewheel
+	
+	if ( ThumbContainer.wheelZoom )
+	{
+	    $(this.thumbViewport).bind('mousewheel', function(event, delta) {
+			if ( obj.mode != ThumbContainer.GRID_MODE )
+			{
+				if ( delta > 0 ) obj.zoomIn() ;
+				else if ( delta < 0 ) obj.zoomOut() ;
+			}
+	    });
+	}
 };
 
+// Handles rubber-banding and thumbnail selection
 
+p.handleSelection = function(e)
+{
+		
+	this.startDrag = true ;
+		
+	var sw = $(window).width() ;
+	var sh = $(window).height() ;
+	var cw = $(this.thumbViewport).width() ;
+	var ch = $(this.thumbViewport).height() ;
+	var ox = $(this.thumbViewport).offset().left ;
+	var oy = $(this.thumbViewport).offset().top ;
+	
+	var relativeX = e.pageX - ox;
+    var relativeY = e.pageY - oy;
+	
+	this.sel_ul_x = relativeX ;
+	this.sel_ul_y = relativeY ;
+
+	this.selectionMade = false ;
+				
+	this.selDiv = $('<div/>', { css: { "width": sw, "height": sh, "z-index": 1200, "background-color": "transparent", "position": "absolute", "left": 0, "top": 0 }}).appendTo('body') ;
+	var selBox = $('<div/>', { css: { "width": cw, "height": ch, position: "absolute", "left": ox, "top": oy, "overflow": "hidden" }}).appendTo(this.selDiv) ;
+	this.box = $('<div/>', { css: { border: "1px dotted black", position: "absolute", "background-color": "transparent",
+		"left": relativeX , "top": relativeY,
+		width: "10px", height: "10px"		} }).appendTo(selBox) ;
+		
+	var that = this ;		
+	
+	var captureMouseMove = function(e) 
+	{
+	
+		if ( that.startDrag && e.shiftKey )
+		{
+			var relativeX = e.pageX - ox;
+			var relativeY = e.pageY - oy;
+
+			that.sel_lr_x = relativeX ;
+			that.sel_lr_y = relativeY ;
+			
+			var rx, ry, rw, rh ;
+		
+			if ( relativeX < that.sel_ul_x )
+			{
+				rx = relativeX ;
+				rw = that.sel_ul_x - relativeX ;
+			}
+			else
+			{
+				rx = that.sel_ul_x ;
+				rw = relativeX - that.sel_ul_x  ;
+			}
+		
+			if ( relativeY < that.sel_ul_y )
+			{
+				ry = relativeY ;
+				rh = that.sel_ul_y - relativeY ;
+			}
+			else
+			{
+				ry = that.sel_ul_y ;
+				rh = relativeY - that.sel_ul_y  ;
+			}
+		
+		
+			that.box.css("left", rx) ;
+			that.box.css("top", ry) ;
+			that.box.css("width", rw) ;
+			that.box.css("height", rh) ;
+			
+			that.updateSelection(rx, ry, rw, rh) ;
+			that.selectionMade = true ;
+		
+			//console.log( "(" + that.sel_ul_x + "," + that.sel_ul_y + ")" + "->" + "(" + that.sel_lr_x + "," + that.sel_lr_y + ")") ;
+			
+			
+			
+		}
+	} ;
+	
+	$(this.selDiv).bind("mousemove", captureMouseMove) ;
+	$(this.selDiv).bind("mouseup", function(e) {
+		if ( that.startDrag )
+		{
+			that.startDrag = false ;
+		
+			that.selDiv.remove() ;
+			
+			if ( !that.selectionMade )
+			{
+				$('.thumbnail', that.containerDiv).each(function() {
+					var id = $(this).attr('id').substr(6) ;
+					that.thumbs[id].selected = false ;
+					$(this).removeClass("selected") ;
+				}) ;
+			
+			}
+		}
+	}) ;
+	
+	e.preventDefault() ;
+} ;
+
+// select items within the given bounding box
+
+p.updateSelection = function(rx, ry, rw, rh)
+{
+    var that = this ;
+	
+	$('.thumbnail', this.containerDiv).each(function() {
+		var cx = $(this).position().left ;
+		var cy = $(this).position().top;
+		var cw = $(this).width() ;
+		var ch = $(this).height() ;
+			
+		if ( Math.max(cx, rx) < Math.min(cx + cw, rx + rw) &&
+			Math.max(cy, ry) < Math.min(cy + ch, ry + rh) )
+		{
+			var id = $(this).attr('id').substr(6) ;
+			that.thumbs[id].selected = true ;
+
+			$(this).addClass("selected") ;
+		}
+		
+	}) ;
+};
+/*
+p.handleTranslate = function(e) {
+
+	var that = this;
+		
+	this.startTransX = e.pageX ;
+	this.startTransY = e.pageY ;
+	
+	this.currentTransX = e.pageX ;
+	this.currentTransY = e.pageY ;
+	
+	var handleMouseMove = function(e) {
+		var cx = e.pageX ;
+		var cy = e.pageY ;
+		
+		var ox = cx - that.currentTransX ;
+		var oy = cy - that.currentTransY ;
+		
+		that.currentTransX = e.pageX ;
+	    that.currentTransY = e.pageY ;
+		
+		$('.thumbnail', that.containerDiv).each(function() {
+			var _ox = $(this).position().left ;
+			var _oy = $(this).position().top ;
+			$(this).css("left", _ox + ox + "px") ;
+			$(this).css("top", _oy + oy + "px") ;
+		});
+	};
+	
+	var handleMouseUp  = function(e) {
+		$(that.containerDiv).unbind("mousemove", handleMouseMove) ;
+		$(that.containerDiv).unbind("mouseup", handleMouseUp) ;
+		that.offsetX += that.currentTransX - that.startTransX ;
+		that.offsetY += that.currentTransY - that.startTransY ;
+	};
+	
+	$(this.containerDiv).bind("mousemove", handleMouseMove) ;
+	$(this.containerDiv).bind("mouseup", handleMouseUp) ;
+	
+
+} ;
+*/
+
+// navigation (paging) bar drawing
 p.redrawNavBar = function(page, maxPage, width)	
 {	
 	if ( maxPage == 1 ) return ;	
@@ -197,16 +403,19 @@ p.resize = function(e) {
 	console.log(e) ;	
 };	
 
+// The container has changed and we need to redraw
 p.draw = function() {	
 
 	var cw = $(this.containerDiv).width()  ;	
 	var ch = $(this.containerDiv).height() ;	
 
-	this.origWidth =  cw ;	
-	this.origHeight =  ch ;	
+	this.canvasWidth =  cw ;	
+	this.canvasHeight =  ch ;	
 
 	this.redraw(cw, ch) ;	
 };	
+
+// Select the appropriate preview url from the media items associated with this document.
 
 ThumbContainer.selectThumbUrl = function(doc)
 {
@@ -251,22 +460,138 @@ ThumbContainer.selectTooltipText = function(doc)
 
 } ;
 
+// This creates each thumbnail div and handles thumbnail interaction
 p.createThumbnail = function(i, x, y)
 {
 	var item = this.thumbs[i] ;
 	
 	var tm = ThumbContainer.thumbMargin ;
 	
-	var imgOut = $('<div/>', { "class": "thumbnail", id: "thumb-" + i, css: {  overflow: "hidden", position: "absolute", width: this.thumbSize, height: this.thumbSize, left: x, top: y } }).appendTo(this.containerDiv) ;
+	// create the main thumbnail box
+	var imgOut = $('<div/>', { "class": "thumbnail", id: "thumb-" + i, css: {  overflow: "hidden", position: "absolute", width: this.thumbSize, height: this.thumbSize, left: x, top: y } }).appendTo(this.thumbView) ;
+	// create a place-holder for the "star" icon.
+	var trans = $('<div/>', { "class": "thumbnail-overlay", css: {  display: (item.relevant) ? "block" : "none" } }).appendTo(imgOut) ;
 	
-	this.thumbRenderer.render(item, imgOut, this.containerDiv) ;
+	// use the thumbRenderer to actually render the item in the box
+	this.thumbRenderer.render(item, imgOut, this.thumbViewport) ;
+	
+	var that = this ;
+	
+	// if shift-click start selection rubber-band.
+	imgOut.bind("mousedown", function(e) {
+		if ( e.ctrlKey )
+		{
+			var id = $(this).attr('id').substr(6) ;
+			that.thumbs[id].selected = !that.thumbs[id].selected ;
+			$(this).toggleClass("selected") ;
+			
+		}
+	}) ;
+	
+	// if a click on the star remove relevance marker
+	trans.bind("click", function(e) {
+		var id = $(this).parent().attr('id').substr(6) ;
+		that.thumbs[id].relevant = false ;
+		$(this).hide() ;
+	}) ;
+		
+	// setup context menu handler
+	
+	imgOut.contextMenu("vis-context-menu", {
+	  bindings: {
+        'relevant': function(t) {
+			$(".thumbnail.selected", that.containerDiv).each( function(item) {
+				var id = $(this).attr('id').substr(6) ;
+				that.thumbs[id].relevant = !that.thumbs[id].relevant ;
+				$(".thumbnail-overlay", this).toggle() ;
+			}) ;
+	    },
+        'tags': function(t) {
+			//collect all common tags from selected items
+			
+			var allTags = {} ;
+						
+			var count = 0 ;
+			
+			$(".thumbnail.selected", that.containerDiv).each( function(item) {
+				var id = $(this).attr('id').substr(6) ;
+				var tags = that.thumbs[id].doc.tags ;
+			
+				count ++ ;
+				
+				if ( tags ) 
+				{
+					for( var i=0 ; i<tags.length ; i++ )
+					{
+						var tag = tags[i] ;
+						if ( allTags.hasOwnProperty(tag) )	allTags[tag] ++ ;
+						else allTags[tag] = 1 ;
+					}
+				}
+						
+			}) ;
+			
+			for( var tag in allTags )
+			{
+				if ( allTags[tag] < count ) delete allTags[tag] ;
+				else allTags[tag] = 0 ;
+			}
+
+			// open the tag editor
+			var tagEditor = new TagEditor(allTags, function(_tags) {
+				// we will be here when the user closes the tag editor				
+				$(".thumbnail.selected", that.containerDiv).each( function(item) {
+					var id = $(this).attr('id').substr(6) ;
+					var tags = that.thumbs[id].doc.tags ;
+					
+					if ( !tags ) tags = [] ;
+				
+					// update tags of selected items based on the user provided tags
+					for( tag in _tags )
+					{	
+						var idx = $.inArray(tag, tags) ;
+						if ( _tags[tag] == 1 && idx >= 0 ) delete tags.splice(idx,1) ;
+						else if ( _tags[tag] == 2  && idx == -1 ) tags.push(tag) ;
+					}
+					
+					that.thumbs[id].doc.tags = tags ;
+					// save tags into permanent storage
+					
+					that.tagManager.store(that.thumbs[id].doc) ;
+				}) ;
+				
+				that.tagManager.update() ;
+			}) ;
+          
+
+        },
+
+        'remove': function(t) {
+
+          alert('Trigger was '+t.id+'\nAction was Save');
+
+        },
+
+        'close': function(t) {
+
+          alert('Trigger was '+t.id+'\nAction was Delete');
+
+        }
+	}
+	  
+
+    });
 	
 }
 
+// main function for icon arrangement
 p.redraw = function(contentWidth, contentHeight)	
 {	
-	$('.thumbnail', this.containerDiv).empty() ;
+	$('.thumbnail', this.thumbViewport).remove() ;
 	
+	this.thumbView.width(contentWidth) ;
+	this.thumbView.height(contentHeight) ;
+		
 	if ( this.mode == ThumbContainer.GRID_MODE )	
 	{	
 		// compute layout	
@@ -290,6 +615,8 @@ p.redraw = function(contentWidth, contentHeight)
 		for( var i=this.offset ; i<Math.min(this.offset + this.pageCount, this.thumbs.length) ; i++ )	
 		{	
 			var item = this.thumbs[i] ;	
+			
+			if ( item.doc.filtered === true ) continue ;
 			
 			this.createThumbnail(i, x, y) ;
 			
@@ -316,6 +643,7 @@ p.redraw = function(contentWidth, contentHeight)
 	}	
 	else	
 	{	
+		
 		var sz = this.thumbSize  ;	
 
 		var options = {} ;
@@ -324,10 +652,12 @@ p.redraw = function(contentWidth, contentHeight)
 		
 		var lmanager = new LabelManager(contentWidth, contentHeight, options) ;		
 
-				
+		
 		for( var i=0 ; i<this.thumbs.length ; i++ )	
 		{	
 			var item = this.thumbs[i] ;	
+			
+			if ( item.doc.filtered === true ) continue ;
 
 			lmanager.addLabelGraphic(i, item.x * contentWidth, item.y * contentHeight, sz, sz) ;	
 		}	
@@ -345,7 +675,7 @@ p.redraw = function(contentWidth, contentHeight)
 			var q = res[i] ;	
 			var index = q.index ;	
 
-			this.createThumbnail(index, q.x, q.y) ;
+			this.createThumbnail(index, q.x , q.y) ;
 
 		}	
 
@@ -358,66 +688,20 @@ p.redraw = function(contentWidth, contentHeight)
 
 p.doResize = function()	
 {	
+	var cw = $(this.thumbViewport).width() ;
+	var ch = $(this.thumbViewport).height() ;
+	var oldWidth = this.canvasWidth ;
+	var oldHeight = this.canvasHeight ;
+	
+	this.canvasWidth = cw * ThumbContainer.zoomScales[this.currentZoomScale]  ;	
+	this.canvasHeight = ch * ThumbContainer.zoomScales[this.currentZoomScale];	
 				
-	var oldWidth = this.canvas.width ;	
-	var oldHeight = this.canvas.height ;	
-			
-	this.createCanvas() ;	
-
-	this.canvas.width = this.origWidth * ThumbContainer.zoomScales[this.currentZoomScale]  ;	
-	this.canvas.height = this.origHeight * ThumbContainer.zoomScales[this.currentZoomScale];	
-
-	this.redraw(this.canvas.width, this.canvas.height) ;	
-				
- //   var scaleFactor = (this.canvas.width - this.origWidth)/(oldWidth - this.origWidth);	
+    var scaleFactor = (this.canvasWidth - cw)/(oldWidth - cw);	
 						
-  //  var cx = (this.canvas.width - this.origWidth)/2 ;	
-   // var cy = (this.canvas.height - this.origHeight)/2 ;	
-		
-/*		
-	if ( isNaN(offsetX) && isNaN(offsetY) )	
-			{	
-				offsetX = cx ;	
-				offsetY = cy ;	
-			}	
-			else	
-			{	
-				offsetX = csx * scaleFactor ;	
-				offsetY = csy * scaleFactor ;	
-			}	
-				
-			obj.invalidateSize() ;	
-				
-			if ( cx > 0 && cy > 0 )	
-			{	
-				obj.move(0, 0) ;	
-				this.horizontalScrollPolicy = "on" ;	
-				this.verticalScrollPolicy = "on" ;	
-					
-				this.horizontalScrollPosition =  offsetX ;	
-				this.verticalScrollPosition =  offsetY ;	
-			}	
-			else if ( cx < 0 && cy < 0 )	
-			{	
-				obj.move(-cx, -cy) ;	
-				this.horizontalScrollPolicy = "off" ;	
-				this.verticalScrollPolicy = "off" ;	
-				offsetX = offsetY = NaN ;	
-					
-			}	
-			else 	
-			{	
-				obj.move(0, 0) ;	
-				this.horizontalScrollPolicy = "off" ;	
-				this.verticalScrollPolicy = "off" ;	
-				offsetX = offsetY = NaN ;	
-			}	
-					
-			this.autoLayout = false ;	
-					
-  */	
-
-				
+    this.offsetX -= (this.canvasWidth - oldWidth)/2 ;	
+    this.offsetY -= (this.canvasHeight - oldHeight)/2 ;	
+	
+	this.redraw(this.canvasWidth, this.canvasHeight) ;	
 };	
 			
 p.zoomIn  = function()	
@@ -444,7 +728,7 @@ p.resize = function()
 	this.draw() ;	
 };	
 
-
+// Show google map
 p.showMap = function()	
 {	
 	var markerImages = [];	
@@ -493,6 +777,7 @@ p.showMap = function()
 	
 };	
 	
+// Show timeline
 p.showTimeline = function()
 {
 	var sw = $(window).width() ;	
@@ -573,14 +858,7 @@ p.showTimeline = function()
 			theme,
 			highlightIndex
 		);
-/*
-		var self = this;
-		var clickHandler = function(elmt, domEvt, target) {
-			return self._onClickInstantEvent(result.iconElmtData.elmt, domEvt, evt);
-		};
-		SimileAjax.DOM.registerEvent(result.iconElmtData.elmt, "mousedown", clickHandler);
-		SimileAjax.DOM.registerEvent(result.labelElmtData.elmt, "mousedown", clickHandler);
-*/
+
 		this._eventIdToElmt[evt.getID()] = result.iconElmtData.elmt;
 	};
 	

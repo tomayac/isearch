@@ -30,6 +30,9 @@ define("mylibs/visualization/TreeMap",
 			
 		if ( options.thumbRenderer )
 			this.thumbOptions.thumbRenderer = options.thumbRenderer ;
+			
+		if ( options.tagManager )
+			this.thumbOptions.tagManager = options.tagManager ;
 
 		this.tree = {} ;
 		this.history = [this.tree] ;
@@ -207,6 +210,7 @@ define("mylibs/visualization/TreeMap",
 			var box = document.createElement( "div" );
 			box.style.position = "absolute";
 			box.style.border = "1px solid #444" ;
+			box.style.overflow = "hidden";
 			rect.moveDIV( box );
 			$(this.container).append( box );
 

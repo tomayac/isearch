@@ -45,13 +45,7 @@
   <script src="js/libs/modernizr-1.7.min.js"></script>
 
   <script>
-		var __queryParams = { out: "json", 
-			index: "furniture", 
-			tr: "lle",
-			cls: "5,3", 
-			total: 100
-		};
-  </script>
+  var dataIndex = "furniture" ;
   </script>
 </head>
 
@@ -137,8 +131,7 @@
           Grab an audio file and drop it here
         </p>
         <p class="instruction">
-          Upload a file with this button: <button>Upload</button> 
-	
+          Upload a file with this button: <button>Upload</button>
         </p>
         <p class="instruction">
           Use your device and start to say/sing something: <button>Start</button>
@@ -151,9 +144,7 @@
           Grab a picture and drop it here
         </p>
         <p class="instruction">
-         Upload a image with this button: <button class="upload">Upload</button>
-		  
-		  
+          Upload a image with this button: <button class="upload">Upload</button>
         </p>
         <p class="instruction">
           Take a picture with your device: <button class="shoot">Shoot!</button>
@@ -220,25 +211,10 @@
     </footer>
   </div>
 
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
   <script>window.jQuery || document.write("<script src='js/libs/jquery-1.6.2.min.js'>\x3C/script>")</script>
   
   <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=true"></script>
-  
-  <script>
-  // curenntly this hack is required to load the library correctly
-  
-  var Timeline_urlPrefix = "js/libs/timeline_2.3.0/timeline_js/" ;
-  var Timeline_parameters='bundle=false';
-  var SimileAjax_urlPrefix = "js/libs/timeline_2.3.0/timeline_ajax/" ;
-  
-   $(document).ready(function() {
-		$('<script/>', { src: 'js/libs/timeline_2.3.0/timeline_js/timeline-api.js'} ).appendTo('head') ;
-		
-  }) ;
-  
-  </script>
-  
   
   <!-- All the script dependancies will be managed with requireJS
        More info? Check http://requirejs.org -->
