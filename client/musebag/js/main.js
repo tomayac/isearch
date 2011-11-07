@@ -29,9 +29,13 @@ define("main",
     var start = function() {
       console.log('In the start function');
       $(document).ready(function(){
-
+    	
+	    Modernizr.addTest('speechinput', function(){
+		    var elem = document.createElement('input'); 
+		    return 'speech' in elem || 'onwebkitspeechchange' in elem; 
+		});  
+    	  
         //Resizing of the menu on load and when window resizes
-
         menu.adjust();
 
         var resizeTimer;

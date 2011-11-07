@@ -41,6 +41,9 @@ define("mylibs/visualization/HyperbolicTree",
 		
 		if ( options.thumbRenderer )
 			this.thumbOptions.thumbRenderer = options.thumbRenderer ;
+			
+		if ( options.tagManager )
+			this.thumbOptions.tagManager = options.tagManager ;
 
 		this.graph = new HyperGraph(searchResults) ;
 

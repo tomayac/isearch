@@ -17,7 +17,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-define("mylibs/uiiface", ["libs/jquery.hasEventListener.min"], function(){
+define("mylibs/uiiface", function(){
   
   var UIIFace = {};
   
@@ -43,28 +43,6 @@ define("mylibs/uiiface", ["libs/jquery.hasEventListener.min"], function(){
   		}
   		return parent;
   	};	
-  	UIIFace.isEventSupported = function(eventName){
-  		var el = document.createElement('div');
-  		eventName = 'on' + eventName;
-  	    var isSupported = (eventName in el);
-
-  		//Check for proprietary Mozilla events
-  		if(eventName.indexOf('MozTouch') > -1) {
-  			if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)){
-  				if(new Number(RegExp.$1) >= 4) {
-  					document.multitouchData = true;
-  					isSupported = true;
-  				}
-  			}
-  		}
-
-  	    if (!isSupported) {
-  	    	el.setAttribute(eventName, 'return;');
-  	    	isSupported = typeof el[eventName] == 'function';
-  	    }
-  	    el = null;
-  	    return isSupported;
-  	};
 
   	// Namespaces for sub components of UIIFace 
   	UIIFace.namespace('UIIFace.InteractionManager');
@@ -96,37 +74,35 @@ define("mylibs/uiiface", ["libs/jquery.hasEventListener.min"], function(){
 
   	//Options object for general configuration of UIIFace
   	var uiiOptions = {
-  			gestureHint: false
+  		gestureHint: false
   	};
 
   	/** Command Mapper >> initialization */
   	UIIFace.CommandMapper = function() {
-
-  		if(UIIFace.isEventSupported('MozTouchDown')) {
-  			touchEvents['down'] = 'MozTouchDown'; 
-  		} else if(UIIFace.isEventSupported('touchStart')) {
-  			touchEvents['down'] = 'touchStart'; 
-  		} else if(UIIFace.isEventSupported('touchstart')) {
-  			touchEvents['down'] = 'touchstart'; 
+  		//Test for touch events
+  		if (Modernizr.touch){
+  	        
+  	        var isMozilla = Modernizr.mq('all and (-moz-touch-enabled)');
+  	        
+  	        if(isMozilla) {
+  	        	//If it's a mozilla browser with touch, assign the specialised touch events
+  	        	touchEvents['down'] = 'MozTouchDown';
+  	        	touchEvents['move'] = 'MozTouchMove';
+  	        	touchEvents['up']   = 'MozTouchUp'; 
+  	        } else {
+  	        	//Assign the basic touch events (all mobile devices I guess)
+  	        	touchEvents['down'] = 'touchstart'; 
+  	        	touchEvents['move'] = 'touchmove'; 
+  	        	touchEvents['up']   = 'touchend'; 
+  	        }
+  	    }
+  		//Test for speech recognition
+  		if (Modernizr.speechinput){
+  			//Add chrome speech api
+  		} else {
+  			//Add open source speech api
   		}
   		
-  		if(UIIFace.isEventSupported('MozTouchMove')) {
-  			touchEvents['move'] = 'MozTouchMove'; 
-  		} else if(UIIFace.isEventSupported('touchMove')) {
-  			touchEvents['move'] = 'touchMove'; 
-  		} else if(UIIFace.isEventSupported('touchmove')) {
-  			touchEvents['move'] = 'touchmove'; 
-  		}
-
-  		if(UIIFace.isEventSupported('MozTouchUp')) {
-  			touchEvents['up'] = 'MozTouchUp'; 
-  		} else if(UIIFace.isEventSupported('touchEnd')) {
-  			touchEvents['up'] = 'touchEnd'; 
-  		} else if(UIIFace.isEventSupported('touchend')) {
-  			touchEvents['up'] = 'touchend'; 
-  		}
-
-
   	};
 
   	/** Basic Interpreter */
@@ -471,7 +447,18 @@ define("mylibs/uiiface", ["libs/jquery.hasEventListener.min"], function(){
   	};
 
   	/** Speech Interpreter */
-
+  	UIIFace.SpeechInterpreter = function () {
+  		
+  		SpeechInterpreter = function() {
+  			
+  		};
+  		
+  		return {
+  			//Public interface for SpeechInterpreter
+  			
+  		};
+  	};
+  	
   	/** Interaction Manager and trigger */
   	UIIFace.InteractionManager.sketch = function(e) {
   		e.preventDefault();

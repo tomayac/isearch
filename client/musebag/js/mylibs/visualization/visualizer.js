@@ -21,21 +21,30 @@
 
 define("mylibs/visualization/visualizer",
     [	"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js",
-		"order!js/libs/slides.jquery.js", 	
+		"order!js/libs/slides.jquery.js",
+		"order!js/libs/jquery.mousewheel.js",
+		"order!js/mylibs/visualization/ContextMenu.js",
+		"order!js/mylibs/visualization/TagEditor.js",
 		"mylibs/config",
+		"mylibs/visualization/TagManager",
 		"mylibs/visualization/TreeMap",
 		"mylibs/visualization/HyperbolicTree", 
 		"mylibs/visualization/HPanel" ], 
-    function(undefined, undefined, config, treeMap, hyperbolicTree, hPanel) {
+    function(undefined, undefined, undefined, undefined, undefined, config, tagManager, treeMap, hyperbolicTree, hPanel) {
   
 	var widget = null;
 	var results = null;
 	var element = null;
+	var visPane = null;
+	var menuPane = null;
 
 	var draw = function(res, ele, options) {
 		results = res ;
 		element = ele ;
+		
+		options.tagManager = tagManager ;
 
+		setup(options) ;
 		redraw(options) ;
 	};
 
@@ -47,36 +56,64 @@ define("mylibs/visualization/visualizer",
 		}	
 		
 		if (options.method) {
-			redraw(options.method, config.constants.visOptions);
+			redraw(config.constants.visOptions);
 		} else {
 			widget.setOptions(options) ;
 		}
 	};
-
-	var redraw = function(options) {
-  	
-  	var method = options.method;
-  	
+	
+	// create the main layout
+	var setup = function(options) {
+	
+		
+		
 		//Let's empty the DOM element first
 		$(element).empty() ;
 		
-		var visPane = $("<div/>", 
+		// create a filter pane on the top if requested
+		var filterPane = null ;
+		
+		if ( options.showFilterPane )
+		{
+			filterPane = $(
+			"<div/>", 
+				{ css: 
+					{ 
+						position: "absolute", 
+						width: "100%", 
+						top: 0,
+						height: 40
+					} 
+				}
+			).appendTo(element) ;
+			
+			tagManager.init(filterPane, results, __queryParams.index, function() {
+				redraw(config.constants.visOptions);
+			}) ;
+			
+		}
+		
+		// create main visualisation area
+		
+		visPane = $("<div/>", 
 			{ css: 
 				{ 
 					position: "absolute", 
 					width: "100%", 
-					top: 0,
-					bottom: 32
+					top: ( options.showFilterPane ) ? 40 : 0,
+					bottom: 40
 				} 
 			}
 		).appendTo(element) ;
 		
-		var menuPane = $("<div/>", 
+		// create menu on the bottom
+		
+		menuPane = $("<div/>", 
 			{ css: 
 				{ 
 					position: "absolute", 
 					width: "100%",
-					height: 32,
+					height: 40,
 					bottom: 0
 				} 
 			}
@@ -100,6 +137,8 @@ define("mylibs/visualization/visualizer",
 			+	'</div></div>'
 			+ 	'</form>');
 			
+		// menu handlers
+		
 		$('#vis-' + config.constants.visOptions.method, menuPane).attr('checked', true);
 		$('#ts' + config.constants.visOptions.thumbSize, menuPane).attr('checked', true);
 		$('#ia-' + config.constants.visOptions.iconArrange, menuPane).attr('checked', true);
@@ -128,6 +167,23 @@ define("mylibs/visualization/visualizer",
 			setOptions({iconArrange: ia}) ;
 		}) ;
 		
+		// context menu
+		
+		var cm = $('<div style="display:none" id="vis-context-menu">\
+			<ul>\
+				<li id="relevant">Toggle relevant</li>\
+				<li id="tags">Edit tags</li>\
+				<li id="remove">Remove items</li>\
+			</ul>').appendTo(element) ;
+
+	
+	} ;
+
+	// redraw visualization area when some option has changed
+	
+	var redraw = function(options) {
+
+		var method = options.method ;
 		
 		if (method == "hpanel") {
 		  widget = hPanel.create(results, visPane, options) ;
@@ -143,6 +199,7 @@ define("mylibs/visualization/visualizer",
         	opt.showGroups = false ;
 			widget = hPanel.create(results, visPane, opt) ;
 		}
+
   };
 
   return {

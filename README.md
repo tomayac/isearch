@@ -7,9 +7,9 @@ This space is used to build the GUI part of I-SEARCH.
 ##Some info: 
 
 - this is the GUI project for I-SEARCH. It consists of several components which are here
-  splitted in a the client and server folder for a better project structure 
-- the main interface component is names MuSeBag which stands for Multimodal Search Bag. Its
-  mockup is built on top of the amazing HTML5BoilerPlate
+  splitted in a client and server folder for a better project structure 
+- the main interface component is named MuSeBag which stands for Multimodal Search Bag. The
+  prototype is built on top of the amazing HTML5BoilerPlate
 - the build/ test/ crossdomain.xml robots.txt and plugin stub within the client/musebag folder are there for the near future.
   We'll probably need it very soon. But if you ask: yes, they're unuseful right
   now.

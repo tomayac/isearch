@@ -1,3 +1,24 @@
+DummyThumbRenderer = function() {	
+	
+};	
+
+var p = DummyThumbRenderer.prototype;	
+
+DummyThumbRenderer.thumbMargin = 4 ;
+
+p.render = function(item, container, visBox)
+{
+	var tm = DummyThumbRenderer.thumbMargin ;
+	var w = $(container).width() ;
+	var h = $(container).height() ;
+	
+	var img = $('<div/>', { css: { border: "1px solid black", position: "absolute", left: tm, top: tm, width: w - tm - tm, height: h - tm - tm }  }).appendTo(container) ;
+	
+} ;
+
+
+/////////////////////////////////////////////////
+
 DefaultThumbRenderer = function() {	
 	this.hoverItem = null ;	
 	

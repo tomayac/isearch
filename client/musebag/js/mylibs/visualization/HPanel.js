@@ -40,6 +40,9 @@ define("mylibs/visualization/HPanel",
 		if ( options.thumbRenderer )
 			this.thumbOptions.thumbRenderer = options.thumbRenderer ;
 			
+		if ( options.tagManager )
+			this.thumbOptions.tagManager = options.tagManager ;
+			
 		if ( options.hasOwnProperty("showGroups") )
 			this.showGroups = options.showGroups ;
 		
