@@ -50,14 +50,12 @@ var fetch  = require('./fetch'),
 // keywords: 'Rims and Tyres with Brakes,Car Tyre,Rain Tyre,Performance Tyre'},
 //{category: 'Vehicles/Car',
 // keywords: 'Ferrari 458 italia,1973 Lancia Stratos HF,Renault R5 Turbo II,1972 Chevrolet Camaro SS,1965 Lincoln Continental,1980 Jeep CJ,cord coupe 1930,Mercedes Benz 540 K,Citroen Traction Avant,1967 Shelby Mustang GT 500,2008 Lincoln Navigator,1937 bugatti type 57 SC atlantic,1955 Chevrolet Bel Air,1938 Alfa Romeo 8C 2900B,1999 BMW E38 750iL,1965 Lincoln Continental,1996 Jaguar XJ6,1968 Ford GT-40 MK-1 Le Mans,Ferrari F40,1968 ford mustang fastback,1975 BMW E9 3.0 CSL,1970 Hemi Cuda Convertible,1993 McLaren F1,Citroen SM,Jaguar E-Type,aston martin db5 james bond,Lancia Stratos prototype,Mercedes Benz 300SL Gullwing,Duesenberg Model J,Duesenberg SSJ,1957 Citroen DS,Ford Anglia,2000 Jaguar XK8 Convertible,Shelby Cobra,AC Cobra 427,Porsche 911 Turbo,1965 Chevrolet Corvette Stingray,1999 Gmc TopKick Tow truck,Chevy 3500 Crew Self-loader,SGT Towing & Recovery Medium Duty Wrecker,ECTO-1 Ghostbusters,DeLorean timemachine'}
-var ucdata = [{category: 'Weapon/Sword',
-	           keywords: 'Lei\'rajin keeper of balance,Conan sword,wow Frostgram schwert,Samurai Sword,katana sword,fantasy sword,Nazgul Sword,Sword of the Witch King,Frodos Sword Sting,Glamdring sword,Gimlis Axe,Anime Sword,Valdris Blade KR8,Elite sword,Roman Mainz Gladias,Roman Short Sword,Scottish Claymore Sword and Targe,Warsock halo difficulty logo,twilight princess swords and shields,Runescape Dragon Handed Sword,Sica Sword,Spartan Scimitar short sword,medievil claymore sword,sword of war,crystal destiny sword,Seran Claymore sword,Desane Claymore sword,Claymore Sword,Sephiroth masamune,Blade of Darkness sword,final fantasy Buster Sword,final fantasy cloud Sword,Zanbato sword,Frostmourne blade'},
-	          {category: 'Weapon',
-	           keywords: 'CrossMark Compound Bow,Bow and Arrow,Dark Bow,Short bow,Roman Bow,Longbow,Ball & Chain weapon'},
-	          {category: 'Weapon/Knife',
-	           keywords: 'Dragon Lord Knife,Phoenix Klingon Knife,Gil Hibben Knife'},
-	          {category: 'Weapon/Gun',
-	           keywords: 'Smith and Wesson Magnum,44 Magnum Revolver,IMI Desert Eagle,300 Winchester magnum sniper rifle,MP5K,Heckler & Koch MP-7,MP-45,Colt 45,H&K MP5 1981,Colt 1911,M38 Carbine,G43 Scoped,Star Trek Weapons Phase Pistol'} ];
+var ucdata = [{category: 'Plant/Tree',
+	           keywords: 'Green Ash Tree,Erable,ARVORE TIPUANA,Large mango tree,Maple tree,Ipê Amarelo,WILLOW TREE,Aceraceae tree,ganyedes peach tree,chestnut tree,Willow deciduous tree,Bamboo tree,Summer birch,Yucca brevifolia,Livistona chinensis,Abies alba,Phoenix canariensis,Jacaranda mimosifolia,Magnolia stellata,Acer circinatum,Populus nigra,Gleditsia triacanthos,Jacaranda mimosifolia,Acacia berlandieri,Eucalyptus polyanthemos,Eucalyptus camaldulensis,Lyonothamnus floribundus asplenifolius,Acacia abyssinica,Conifer,Abies balsamea'},
+	          {category: 'Plant/Bush',
+	           keywords: 'Arbusto,Bamboo cluster,Japanese mock orange shrub,yucca,Fern,Cyperus alternifolius,Fatsia japonica,Cycas revoluta,Phormium hybrids'},
+	          {category: 'Plant/Flower',
+	           keywords: 'Stonecrop,Bougainvillea branch,lotus flower,Teunisbloem,Water lily,Pond plant,orange lilly,Regal mist grass,Bougainvillea plant,Hydrangea macrophylla,Cattail plant,Cactus,Aloe striata,Agave americana,Agave victoriae-reginae,Agave lurida,Strelitzia reginae,Agapanthus africanus,Clivia miniata,Iris hybrids,Hemerocallis hybrids,Dietes iridioides,Beschorneria yuccoides,Kniphofia uvaria'}];
 
 var cofetcher = new fetch.Fetch();
 
