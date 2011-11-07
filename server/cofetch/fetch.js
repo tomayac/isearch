@@ -69,6 +69,7 @@ Fetch.prototype.getBestMatch = function(query, results, callback) {
 	var q = query || '';
 	var r = results || [];
 	var matchList = [];
+	var diffList = [];
 	
 	if(q.length < 3 || r.length < 1) {
 		callback('Missing Input', null);
@@ -88,9 +89,14 @@ Fetch.prototype.getBestMatch = function(query, results, callback) {
 			return words;
 		};
 		qwords = removeShort(qwords);
-
+		
+		//1. First round - generate a list of occurrences of the query words within the result titles 
+		
 		//For each result item
 		for(var i=0; i < r.length; i++) {
+			
+			matchList[i] = 0;
+			
 			//For each relevant query word
 			for(var w=0; w < qwords.length; w++) {
 				//Find if the query word exists in the result item name
@@ -98,72 +104,52 @@ Fetch.prototype.getBestMatch = function(query, results, callback) {
 				//And add a point for this result item if so	
 				if(r[i].Name.search(rx) !== -1) {
 					matchList[i] = (isNaN(matchList[i]) ? 1 : matchList[i] + 1);
-				} else {
-					matchList[i] = 0;
 				}
 			}
 		}
+		
+		//2. Second round - generate a list of differences between query and result titles
 		
 		var joinedQuery = qwords.join(' ');
-		var realMatches = 0;
 		
-		var w1 = [0,0], 
-		    w2 = [0,0];
-		var wd1 = 1000, 
-		    wd2 = 1000;
-		
-		for(var m=0; m < matchList.length; m++) {
-			if(matchList[m] > 0) {
-				realMatches++;
-			}
+		//For each result item
+		for(var res=0; res < r.length; res++) {
+			diffList[res] = 0;
+			diffList[res] = levenDistance(r[res].Name.toLowerCase(),joinedQuery.toLowerCase());
 		}
-
-		//Check what result item has at least the two highest matching result item indexes with the query
-		if(realMatches > 1) {
-			for(var i=0; i < matchList.length; i++) {
-				if(matchList[i] > w1[1]) {
-					w2 = new Array(w1[0],w1[1]);
-					w1[0] = i;
-					w1[1] = matchList[i];
+		
+		//3. Third round - generate the result with the two most fitting result items
+		
+		var w1 = {Id: -1, Matches: 0, Diff: 1000}, 
+	        w2 = {Id: -1, Matches: 0, Diff: 1000};
+		
+		for(var i=0; i < r.length; i++) {
+			if(matchList[i] >= w1.Matches && diffList[i] < w1.Diff && diffList[i] <= 30) {
+				if(w1.Id > -1) {
+					w2.Id = w1.Id;
+					w2.Matches = w1.Matches;
+					w2.Diff = w1.Diff;
 				}
-			}
-
-			//Get most similar candidate with a Levenstein distance calculation
-			wd1 = levenDistance(r[w1[0]].Name,joinedQuery);
-			wd2 = levenDistance(r[w2[0]].Name,joinedQuery);
-			
-		} else {
-			
-			var td = 0;
-			for(var i=0; i < r.length; i++) {
-				td = levenDistance(r[i].Name,joinedQuery);
-				if(td < wd1) {
-					wd2 = wd1;
-					wd1 = td;
-				}
+				w1.Matches = matchList[i];
+				w1.Diff = diffList[i];
+				w1.Id = i;
 			}
 		}
 		
-		//Is there a first and a second result in the list and are they close enough to the query?
-		var isW1 = (r[w1[0]] && wd1 <= 30),
-		    isW2 = (r[w2[0]] && wd2 <= 30 && w2[0] != w1[0]);
+		//4. Test the results
 		
 		//If we have both winners, return both in an array
-		if(isW1 && isW2) {
-			if( wd1 <= wd2 ){
-				callback(null, new Array(r[w1[0]],r[w2[0]]));
-			} else {
-				callback(null, new Array(r[w2[0]],r[w1[0]]));
-			}
+		if(w1.Id > -1 && w2.Id > -1) {
+			callback(null, new Array(r[w1.Id],r[w2.Id]));
 		//Else just return the available winner	
-		} else if(isW1){
-			callback(null, new Array(r[w1[0]]));
-		} else if(isW2) {
-			callback(null, new Array(r[w2[0]]));
+		} else if(w1.Id > -1){
+			callback(null, new Array(r[w1.Id]));
+		} else if(w2.Id > -1) {
+			callback(null, new Array(r[w2.Id]));	
 		//or nothing	
 		} else {
 			callback(null, null);
-		}
+		}	
 	}
 };
 
