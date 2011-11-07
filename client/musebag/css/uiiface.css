@@ -1,0 +1,53 @@
+.token-input-token-isearch img {
+    max-height: 2.5em;
+}
+
+.token-input-token-isearch .progressBar {
+    position: absolute;
+    top:50%;
+    left: 50%;
+    margin: -10px 0 0 -75px;
+    width: 150px;
+    height: 20px;
+    
+    border: 1px solid #000;
+    border-radius: 10px;
+    box-shadow: 1px 1px 2px #fff;
+}
+
+.token-input-token-isearch .progressBar p
+{
+    width: 20px;
+    height: 20px;
+    
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    background-color: #1E528C;
+}
+
+.token-input-token-isearch .loaded {
+    opacity: 1;
+}
+
+.token-input-token-isearch .loaded .progressBar {
+    display: none;
+}
+
+.token-input-token-isearch  canvas,
+.token-input-token-isearch  audio,
+.token-input-token-isearch  video {
+	   position: relative;
+     border: 1px solid #aaa;  
+}
+
+.gestureHint {
+	display:none;
+	position:absolute;
+	top:0;
+	left:0;
+	width:10px;
+	height:10px;
+	background-color:#a00;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
