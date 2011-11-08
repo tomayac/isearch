@@ -257,14 +257,6 @@
        More info? Check http://requirejs.org -->
   <script src="js/libs/require.js"></script>
   <script>
-    if (Modernizr.touch){
-        var teststring = "";
-        teststring = "firefox touch: " + Modernizr.mq('all and (-moz-touch-enabled)');
-        alert(teststring);
-    } else {
-        alert("Has no touch");
-    }
-  
     require(
         {baseUrl: "./js/"},
         ["main"],
