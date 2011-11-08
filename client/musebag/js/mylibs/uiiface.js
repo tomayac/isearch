@@ -1,6 +1,7 @@
 /**
 UIIFace - Unified Interaction Interface
 Copyright (c) 2011, Jonas Etzold and Erfurt University of Applied Sciences (FHE)
+                    and Fulda University of Applied Sciences (HSF)
 
 Interaction Component of I-SEARCH (http://www.isearch-project.eu)
 All rights reserved.
@@ -16,8 +17,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
-define("mylibs/uiiface", ["libs/modernizr-2.0.min"], function(Modernizr){
+ 
+define("mylibs/uiiface", ["libs/modernizr-2.0.min"], function(){
   
   var UIIFace = {};
   
@@ -81,7 +82,7 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min"], function(Modernizr){
   	UIIFace.CommandMapper = function() {
   		//Test for touch events
   		if (Modernizr.touch){
-  	        
+   
   	        var isMozilla = Modernizr.mq('all and (-moz-touch-enabled)');
   	        
   	        if(isMozilla) {
@@ -96,13 +97,13 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min"], function(Modernizr){
   	        	touchEvents['up']   = 'touchend'; 
   	        }
   	    }
-  		//Test for speech recognition
-  		//if (Modernizr.speechinput){
-  			//Add chrome speech api
-  		//} else {
-  			//Add open source speech api
-  		//}
   		
+  		//Test for speech recognition
+  		if (Modernizr.speechinput){
+  			//Add chrome speech api
+  		} else {
+  			//Add open source speech api
+  		}
   	};
 
   	/** Basic Interpreter */
@@ -521,9 +522,9 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min"], function(Modernizr){
   		uiiOptions = options;
   		
   		Modernizr.addTest('speechinput', function(){
-		    var elem = document.createElement('input'); 
-		    return 'speech' in elem || 'onwebkitspeechchange' in elem; 
-		});  
+	        var elem = document.createElement('input'); 
+	        return 'speech' in elem || 'onwebkitspeechchange' in elem; 
+	    });
   		
   		UIIFace.CommandMapper();
 
