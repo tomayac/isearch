@@ -23,17 +23,13 @@ if(typeof console == "undefined") {
 
 define("main",
     ["mylibs/menu", "mylibs/config", "mylibs/tags", "mylibs/results", "mylibs/uiiface", 
-    "libs/jquery.tokeninput","libs/canvas-toBlob.min"],
+     "libs/jquery.tokeninput","libs/canvas-toBlob.min"],
     function(menu, config, tags, results, uiiface) {
 
     var start = function() {
+      
       console.log('In the start function');
       $(document).ready(function(){
-    	
-	    Modernizr.addTest('speechinput', function(){
-		    var elem = document.createElement('input'); 
-		    return 'speech' in elem || 'onwebkitspeechchange' in elem; 
-		});  
     	  
         //Resizing of the menu on load and when window resizes
         menu.adjust();

@@ -97,11 +97,11 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min"], function(Modernizr){
   	        }
   	    }
   		//Test for speech recognition
-  		if (Modernizr.speechinput){
+  		//if (Modernizr.speechinput){
   			//Add chrome speech api
-  		} else {
+  		//} else {
   			//Add open source speech api
-  		}
+  		//}
   		
   	};
 
@@ -519,6 +519,12 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min"], function(Modernizr){
   	UIIFace.initialize = function(options) {
   		
   		uiiOptions = options;
+  		
+  		Modernizr.addTest('speechinput', function(){
+		    var elem = document.createElement('input'); 
+		    return 'speech' in elem || 'onwebkitspeechchange' in elem; 
+		});  
+  		
   		UIIFace.CommandMapper();
 
   	};
