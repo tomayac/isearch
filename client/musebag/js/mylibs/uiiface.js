@@ -77,6 +77,9 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(un
   	var uiiOptions = {
   		gestureHint: false
   	};
+  	
+  	//Speech recognition object
+  	var speechApp = false;
 
   	/** Command Mapper >> initialization */
   	UIIFace.CommandMapper = function() {
@@ -105,7 +108,7 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(un
   		} else {
   			//Add open source speech api
   			$('<div id="speechInterface"></div>').appendTo('body');
-  			
+
   			var jsgf = '#JSGF V1.0;\n' +
 			  		   'grammar uiiface;\n' +
 			  		   'public <top> = (<command> [and])+ ;\n' +
@@ -142,7 +145,8 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(un
   		            onTimeout : onSpeechTimeout
   				};
   			
-  			var wamiApp = new Wami.App(options);
+  			console.log(Wami);
+  			//speechApp = new Wami.App(options);
   			
   			//Define the speech event functions
   			function onSpeechReady() {  				
@@ -167,7 +171,6 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(un
   				} else {
   			        var cell = result.get("cell");
   					if(result.get("cell") == "here") {
-  						cell = (selectedCell != -1) ? selectedCell : null;
   						console.log("cell = here");
   					}
 
@@ -177,9 +180,6 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(un
   					} else if(result.get("command") == "erase" && cell != null) {
   						console.log("erase cell " + cell);
   					}
-
-  					unHighlightCells();
-  					unHighlightMark();
   				}
   			}
   			
