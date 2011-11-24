@@ -45,8 +45,7 @@ exports.tagRecommendations = function(options, callback){
 		console.log(JSON.stringify(data));
 	})
 	.on('error', function(error) {
-		msg.error = error;
-		console.log(JSON.stringify(msg));
+		console.log(JSON.stringify(error));
 	});
 	
 	callback(null, userTags);
