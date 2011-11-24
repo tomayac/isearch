@@ -45,7 +45,7 @@ exports.tagRecommendations = function(options, callback){
 	})
 	.on('error', function(error) {
 		console.log(profileURL);
-		console.log(error);
+		console.dir(error);
 	});
 	
 	callback(null, userTags);
