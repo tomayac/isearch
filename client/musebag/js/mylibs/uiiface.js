@@ -145,9 +145,7 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
   		            onTimeout : onUiiSpeechTimeout
   				};
   		
-  			console.log('wami: ');
-  			console.dir(Wami);
-  			//speechApp = new Wami.App(options);
+  			speechApp = new Wami.App(options);
   			
   			//Define the speech event functions
   			var onUiiSpeechReady = function() {  				
