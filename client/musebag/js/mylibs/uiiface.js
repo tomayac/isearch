@@ -18,7 +18,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
  
-define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
+define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(undefined, Wami){
   
   var UIIFace = {};
   
@@ -106,7 +106,92 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
   			//Add open source speech api
   			$('<div id="speechInterface"></div>').appendTo('body');
   			
+  			var jsgf = '#JSGF V1.0;\n' +
+			  		   'grammar uiiface;\n' +
+			  		   'public <top> = (<command> [and])+ ;\n' +
+			  		   '<command>    = <put> | <erase> ;\n' +
+			  		   '<put>        = put {[command=put]} (<mark>+ (in ([<cellname>] <cell>)+))+ ;\n' +
+			  		   '<erase>      = erase {[command=erase]} ([<cellname>] <cell>)+ ;\n' +
+			  		   '<mark>       = an x {[mark=x]} | an oh {[mark=o]} ;\n' +
+			  		   '<cellname>   = cell | box | square ;\n' +
+			  		   '<cell>       = one	{[cell=1]}\n' +
+			  		   '             | two	  {[cell=2]}\n' +
+			  		   '             | three   {[cell=3]}\n' +
+			  		   '             | four    {[cell=4]}\n' +
+			  		   '             | five    {[cell=5]}\n' +
+			  		   '             | six     {[cell=6]}\n' +
+			  		   '             | seven   {[cell=7]}\n' +
+			  		   '             | eight   {[cell=8]}\n' +
+			  		   '             | nine    {[cell=9]}\n' +
+			  		   '              ;';
   			
+  			var grammar = {
+  	                language    : "en-us", 
+		  			grammar     : jsgf,
+		  			incremental : true,
+		  		    aggregate   : true
+		  		};
+  			
+  			var options = {
+  				    guiID : 'speechInterface',
+  				    devKey : '319b4feb366fd7b643f72f0627839f67',
+  				    grammar : grammar,
+  				    onReady : onSpeechReady,
+  				    onRecognition : onSpeechRecognition,
+  				    onError : onSpeechError,
+  		            onTimeout : onSpeechTimeout
+  				};
+  			
+  			var wamiApp = new Wami.App(options);
+  			
+  			//Define the speech event functions
+  			function onSpeechReady() {  				
+  			}
+  			
+  			//On speech recognition result
+  			function onSpeechRecognition(result) {
+  				Wami.utils.debug("Partial: " + result.partial());
+  				//key value pairs
+  				if (result.partial()) {
+  					if(result.get("command") == "erase") {
+  						console.log("eraser");
+  					}
+
+  					if(result.get("mark")) {
+  						console.log("mark");
+  					}
+
+  					if(result.get("cell") && result.get("cell") != "here") {
+  						console.log("cell = "+result.get("cell"));
+  					}
+  				} else {
+  			        var cell = result.get("cell");
+  					if(result.get("cell") == "here") {
+  						cell = (selectedCell != -1) ? selectedCell : null;
+  						console.log("cell = here");
+  					}
+
+  					//actually put an X or O on the grid
+  					if(result.get("command") == "put" && result.get("mark") && cell) {
+  						console.log("mark cell " + cell);
+  					} else if(result.get("command") == "erase" && cell != null) {
+  						console.log("erase cell " + cell);
+  					}
+
+  					unHighlightCells();
+  					unHighlightMark();
+  				}
+  			}
+  			
+  		    //called when an error occurs
+  			function onSpeechError(type, message) {
+  				console.log("WAMI error: type  = " + type + ", message = " + message);	
+  			}
+
+  			//called when your WAMI session times out due to inactivity.
+  			function onSpeechTimeout() {
+  				console.log("WAMI timed out. Hit reload to start over");
+  			}
   		}
   	};
 
