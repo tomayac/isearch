@@ -97,7 +97,7 @@ define("mylibs/config", ["mylibs/tags", "!js/mylibs/visualization/DefaultThumbRe
                     		
                     		//Initializes the tagging system
                             tags.init();
-                            //Get tokens and load them as autosuggestion for the user
+                            //Get tokens and load them as auto suggestions for the user
                             var tokens = tags.getTokens();
                             $(".token-input-list-isearch").remove();
                             $("#query-field").tokenInput("clear");

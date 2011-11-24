@@ -7,6 +7,8 @@
  * @author Jonas Etzold
  * @company University of Applied Sciences Erfurt
  */
+var restler = require('restler');
+
 this.title = "pTag - Personal Content Tagging Service for I-SEARCH";
 this.name = "pTag";
 this.version = "0.1.0";
@@ -30,6 +32,22 @@ exports.tagRecommendations = function(options, callback){
 		id = (options.userID-1);
 	} 
 	var userTags = tags[id];
+	
+	var profileURL = "http://www.epart.com:8080/iPersonalizationDB/resources/users/"
+        + 'profileFor/' + id
+        + 'withRole/admin';
+
+	restler
+	.get(profileURL)
+	.on('complete', function(data) {		
+		
+		//Check if return data is ok
+		console.log(JSON.stringify(data));
+	})
+	.on('error', function(error) {
+		msg.error = error;
+		console.log(JSON.stringify(msg));
+	});
 	
 	callback(null, userTags);
 };
