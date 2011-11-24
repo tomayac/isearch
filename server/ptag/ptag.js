@@ -33,9 +33,9 @@ exports.tagRecommendations = function(options, callback){
 	} 
 	var userTags = tags[id];
 	
-	var profileURL = "http://www.epart.com:8080/iPersonalizationDB/resources/users/"
-        + 'profileFor/' + id
-        + 'withRole/admin';
+	var profileURL = "http://www.epart.com:8080/iPersonalizationDB/resources/users"
+        + '/profileFor/' + '1'
+        + '/withRole/admin';
 
 	restler
 	.get(profileURL)
