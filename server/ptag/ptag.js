@@ -38,7 +38,7 @@ exports.tagRecommendations = function(options, callback){
         + '/withRole/admin/';
 
 	restler
-	.get(profileURL)
+	.request(profileURL)
 	.on('complete', function(data) {		
 		//Check if return data is ok
 		console.log(JSON.stringify(data));
