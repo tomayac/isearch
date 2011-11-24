@@ -51,3 +51,13 @@
 	-moz-border-radius: 5px;
 	border-radius: 5px;
 }
+
+#speechInterface {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 150px;
+  height: 100px;
+  overflow: hidden;
+  box-shadow: 0px 0px 10px #ccc;
+}

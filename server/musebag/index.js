@@ -41,13 +41,13 @@ app.configure('production', function(){
 });
 
 // Routes
-app.post('/login', musebag.login);
-app.del('/login', musebag.logout);
+app.post('/login'          , musebag.login);
+app.del ('/login'          , musebag.logout);
 
-app.get('/profile/:attrib', musebag.profile);
+app.get ('/profile/:attrib', musebag.profile);
 
-app.post('/query/item', musebag.queryItem);
-app.post('/query', musebag.query);
+app.post('/query/item'     , musebag.queryItem);
+app.post('/query'          , musebag.query);
 
 app.listen(8081);
 

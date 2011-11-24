@@ -33,21 +33,6 @@ exports.tagRecommendations = function(options, callback){
 	} 
 	var userTags = tags[id];
 	
-	var profileURL = "http://www.epart.com:8080/iPersonalizationDB/resources/users"
-        + '/profileFor/' + '1'
-        + '/withRole/admin/';
-
-	restler
-	.request(profileURL)
-	.on('complete', function(data) {		
-		//Check if return data is ok
-		console.log(JSON.stringify(data));
-	})
-	.on('error', function(error) {
-		console.log(profileURL);
-		console.dir(error);
-	});
-	
 	callback(null, userTags);
 };
 //Documentation for tagRecommendations function
