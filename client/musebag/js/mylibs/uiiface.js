@@ -135,7 +135,7 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
 		  		    aggregate   : true
 		  		};
   			
-  			var options = {
+  			/*var options = {
   				    guiID : 'speechInterface',
   				    devKey : '319b4feb366fd7b643f72f0627839f67',
   				    grammar : grammar,
@@ -144,7 +144,7 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
   				    onError : onSpeechError,
   		            onTimeout : onSpeechTimeout
   				};
-  			
+  			*/
   			console.log('wami: ');
   			console.dir(Wami);
   			//speechApp = new Wami.App(options);
@@ -155,7 +155,7 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
   			
   			//On speech recognition result
   			function onSpeechRecognition(result) {
-  				Wami.utils.debug("Partial: " + result.partial());
+  				console.log("Partial: " + result.partial());
   				//key value pairs
   				if (result.partial()) {
   					if(result.get("command") == "erase") {
