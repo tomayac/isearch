@@ -18,7 +18,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
  
-define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(undefined, Wami){
+define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
   
   var UIIFace = {};
   
@@ -145,7 +145,8 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(un
   		            onTimeout : onSpeechTimeout
   				};
   			
-  			console.log(Wami);
+  			console.log('wami: ');
+  			console.dir(Wami);
   			//speechApp = new Wami.App(options);
   			
   			//Define the speech event functions
