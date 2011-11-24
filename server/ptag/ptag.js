@@ -40,12 +40,12 @@ exports.tagRecommendations = function(options, callback){
 	restler
 	.get(profileURL)
 	.on('complete', function(data) {		
-		
 		//Check if return data is ok
 		console.log(JSON.stringify(data));
 	})
 	.on('error', function(error) {
-		console.log(JSON.stringify(error));
+		console.log(profileURL);
+		console.log(error);
 	});
 	
 	callback(null, userTags);
