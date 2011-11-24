@@ -108,44 +108,6 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
   		} else {
   			//Add open source speech api
   			$('<div id="speechInterface"></div>').appendTo('body');
-
-  			var jsgf = '#JSGF V1.0;\n' +
-			  		   'grammar uiiface;\n' +
-			  		   'public <top> = (<command> [and])+ ;\n' +
-			  		   '<command>    = <put> | <erase> ;\n' +
-			  		   '<put>        = put {[command=put]} (<mark>+ (in ([<cellname>] <cell>)+))+ ;\n' +
-			  		   '<erase>      = erase {[command=erase]} ([<cellname>] <cell>)+ ;\n' +
-			  		   '<mark>       = an x {[mark=x]} | an oh {[mark=o]} ;\n' +
-			  		   '<cellname>   = cell | box | square ;\n' +
-			  		   '<cell>       = one	{[cell=1]}\n' +
-			  		   '             | two	  {[cell=2]}\n' +
-			  		   '             | three   {[cell=3]}\n' +
-			  		   '             | four    {[cell=4]}\n' +
-			  		   '             | five    {[cell=5]}\n' +
-			  		   '             | six     {[cell=6]}\n' +
-			  		   '             | seven   {[cell=7]}\n' +
-			  		   '             | eight   {[cell=8]}\n' +
-			  		   '             | nine    {[cell=9]}\n' +
-			  		   '              ;';
-  			
-  			var grammar = {
-  	                language    : "en-us", 
-		  			grammar     : jsgf,
-		  			incremental : true,
-		  		    aggregate   : true
-		  		};
-  			
-  			var options = {
-  				    guiID : 'speechInterface',
-  				    devKey : '319b4feb366fd7b643f72f0627839f67',
-  				    grammar : grammar,
-  				    onReady : onUiiSpeechReady,
-  				    onRecognition : onUiiSpeechRecognition,
-  				    onError : onUiiSpeechError,
-  		            onTimeout : onUiiSpeechTimeout
-  				};
-  		
-  			speechApp = new Wami.App(options);
   			
   			//Define the speech event functions
   			var onUiiSpeechReady = function() {  				
@@ -191,6 +153,45 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
   			var onUiiSpeechTimeout = function() {
   				console.log("WAMI timed out. Hit reload to start over");
   			};
+  			
+  			var jsgf = '#JSGF V1.0;\n' +
+			  		   'grammar uiiface;\n' +
+			  		   'public <top> = (<command> [and])+ ;\n' +
+			  		   '<command>    = <put> | <erase> ;\n' +
+			  		   '<put>        = put {[command=put]} (<mark>+ (in ([<cellname>] <cell>)+))+ ;\n' +
+			  		   '<erase>      = erase {[command=erase]} ([<cellname>] <cell>)+ ;\n' +
+			  		   '<mark>       = an x {[mark=x]} | an oh {[mark=o]} ;\n' +
+			  		   '<cellname>   = cell | box | square ;\n' +
+			  		   '<cell>       = one	{[cell=1]}\n' +
+			  		   '             | two	  {[cell=2]}\n' +
+			  		   '             | three   {[cell=3]}\n' +
+			  		   '             | four    {[cell=4]}\n' +
+			  		   '             | five    {[cell=5]}\n' +
+			  		   '             | six     {[cell=6]}\n' +
+			  		   '             | seven   {[cell=7]}\n' +
+			  		   '             | eight   {[cell=8]}\n' +
+			  		   '             | nine    {[cell=9]}\n' +
+			  		   '              ;';
+			
+			var grammar = {
+		           language    : "en-us", 
+					grammar     : jsgf,
+					incremental : true,
+				    aggregate   : true
+				};
+			
+			var options = {
+				    guiID : 'speechInterface',
+				    devKey : '319b4feb366fd7b643f72f0627839f67',
+				    grammar : grammar,
+				    onReady : onUiiSpeechReady,
+				    onRecognition : onUiiSpeechRecognition,
+				    onError : onUiiSpeechError,
+		           onTimeout : onUiiSpeechTimeout
+				};
+			
+			//Get the party started
+			speechApp = new Wami.App(options);
   		}
   	};
 

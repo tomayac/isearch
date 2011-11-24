@@ -53,11 +53,12 @@
 }
 
 #speechInterface {
+  background-color: #444444;
+  border-radius: 5px 5px 5px 5px;
+  height: 150px;
+  left: -5px;
+  padding: 9px 5px 5px 8px;
   position: absolute;
-  top: 50%;
-  left: 0;
-  width: 150px;
-  height: 100px;
-  overflow: hidden;
-  box-shadow: 0px 0px 10px #ccc;
+  top: 30%;
+  width: 58px;
 }
