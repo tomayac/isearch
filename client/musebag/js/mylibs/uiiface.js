@@ -135,26 +135,26 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
 		  		    aggregate   : true
 		  		};
   			
-  			/*var options = {
+  			var options = {
   				    guiID : 'speechInterface',
   				    devKey : '319b4feb366fd7b643f72f0627839f67',
   				    grammar : grammar,
-  				    onReady : onSpeechReady,
-  				    onRecognition : onSpeechRecognition,
-  				    onError : onSpeechError,
-  		            onTimeout : onSpeechTimeout
+  				    onReady : onUiiSpeechReady,
+  				    onRecognition : onUiiSpeechRecognition,
+  				    onError : onUiiSpeechError,
+  		            onTimeout : onUiiSpeechTimeout
   				};
-  			*/
+  		
   			console.log('wami: ');
   			console.dir(Wami);
   			//speechApp = new Wami.App(options);
   			
   			//Define the speech event functions
-  			function onSpeechReady() {  				
-  			}
+  			var onUiiSpeechReady = function() {  				
+  			};
   			
   			//On speech recognition result
-  			function onSpeechRecognition(result) {
+  			var onUiiSpeechRecognition = function(result) {
   				console.log("Partial: " + result.partial());
   				//key value pairs
   				if (result.partial()) {
@@ -182,17 +182,17 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
   						console.log("erase cell " + cell);
   					}
   				}
-  			}
+  			};
   			
   		    //called when an error occurs
-  			function onSpeechError(type, message) {
+  			var onUiiSpeechError = function(type, message) {
   				console.log("WAMI error: type  = " + type + ", message = " + message);	
-  			}
+  			};
 
   			//called when your WAMI session times out due to inactivity.
-  			function onSpeechTimeout() {
+  			var onUiiSpeechTimeout = function() {
   				console.log("WAMI timed out. Hit reload to start over");
-  			}
+  			};
   		}
   	};
 
