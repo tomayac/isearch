@@ -200,7 +200,7 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
   			Wami.utils.testMicrophone('cofind',function() {
   				if (arguments[0] == "microphone_found") {
   					$('<div id="speechInterface"></div>').appendTo('body');
-  					console.log(options);
+  					console.log("test: ");console.log(options);
   					//Get the party started
   					speechApp = new Wami.App(options);
   			    } 
