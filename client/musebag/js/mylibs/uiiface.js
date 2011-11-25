@@ -109,6 +109,13 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
   			//Add open source speech api
   			$('<div id="speechInterface"></div>').appendTo('body');
   			
+  			//Test if we have an active microphone
+  			Wami.utils.testMicrophone(function(data) {
+  				
+  				console.log('testMicrophone: '+data);
+  				console.log('hasMicrophone: '+Wami.utils.hasMicrophone);
+  			});
+  			
   			//Define the speech event functions
   			var onUiiSpeechReady = function() {  				
   			};
@@ -153,12 +160,13 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
   			var onUiiSpeechTimeout = function() {
   				console.log("Speech timed out. Hit reload to start over");
   			};
-  			
-  			var onUiiSpeechSecurity = function() {
-                var security = speechApp.settings(Wami.settings.MICROPHONE); 
-                console.log(security);
-            };
-  			
+  			/*'move','click','over',
+			     'dragenter','drop','dragleave',
+				     'select','pan','scale',
+				     'rotate','hold','swipe',
+				     'delete','add','submit',
+				     'text','reset','search',
+				     'sketch'*/
   			var jsgf = '#JSGF V1.0;\n' +
 			  		   'grammar uiiface;\n' +
 			  		   'public <top> = (<command> [and])+ ;\n' +
@@ -192,8 +200,7 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
 				    onReady : onUiiSpeechReady,
 				    onRecognition : onUiiSpeechRecognition,
 				    onError : onUiiSpeechError,
-		            onTimeout : onUiiSpeechTimeout,
-		            onSecurity : onUiiSpeechSecurity
+		            onTimeout : onUiiSpeechTimeout
 				};
 			
 			//Get the party started
