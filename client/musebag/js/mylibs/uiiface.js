@@ -146,13 +146,18 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
   			
   		    //called when an error occurs
   			var onUiiSpeechError = function(type, message) {
-  				console.log("UIIFACE WAMI error: type  = " + type + ", message = " + message);	
+  				console.log("Speech error: type  = " + type + ", message = " + message);	
   			};
 
   			//called when your WAMI session times out due to inactivity.
   			var onUiiSpeechTimeout = function() {
-  				console.log("WAMI timed out. Hit reload to start over");
+  				console.log("Speech timed out. Hit reload to start over");
   			};
+  			
+  			var onUiiSpeechSecurity = function() {
+                var security = speechApp.settings(Wami.settings.MICROPHONE); 
+                console.dir(security);
+            };
   			
   			var jsgf = '#JSGF V1.0;\n' +
 			  		   'grammar uiiface;\n' +
@@ -187,7 +192,8 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
 				    onReady : onUiiSpeechReady,
 				    onRecognition : onUiiSpeechRecognition,
 				    onError : onUiiSpeechError,
-		            onTimeout : onUiiSpeechTimeout
+		            onTimeout : onUiiSpeechTimeout,
+		            onSecurity : onUiiSpeechSecurity
 				};
 			
 			//Get the party started
