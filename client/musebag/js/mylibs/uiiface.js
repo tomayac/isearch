@@ -108,7 +108,7 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
   		} else {
   			//Add open source speech api
   			$('<div id="speechInterface"></div>').appendTo('body');
-  			
+
   			//Test if we have an active microphone
   			Wami.utils.testMicrophone(function(data) {
   				
