@@ -156,7 +156,7 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
   			
   			var onUiiSpeechSecurity = function() {
                 var security = speechApp.settings(Wami.settings.MICROPHONE); 
-                console.dir(security);
+                console.log(security);
             };
   			
   			var jsgf = '#JSGF V1.0;\n' +
