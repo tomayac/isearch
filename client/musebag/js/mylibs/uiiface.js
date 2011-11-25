@@ -59,12 +59,12 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
   		return true;
   	};
   	
-  	UIIFace.Tools.hasFeature(feature) {
+  	UIIFace.Tools.hasFeature = function(feature) {
   		if( features[feature] !== undefined ) {
   			return features[feature];
   		}
   		return false;
-  	}
+  	};
 
   	/** General properties of UIIFace */
   	//Supported custom events
