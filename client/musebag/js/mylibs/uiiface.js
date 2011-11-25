@@ -124,9 +124,7 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
   			features['speech'] = true;
   			//Test if we have an active microphone
   			Wami.utils.testMicrophone('cofind',function() {
-  				alert(arguments[0]);
-  				if (arguments[0] != "microphone_found") {
-  					alert('hallo');
+  				if (arguments[0] == "microphone_found") {
   					UIIFace.SpeechInterpreter.startBasic();
   			    } 
   			});
