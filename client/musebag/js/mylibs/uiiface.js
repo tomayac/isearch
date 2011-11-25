@@ -112,7 +112,7 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
   			//Test if we have an active microphone
   			Wami.utils.testMicrophone('cofind',function(data) {
   				
-  				console.log('testMicrophone: '+data);
+  				console.log('testMicrophone: '); console.log(data);
   				console.log('hasMicrophone: '+Wami.utils.hasMicrophone);
   			});
   			
