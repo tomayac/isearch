@@ -107,14 +107,6 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
   			//alert('hello');
   		} else {
   			//Add open source speech api
-  			$('<div id="speechInterface"></div>').appendTo('body');
-  			//Test if we have an active microphone
-  			Wami.utils.testMicrophone('cofind',function() {
-  				if (arguments[0] == "microphone_found") {
-  			        
-  			        alert('hasMicro');
-  			    } 
-  			});
   			
   			//Define the speech event functions
   			var onUiiSpeechReady = function() {  				
@@ -203,8 +195,16 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
 		            onTimeout : onUiiSpeechTimeout
 				};
 			
-			//Get the party started
-			speechApp = new Wami.App(options);
+			
+  			//Test if we have an active microphone
+  			Wami.utils.testMicrophone('cofind',function() {
+  				if (arguments[0] == "microphone_found") {
+  					$('<div id="speechInterface"></div>').appendTo('body');
+  					
+  					//Get the party started
+  					speechApp = new Wami.App(options);
+  			    } 
+  			});
   		}
   	};
 
