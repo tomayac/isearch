@@ -119,6 +119,7 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
   			UIIFace.SpeechInterpreter.startChrome();
   			features['speech'] = true;
   		} else {
+  			console.log('speech...hallo');
   			//Add open source speech api
   			features['speech'] = true;
   			//Test if we have an active microphone
