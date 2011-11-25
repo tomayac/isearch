@@ -48,6 +48,7 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
   	// Namespaces for sub components of UIIFace 
   	UIIFace.namespace('UIIFace.InteractionManager');
   	UIIFace.namespace('UIIFace.GestureInterpreter');
+  	UIIFace.namespace('UIIFace.SpeechInterpreter');
   	UIIFace.namespace('UIIFace.Tools');
 
   	/** Tools for use within UIIFace */
@@ -57,6 +58,13 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
   		} 		
   		return true;
   	};
+  	
+  	UIIFace.Tools.hasFeature(feature) {
+  		if( features[feature] !== undefined ) {
+  			return features[feature];
+  		}
+  		return false;
+  	}
 
   	/** General properties of UIIFace */
   	//Supported custom events
@@ -78,14 +86,17 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
   		gestureHint: false
   	};
   	
-  	//Speech recognition object
-  	var speechApp = false;
+  	//Interaction features
+  	var features = new Array();
 
   	/** Command Mapper >> initialization */
   	UIIFace.CommandMapper = function() {
+  		
+  		features['basic'] = true;
+  		
   		//Test for touch events
   		if (Modernizr.touch){
-   
+  			
   	        var isMozilla = Modernizr.mq('all and (-moz-touch-enabled)');
   	        
   	        if(isMozilla) {
@@ -99,15 +110,33 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
   	        	touchEvents['move'] = 'touchmove'; 
   	        	touchEvents['up']   = 'touchend'; 
   	        }
+  	      features['touch'] = true;
   	    }
   		
   		//Test for speech recognition
   		if (Modernizr.speechinput){
   			//Add chrome speech api
-  			//alert('hello');
+  			UIIFace.SpeechInterpreter.startChrome();
+  			features['speech'] = true;
   		} else {
   			//Add open source speech api
-  			
+  			features['speech'] = true;
+  			//Test if we have an active microphone
+  			Wami.utils.testMicrophone('cofind',function() {
+  				if (arguments[0] != "microphone_found") {
+  					UIIFace.SpeechInterpreter.startBasic();
+  			    } 
+  			});
+  		}
+  	};
+
+  	/** Basic Interpreter */
+  	
+  	/** Speech Interpreter */
+  	UIIFace.SpeechInterpreter = function () {
+  		
+  		SpeechInterpreter = function() {
+  		    
   			//Define the speech event functions
   			var onUiiSpeechReady = function() {  				
   			};
@@ -195,21 +224,23 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
 		            onTimeout : onUiiSpeechTimeout
 				};
 			
-			
-  			//Test if we have an active microphone
-  			Wami.utils.testMicrophone('cofind',function() {
-  				if (arguments[0] == "microphone_found") {
-  					$('<div id="speechInterface"></div>').appendTo('body');
-  					console.log("test: ");console.log(options);
-  					//Get the party started
-  					speechApp = new Wami.App(options);
-  			    } 
-  			});
-  		}
+			var speechApp = {};
+  		};
+  		
+  		return {
+  			//Public interface for SpeechInterpreter
+  			startBasic : function() {
+  				console.log('Start basic speech recognition..'); 
+  				$('<div id="speechInterface"></div>').appendTo('body');
+  	  			//Get the party started
+  	  			speechApp = new Wami.App(options);
+  			},
+  			startChrome : function() {
+  				console.log('Start Chrome speech recognition..');
+  			}
+  		};
   	};
-
-  	/** Basic Interpreter */
-
+  	
   	/** Gesture Interpreter 
   	 * 
   	 * This work is mainly an adaption of Moousture by Zohaib Sibt-e-Hassan.
@@ -547,19 +578,6 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
   			}
   		};
 
-  	};
-
-  	/** Speech Interpreter */
-  	UIIFace.SpeechInterpreter = function () {
-  		
-  		SpeechInterpreter = function() {
-  			
-  		};
-  		
-  		return {
-  			//Public interface for SpeechInterpreter
-  			
-  		};
   	};
   	
   	/** Interaction Manager and trigger */
