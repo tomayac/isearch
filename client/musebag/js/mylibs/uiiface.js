@@ -110,7 +110,7 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
   			$('<div id="speechInterface"></div>').appendTo('body');
 
   			//Test if we have an active microphone
-  			Wami.utils.testMicrophone(function(data) {
+  			Wami.utils.testMicrophone('cofind',function(data) {
   				
   				console.log('testMicrophone: '+data);
   				console.log('hasMicrophone: '+Wami.utils.hasMicrophone);
