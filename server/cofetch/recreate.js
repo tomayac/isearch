@@ -14,7 +14,7 @@ var job = new nodeio.Job({
       console.log('Recreate file path       : ' + full_path);
       var context = this;
       
-      fs.readFile(full_path, function(error, data) {
+      fs.readFile(full_path, 'utf8', function(error, data) {
         if (error) {
           console.log('Recreate file read error : ' + error);
           context.emit();
