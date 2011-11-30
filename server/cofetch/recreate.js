@@ -8,13 +8,11 @@ var job = new nodeio.Job({
   input : basepath,
   run : function(full_path) {
 
-    console.log('Recreate file path       : ' + full_path);
     var ext = (/[.]/.exec(full_path)) ? /[^.]+$/.exec(full_path) : undefined;
-    console.log('Recreate file extension  : ' + ext);
 
     if (ext === 'json') {
-      
-     var context = this;
+      console.log('Recreate file path       : ' + full_path);
+      var context = this;
       
       fs.readFile(full_path, function(error, data) {
         if (error) {
