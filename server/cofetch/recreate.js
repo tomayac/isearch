@@ -21,7 +21,7 @@ var job = new nodeio.Job({
           if (error) {
             console.log('Recreate store error     : ' + error);
           } else {
-            console.log('Recreate store success   : ' + message);
+            console.log('Recreate store success   : ' + data.message);
           }
         });
       } catch (e) {
