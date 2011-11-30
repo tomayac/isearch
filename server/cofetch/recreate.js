@@ -14,23 +14,21 @@ var job = new nodeio.Job({
       console.log('Recreate file path       : ' + full_path);
       var context = this;
       
-      fs.readFile(full_path, 'utf8', function(error, data) {
-        if (error) {
-          console.log('Recreate file read error : ' + error);
-          context.emit();
-        } else {
-          var coJson = JSON.parse(data);
-          console.log(coJson);
-          context.emit();/*
-          rucod.store(data, true, true, false, function(error, data) {
-            if (error) {
-              console.log('Recreate store error     : ' + error);
-            } else {
-              console.log('Recreate store success   : ' + message);
-            }
-          });*/
-        }
-      });
+      var fileContents = fs.readFileSync(full_path,'utf8');
+      try {
+        var coJson = JSON.parse(fileContents);
+        console.log(coJson);
+        context.emit();/*
+        rucod.store(data, true, true, false, function(error, data) {
+          if (error) {
+            console.log('Recreate store error     : ' + error);
+          } else {
+            console.log('Recreate store success   : ' + message);
+          }
+        });*/
+      } catch (e) {
+        console.log('Recreate file read error : ' + e);
+      }
     } else {
       this.emit();
     }
