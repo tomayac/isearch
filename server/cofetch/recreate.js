@@ -19,7 +19,8 @@ var job = new nodeio.Job({
           console.log('Recreate file read error : ' + error);
           context.emit();
         } else {
-          console.log(data);
+          var coJson = JSON.parse(data);
+          console.log(coJson);
           context.emit();/*
           rucod.store(data, true, true, false, function(error, data) {
             if (error) {
