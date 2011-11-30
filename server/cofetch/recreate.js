@@ -9,7 +9,7 @@ var job = new nodeio.Job({
   run : function(full_path) {
 
     var ext = (/[.]/.exec(full_path)) ? /[^.]+$/.exec(full_path) : undefined;
-    console.log('ext: '+ext);
+
     if (ext == 'json') {
       console.log('Recreate file path       : ' + full_path);
       var context = this;
