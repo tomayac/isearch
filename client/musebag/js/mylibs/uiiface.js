@@ -116,11 +116,12 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
       //Test for speech recognition
       if (Modernizr.speechinput){
         //Add chrome speech api
-        UIIFace.SpeechInterpreter.start('chrome');
+        //UIIFace.SpeechInterpreter.start('chrome');
         features['speech'] = true;
       } else {
         //Add open source speech api
-        UIIFace.SpeechInterpreter.start('basic');
+        //UIIFace.SpeechInterpreter.start('basic');
+        features['speech'] = true;
         //Test if we have an active microphone
         /*$.proxy(Wami.utils.testMicrophone('cofind',function() {
           if (arguments[0] === "microphone_found") {
