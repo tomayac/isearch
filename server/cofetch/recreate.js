@@ -23,6 +23,7 @@ var job = new nodeio.Job({
           } else {
             console.log('Recreate store success   : ' + data.message);
           }
+          console.emit();
         });
       } catch (e) {
         console.log('Recreate file read error : ' + e);
