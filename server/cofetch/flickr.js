@@ -192,7 +192,7 @@ var imageMethods = {
 
 var fetchImage = function(query, geo, callback) {
 	//Creates the job
-	var imageJob = new nodeio.Job({timeout:240}, imageMethods);
+	var imageJob = new nodeio.Job({timeout:360}, imageMethods);
 	nodeio.start(imageJob, {args: [query,geo]}, callback, true);
 };
 
