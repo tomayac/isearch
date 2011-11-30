@@ -22,14 +22,29 @@ if(typeof console == "undefined") {
 }
 
 define("main",
-    ["mylibs/menu", "mylibs/config", "mylibs/tags", "mylibs/results", "mylibs/uiiface", 
-     "libs/jquery.tokeninput","libs/canvas-toBlob.min"],
+       ["mylibs/menu",
+        "mylibs/config",
+        "mylibs/tags",
+        "mylibs/results",
+        "mylibs/uiiface", 
+        "libs/jquery.tokeninput",
+        "libs/canvas-toBlob.min",
+        "libs/smiley-slider"],
     function(menu, config, tags, results, uiiface) {
 
     var start = function() {
       
       console.log('In the start function');
       $(document).ready(function(){
+        
+        // emotions slider initialization
+        var div = document.getElementById("emotion-slider");
+        var s = new SmileySlider(div);
+        // start with neutral emotions
+        s.position(0.5);
+        s.position(function (p) {
+          console.log('Changed emotion to ' + p);
+        });                
     	  
         //Resizing of the menu on load and when window resizes
         menu.adjust();
