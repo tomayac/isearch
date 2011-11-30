@@ -17,17 +17,16 @@ var job = new nodeio.Job({
       var fileContents = fs.readFileSync(full_path,'utf8');
       try {
         var coJson = JSON.parse(fileContents);
-        console.log(coJson);
-        context.emit();/*
-        rucod.store(data, true, true, false, function(error, data) {
+        rucod.store(coJson, true, true, false, function(error, data) {
           if (error) {
             console.log('Recreate store error     : ' + error);
           } else {
             console.log('Recreate store success   : ' + message);
           }
-        });*/
+        });
       } catch (e) {
         console.log('Recreate file read error : ' + e);
+        this.emit();
       }
     } else {
       this.emit();
