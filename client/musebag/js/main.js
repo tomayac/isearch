@@ -36,15 +36,6 @@ define("main",
       
       console.log('In the start function');
       $(document).ready(function(){
-        
-        // emotions slider initialization
-        var div = document.getElementById("emotion-slider");
-        var s = new SmileySlider(div);
-        // start with neutral emotions
-        s.position(0.5);
-        s.position(function (p) {
-          console.log('Changed emotion to ' + p);
-        });                
     	  
         //Resizing of the menu on load and when window resizes
         menu.adjust();

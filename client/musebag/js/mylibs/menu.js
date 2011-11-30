@@ -125,6 +125,10 @@ define("mylibs/menu",
         attach3dEvents();
       } else if (mode === 'picture' && !isAttached('picture')) {
         attachPictureEvents();
+      } else if (mode === 'video' && !isAttached('video')) {
+        attachVideoEvents();
+      } else if (mode === 'emotion' && !isAttached('emotion')) {
+        attachEmotionEvents();        
       } else if (mode === 'sketch' && !isAttached('sketch')) {
         attachSketchEvents();
       } else if (mode === 'sound' && !isAttached('sound')) { 
@@ -186,6 +190,32 @@ define("mylibs/menu",
 
       });
     };
+    
+    var attachEmotionEvents = function() {
+      
+      // emotions slider initialization
+      var div = document.getElementById("emotion-slider");
+      var s = new SmileySlider(div);
+      // start with neutral emotions
+      s.position(0.5);
+      var emotionIcon = $('nav li[data-mode="emotion"]');
+      s.position(function (p) {
+        console.log('Changed emotion to ' + p);
+        emotionIcon.addClass('uploading');
+
+        //N.B: COMPLETELY FAKE!! 
+        if (p != 0.5) {
+          $("#query-field").tokenInput('add',{id:"emotion",name:"<img src='img/fake/fake-emotion.gif'/>"});
+        }
+        //Remove the "uploading style" | Note: this won't be visible, hopefully
+        emotionIcon.removeClass('uploading');
+
+        //reset();
+        attachedModes.push('emotion');
+        
+      });                
+    };
+    
 
     var attach3dEvents = function() {
     
@@ -277,6 +307,58 @@ define("mylibs/menu",
 
       });
     };
+    
+    var attachVideoEvents = function() {
+    	
+    	//Drag and Drop of files
+	    var handler = new filehandler.FileHandler('videoDrop',['webm','mp4', 'avi'],'query/item',getQueryItemCount());
+	    var videoIcon = $('nav li[data-mode="video"]');
+	    
+	    //Drop trigger for video upload
+	    uiiface.registerEvent('videoDrop','drop',function(event) {
+	    	
+	    	videoIcon.addClass('uploading');
+	    	
+	    	$.proxy(handler.handleFiles(event.originalEvent),handler);
+	    	$('#videoDrop').removeClass("over");
+	    	
+	    	reset();
+	        attachedModes.push('3d');
+	    });
+	    
+	    //Invisible file input
+	    $('#videoUpload').change(function(event) {
+	    	
+	    	$.proxy(handler.handleFiles(event),handler);
+
+			event.preventDefault();
+			return false; 
+	    });
+	    //Trigger button for file input
+	    $('.panel.video button.upload').click(function(){
+	    	
+	        videoIcon.addClass('uploading');
+	        
+	    	$('#videoUpload').click();
+	    	
+	    	reset();
+	        attachedModes.push('video');
+	    });
+	    
+      $('.panel.video button.shoot').click(function(){
+        console.log('Button "Shoot video" pressed');
+
+        videoIcon.addClass('uploading');
+
+        $("#query-field").tokenInput('add',{id:"dog",name:"<img src='img/fake/fake-video.jpg'/>"});
+        //Remove the "uploading style" | Note: this won't be visible, hopefully
+        videoIcon.removeClass('uploading');
+
+        reset();
+        attachedModes.push('video');
+
+      });
+    };    
     
     var attachSketchEvents = function() {
     	
