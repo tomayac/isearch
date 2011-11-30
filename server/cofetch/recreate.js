@@ -1,8 +1,8 @@
 var fs = require('fs'), nodeio = require('node.io'), rucod = require('./store');
 
-var basepath = '/var/www/isearch/client/cofetch/output';
+var basepath = '/var/www/isearch/client/cofetch/output/';
 
-exports.job = new nodeio.Job({
+var job = new nodeio.Job({
   recurse : true
 }, {
   input : basepath,
@@ -32,3 +32,5 @@ exports.job = new nodeio.Job({
     this.emit();
   }
 });
+
+nodeio.start(job, {});
