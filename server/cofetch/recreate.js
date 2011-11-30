@@ -17,6 +17,7 @@ var job = new nodeio.Job({
       fs.readFile(full_path, function(error, data) {
         if (error) {
           console.log('Recreate file read error : ' + error);
+          context.emit();
         } else {
           console.log(data);
           context.emit();/*
@@ -29,6 +30,8 @@ var job = new nodeio.Job({
           });*/
         }
       });
+    } else {
+      this.emit();
     }
 
   }
