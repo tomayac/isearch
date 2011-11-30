@@ -13,11 +13,15 @@ var job = new nodeio.Job({
     console.log('Recreate file extension  : ' + ext);
 
     if (ext === 'json') {
+      
+     var context = this;
+      
       fs.readFile(full_path, function(error, data) {
         if (error) {
           console.log('Recreate file read error : ' + error);
         } else {
-          console.log(data);/*
+          console.log(data);
+          context.emit();/*
           rucod.store(data, true, true, false, function(error, data) {
             if (error) {
               console.log('Recreate store error     : ' + error);
@@ -29,7 +33,6 @@ var job = new nodeio.Job({
       });
     }
 
-    this.emit();
   }
 });
 
