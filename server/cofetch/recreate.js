@@ -1,6 +1,6 @@
 var fs = require('fs'), nodeio = require('node.io'), rucod = require('./store');
 
-var basepath = '/var/www/isearch/client/cofetch/output/';
+var basepath = '/var/www/isearch/client/cofetch/output';
 
 var job = new nodeio.Job({
   recurse : true
