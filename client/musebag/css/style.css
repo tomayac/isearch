@@ -349,7 +349,7 @@ nav {
 nav ul {
 	padding: 0 20px;
 	height: 70px;
-	width: 430px; /* 430 + 2*20 = 470 <= real width of our menu */
+	width: 530px; /* 530 + 2*20 = 470 <= real width of our menu */
 	margin: auto;
 }
 

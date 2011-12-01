@@ -127,10 +127,20 @@
 							src="img/icon-isearch-sound.png" alt="Sound" /> </a></li>
 					<li data-mode="picture"><a> <img
 							src="img/icon-isearch-picture.png" alt="Picture" /> </a></li>
+          <li data-mode="video">
+            <a>
+              <img src="img/icon-isearch-video.png" alt="Video" />
+            </a>
+          </li>							
 					<li data-mode="sketch"><a> <img
 							src="img/icon-isearch-sketch.png" alt="Sketch" /> </a></li>
 					<li data-mode="3d"><a> <img src="img/icon-isearch-3d.png"
 							alt="3D" /> </a></li>
+          <li data-mode="emotion">
+            <a>
+              <img src="img/icon-isearch-emotion.png" alt="Emotion" />
+            </a>
+          </li>
 					<li data-mode="geolocation"><a> <img
 							src="img/icon-isearch-geolocation.png" alt="Geolocation" /> </a></li>
 					<li data-mode="text"><a> <img
@@ -172,6 +182,21 @@
 					<a href="#">close</a>
 				</footer>
 			</section>
+			
+      <section class="panel video">
+        <p class="instruction dropContainer" id="imageDrop">
+          <span>Grab a video and drop it here</span>
+        </p>
+        <p class="instruction">
+          Upload a video with this button: 
+          <input type="file" id="videoUpload" style="display:none;"/>
+          <button class="upload">Upload</button>
+        </p>
+        <p class="instruction">
+          Take a video with your device: <button class="shoot">Shoot!</button>
+        </p>
+        <footer><a href="#">close</a></footer>
+      </section>			
 
 			<section class="panel sketch">
 				<p class="instruction">
@@ -200,6 +225,13 @@
 					<a href="#">close</a>
 				</footer>
 			</section>
+      <section class="panel emotion">
+        <p class="instruction">
+          Drag the slider to include the desired emotion          
+        </p>
+        <div class="emotion-slider" id="emotion-slider"></div>
+        <footer><a href="#">close</a></footer>
+      </section>			
 			<section class="panel geolocation">
 				<p class="instruction">
 					Click here to give your current location:

@@ -22,8 +22,14 @@ if(typeof console == "undefined") {
 }
 
 define("main",
-    ["mylibs/menu", "mylibs/config", "mylibs/tags", "mylibs/results", "mylibs/uiiface", 
-     "libs/jquery.tokeninput","libs/canvas-toBlob.min"],
+       ["mylibs/menu",
+        "mylibs/config",
+        "mylibs/tags",
+        "mylibs/results",
+        "mylibs/uiiface", 
+        "libs/jquery.tokeninput",
+        "libs/canvas-toBlob.min",
+        "libs/smiley-slider"],
     function(menu, config, tags, results, uiiface) {
 
     var start = function() {
