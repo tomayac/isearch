@@ -59,78 +59,42 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
       return true;
     };
 
-    UIIFace.Tools.hasFeature = function(feature) {
-      if( features[feature] !== undefined ) {
-        return features[feature];
+    UIIFace.Tools.hasModality = function(modality) {
+      if( modalities[modality] !== undefined ) {
+        return modalities[modality];
       }
       return false;
+    };
+    
+    UIIFace.Tools.distance = function(x1,x2,y1,y2) {
+      return Math.sqrt( (x2-x1)*(x2-x1) + (y2-y1)*(y2-y1) );
     };
 
     /** General properties of UIIFace */
     //Supported custom events
     var eventList = ['move','click','over',
-                     'dragenter','drop','dragleave',
-                     'select','pan','scale',
-                     'rotate','hold','swipe',
-                     'delete','add','submit',
-                     'text','reset','search',
-                     'sketch'];	
+                     'drag','drop','select',
+                     'pan','scale','rotate',
+                     'hold','swipe','delete',
+                     'add','submit','text',
+                     'reset','search','sketch'];	
     //Array for storing available touch events if applicable 
     var touchEvents = new Array(3);
 
     //Pen collection for multitouch sketch event
-    var pens = new Array();
+    var epoints = new Array();
 
     //Options object for general configuration of UIIFace
     var uiiOptions = {
         gestureHint: false
     };
 
-    //Interaction features
-    var features = new Array();
+    //Input modality features
+    var modalities = new Array();
 
-    /** Command Mapper >> initialization */
+    /** Command Mapper */
     UIIFace.CommandMapper = function() {
-
-      features['basic'] = true;
-
-      //Test for touch events
-      if (Modernizr.touch){
-
-        var isMozilla = Modernizr.mq('all and (-moz-touch-enabled)');
-
-        if(isMozilla) {
-          //If it's a mozilla browser with touch, assign the specialised touch events
-          touchEvents['down'] = 'MozTouchDown';
-          touchEvents['move'] = 'MozTouchMove';
-          touchEvents['up']   = 'MozTouchUp'; 
-        } else {
-          //Assign the basic touch events (all mobile devices I guess)
-          touchEvents['down'] = 'touchstart'; 
-          touchEvents['move'] = 'touchmove'; 
-          touchEvents['up']   = 'touchend'; 
-        }
-        features['touch'] = true;
-      }
-
-      //Test for speech recognition
-      if (Modernizr.speechinput){
-        //Add chrome speech api
-        //UIIFace.SpeechInterpreter.start('chrome');
-        features['speech'] = true;
-      } else {
-        //Add open source speech api
-        //UIIFace.SpeechInterpreter.start('basic');
-        features['speech'] = true;
-        //Test if we have an active microphone
-        /*$.proxy(Wami.utils.testMicrophone('cofind',function() {
-          if (arguments[0] === "microphone_found") {
-            console.log('microphone found');
-          }  else {
-            console.log('no microphone found');
-          }
-        }),UIIFace);*/
-      }
+      //Soon to be filled
     };
 
     /** Basic Interpreter */
@@ -331,7 +295,7 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
           e.stopPropagation();
         };
 
-        $(target).bind('mousemove', $.proxy(_track,this));
+        $(target).bind('mousemove' + (touchEvents['move'] !== undefined ? ' ' + touchEvents['move'] : ''), $.proxy(_track,this));
       };
 
       Probe.prototype = {
@@ -362,7 +326,6 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
       };
 
       Recorder.prototype = {		
-
           // onStable is called once by the Monitor when mouse becomes stable .i.e. no changes in mouse position are occuring
           // @position: current mouse position
           onStable: function(position){
@@ -442,7 +405,6 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
 
             this.prev = pos;
           },
-
           /*
            *	prober: an Object containing method probe returning an object with {x, y} for position parameters
            *	eventObj: an eventObject containing callback functions - onStable, - onMove and - onUnstable
@@ -456,7 +418,6 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
             var that = this;
             this.timer = setInterval($.proxy(this.monitor,this), this.delay );
           },
-
           /*
            * Stop and delete timer probing
            */
@@ -494,7 +455,6 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
               ret.push( this.getAngles( track[i], track[i+1] ) );
             return ret;
           },
-
           /*
            * Gets angle and length of mouse movement vector...
            * @input: two points
@@ -510,7 +470,6 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
             a = Math.floor( a /(2*Math.PI)*360 ) / 45;
             return Math.floor( a );
           },
-
           /*
            * Associate the given Gesture combination with callback
            */
@@ -518,7 +477,6 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
             this.mCallbacks.push(callback);
             this.mGestures.push(gesture);
           },
-
           /*
            * match is called after the mouse went through unstable -> moving -> stable stages
            * @track contains array of {x,y} objects
@@ -532,7 +490,6 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
             if( this.onMatch )
               this.onMatch(a);
           },
-
           /*
            * Fixes applied for:
            * > 1x1 matrix
@@ -573,7 +530,6 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
 
             return UIIFace.Tools.isEmpty(d[v1.length-1][v2.length-1]) ? 0 : d[v1.length-1][v2.length-1];
           },
-
           nPairReduce : function(arr, n){
             var prev = null;
             var ret = [];
@@ -598,8 +554,6 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
 
             return ret;
           },
-
-
           onMatch : function (mov){
 
             mov = this.nPairReduce(mov,2);
@@ -662,10 +616,10 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
       switch(e.type) {
       case touchEvents['down']:
       case 'mousedown':
-        // Create pens if necessary
-        if(!pens[e.streamId]) {
+        // Create epoints if necessary
+        if(!epoints[e.streamId]) {
           //console.log('add pen for id ' + e.streamId);
-          pens[e.streamId] = { 
+          epoints[e.streamId] = { 
               size: 2,
               color: '90,0,0',
               oldX : 0,
@@ -678,30 +632,88 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
       case touchEvents['move']:
       case 'mousemove':
         //Attach pen information to event and trigger sketch event 
-        if(typeof(pens) !== undefined && e.streamId in pens) {
+        if(typeof(epoints) !== undefined && e.streamId in epoints) {
           //console.log('moving with id ' + e.streamId);	
-          pens[e.streamId].oldX = pens[e.streamId].x;
-          pens[e.streamId].oldY = pens[e.streamId].y;
+          epoints[e.streamId].oldX = epoints[e.streamId].x;
+          epoints[e.streamId].oldY = epoints[e.streamId].y;
 
-          pens[e.streamId].x = parseFloat((e.pageX - $(target).offset().left).toFixed(2));
-          pens[e.streamId].y = parseFloat((e.pageY - $(target).offset().top).toFixed(2));
+          epoints[e.streamId].x = parseFloat((e.pageX - $(target).offset().left).toFixed(2));
+          epoints[e.streamId].y = parseFloat((e.pageY - $(target).offset().top).toFixed(2));
 
-          $(target).trigger('sketch', pens[e.streamId]);
+          $(target).trigger('sketch', epoints[e.streamId]);
         }
         break;
       case touchEvents['up']:
       case 'mouseup':
         //Remove pen
-        if(pens[e.streamId]) {
-          pens.splice(e.streamId,1);
+        if(epoints[e.streamId]) {
+          epoints.splice(e.streamId,1);
         }
         break;
       case 'mouseout':
-        //Reset all pens
-        pens = new Array();
+        //Reset all epoints
+        epoints = new Array();
         break;
       }
 
+      e.stopPropagation(); 
+    };
+    
+    UIIFace.InteractionManager.scale = function(e) {
+      e.preventDefault();
+
+      //Fallback for mouse events
+      e.streamId = !e.originalEvent.streamId ? 1 : e.originalEvent.streamId;
+
+      var target = e.target || e.srcElement;
+      
+      switch(e.type) {
+      case touchEvents['down']:
+      case 'mousedown':
+        // Create epoints if necessary
+        if(!epoints[e.streamId]) {
+          //console.log('add pen for id ' + e.streamId);
+          epoints[e.streamId] = {
+              x    : parseFloat(e.clientX.toFixed(2)),
+              y    : parseFloat(e.clientY.toFixed(2))
+          };
+        }  
+        break;
+      case touchEvents['move']:
+      case 'mousemove':
+        //Emulate a mouse scale option
+        if(epoints.length < 2) {
+          var offset = $(target).offset();
+          epoints[0] = {
+              x    : $(target).offset().left + ($(target).width() / 2),
+              y    : $(target).offset().top  + ($(target).height() / 2)
+          };
+        }
+        
+        if (typeof(epoints) !== undefined && epoints[0] == e.streamId) { //point 1
+          epoints[0].x = e.clientX;
+          epoints[0].y = e.clientY;
+
+        } else if (typeof(epoints) !== undefined && epoints[1] == e.streamId) { // point 2
+          var diagonal = dist(epoints[0].x, e.clientX, epoints[0].y, e.clientY);
+          var sidesize = diagonal / Math.sqrt(2);
+          
+          $(target).trigger('scale', {
+            target: target,
+            left  : ((e.clientX < epoints[0].x) ? e.clientX : epoints[0].x),
+            top   : ((e.clientY < epoints[0].y) ? e.clientY : epoints[0].y),
+            width : sidesize,
+            height: sidesize
+          });
+        } 
+        break;
+      case touchEvents['up']:
+      case 'mouseup':
+        //Reset all epoints
+        epoints = new Array();
+        break;
+      }
+      
       e.stopPropagation(); 
     };
 
@@ -711,20 +723,59 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
       window.UIIFace = this;
       
       uiiOptions = options;
+      
+      //Basic input modalities mouse and keyborad is always there
+      modalities['basic'] = true;
 
+      //Test for touch events
+      if (Modernizr.touch){
+
+        var isMozilla = Modernizr.mq('all and (-moz-touch-enabled)');
+
+        if(isMozilla) {
+          //If it's a mozilla browser with touch, assign the specialised touch events
+          touchEvents['down'] = 'MozTouchDown';
+          touchEvents['move'] = 'MozTouchMove';
+          touchEvents['up']   = 'MozTouchUp'; 
+        } else {
+          //Assign the basic touch events (all mobile devices I guess)
+          touchEvents['down'] = 'touchstart'; 
+          touchEvents['move'] = 'touchmove'; 
+          touchEvents['up']   = 'touchend'; 
+        }
+        modalities['touch'] = true;
+      }
+      
+      //Test for speech recognition
       Modernizr.addTest('speechinput', function(){
         var elem = document.createElement('input'); 
         return 'speech' in elem || 'onwebkitspeechchange' in elem; 
       });
-
-      UIIFace.CommandMapper();
+      
+      if (Modernizr.speechinput){
+        //Add chrome speech api
+        //UIIFace.SpeechInterpreter.start('chrome');
+        modalities['speech'] = true;
+      } else {
+        //Add open source speech api
+        //UIIFace.SpeechInterpreter.start('basic');
+        modalities['speech'] = true;
+        //Test if we have an active microphone
+        /*$.proxy(Wami.utils.testMicrophone('cofind',function() {
+          if (arguments[0] === "microphone_found") {
+            console.log('microphone found');
+          }  else {
+            console.log('no microphone found');
+          }
+        }),UIIFace);*/
+      }
 
     };
 
     UIIFace.registerEvent = function(aElement, event, callback, options) {
 
       var element = '#' + aElement;
-
+      // TODO: Move this to command mapper, and only call event register function from here!  
       if($.inArray(event,eventList) > -1) {
 
         //just bind basic browser events needed to create custom events available to I-SEARCH GUI
@@ -745,15 +796,24 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
           gi.addGesture([4,0,4,0],callback);
           gi.start();
           break;
+        case 'drag':
+          break;
         case 'drop':
           $(element).bind('dragenter', function(e){ $(element).addClass("over"); e.stopPropagation(); e.preventDefault();});
           $(element).bind('dragover' , function(e){ e.stopPropagation(); e.preventDefault();},false);
           $(element).bind('dragleave', function(e){ $(element).removeClass("over"); e.stopPropagation(); e.preventDefault();});
           break;
+        case 'scale': 
+          $(element).bind('mousedown' + (touchEvents['down'] !== undefined ? ' ' + touchEvents['down'] : ''),UIIFace.InteractionManager.scale);
+          $(element).bind('mousemove' + (touchEvents['move'] !== undefined ? ' ' + touchEvents['move'] : ''),UIIFace.InteractionManager.scale);
+          $(element).bind('mouseup' + (touchEvents['up'] !== undefined ? ' ' + touchEvents['up'] : ''),UIIFace.InteractionManager.scale);
+          break;  
+        case 'rotate': 
+          break;
         }
         //Always register the custom event to the element, as we will trigger
         //that event in the specialized handler functions
-        if(!$.hasEventListener(element,event)) {
+        if(!$(element).data('events')[event]) {
           $(element).bind(event,callback);
         }
         //a clickTarget is defined which means, that the user wants the given
@@ -761,7 +821,7 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
         if(!UIIFace.Tools.isEmpty(options) && !UIIFace.Tools.isEmpty(options.clickTarget)) {
           $(clickTarget).bind('click',callback);
         }
-
+         
       }
     };
 

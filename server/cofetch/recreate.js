@@ -14,7 +14,7 @@ var job = new nodeio.Job({
       console.log('Recreate file path       : ' + full_path);
       var context = this;
       
-      var fileContents = fs.readFileSync(full_path,'utf8');
+      var fileContents = fs.readFileSync(full_path);
       try {
         var coJson = JSON.parse(fileContents);
         rucod.store(coJson, true, true, false, function(error, data) {
