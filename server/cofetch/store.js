@@ -69,13 +69,11 @@ var getVideoSourceUrl = function(youtubeLink, id, callback) {
   var videoId = youtubeLink.substr(youtubeLink.lastIndexOf('=') + 1);
   var infoUrl = 'http://youtube.com/get_video_info?video_id=' + videoId;
 
-  var job = new nodeio.Job(
-      {
+  var job = new nodeio.Job({
         input : false,
         run : function() {
           var url = this.options.args[0];
-          this
-              .get(
+          this.get(
                   url,
                   function(err, data) {
                     if (err) {
@@ -117,9 +115,7 @@ var getVideoSourceUrl = function(youtubeLink, id, callback) {
         }
       });
 
-  nodeio.start(job, {
-    args : [ infoUrl ]
-  }, function(error, data) {
+  nodeio.start(job, {args : [ infoUrl ]}, function(error, data) {
 
     if (error) {
       callback(error, id, null);
@@ -222,12 +218,20 @@ exports.publishRUCoD = function(data, outputPath, webOutputUrl, automatic, callb
   // Set the static structure of the RUCoD XML file
   var rucodHeadS = '<?xml version="1.0" encoding="UTF-8"?>'
       + '<RUCoD xmlns="http://www.isearch-project.eu/isearch/RUCoD" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'
-      + '<Header>' 
+      + '<Header>'
+      + '<ContentObjectType>Multimedia Collection</ContentObjectType>'
       + '<ContentObjectName xml:lang="en-US">' + data.Name + '</ContentObjectName>'
+      + '<ContentObjectID/>'
       + '<ContentObjectVersion>1</ContentObjectVersion>'
       + '<ContentObjectCreationInformation>'
-      + '<Creator>' + '<Name>CoFetch Script</Name>' + '</Creator>'
-      + '<Contributor>' + '<Name>FHE and Google</Name>' + '</Contributor>'
+      + '<Creator><Name>CoFetch Script</Name></Creator>'
+      + '<Contributor><Name>FHE</Name></Contributor>'
+      + '<Contributor><Name>Google</Name></Contributor>'
+      + '<Contributor><Name>flickr.com</Name></Contributor>'
+      + '<Contributor><Name>dbpedia.org</Name></Contributor>'
+      + '<Contributor><Name>freesound.org</Name></Contributor>'
+      + '<Contributor><Name>wunderground.com</Name></Contributor>'
+      + '<Contributor><Name>youtube.com</Name></Contributor>'
       + '</ContentObjectCreationInformation>';
   var rucodHeadE = '</Header>' + '</RUCoD>';
 
@@ -302,7 +306,7 @@ exports.publishRUCoD = function(data, outputPath, webOutputUrl, automatic, callb
         }
         
         rucodBody += '<MediaLocator>';
-        rucodBody += '<MediaUri>' + data.Files[f].URL + '</MediaUri>';
+        rucodBody += '<MediaUri>' + encodeURI(data.Files[f].URL) + '</MediaUri>';
         rucodBody += '<MediaPreview>' + data.Files[f].Preview
             + '</MediaPreview>';
         rucodBody += '</MediaLocator>';
@@ -327,8 +331,6 @@ exports.publishRUCoD = function(data, outputPath, webOutputUrl, automatic, callb
       rucodBody += '</MultimediaContent>';
 
     } // End for loop
-
-    rucodBody += '</ContentObjectTypes>';
 
     // Generate RWML data for each media item
     var rwml = '<RWML>';
@@ -387,8 +389,7 @@ exports.publishRUCoD = function(data, outputPath, webOutputUrl, automatic, callb
     rwml += '</RWML>';
 
     // Add the RWML to the RUCoD
-    rucodBody += '<RealWorldInfo>' + '<MetadataUri filetype="rwml">' + baseName
-        + '.rwml</MetadataUri> ' + '</RealWorldInfo>';
+    rucodBody += '<RealWorldInfo>' + '<MetadataUri filetype="rwml">' + rucodname + '.rwml</MetadataUri> ' + '</RealWorldInfo>';
 
     // Find and add emotion if there are some
     var emoIndex = -1;
@@ -411,12 +412,13 @@ exports.publishRUCoD = function(data, outputPath, webOutputUrl, automatic, callb
     if (emoIndex >= 0) {
       rucodBody += '<UserInfo>' + '<UserInfoName>Emotion</UserInfoName>';
       for ( var e = 0; e < data.Files[emoIndex].Emotions.length; e++) {
-        rucodBody += '<emotion><category name="'
-            + data.Files[emoIndex].Emotions[e] + '" set="everydayEmotions" /></emotion>';
+        rucodBody += '<emotion><category name="' + data.Files[emoIndex].Emotions[e] + '" set="everydayEmotions" /></emotion>';
       }
       rucodBody += '</UserInfo>';
     }
-
+    
+    rucodBody += '</ContentObjectTypes>';
+    
     console.log("Temporary RUCoD data collected. Writing files...");
 
     var paths = [];

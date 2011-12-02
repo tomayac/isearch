@@ -30,13 +30,24 @@ var walk = function(dir, done) {
 
 walk(basepath, function(err, results) {
   if (err) throw err;
+  
   var count = 0;
+  var jsoncount = 0;
+  var errorcount = 0;
   var processed = 0;
   var countxml = 0;
+  
+  var endtest = function() {
+    if((errorcount+processed) == jsoncount) {
+      console.log('json: ' + count + ' xml: ' + countxml + ' processed: ' + processed + ' errors: ' + errorcount);
+    }
+  };  
+  
   results.forEach(function(file) {
+    count++;
     var ext = (/[.]/.exec(file)) ? /[^.]+$/.exec(file) : undefined;
     if (ext == 'json') {
-      count++;
+      jsoncount++;
       var fileContents = fs.readFileSync(file);
       try {
         var coJson = JSON.parse(fileContents);
@@ -46,20 +57,25 @@ walk(basepath, function(err, results) {
         rucod.publishRUCoD(coJson, outputPath, webOutputUrl, true, function(error, data) {
           if (error) {
             console.log('Recreate store error     : ' + error);
+            errorcount++;
+            endtest();
           } else {
             console.log('Recreate store success   : ' + data.message);
             processed++;
+            endtest();
           }
         });
       } catch (e) {
         console.log('Recreate error : '+ e);
+        errorcount++;
+        endtest();
       }
     }
     if(ext == 'xml') {
       countxml++;
     }
   });
-  console.log('json: '+count + ' xml: ' + countxml + 'processed: ' + processed);
+  
 });
 /*
 var job = new nodeio.Job({
