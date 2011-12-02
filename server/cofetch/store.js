@@ -152,8 +152,7 @@ var storeMultipleContentObjectData = function(data, onlyJson, callback) {
           }
           // We won't allow more than one input line to be processed as once
           if (num > 1) {
-            this
-                .exit('The take parameter can not be set higher than 1 for this job');
+            this.exit('The take parameter can not be set higher than 1 for this job');
           }
 
           var data = this.options.args[0];
@@ -218,8 +217,8 @@ var storeMultipleContentObjectData = function(data, onlyJson, callback) {
  *          indicates whether the publishRUCoD routine is part of an automatic
  *          storing process
  */
-var publishRUCoD = function(data, outputPath, webOutputUrl, automatic, callback) {
-
+exports.publishRUCoD = function(data, outputPath, webOutputUrl, automatic, callback) {
+  
   // Set the static structure of the RUCoD XML file
   var rucodHeadS = '<?xml version="1.0" encoding="UTF-8"?>'
       + '<RUCoD xmlns="http://www.isearch-project.eu/isearch/RUCoD" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'
@@ -268,7 +267,9 @@ var publishRUCoD = function(data, outputPath, webOutputUrl, automatic, callback)
 
   // ------------------------------------------------
   var saveRucodMedia = function(rucodBody, data, outputPath, callback) {
-
+    
+    var rucodname = data.Name.replace(/\s/g, '_').replace(/[|&;$%@"<>()+,]/g, '').replace(/\//g,'-'); 
+    
     rucodBody += '<ContentObjectTypes>';
 
     // Fitting the media files into RUCoD
@@ -421,22 +422,22 @@ var publishRUCoD = function(data, outputPath, webOutputUrl, automatic, callback)
     var paths = [];
 
     // Write RWML file
-    fs.writeFile(outputPath + baseName + '.rwml', rwml, function(error) {
+    fs.writeFile(outputPath + rucodname + '.rwml', rwml, function(error) {
       if (error) {
         callback(error, null);
       } else {
         console.log('RWML file created or overwritten under ' + outputPath
-            + baseName + '.rwml');
-        paths.push(webOutputUrl + '/' + baseName + '.rwml');
+            + rucodname + '.rwml');
+        paths.push(webOutputUrl + '/' + rucodname + '.rwml');
         // Write RUCoD file
-        fs.writeFile(outputPath + baseName + '_rucod.xml', (rucodHeadS
+        fs.writeFile(outputPath + rucodname + '_rucod.xml', (rucodHeadS
             + rucodBody + rucodHeadE), function(error) {
           if (error) {
             callback(error, null);
           } else {
             console.log('RUCoD file created or overwritten under ' + outputPath
-                + baseName + '_rucod.xml');
-            paths.push(webOutputUrl + '/' + baseName + '_rucod.xml');
+                + rucodname + '_rucod.xml');
+            paths.push(webOutputUrl + '/' + rucodname + '_rucod.xml');
             callback(null, {
               message : 'JSON and RUCoD files successfully saved.',
               urls : paths
@@ -494,13 +495,12 @@ var publishRUCoD = function(data, outputPath, webOutputUrl, automatic, callback)
 exports.exists = function(name, categoryPath, callback) {
 
   var fileOutputPath = basepath + '/' + categoryPath + '/';
-  var coName = name.replace(/\s/g, '_');
-
+  var coName = name.replace(/\s/g, '_').replace(/[|&;$%@"<>()+,]/g, '').replace(/\//g,'-');
+  console.log('Test exist: ' + fileOutputPath + coName + '.json');
   // Check if the folder for this content object already exists
   path.exists(fileOutputPath + coName + '.json', function(exists) {
     if (exists) {
-      var fileContents = fs.readFileSync(fileOutputPath + coName + '.json',
-          'utf8');
+      var fileContents = fs.readFileSync(fileOutputPath + coName + '.json');
       try {
         var data = JSON.parse(fileContents);
         callback(data);
@@ -551,12 +551,12 @@ exports.store = function(co, overwrite, automatic, onlyJson, callback) {
     }
   }
 
-  baseName = co.Name.replace(/\s/g, '_');
+  baseName = co.Name.replace(/\s/g, '_').replace(/[|&;$%@"<>()+,]/g, '').replace(/\//g,'-');
 
   // Set the general output path for this content object
   fileOutputPath += '/';
 
-  console.log("StoreData: Name=" + co.Name);
+  console.log("StoreData: Name=" + baseName + ' (' + co.Name + ')');
 
   // Check if the folder for this content object already exists
   path.exists(fileOutputPath + baseName + '.json', function(exists) {

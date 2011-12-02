@@ -296,12 +296,12 @@ p.doShowTooltip = function(thumb, container, visBox)
 	if ( posx + ttw < ww )	
 		tooltip.css("left", posx)	;
 	else 	
-		tooltip.css("left", ww-ttw-2)	
+		tooltip.css("left", ww-ttw-2);	
 
 	if ( posy + tth < wh  )	
 		tooltip.css("top", posy)	;
 	else 	
-		tooltip.css("top", wh-tth-2)	
+		tooltip.css("top", wh-tth-2);	
 
 		console.log(posx + ' ' + posy) ;
 	tooltip.fadeIn('fast') ;	

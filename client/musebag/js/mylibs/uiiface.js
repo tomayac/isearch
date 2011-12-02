@@ -98,7 +98,14 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
     };
 
     /** Basic Interpreter */
-
+    UIIFace.BasicInterpreter = (function() {
+      
+      return {
+        
+      };
+      
+    })();
+    
     /** Speech Interpreter */
     UIIFace.SpeechInterpreter = (function () {
       //Speech recognition object
@@ -604,6 +611,15 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
     };
 
     /** Interaction Manager and trigger */
+    UIIFace.InteractionManager = function(element) {
+      
+      return {
+        //Public interface for InteractionManager
+        init : function() {
+          console.log('Init InteractionManager');
+        }
+      };
+    };
     UIIFace.InteractionManager.sketch = function(e) {
       e.preventDefault();
 
@@ -660,6 +676,64 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
     };
     
     UIIFace.InteractionManager.scale = function(e) {
+      e.preventDefault();
+
+      //Fallback for mouse events
+      e.streamId = !e.originalEvent.streamId ? 1 : e.originalEvent.streamId;
+
+      var target = e.target || e.srcElement;
+      
+      switch(e.type) {
+      case touchEvents['down']:
+      case 'mousedown':
+        // Create epoints if necessary
+        if(!epoints[e.streamId]) {
+          //console.log('add pen for id ' + e.streamId);
+          epoints[e.streamId] = {
+              x    : parseFloat(e.clientX.toFixed(2)),
+              y    : parseFloat(e.clientY.toFixed(2))
+          };
+        }  
+        break;
+      case touchEvents['move']:
+      case 'mousemove':
+        //Emulate a mouse scale option
+        if(epoints.length < 2) {
+          var offset = $(target).offset();
+          epoints[0] = {
+              x    : $(target).offset().left + ($(target).width() / 2),
+              y    : $(target).offset().top  + ($(target).height() / 2)
+          };
+        }
+        
+        if (typeof(epoints) !== undefined && epoints[0] == e.streamId) { //point 1
+          epoints[0].x = e.clientX;
+          epoints[0].y = e.clientY;
+
+        } else if (typeof(epoints) !== undefined && epoints[1] == e.streamId) { // point 2
+          var diagonal = dist(epoints[0].x, e.clientX, epoints[0].y, e.clientY);
+          var sidesize = diagonal / Math.sqrt(2);
+          
+          $(target).trigger('scale', {
+            target: target,
+            left  : ((e.clientX < epoints[0].x) ? e.clientX : epoints[0].x),
+            top   : ((e.clientY < epoints[0].y) ? e.clientY : epoints[0].y),
+            width : sidesize,
+            height: sidesize
+          });
+        } 
+        break;
+      case touchEvents['up']:
+      case 'mouseup':
+        //Reset all epoints
+        epoints = new Array();
+        break;
+      }
+      
+      e.stopPropagation(); 
+    };
+    
+    UIIFace.InteractionManager.rotate = function(e) {
       e.preventDefault();
 
       //Fallback for mouse events
