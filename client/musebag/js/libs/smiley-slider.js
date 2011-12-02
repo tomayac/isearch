@@ -1,147 +1,146 @@
 
 function SmileySlider(container, imgSrc) {
     if (!imgSrc)
-        imgSrc = "smiley-slider.png"
+        imgSrc = "img/smiley-slider.png";
 
-    var width = 329
-    var height = 37
+    var width = 329;
+    var height = 37;
     
-    var headWidth = 40
-    var maxHeadX = width - headWidth + 1
+    var headWidth = 40;
+    var maxHeadX = width - headWidth + 1;
     
-    var base = document.createElement('div')
-    base.style.width = width + "px"
-    base.style.height = height + "px"
-    base.style.background = "white"
+    var base = document.createElement('div');
+    base.style.width = width + "px";
+    base.style.height = height + "px";
     
-    var track = document.createElement('div')
-    track.style.width = width + "px"
-    track.style.height = 6 + "px"
-    track.style.marginRight = '-' + track.style.width
-    track.style.marginBottom = '-' + track.style.height
-    track.style.position = "relative"
-    track.style.top = 15 + "px"
-    track.style.background = "url('" + imgSrc + "')"
-    base.appendChild(track)
+    var track = document.createElement('div');
+    track.style.width = width + "px";
+    track.style.height = 6 + "px";
+    track.style.marginRight = '-' + track.style.width;
+    track.style.marginBottom = '-' + track.style.height;
+    track.style.position = "relative";
+    track.style.top = 15 + "px";
+    track.style.background = "url('" + imgSrc + "')";
+    base.appendChild(track);
     
-    var head = document.createElement('div')
-    head.style.width = headWidth + "px"
-    head.style.height = height + "px"
-    head.style.marginRight = '-' + head.style.width
-    head.style.marginBottom = '-' + head.style.height
-    head.style.position = "relative"
-    head.style.background = "url('" + imgSrc + "') scroll 0px -6px"
-    base.appendChild(head)
+    var head = document.createElement('div');
+    head.style.width = headWidth + "px";
+    head.style.height = height + "px";
+    head.style.marginRight = '-' + head.style.width;
+    head.style.marginBottom = '-' + head.style.height;
+    head.style.position = "relative";
+    head.style.background = "url('" + imgSrc + "') scroll 0px -6px";
+    base.appendChild(head);
 
-    var face = document.createElement('canvas')
-    face.style.width = 36 + "px"
-    face.style.height = 37 + "px"
-    face.style.position = "relative"
-    face.style.left = 4 + "px"
-    face.width = "36"
-    face.height = "37"
-    head.appendChild(face)
+    var face = document.createElement('canvas');
+    face.style.width = 36 + "px";
+    face.style.height = 37 + "px";
+    face.style.position = "relative";
+    face.style.left = 4 + "px";
+    face.width = "36";
+    face.height = "37";
+    head.appendChild(face);
     
-    var glass = document.createElement('div')
-    glass.style.width = width + "px"
-    glass.style.height = height + "px"
-    glass.style.marginRight = '-' + glass.style.width
-    glass.style.marginBottom = '-' + glass.style.height
-    glass.style.position = "relative"
-    base.appendChild(glass)
+    var glass = document.createElement('div');
+    glass.style.width = width + "px";
+    glass.style.height = height + "px";
+    glass.style.marginRight = '-' + glass.style.width;
+    glass.style.marginBottom = '-' + glass.style.height;
+    glass.style.position = "relative";
+    base.appendChild(glass);
     
-    container.appendChild(base)
+    container.appendChild(base);
 
     //////////////////////////////////////////////////////////////
     // head position
     
-    var onHeadMove = null
+    var onHeadMove = null;
     
     function positionInt(e) {
         if (e === undefined) {
-            return getPos(head).x - getPos(base).x
+            return getPos(head).x - getPos(base).x;
         } else {
-            head.style.left = Math.round(cap(e, 0, maxHeadX)) + "px"
-            var p = position()
-            drawFace(face, 100, p, 0.8)
-            if (onHeadMove) onHeadMove(p)
+            head.style.left = Math.round(cap(e, 0, maxHeadX)) + "px";
+            var p = position();
+            drawFace(face, 100, p, 0.8);
+            if (onHeadMove) onHeadMove(p);
         }
     }
     
     function position(e) {
         if (e === undefined) {
-            return lerp(0, 0, maxHeadX, 1, positionInt())
+            return lerp(0, 0, maxHeadX, 1, positionInt());
         } else if (typeof(e) == "function") {
-            onHeadMove = e
+            onHeadMove = e;
         } else {
-            positionInt(lerp(0, 0, 1, maxHeadX, e))
+            positionInt(lerp(0, 0, 1, maxHeadX, e));
         }
     }
     
-    this.position = position    
+    this.position = position;
     setTimeout(function () {
-        position(0.5)
-    }, 0)
+        position(0.5);
+    }, 0);
 
     //////////////////////////////////////////////////////////////
     // mouse
 
     glass.onmousedown = function (e) {
-        e.preventDefault()
-        var pos = getRelPos(glass, e)
+        e.preventDefault();
+        var pos = getRelPos(glass, e);
         
-        var grabX = headWidth / 2
-        var headX = positionInt()
+        var grabX = headWidth / 2;
+        var headX = positionInt();
         if (pos.x >= headX && pos.x < headX + headWidth) {
-            grabX = pos.x - headX
+            grabX = pos.x - headX;
         }
         
-        positionInt(pos.x - grabX)
+        positionInt(pos.x - grabX);
 
-        var oldMove = document.onmousemove
+        var oldMove = document.onmousemove;
         document.onmousemove = function (e) {
-            var pos = getRelPos(glass, e)
+            var pos = getRelPos(glass, e);
             
-            positionInt(pos.x - grabX)
-        }
+            positionInt(pos.x - grabX);
+        };
         
-        var oldUp = document.onmouseup
+        var oldUp = document.onmouseup;
         document.onmouseup = function (e) {
-            document.onmousemove = oldMove
-            document.onmouseup = oldUp
-        }
-    }
+            document.onmousemove = oldMove;
+            document.onmouseup = oldUp;
+        };
+    };
 
     //////////////////////////////////////////////////////////////
     // touch
 
     glass.ontouchstart = function (e) {
-        e.preventDefault()
-        var pos = getRelPos(glass, e.touches[0])
+        e.preventDefault();
+        var pos = getRelPos(glass, e.touches[0]);
 
-        var grabX = headWidth / 2
-        var headX = positionInt()
+        var grabX = headWidth / 2;
+        var headX = positionInt();
         if (pos.x >= headX && pos.x < headX + headWidth) {
-            grabX = pos.x - headX
+            grabX = pos.x - headX;
         }
 
-        positionInt(pos.x - grabX)
+        positionInt(pos.x - grabX);
 
-        var oldMove = document.ontouchmove
+        var oldMove = document.ontouchmove;
         document.ontouchmove = function (e) {
             e.preventDefault();
-            var pos = getRelPos(glass, e.touches[0])
-            positionInt(pos.x - grabX)
-        }
+            var pos = getRelPos(glass, e.touches[0]);
+            positionInt(pos.x - grabX);
+        };
 
         var oldEnd = document.ontouchend;
-        var oldCancel = document.ontouchcancel
+        var oldCancel = document.ontouchcancel;
         document.ontouchend = document.ontouchcancel = function (e) {
-            document.ontouchmove = oldMove
-            document.ontouchend = oldEnd
+            document.ontouchmove = oldMove;
+            document.ontouchend = oldEnd;
             document.ontouchcancel = oldCancel;
-        }
-    }
+        };
+    };
 
     //////////////////////////////////////////////////////////////
     // core drawing code
@@ -244,27 +243,27 @@ function SmileySlider(container, imgSrc) {
     // utils
     
     function cap(t, mi, ma) {
-        if (t < mi) return mi
-        if (t > ma) return ma
-        return t
+        if (t < mi) return mi;
+        if (t > ma) return ma;
+        return t;
     }
 
     function lerp(t0, v0, t1, v1, t) {
-        return (t - t0) * (v1 - v0) / (t1 - t0) + v0
+        return (t - t0) * (v1 - v0) / (t1 - t0) + v0;
     }
     
     function getPos(e) {
-        var x = 0, y = 0
+        var x = 0, y = 0;
         while (e != null) {
-            x += e.offsetLeft
-            y += e.offsetTop
-            e = e.offsetParent
+            x += e.offsetLeft;
+            y += e.offsetTop;
+            e = e.offsetParent;
         }
-        return {x : x, y : x}
+        return {x : x, y : x};
     }
     
     function getRelPos(to, positionedObject) {
-        var pos = getPos(to)
+        var pos = getPos(to);
         return {
             x : positionedObject.pageX - pos.x,
             y : positionedObject.pageY - pos.y

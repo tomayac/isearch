@@ -200,7 +200,7 @@ define("mylibs/menu",
       s.position(0.5);
       var emotionIcon = $('nav li[data-mode="emotion"]');
       s.position(function (p) {
-        console.log('Changed emotion to ' + p);
+        //console.log('Changed emotion to ' + p);
         emotionIcon.addClass('uploading');
 
         //N.B: COMPLETELY FAKE!! 

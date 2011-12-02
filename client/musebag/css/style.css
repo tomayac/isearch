@@ -502,6 +502,20 @@ nav a img {
 	border: 1px #CCC solid;
 }
 
+.emotion p.instruction {
+  padding-bottom: 0px;
+}
+
+.panel.emotion #emotion-slider {
+  margin-bottom: 20px;
+}
+.panel.emotion #emotion-slider > div {
+  background: white;
+  border: 1px solid #CCC;
+  margin: 0 auto;
+  padding: 5px;
+}
+
 .tags {
 	width: 70%;
 	margin: 2em auto;
