@@ -306,7 +306,7 @@ exports.publishRUCoD = function(data, outputPath, webOutputUrl, automatic, callb
         }
         
         rucodBody += '<MediaLocator>';
-        rucodBody += '<MediaUri>' + encodeURI(data.Files[f].URL) + '</MediaUri>';
+        rucodBody += '<MediaUri>' + encodeURI(data.Files[f].URL.replace(/&/g, '&amp;')) + '</MediaUri>';
         rucodBody += '<MediaPreview>' + data.Files[f].Preview
             + '</MediaPreview>';
         rucodBody += '</MediaLocator>';
