@@ -196,17 +196,23 @@ define("mylibs/menu",
       // emotions slider initialization
       var div = document.getElementById("emotion-slider");
       var s = new SmileySlider(div);
+      var first = true;
       // start with neutral emotions
       s.position(0.5);
       var emotionIcon = $('nav li[data-mode="emotion"]');
+      // get the smiley canvas
+      var canvas = $("#emotion-slider canvas:first")[0];
+      
       s.position(function (p) {
         //console.log('Changed emotion to ' + p);
         emotionIcon.addClass('uploading');
-
-        //N.B: COMPLETELY FAKE!! 
-        if (p != 0.5) {
-          $("#query-field").tokenInput('add',{id:"emotion",name:"<img src='img/fake/fake-emotion.gif'/>"});
+        //N.B: NO FAKE!! 
+        if (!first && p != 0.5) {
+          $("#query-field").tokenInput("remove", {id: "emotion"});
+          $("#query-field").tokenInput('add',{id:"emotion",name:'<img src="' + canvas.toDataURL("image/png") + '" title="' + p + '"/>'});
         }
+        
+        first = false;
         //Remove the "uploading style" | Note: this won't be visible, hopefully
         emotionIcon.removeClass('uploading');
 
