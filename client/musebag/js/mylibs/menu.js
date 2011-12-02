@@ -323,7 +323,7 @@ define("mylibs/menu",
 	    	$('#videoDrop').removeClass("over");
 	    	
 	    	reset();
-	        attachedModes.push('3d');
+	      attachedModes.push('video');
 	    });
 	    
 	    //Invisible file input
