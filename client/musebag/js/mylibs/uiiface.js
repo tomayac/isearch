@@ -907,4 +907,3 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
     hasFeature: UIIFace.Tools.hasFeature
   };
 });
-
