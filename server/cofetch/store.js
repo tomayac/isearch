@@ -307,13 +307,12 @@ exports.publishRUCoD = function(data, outputPath, webOutputUrl, automatic, callb
         
         rucodBody += '<MediaLocator>';
         rucodBody += '<MediaUri>' + encodeURI(data.Files[f].URL.replace(/&/g, '&amp;')) + '</MediaUri>';
-        rucodBody += '<MediaPreview>' + data.Files[f].Preview
-            + '</MediaPreview>';
+        rucodBody += '<MediaPreview>' + encodeURI(data.Files[f].Preview.replace(/&/g, '&amp;')) + '</MediaPreview>';
         rucodBody += '</MediaLocator>';
         
         rucodBody += '<MediaCreationInformation>';
         rucodBody += '<Author>';
-        rucodBody += '<Name>' + data.Files[f].Author + '</Name>';
+        rucodBody += '<Name>' + data.Files[f].Author.replace(/&/g, '&amp;') + '</Name>';
         rucodBody += '</Author>';
         rucodBody += '<Licensing>' + data.Files[f].License + '</Licensing>';
         rucodBody += '</MediaCreationInformation>';     
