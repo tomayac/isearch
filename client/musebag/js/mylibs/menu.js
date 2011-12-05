@@ -133,6 +133,8 @@ define("mylibs/menu",
         attachSketchEvents();
       } else if (mode === 'sound' && !isAttached('sound')) { 
         attachSoundEvents();
+      } else if (mode === 'rhythm' && !isAttached('rhythm')) { 
+        attachRhythmEvents();
       } else {
         console.log('Didn\'t attach the event for mode ' + mode);
         return;
@@ -460,6 +462,46 @@ define("mylibs/menu",
 	    });
     	
     };
+
+    var attachRhythmEvents = function() {
+    	
+    	//Drag and Drop of files
+	    var handler = new filehandler.FileHandler('rhythmDrop',['oga','ogg','mp3','wav'],'query/item',getQueryItemCount());
+	    var rhythmIcon = $('nav li[data-mode="rhythm"]');
+	    
+	    uiiface.registerEvent('rhythmDrop','drop',function(event) {
+	    	
+	    	rhythmIcon.addClass('uploading');
+	    	
+	    	$.proxy(handler.handleFiles(event.originalEvent),handler);
+	    	$('#rhythmDrop').removeClass("over");
+	    	
+	    	reset();
+	        attachedModes.push('rhythm');
+	    });
+	    
+	    //Invisible file input
+	    $('#rhythmUpload').change(function(event) {
+	    	
+	    	$.proxy(handler.handleFiles(event),handler);
+
+			event.preventDefault();
+			return false; 
+	    });
+	    
+	    //Trigger button for file input
+	    $('.panel.rhythm button.upload').click(function(){
+	    	
+	        rhythmIcon.addClass('uploading');
+	        
+	    	$('#rhythmUpload').click();
+	    	
+	    	reset();
+	        attachedModes.push('rhythm');
+	    });
+    	
+    };
+
 
     /*
      * Menu behaviour when the query is submitted
