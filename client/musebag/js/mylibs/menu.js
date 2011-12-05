@@ -202,14 +202,18 @@ define("mylibs/menu",
       var emotionIcon = $('nav li[data-mode="emotion"]');
       // get the smiley canvas
       var canvas = $("#emotion-slider canvas:first")[0];
-      
-      s.position(function (p) {
-        //console.log('Changed emotion to ' + p);
+      var emotionTimeout = null;
+      s.position(function(p) {
         emotionIcon.addClass('uploading');
-        //N.B: NO FAKE!! 
         if (!first && p != 0.5) {
-          $("#query-field").tokenInput("remove", {id: "emotion"});
-          $("#query-field").tokenInput('add',{id:"emotion",name:'<img src="' + canvas.toDataURL("image/png") + '" title="' + p + '"/>'});
+          if (emotionTimeout) {
+            clearTimeout(emotionTimeout);
+          }          
+          emotionTimeout = setTimeout(function() {
+            $("#query-field").tokenInput("remove", {id: "emotion"});
+            $("#query-field").tokenInput('add',{id:"emotion",name:'<img src="' +
+                canvas.toDataURL("image/png") + '" title="' + p + '"/>'});
+          }, 200);
         }
         
         first = false;
