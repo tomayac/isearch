@@ -44,6 +44,10 @@ require(["jquery",
           //Initializes the UIIFace
           uiiface.initialize({gestureHint:false});
           //test actions on logo
+          //uiiface.registerEvent('logo','scale',function(event) {
+          //  console.log(event);
+          //});
+          
           //Behaviour of the menu (panels, etc)
           $('nav li').click(function(){
             var clickedListItem = $(this);
