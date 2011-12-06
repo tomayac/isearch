@@ -53,7 +53,7 @@ function SmileySlider(container, imgSrc) {
 
   //////////////////////////////////////////////////////////////
   // width position
-  var adjustSize = function(formWidth) {
+  function adjustSize(formWidth) {
 
     var computedWidth = Math.floor(0.9 * formWidth);
     if (computedWidth < 400) {
