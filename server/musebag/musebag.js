@@ -56,8 +56,7 @@ var distributeFile = function(destinationUrl, callParams, fileInfo, callback) {
       data     : callData
     })
     .on('complete', function(data) { 
-      console.log('test:');
-      console.log(data);
+
       //Check if return data is ok
       if(data.error) {
         msg.error = data.error;
@@ -235,7 +234,6 @@ exports.queryItem = function(req, res) {
 		  
 		  fs.writeFile(uploadItem.path, dataBuffer, function(error) {
 		    if(error) {
-		      console.log(uploadItem.path);
 		      msg.error = error;
 		      res.send(JSON.stringify(msg));
 		      return;

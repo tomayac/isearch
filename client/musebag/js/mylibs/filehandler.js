@@ -123,8 +123,12 @@ define("mylibs/filehandler", ["libs/glge-compiled-min"], function(GLGE){
 	        	
 	            var fileInfo = JSON.parse(xhr.responseText);
 	            var pictureIcon = {};
-	            console.log('fileinfo: ');
-	            console.log(fileInfo);
+	            
+	            if(fileInfo.error) {
+	              alert('Woops...somehow your query input got lost through an error in space. You can try it again or report this error to my creators: \n' + fileInfo.error);
+	              return;
+	            }
+	            
 	            //3D model display via GLGE
 	            if((/dae/i).test(fileInfo.name)) {
 	            	console.log("3D uploaded...");

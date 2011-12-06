@@ -287,5 +287,6 @@ function SmileySlider(container, imgSrc) {
       base.style.width = 329;
     }
   };
+  this.adjustSize = adjustSize;
 }
 
