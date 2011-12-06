@@ -15,7 +15,6 @@ require(["jquery",
          "mylibs/results",
          "mylibs/uiiface", 
          "libs/jquery.tokeninput",
-         "libs/canvas-toBlob.min",
          "libs/smiley-slider"], 
     function($, menu, config, tags, results, uiiface) {
       
