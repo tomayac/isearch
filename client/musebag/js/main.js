@@ -15,7 +15,6 @@ require(["jquery",
          "mylibs/results",
          "mylibs/uiiface", 
          "libs/jquery.tokeninput",
-         "libs/canvas-toBlob.min",
          "libs/smiley-slider"], 
     function($, menu, config, tags, results, uiiface) {
       
@@ -44,6 +43,10 @@ require(["jquery",
           //Initializes the UIIFace
           uiiface.initialize({gestureHint:false});
           //test actions on logo
+          //uiiface.registerEvent('logo','scale',function(event) {
+          //  console.log(event);
+          //});
+          
           //Behaviour of the menu (panels, etc)
           $('nav li').click(function(){
             var clickedListItem = $(this);

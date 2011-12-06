@@ -255,8 +255,8 @@ define("mylibs/menu",
 			return false; 
 	    });
 
-	  //Trigger button for file input  
-      $('.panel.3d button').click(function(){
+	    //Trigger button for file input  
+	    $('.panel.3d button').click(function(){
         console.log('Button 3d pressed');
         pictureIcon.addClass('uploading');
 
@@ -283,26 +283,25 @@ define("mylibs/menu",
 	    	$('#imageDrop').removeClass("over");
 	    	
 	    	reset();
-	        attachedModes.push('3d');
+	      attachedModes.push('3d');
 	    });
 	    
 	    //Invisible file input
 	    $('#imageUpload').change(function(event) {
 	    	
 	    	$.proxy(handler.handleFiles(event),handler);
-
-			event.preventDefault();
-			return false; 
+	    	event.preventDefault();
+	    	return false; 
+	    	
 	    });
 	    //Trigger button for file input
 	    $('.panel.picture button.upload').click(function(){
 	    	
-	        pictureIcon.addClass('uploading');
-	        
+	      pictureIcon.addClass('uploading');  
 	    	$('#imageUpload').click();
 	    	
 	    	reset();
-	        attachedModes.push('picture');
+	      attachedModes.push('picture');
 	    });
 	    
       $('.panel.picture button.shoot').click(function(){
@@ -343,8 +342,8 @@ define("mylibs/menu",
 	    	
 	    	$.proxy(handler.handleFiles(event),handler);
 
-			event.preventDefault();
-			return false; 
+	    	event.preventDefault();
+	    	return false; 
 	    });
 	    //Trigger button for file input
 	    $('.panel.video button.upload').click(function(){
@@ -374,20 +373,18 @@ define("mylibs/menu",
     
     var attachSketchEvents = function() {
     	
-    	var handler = new filehandler.FileHandler('',['png'],'query/item',getQueryItemCount());
-    	
     	uiiface.registerEvent('sketch','sketch', function(event, pen) {
 	    	//console.dir(pen);
 	    	var canvas = $('#sketch')[0];
-	        var context = canvas.getContext('2d');   
+	      var context = canvas.getContext('2d');   
 	
 	    	context.strokeStyle ='rgba('+pen.color+',.3)';
-	        context.lineWidth = pen.size; 
-	        context.beginPath();
-	        context.moveTo(pen.oldX, pen.oldY);
-	        context.lineTo(pen.x, pen.y);
-	        context.closePath();
-	        context.stroke(); 
+	      context.lineWidth = pen.size; 
+	      context.beginPath();
+	      context.moveTo(pen.oldX, pen.oldY);
+	      context.lineTo(pen.x, pen.y);
+	      context.closePath();
+	      context.stroke(); 
     	});
     	
     	uiiface.registerEvent('sketch','delete',function(error) {
@@ -404,22 +401,21 @@ define("mylibs/menu",
       $('.panel.sketch button.done').click(function(event){
     	  
         console.log('Button "sketch done" pressed');
-
+        //We don't need to bind it to
+        var handler = new filehandler.FileHandler('sketch',['png'],'query/item',getQueryItemCount());
+        
         var sketchIcon = $('nav li[data-mode="sketch"]');
         sketchIcon.addClass('uploading');
         
         //----
-        $('#sketch')[0].toBlob(function(blob){
-        	$.proxy(handler.handleCanvasData(blob),handler);
-        },"image/png");
+        $.proxy(handler.handleCanvasData(),handler);
         
-
-		event.preventDefault();
-		return false; 
-		//----
-
         reset();
         attachedModes.push('sketch');
+        //----
+
+        event.preventDefault();
+        return false; 
 
       });
     };

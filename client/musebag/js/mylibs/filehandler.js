@@ -3,15 +3,15 @@
  */
 define("mylibs/filehandler", ["libs/glge-compiled-min"], function(GLGE){
 	
-	FileHandler = function(dropElementID,accept,serverURL,startCount) {
-		this.dropContainer = document.getElementById(dropElementID) || false;
+	FileHandler = function(dataElementID,accept,serverURL,startCount) {
+		this.dataContainer = document.getElementById(dataElementID) || false;
 		this.accept = accept || [];
 		this.serverURL = serverURL || 'query/item';
 		this.count = startCount || 0;
 
 		this.ModelHandler = function(model,canvas) { 
-			this.model     = model;
-	        this.canvas    = document.getElementById(canvas);
+			this.model  = model;
+	    this.canvas = document.getElementById(canvas);
 		};
 		
 		this.ModelHandler.prototype.initialize = function() {
@@ -51,7 +51,6 @@ define("mylibs/filehandler", ["libs/glge-compiled-min"], function(GLGE){
 	            }
 	            
 	            function render(){
-	
 	                gameRenderer.render();
 	            }
 	            
@@ -129,7 +128,7 @@ define("mylibs/filehandler", ["libs/glge-compiled-min"], function(GLGE){
 	            if((/dae/i).test(fileInfo.name)) {
 	            	console.log("3D uploaded...");
 	            	pictureIcon = $('nav li[data-mode="3d"]');
-	            	var modelHandler = new that.ModelHandler(fileInfo.path,id);
+	            	var modelHandler = new that.ModelHandler(fileInfo.originPath,id);
 	            	modelHandler.initialize();
 	            }
 	            else {
@@ -149,9 +148,9 @@ define("mylibs/filehandler", ["libs/glge-compiled-min"], function(GLGE){
 		            	console.log("Video uploaded...");
 		            	pictureIcon = $('nav li[data-mode="video"]');
 		            }
-		            
+		            //set the appropriate data tags for the html element
 		            $('#' + id).attr({'src' : fileInfo.path,
-  		                              'alt' : fileInfo.name});
+  		                            'alt' : fileInfo.name});
 	            }
 	            
 	            pictureIcon.removeClass('uploading');
@@ -165,8 +164,12 @@ define("mylibs/filehandler", ["libs/glge-compiled-min"], function(GLGE){
 	    xhr.upload.addEventListener("progress", this.uploadProgressXHR, false);
 	    xhr.upload.addEventListener("load", this.loadedXHR, false); 
 	    xhr.upload.addEventListener("error", this.uploadError, false); 
-	    
-	    formData.append('files', file);
+      if(!file.base64) {
+        formData.append('files', file);
+      } else {
+        formData.append('canvas', file.base64);
+        formData.append('name', file.name);
+      }
 	    xhr.open("POST", this.serverURL, true);
 	    xhr.send(formData);
 	    
@@ -176,74 +179,98 @@ define("mylibs/filehandler", ["libs/glge-compiled-min"], function(GLGE){
 	FileHandler.prototype.handleFiles = function(event) {
 	    
 		var files = event.files || event.target.files || event.dataTransfer.files;
-		
-		event.stopPropagation();
-		event.preventDefault();
-		
-	    //Test if browser supports the File API
-	    if (typeof files !== "undefined") {
-	    	
-	        for (var i=0, l=files.length; i<l; i++) {
-	            
-	        	//State if current file is allowed to be uploaded
-	        	if(this.isAllowedExtension(files[i].name)) {
-	        		
-	        		//Create the token for the search bar
-	        		var id = "fileQueryItem" + this.count;
-	        		var token = "";
-	        		var supportDirectData = true;
-	        		
-	        		//Create token content dependend from the media input
-	        		if((/image/i).test(files[i].type)) {
-	        			token = '<img id="' + id + '" alt="" src="" />';
-	        			
-	        		} else if((/audio/i).test(files[i].type) || (/ogg/i).test(files[i].name)) {
-	        			token = '<audio src="" controls="" id="' + id + '" width="60" height="25">No audio preview.</audio>';
-	        		} else if((/video/i).test(files[i].type)) {
-		        		token = '<video src="" controls="" id="' + id + '" width="60" height="25">No video preview.</video>';
-	        		} else if((/dae/i).test(files[i].name) || (/3ds/i).test(files[i].name) || (/md2/i).test(files[i].name) || (/obj/i).test(files[i].name)) {
-	        			token = '<canvas id="' + id + '" width="60" height="25"></canvas>';
-	        			supportDirectData = false;
-	        		}
-	        		
-	        		$("#query-field").tokenInput('add',{id:id,name:token});
-	        		
-	        		if(supportDirectData && typeof FileReader !== "undefined") {
-	        			
-	        			var domToken = document.getElementById(id),
-	        			
-		        		//Create Filereader instance
-		                reader = new FileReader();
-		                reader.onload = (function (theDataToken) {
-		                    return function (event) {
-		                    	theDataToken.src = event.target.result;
-		                    };
-		                }(domToken));
-		                //Read media data from file into img, audio, video - DOM element
-		                reader.readAsDataURL(files[i]);
-	        		}
-	        		
-	        		//Upload file to server
-	                this.processXHR(files[i], id);
-		            //Increase drop component count
-		            this.count++;
-	                
-	        	}
-	        	else {
-	        		alert("Sorry, the submitted file " + files[i].name + " is not supported. Please use one of the following file types: " + this.accept.join(','));
-	        	}
-	        	
-	        }
-	        //End for
-	    }
-	    else {
-	        alert("No files to handle. Maybe this web browser does not support the File API");
-	    }
+		//Stop event from being executed in the normal way if necessary 
+		if(event.stopPropagation) {
+		  event.stopPropagation();
+		}
+		if(event.preventDefault) {
+		  event.preventDefault();
+		}
+    //Test if browser supports the File API
+    if (typeof files !== "undefined") {
+    	
+        for (var i=0, l=files.length; i<l; i++) {
+            
+        	//State if current file is allowed to be uploaded
+        	if(this.isAllowedExtension(files[i].name)) {
+        		
+        		//Create the token for the search bar
+        		var id = "fileQueryItem" + this.count;
+        		var token = "";
+        		var supportDirectData = true;
+        		
+        		//Create token content dependend from the media input
+        		if((/image/i).test(files[i].type)) {
+        			token = '<img id="' + id + '" alt="" src="" />';
+        			
+        		} else if((/audio/i).test(files[i].type) || (/ogg/i).test(files[i].name)) {
+        			token = '<audio src="" controls="" id="' + id + '" width="60" height="25">No audio preview.</audio>';
+        		} else if((/video/i).test(files[i].type)) {
+	        		token = '<video src="" controls="" id="' + id + '" width="60" height="25">No video preview.</video>';
+        		} else if((/dae/i).test(files[i].name) || (/3ds/i).test(files[i].name) || (/md2/i).test(files[i].name) || (/obj/i).test(files[i].name)) {
+        			token = '<canvas id="' + id + '" width="60" height="25"></canvas>';
+        			supportDirectData = false;
+        		}
+        		
+        		$("#query-field").tokenInput('add',{id:id,name:token});
+        		
+        		if(supportDirectData && typeof FileReader !== "undefined") {
+        			
+        			var domToken = document.getElementById(id),
+        			
+	        		//Create Filereader instance
+	            reader = new FileReader();
+	            reader.onload = (function (theDataToken) {
+	              return function (event) {
+	                theDataToken.src = event.target.result;
+	              };
+	            }(domToken));
+	            //Read media data from file into img, audio, video - DOM element
+	            if(!files[i].base64) {
+	              reader.readAsDataURL(files[i]);
+	            } else {
+	              domToken.src = files[i].base64;
+	            }
+        		}
+        		
+        		//Upload file to server
+            this.processXHR(files[i], id);
+	          //Increase drop component count
+	          this.count++;
+                
+        	}
+        	else {
+        		alert("Sorry, the submitted file " + files[i].name + " is not supported. Please use one of the following file types: " + this.accept.join(','));
+        	}
+        	
+        }
+        //End for
+    }
+    else {
+        alert("No files to handle. Maybe this web browser does not support the File API");
+    }
 	};
 	
-	FileHandler.prototype.handleCanvasData = function(data) {
-		console.log("Canvas blob data received: ");
-		console.log(blob);
+	FileHandler.prototype.handleCanvasData = function() {
+	  
+	  try {
+	    //Create a file object for the actual canvas data
+      var fileData = {
+          files : new Array({
+            name: 'sketch.png', 
+            type: 'image/png', 
+            base64: this.dataContainer.toDataURL("image/png")
+          })
+      };
+      fileData.length = fileData.files.length; 
+      
+      //Go on, handle it like a normal file upload/drop
+      this.handleFiles(fileData);
+	    
+	  } catch(e) {
+	    console.dir(e);
+	    console.log('The specified data container is not a canvas element and therefore not supported!');
+	  }
 	};
 	
 	return {

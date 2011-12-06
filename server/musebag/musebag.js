@@ -18,7 +18,65 @@ var fs         = require('fs'),
 /**
  * Global variables
  */
-var msg = {error: 'Something went wrong.'};
+var msg     = {error: 'Something went wrong.'};
+var tmpPath = '/var/www/isearch/client/musebag/tmp';
+var tmpUrl  = '/tmp';
+
+/**
+ * private functions
+ */
+var distributeFile = function(destinationUrl, callParams, fileInfo, callback) {
+  
+  var context = this;
+  
+  fs.readFile(fileInfo.path, function (error, filedata) {
+    if(error) {
+      msg.error = error;
+      callback(msg,null);
+      return;
+    }  
+    //creating the call parameter
+    var callData = {
+        "fileName" : fileInfo.name,
+        "fileSize" : fileInfo.size,
+        "fileType" : fileInfo.type,
+        "file" : restler.file(fileInfo.path, fileInfo.type)
+    };
+    //add the additional call params
+    for(var prop in callParams) {
+      if(callParams.hasOwnProperty(prop)) {
+        callData[prop] = callParams[prop];
+      }
+    } 
+    
+    //Initiate the external file distribution
+    restler
+    .post(destinationUrl, { 
+      multipart: true,
+      data     : callData
+    })
+    .on('complete', function(data) { 
+      console.log('test:');
+      console.log(data);
+      //Check if return data is ok
+      if(data.error) {
+        msg.error = data.error;
+        callback(msg,null);
+        return;
+      }
+      //Add the public path, move the original local file system path
+      fileInfo.originPath = tmpUrl + '/' + fileInfo.name;
+      fileInfo.path = data.file;
+      
+      callback(null,fileInfo);
+    })
+    .on('error', function(error) {
+      msg.error = error;
+      callback(msg,null);
+    });
+    
+  }); //end function fs.readFile
+};
 
 /**
  * login function
@@ -37,15 +95,15 @@ exports.login = function(req, res){
 	.on('complete', function(data) {		
 		
 		//Check if return data is ok
-        if(!data.user) {
-        	msg.error = data.error;
-        	res.send(JSON.stringify(msg));
-        } else {
-	        //Store user data in session
+    if(!data.user) {
+    	msg.error = data.error;
+    	res.send(JSON.stringify(msg));
+    } else {
+      //Store user data in session
 			req.session.user = data.user;
 			//Return user data to client
-	        res.send(JSON.stringify(data.user));
-        }
+      res.send(JSON.stringify(data.user));
+    }
 	})
 	.on('error', function(error) {
 		msg.error = error;
@@ -100,7 +158,26 @@ exports.query = function(req, res) {
 exports.queryItem = function(req, res) {
 	
 	console.log("Queryitem function called...");
+  
+	//Url for forwarding the uploaded file to the multimodal query formulator
+  var queryFormulatorURL = "http://gdv.fh-erfurt.de/i-search/mqf-dummy/handle.php";
 	
+  //Callback function for external webservice calls
+  var externalCallback = function(error,data) {
+    if(error) {
+      res.send(JSON.stringify(error));
+      return;
+    }
+    
+    //Store query item data in session
+    console.log(data);
+    req.session.query.items.push(data);
+
+    //Return query item path to client
+    res.send(JSON.stringify(data));
+    
+  };
+  
 	//Check if a query object exists in this session
 	if(!req.session.query) {
 		req.session.query = { 'items' : [] };
@@ -113,64 +190,25 @@ exports.queryItem = function(req, res) {
 	//Create the upload parser
 	var upload = new formidable.IncomingForm();
 	//Set the upload settings
+	upload.uploadDir = tmpPath; 
 	upload.keepExtensions = true;
 	upload.maxFieldsSize = 8 * 1024 * 1024; // 8 MB
 	upload.encoding = 'binary';
 	//Check for every uploaded file
 	upload.addListener('file', function(name, file) {
-	    
+
 		//The temporary information about the uploaded file
 		var uploadItem = { path : file.path,
-				           name : file.name, 
-				           type : file.type,
-				           size : file.size};
+				               name : file.name, 
+				               type : file.type,
+				               size : file.size};
+    
+		distributeFile(queryFormulatorURL, 
+		  {"f": "storeQueryItem", "session": sid}, 
+		  uploadItem, 
+		  externalCallback
+	  );
 		
-		fs.readFile(file.path, function (error, filedata) {
-			if(error) {
-				msg.error = error;
-				res.send(JSON.stringify(msg));
-				return;
-			}
-			
-			//Forward the uploaded file to the multimodal query formulator
-			var queryFormulatorURL = "http://gdv.fh-erfurt.de/i-search/mqf-dummy/handle.php";
-
-			restler
-			.post(queryFormulatorURL, { 
-				multipart: true,
-			    data: {"f"        : "storeQueryItem",
-			    	   "session"  : sid,
-			           "fileName" : uploadItem.name,
-			    	   "fileSize" : uploadItem.size,
-			    	   "fileType" : uploadItem.type,
-			    	   "file" : restler.file(uploadItem.path, uploadItem.type)}
-			 })
-			.on('complete', function(data) {		
-				//Check if return data is ok
-		        if(data.error) {
-		        	msg.error = data.error;
-		        	res.send(JSON.stringify(msg));
-		        	return;
-		        }
-		        
-		        //Store query item data in session
-		        uploadItem.path = data.file;
-		        console.log(uploadItem);
-				req.session.query.items.push(uploadItem);
-				
-				//Return query item path to client
-				res.send(JSON.stringify(uploadItem));
-			})
-			.on('error', function(error) {
-				msg.error = error;
-				res.send(JSON.stringify(msg));
-			});
-			
-		}); //end function fs.readFile
-	});
-	
-	upload.addListener('end', function() {
-	    //res.end();
 	});
 	
 	//Parse the upload data
@@ -180,6 +218,33 @@ exports.queryItem = function(req, res) {
 			msg.error = error;
 			res.send(JSON.stringify(msg));
 			return;
+		}
+		
+		if(fields.canvas) {
+
+		  var base64Data = fields.canvas.replace(/^data:image\/png;base64,/,"");
+		  var dataBuffer = new Buffer(base64Data, 'base64');
+		  
+		  //The temporary information about the created file
+      var uploadItem = { path : tmpPath + "/" + (new Date().getTime()) + '-' + fields.name,
+                         name : (new Date().getTime()) + '-' + fields.name, 
+                         type : 'image/png',
+                         size : dataBuffer.length};
+		  
+		  fs.writeFile(uploadItem.path, dataBuffer, function(error) {
+		    if(error) {
+		      msg.error = error;
+		      res.send(JSON.stringify(msg));
+		      return;
+		    }
+		    
+		    distributeFile(queryFormulatorURL, 
+		      {"f": "storeQueryItem", "session": sid}, 
+		      uploadItem, 
+		      externalCallback
+		    );
+		  });
+		  
 		}
 
 	}); //end function upload.parse

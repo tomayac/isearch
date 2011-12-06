@@ -622,9 +622,12 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
     };
     UIIFace.InteractionManager.sketch = function(e) {
       e.preventDefault();
-
       //Fallback for mouse events
-      e.streamId = !e.originalEvent.streamId ? 0 : e.originalEvent.streamId;
+      e.streamId = e.originalEvent.streamId || 0;
+      //Fallback for mobile touch events
+      if(e.originalEvent.touches) {
+        
+      }
       //console.log(e.type);
       //console.log(e.streamId);
       var target = e.target || e.srcElement;
@@ -662,6 +665,7 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
       case touchEvents['up']:
       case 'mouseup':
         //Remove pen
+        //console.log('sketch end');
         if(epoints[e.streamId]) {
           epoints.splice(e.streamId,1);
         }
@@ -680,7 +684,7 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
 
       //Fallback for mouse events
       e.streamId = !e.originalEvent.streamId ? 1 : e.originalEvent.streamId;
-
+      
       var target = e.target || e.srcElement;
       
       switch(e.type) {
@@ -706,26 +710,36 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
           };
         }
         
-        if (typeof(epoints) !== undefined && epoints[0] == e.streamId) { //point 1
-          epoints[0].x = e.clientX;
-          epoints[0].y = e.clientY;
-
-        } else if (typeof(epoints) !== undefined && epoints[1] == e.streamId) { // point 2
-          var diagonal = dist(epoints[0].x, e.clientX, epoints[0].y, e.clientY);
-          var sidesize = diagonal / Math.sqrt(2);
-          
-          $(target).trigger('scale', {
-            target: target,
-            left  : ((e.clientX < epoints[0].x) ? e.clientX : epoints[0].x),
-            top   : ((e.clientY < epoints[0].y) ? e.clientY : epoints[0].y),
-            width : sidesize,
-            height: sidesize
-          });
-        } 
+        if(epoints.length == 2) {
+          console.log('scale mousemove');
+          console.log(epoints);
+          if (typeof(epoints) !== undefined && epoints[0] == e.streamId) { //point 1
+            epoints[0].x = e.clientX;
+            epoints[0].y = e.clientY;
+  
+          } else if (typeof(epoints) !== undefined && epoints[1] == e.streamId) { // point 2
+            var diagonal = dist(epoints[0].x, e.clientX, epoints[0].y, e.clientY);
+            var sidesize = diagonal / Math.sqrt(2);
+            
+            $(target).trigger('scale', {
+              target: target,
+              left  : ((e.clientX < epoints[0].x) ? e.clientX : epoints[0].x),
+              top   : ((e.clientY < epoints[0].y) ? e.clientY : epoints[0].y),
+              width : sidesize,
+              height: sidesize
+            });
+          }
+        }
         break;
       case touchEvents['up']:
       case 'mouseup':
         //Reset all epoints
+        console.log('scale mouseup');
+        epoints = new Array();
+        break;
+      case 'mouseout':
+        //Reset all epoints
+        console.log('scale mouseout');
         epoints = new Array();
         break;
       }
@@ -789,6 +803,64 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
       }
       
       e.stopPropagation(); 
+    };
+    
+    UIIFace.WebSocketConnector = function(url,port,listenType) {
+      var url  = url || 'localhost';
+      var port = port || 8732;
+      var listenType = listenType || 'wsdl';
+      
+    };
+    
+    UIIFace.WebSocketConnector.prototype.queryWsdlService = function(operation,params) {
+      
+      var operation = operation || 'SkeletonPosition';
+      var params = params || { user: 1, joint: 'LeftHand' };
+      
+      var queryResult = function(request, status) {
+        console.log(request.responseXML);
+        /*$(xmlHttpRequest.responseXML)
+          .find('SkeletonPosition')
+          .each(function() {
+            //var name = $(this).find('Name').text();
+        });*/
+        
+      };
+      
+      var soapMessage =
+        '<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"> \
+        <soap:Body> \
+        <' + operation + ' xmlns="http://localhost/"> \\';
+        
+        for(var prop in params) {
+          if(params.hasOwnProperty(prop)) {
+            soapMessage += '<' + prop + '>' + params[prop] + '</' + prop + '> \\';
+          }
+        }  
+        
+      soapMessage +=   
+        '</' + operation + '> \
+        </soap:Body> \
+        </soap:Envelope>';
+
+      $.ajax({
+        url: productServiceUrl,
+        type: "POST",
+        dataType: "xml",
+        data: soapMessage,
+        complete: queryResult,
+        contentType: "text/xml; charset=\"utf-8\""
+      });
+
+      return false;
+    };
+    
+    UIIFace.WebSocketConnector.prototype.startListen = function() {
+      
+    };
+    
+    UIIFace.WebSocketConnector.prototype.stopListen = function() {
+      
     };
 
     /** Main public functions */
