@@ -235,6 +235,7 @@ exports.queryItem = function(req, res) {
 		  
 		  fs.writeFile(uploadItem.path, dataBuffer, function(error) {
 		    if(error) {
+		      console.log(uploadItem.path);
 		      msg.error = error;
 		      res.send(JSON.stringify(msg));
 		      return;

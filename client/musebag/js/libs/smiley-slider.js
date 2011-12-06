@@ -52,18 +52,6 @@ function SmileySlider(container, imgSrc) {
   container.appendChild(base);
 
   //////////////////////////////////////////////////////////////
-  // width position
-  function adjustSize(formWidth) {
-
-    var computedWidth = Math.floor(0.9 * formWidth);
-    if (computedWidth < 400) {
-      base.style.width = canvasComputedWidth;
-    } else {
-      base.style.width = 329;
-    }
-  };
-  
-  //////////////////////////////////////////////////////////////
   // head position
   
   var onHeadMove = null;
@@ -289,5 +277,15 @@ function SmileySlider(container, imgSrc) {
       y : positionedObject.pageY - pos.y
     }
   }
+  
+  function adjustSize(formWidth) {
+
+    var computedWidth = Math.floor(0.9 * formWidth);
+    if (computedWidth < 400) {
+      base.style.width = canvasComputedWidth;
+    } else {
+      base.style.width = 329;
+    }
+  };
 }
 

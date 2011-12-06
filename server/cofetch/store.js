@@ -225,7 +225,7 @@ exports.publishRUCoD = function(data, outputPath, webOutputUrl, automatic, callb
       + '<ContentObjectVersion>1</ContentObjectVersion>'
       + '<ContentObjectCreationInformation>'
       + '<Creator><Name>CoFetch Script</Name></Creator>'
-      + '<Contributor><Name>FHE</Name></Contributor>'
+      + '<Contributor><Name>HS Fulda</Name></Contributor>'
       + '<Contributor><Name>Google</Name></Contributor>'
       + '<Contributor><Name>flickr.com</Name></Contributor>'
       + '<Contributor><Name>dbpedia.org</Name></Contributor>'
