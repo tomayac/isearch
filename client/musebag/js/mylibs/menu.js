@@ -5,6 +5,8 @@ define("mylibs/menu",
     var hasNav = false;
     var attachedModes = []; //Stock the attached events 
                             //(we don't want to attach them each time a panel is displayed)
+    var slider = null;
+    
     var reset = function() {
         $('.panel').slideUp(config.constants.slideUpAnimationTime);
         $('nav li').removeClass('active');
@@ -17,6 +19,10 @@ define("mylibs/menu",
       //(it appears that CSS is not enough)
       //See http://www.whatwg.org/specs/web-apps/current-work/multipage/the-canvas-element.html#attr-canvas-width for more info
       fixCanvas();
+      
+      if(slider) {
+        slider.adjustSize($("#query").width());
+      }
 
       var menuWidth = config.constants.menuWidth;
       var overflow = menuWidth - document.width;
@@ -197,15 +203,15 @@ define("mylibs/menu",
       
       // emotions slider initialization
       var div = document.getElementById("emotion-slider");
-      var s = new SmileySlider(div);
+      slider = new SmileySlider(div);
       var first = true;
       // start with neutral emotions
-      s.position(0.5);
+      slider.position(0.5);
       var emotionIcon = $('nav li[data-mode="emotion"]');
       // get the smiley canvas
       var canvas = $("#emotion-slider canvas:first")[0];
       var emotionTimeout = null;
-      s.position(function(p) {
+      slider.position(function(p) {
         emotionIcon.addClass('uploading');
         if (!first && p != 0.5) {
           if (emotionTimeout) {
