@@ -123,7 +123,8 @@ define("mylibs/filehandler", ["libs/glge-compiled-min"], function(GLGE){
 	        	
 	            var fileInfo = JSON.parse(xhr.responseText);
 	            var pictureIcon = {};
-	            
+	            console.log('fileinfo: ');
+	            console.log(fileInfo);
 	            //3D model display via GLGE
 	            if((/dae/i).test(fileInfo.name)) {
 	            	console.log("3D uploaded...");
@@ -135,8 +136,13 @@ define("mylibs/filehandler", ["libs/glge-compiled-min"], function(GLGE){
 	            	
 	            	//Image display in query field
 		            if((/image/i).test(fileInfo.type)) {
-		            	console.log("Image uploaded...");
-		            	pictureIcon = $('nav li[data-mode="picture"]');
+		              if(fileInfo.subtype != '') {
+		                console.log(fileInfo.subtype + " uploaded...");
+                    pictureIcon = $('nav li[data-mode="' + fileInfo.subtype + '"]');
+		              } else {
+		                console.log("Image uploaded...");
+                    pictureIcon = $('nav li[data-mode="picture"]');
+		              }
 		            }
 		            //Sound display in query field
 		            if((/audio/i).test(fileInfo.type)) {
@@ -169,6 +175,7 @@ define("mylibs/filehandler", ["libs/glge-compiled-min"], function(GLGE){
       } else {
         formData.append('canvas', file.base64);
         formData.append('name', file.name);
+        formData.append('subtype', file.subtype || '');
       }
 	    xhr.open("POST", this.serverURL, true);
 	    xhr.send(formData);
@@ -251,15 +258,20 @@ define("mylibs/filehandler", ["libs/glge-compiled-min"], function(GLGE){
     }
 	};
 	
-	FileHandler.prototype.handleCanvasData = function() {
+	FileHandler.prototype.handleCanvasData = function(name,type,subtype) {
+	  
+	  var fileName = name    || 'sketch.png';
+	  var mime     = type    || 'image/png';
+	  var subtype  = subtype || 'sketch';
 	  
 	  try {
 	    //Create a file object for the actual canvas data
       var fileData = {
           files : new Array({
-            name: 'sketch.png', 
-            type: 'image/png', 
-            base64: this.dataContainer.toDataURL("image/png")
+            name    : (new Date().getTime()) + '-' + fileName, 
+            type    : mime,
+            subtype : subtype,
+            base64  : this.dataContainer.toDataURL(mime)
           })
       };
       fileData.length = fileData.files.length; 

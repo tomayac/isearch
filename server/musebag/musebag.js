@@ -67,6 +67,7 @@ var distributeFile = function(destinationUrl, callParams, fileInfo, callback) {
       //Add the public path, move the original local file system path
       fileInfo.originPath = tmpUrl + '/' + fileInfo.name;
       fileInfo.path = data.file;
+      fileInfo.subtype = fileInfo.subtype || '';
       
       callback(null,fileInfo);
     })
@@ -226,9 +227,10 @@ exports.queryItem = function(req, res) {
 		  var dataBuffer = new Buffer(base64Data, 'base64');
 		  
 		  //The temporary information about the created file
-      var uploadItem = { path : tmpPath + "/" + (new Date().getTime()) + '-' + fields.name,
-                         name : (new Date().getTime()) + '-' + fields.name, 
+      var uploadItem = { path : tmpPath + "/" + fields.name,
+                         name : fields.name, 
                          type : 'image/png',
+                         subtype: fields.subtype,
                          size : dataBuffer.length};
 		  
 		  fs.writeFile(uploadItem.path, dataBuffer, function(error) {

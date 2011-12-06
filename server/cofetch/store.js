@@ -286,11 +286,11 @@ exports.publishRUCoD = function(data, outputPath, webOutputUrl, automatic, callb
       rucodBody += '<MultimediaContent type="' + data.Files[f].Type + '">';
 
       if (data.Files[f].Type == 'Text') {
-        rucodBody += '<FreeText>' + data.Files[f].FreeText + '</FreeText>';
+        rucodBody += '<FreeText>' + data.Files[f].FreeText.replace(/&/g, '&amp;') + '</FreeText>';
       } else {
         
         if (data.Files[f].Description) {
-          rucodBody += '<FreeText>' + data.Files[f].Description + '</FreeText>';
+          rucodBody += '<FreeText>' + data.Files[f].Description.replace(/&/g, '&amp;') + '</FreeText>';
         }
         
         rucodBody += '<MediaName>' + data.Files[f].Name + '</MediaName>';
