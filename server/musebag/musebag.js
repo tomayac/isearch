@@ -64,7 +64,7 @@ var distributeFile = function(destinationUrl, callParams, fileInfo, callback) {
         return;
       }
       //Add the public path, move the original local file system path
-      fileInfo.originPath = tmpUrl + '/' + fileInfo.name;
+      fileInfo.originPath = tmpUrl + '/' + data.file;
       fileInfo.path = data.file;
       fileInfo.subtype = fileInfo.subtype || '';
       
