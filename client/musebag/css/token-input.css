@@ -66,6 +66,8 @@ li.token-input-token-isearch p img {
 	vertical-align: middle;
 	margin-top: -3px;
 	max-height: 2.5em;
+	
+	background-color: #fff;
 }
 
 li.token-input-selected-token-isearch {

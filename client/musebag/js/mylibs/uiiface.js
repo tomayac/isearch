@@ -639,8 +639,8 @@ define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
         if(!epoints[e.streamId]) {
           //console.log('add pen for id ' + e.streamId);
           epoints[e.streamId] = { 
-              size: 2,
-              color: '90,0,0',
+              size: 3,
+              color: '40,0,0',
               oldX : 0,
               oldY : 0,
               x    : parseFloat((e.pageX - $(target).offset().left).toFixed(2)),
