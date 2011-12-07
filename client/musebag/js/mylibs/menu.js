@@ -21,7 +21,6 @@ define("mylibs/menu",
       fixCanvas();
       
       if(slider) {
-        console.log(slider);
         slider.adjustSize($("#query").width());
       }
 

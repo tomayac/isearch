@@ -279,12 +279,21 @@ function SmileySlider(container, imgSrc) {
   }
   
   function adjustSize(formWidth) {
-
-    var computedWidth = Math.floor(0.9 * formWidth);
-    if (computedWidth < 400) {
-      base.style.width = canvasComputedWidth;
+    var computedWidth = Math.floor(0.95 * formWidth);
+    if (computedWidth < width) {
+      base.style.width = canvasComputedWidth + 'px';
+      track.style.width = canvasComputedWidth + 'px';
+      track.style.marginRight = '-' + track.style.width;
+      maxHeadX = canvasComputedWidth - headWidth + 1;
+      glass.style.width = canvasComputedWidth + 'px';
+      glass.style.marginRight = '-' + glass.style.width;
     } else {
-      base.style.width = 329;
+      base.style.width = width + 'px';
+      track.style.width = width + 'px';
+      track.style.marginRight = '-' + track.style.width;
+      maxHeadX = width - headWidth + 1;
+      glass.style.width = width + 'px';
+      glass.style.marginRight = '-' + glass.style.width;
     }
   };
   this.adjustSize = adjustSize;
