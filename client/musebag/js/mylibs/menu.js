@@ -5,6 +5,8 @@ define("mylibs/menu",
     var hasNav = false;
     var attachedModes = []; //Stock the attached events 
                             //(we don't want to attach them each time a panel is displayed)
+    var slider = null;
+    
     var reset = function() {
         $('.panel').slideUp(config.constants.slideUpAnimationTime);
         $('nav li').removeClass('active');
@@ -17,6 +19,10 @@ define("mylibs/menu",
       //(it appears that CSS is not enough)
       //See http://www.whatwg.org/specs/web-apps/current-work/multipage/the-canvas-element.html#attr-canvas-width for more info
       fixCanvas();
+      
+      if(slider) {
+        slider.adjustSize($("#query").width());
+      }
 
       var menuWidth = config.constants.menuWidth;
       var overflow = menuWidth - document.width;
@@ -125,10 +131,16 @@ define("mylibs/menu",
         attach3dEvents();
       } else if (mode === 'picture' && !isAttached('picture')) {
         attachPictureEvents();
+      } else if (mode === 'video' && !isAttached('video')) {
+        attachVideoEvents();
+      } else if (mode === 'emotion' && !isAttached('emotion')) {
+        attachEmotionEvents();        
       } else if (mode === 'sketch' && !isAttached('sketch')) {
         attachSketchEvents();
       } else if (mode === 'sound' && !isAttached('sound')) { 
         attachSoundEvents();
+      } else if (mode === 'rhythm' && !isAttached('rhythm')) { 
+        attachRhythmEvents();
       } else {
         console.log('Didn\'t attach the event for mode ' + mode);
         return;
@@ -186,6 +198,42 @@ define("mylibs/menu",
 
       });
     };
+    
+    var attachEmotionEvents = function() {
+      
+      // emotions slider initialization
+      var div = document.getElementById("emotion-slider");
+      slider = new SmileySlider(div);
+      var first = true;
+      // start with neutral emotions
+      slider.position(0.5);
+      var emotionIcon = $('nav li[data-mode="emotion"]');
+      // get the smiley canvas
+      var canvas = $("#emotion-slider canvas:first")[0];
+      var emotionTimeout = null;
+      slider.position(function(p) {
+        emotionIcon.addClass('uploading');
+        if (!first && p != 0.5) {
+          if (emotionTimeout) {
+            clearTimeout(emotionTimeout);
+          }          
+          emotionTimeout = setTimeout(function() {
+            $("#query-field").tokenInput("remove", {id: "emotion"});
+            $("#query-field").tokenInput('add',{id:"emotion",name:'<img src="' +
+                canvas.toDataURL("image/png") + '" title="' + p + '"/>'});
+          }, 200);
+        }
+        
+        first = false;
+        //Remove the "uploading style" | Note: this won't be visible, hopefully
+        emotionIcon.removeClass('uploading');
+
+        //reset();
+        attachedModes.push('emotion');
+        
+      });                
+    };
+    
 
     var attach3dEvents = function() {
     
@@ -213,8 +261,8 @@ define("mylibs/menu",
 			return false; 
 	    });
 
-	  //Trigger button for file input  
-      $('.panel.3d button').click(function(){
+	    //Trigger button for file input  
+	    $('.panel.3d button').click(function(){
         console.log('Button 3d pressed');
         pictureIcon.addClass('uploading');
 
@@ -241,26 +289,25 @@ define("mylibs/menu",
 	    	$('#imageDrop').removeClass("over");
 	    	
 	    	reset();
-	        attachedModes.push('3d');
+	      attachedModes.push('3d');
 	    });
 	    
 	    //Invisible file input
 	    $('#imageUpload').change(function(event) {
 	    	
 	    	$.proxy(handler.handleFiles(event),handler);
-
-			event.preventDefault();
-			return false; 
+	    	event.preventDefault();
+	    	return false; 
+	    	
 	    });
 	    //Trigger button for file input
 	    $('.panel.picture button.upload').click(function(){
 	    	
-	        pictureIcon.addClass('uploading');
-	        
+	      pictureIcon.addClass('uploading');  
 	    	$('#imageUpload').click();
 	    	
 	    	reset();
-	        attachedModes.push('picture');
+	      attachedModes.push('picture');
 	    });
 	    
       $('.panel.picture button.shoot').click(function(){
@@ -278,22 +325,72 @@ define("mylibs/menu",
       });
     };
     
-    var attachSketchEvents = function() {
+    var attachVideoEvents = function() {
     	
-    	var handler = new filehandler.FileHandler('',['png'],'query/item',getQueryItemCount());
+    	//Drag and Drop of files
+	    var handler = new filehandler.FileHandler('videoDrop',['webm','mp4', 'avi'],'query/item',getQueryItemCount());
+	    var videoIcon = $('nav li[data-mode="video"]');
+	    
+	    //Drop trigger for video upload
+	    uiiface.registerEvent('videoDrop','drop',function(event) {
+	    	
+	    	videoIcon.addClass('uploading');
+	    	
+	    	$.proxy(handler.handleFiles(event.originalEvent),handler);
+	    	$('#videoDrop').removeClass("over");
+	    	
+	    	reset();
+	      attachedModes.push('video');
+	    });
+	    
+	    //Invisible file input
+	    $('#videoUpload').change(function(event) {
+	    	
+	    	$.proxy(handler.handleFiles(event),handler);
+
+	    	event.preventDefault();
+	    	return false; 
+	    });
+	    //Trigger button for file input
+	    $('.panel.video button.upload').click(function(){
+	    	
+	        videoIcon.addClass('uploading');
+	        
+	    	$('#videoUpload').click();
+	    	
+	    	reset();
+	        attachedModes.push('video');
+	    });
+	    
+      $('.panel.video button.shoot').click(function(){
+        console.log('Button "Shoot video" pressed');
+
+        videoIcon.addClass('uploading');
+
+        $("#query-field").tokenInput('add',{id:"dog",name:"<img src='img/fake/fake-video.jpg'/>"});
+        //Remove the "uploading style" | Note: this won't be visible, hopefully
+        videoIcon.removeClass('uploading');
+
+        reset();
+        attachedModes.push('video');
+
+      });
+    };    
+    
+    var attachSketchEvents = function() {
     	
     	uiiface.registerEvent('sketch','sketch', function(event, pen) {
 	    	//console.dir(pen);
 	    	var canvas = $('#sketch')[0];
-	        var context = canvas.getContext('2d');   
+	      var context = canvas.getContext('2d');   
 	
 	    	context.strokeStyle ='rgba('+pen.color+',.3)';
-	        context.lineWidth = pen.size; 
-	        context.beginPath();
-	        context.moveTo(pen.oldX, pen.oldY);
-	        context.lineTo(pen.x, pen.y);
-	        context.closePath();
-	        context.stroke(); 
+	      context.lineWidth = pen.size; 
+	      context.beginPath();
+	      context.moveTo(pen.oldX, pen.oldY);
+	      context.lineTo(pen.x, pen.y);
+	      context.closePath();
+	      context.stroke(); 
     	});
     	
     	uiiface.registerEvent('sketch','delete',function(error) {
@@ -310,22 +407,21 @@ define("mylibs/menu",
       $('.panel.sketch button.done').click(function(event){
     	  
         console.log('Button "sketch done" pressed');
-
+        //We don't need to bind it to
+        var handler = new filehandler.FileHandler('sketch',['png'],'query/item',getQueryItemCount());
+        
         var sketchIcon = $('nav li[data-mode="sketch"]');
         sketchIcon.addClass('uploading');
         
         //----
-        $('#sketch')[0].toBlob(function(blob){
-        	$.proxy(handler.handleCanvasData(blob),handler);
-        },"image/png");
+        $.proxy(handler.handleCanvasData(),handler);
         
-
-		event.preventDefault();
-		return false; 
-		//----
-
         reset();
         attachedModes.push('sketch');
+        //----
+
+        event.preventDefault();
+        return false; 
 
       });
     };
@@ -368,6 +464,46 @@ define("mylibs/menu",
 	    });
     	
     };
+
+    var attachRhythmEvents = function() {
+    	
+    	//Drag and Drop of files
+	    var handler = new filehandler.FileHandler('rhythmDrop',['oga','ogg','mp3','wav'],'query/item',getQueryItemCount());
+	    var rhythmIcon = $('nav li[data-mode="rhythm"]');
+	    
+	    uiiface.registerEvent('rhythmDrop','drop',function(event) {
+	    	
+	    	rhythmIcon.addClass('uploading');
+	    	
+	    	$.proxy(handler.handleFiles(event.originalEvent),handler);
+	    	$('#rhythmDrop').removeClass("over");
+	    	
+	    	reset();
+	        attachedModes.push('rhythm');
+	    });
+	    
+	    //Invisible file input
+	    $('#rhythmUpload').change(function(event) {
+	    	
+	    	$.proxy(handler.handleFiles(event),handler);
+
+			event.preventDefault();
+			return false; 
+	    });
+	    
+	    //Trigger button for file input
+	    $('.panel.rhythm button.upload').click(function(){
+	    	
+	        rhythmIcon.addClass('uploading');
+	        
+	    	$('#rhythmUpload').click();
+	    	
+	    	reset();
+	        attachedModes.push('rhythm');
+	    });
+    	
+    };
+
 
     /*
      * Menu behaviour when the query is submitted

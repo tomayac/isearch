@@ -7,9 +7,9 @@ This space is used to build the GUI part of I-SEARCH.
 ##Some info: 
 
 - this is the GUI project for I-SEARCH. It consists of several components which are here
-  splitted in a the client and server folder for a better project structure 
-- the main interface component is names MuSeBag which stands for Multimodal Search Bag. Its
-  mockup is built on top of the amazing HTML5BoilerPlate
+  splitted in a client and server folder for a better project structure 
+- the main interface component is named MuSeBag which stands for Multimodal Search Bag. The
+  prototype is built on top of the amazing HTML5BoilerPlate
 - the build/ test/ crossdomain.xml robots.txt and plugin stub within the client/musebag folder are there for the near future.
   We'll probably need it very soon. But if you ask: yes, they're unuseful right
   now.
@@ -95,13 +95,14 @@ your Linux server:
      `npm install step -g`
    - Install forever module via
      `npm install forever -g`  
+   - Install http-proxy module via
+     `npm install http-proxy -g`    
 4. Create a folder for the I-SEARCH GUI framework on your server under "/var/www/isearch"
 5. Pull this github repository into this folder by changing into the directory "/var/www/isearch" and typing
    `git clone git://github.com/tomayac/isearch.git`
 6. Make sure you reserve 1 public port (default: 80) for the GUI Framework as well as 5 local ports for GUI services (default: 8081,8082,8083,8084,8085)
-7. Please change the paths in the following Javascript files within the repository and replace all "isearch.ai.fh-erfurt.de" and "http://isearch.ai.fh-erfurt.de" with your server URL/IP address:
+7. Please change the paths in the following Javascript file within the repository and replace all "isearch.ai.fh-erfurt.de" and "http://isearch.ai.fh-erfurt.de" with your server URL/IP address:
    server/isearch-proxy.js
-   client/cofetch/js/libs/cofetchHandler.js
 8. Start the server scripts for the GUI framework:
    - change directory to /var/www/isearch/server/pTag
    - enter: `forever start index-ptag.js`

@@ -7,6 +7,8 @@
  * @author Jonas Etzold
  * @company University of Applied Sciences Erfurt
  */
+var restler = require('restler');
+
 this.title = "pTag - Personal Content Tagging Service for I-SEARCH";
 this.name = "pTag";
 this.version = "0.1.0";

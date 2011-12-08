@@ -1,5 +1,7 @@
+require(["jquery","libs/timeline_2.3.0/timeline_js/timeline-api"],
+    function($) {
 ThumbContainer = function(containerDiv, data, options) {	
-
+  
 	$(containerDiv).empty() ;	
 
 	if ( options.thumbSize )	
@@ -123,7 +125,7 @@ p.createCanvas = function()	{
 			var  btn = $("<button/>", { text: ThumbContainer.menuItems[i].text } ).appendTo(mb) ;
 			btn.button( { icons: {	primary: ThumbContainer.menuItems[i].icon }, text: false } ) ;
 			btn.click( (function(item) { 
-							return function() { item.onClick(obj) ; } 
+							return function() { item.onClick(obj) ; }; 
 						})( ThumbContainer.menuItems[i]) ) ;
 		}
 	
@@ -582,7 +584,7 @@ p.createThumbnail = function(i, x, y)
 
     });
 	
-}
+};
 
 // main function for icon arrangement
 p.redraw = function(contentWidth, contentHeight)	
@@ -938,11 +940,11 @@ p.showTimeline = function()
 				
 				function ISODateString(d) {
 					function pad(n){
-						return n<10 ? '0'+n : n
+						return n<10 ? '0'+n : n;
 					}
 					return d.getUTCFullYear()+'-'
 					+ pad(d.getUTCMonth()+1)+'-'
-					+ pad(d.getUTCDate())
+					+ pad(d.getUTCDate());
 				}
 				var dateStr = ISODateString(d) ;
 				
@@ -971,5 +973,7 @@ p.showTimeline = function()
 		resizable: false 
 	}) ;	
 
-} ;
+};
+
+}); //end require
 	

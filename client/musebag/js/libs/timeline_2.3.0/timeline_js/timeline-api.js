@@ -51,7 +51,7 @@
  *                  by browser's and server's locale settings.
  *================================================== 
  */
-
+define("libs/timeline_2.3.0/timeline_js/timeline-api", ["jquery"],
 (function() {
     var useLocalResources = false;
     if (document.location.search.length > 0) {
@@ -168,10 +168,10 @@
             
             var includeJavascriptFiles = function(urlPrefix, filenames) {
                 SimileAjax.includeJavascriptFiles(document, urlPrefix, filenames);
-            }
+            };
             var includeCssFiles = function(urlPrefix, filenames) {
                 SimileAjax.includeCssFiles(document, urlPrefix, filenames);
-            }
+            };
             
             /*
              *  Include non-localized files
@@ -198,7 +198,7 @@
                     }
                 }
                 return false;
-            }
+            };
             var tryLocale = function(locale) {
                 if (tryExactLocale(locale)) {
                     return locale;
@@ -210,7 +210,7 @@
                 }
                 
                 return null;
-            }
+            };
             
             for (var l = 0; l < desiredLocales.length; l++) {
                 tryLocale(desiredLocales[l]);
@@ -263,7 +263,7 @@
             script.language = "JavaScript";
             script.src = url;
             document.getElementsByTagName("head")[0].appendChild(script);
-        }
+        };
 		
 		$.ajax({
 			url: url,
@@ -275,4 +275,5 @@
 		}) ;
 		
     }
-})();
+})()
+);
