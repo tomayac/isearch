@@ -91,7 +91,7 @@
   // curenntly this hack is required to load the library correctly
   
   var Timeline_urlPrefix = "js/libs/timeline_2.3.0/timeline_js/" ;
-  var Timeline_parameters='bundle=false';
+  var Timeline_parameters='bundle=true';
   var SimileAjax_urlPrefix = "js/libs/timeline_2.3.0/timeline_ajax/" ;
   
    $(document).ready(function() {
