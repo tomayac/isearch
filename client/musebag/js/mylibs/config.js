@@ -132,7 +132,7 @@ define("mylibs/config", ["mylibs/tags", "!js/mylibs/visualization/DefaultThumbRe
           alert("Sorry: " + data.error);
           } else {
             console.log("User logged in: " + data);
-            $("#login-status").html("Hello " + data.Email + " <a id=\"logout-user\" href=\"\">[logout]</a>");
+            $("#login-status").html("Hello " + data.Email);
             $("#button-login-settings").find('a:first').text('Logout');
             getUserTags();
           }
