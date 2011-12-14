@@ -665,14 +665,15 @@ footer {
  */
 
 /*smaller screens ______________________________*/
-@media all and (max-width: 479px) {
+@media only screen and (max-width: 479px),
+@media only screen and (max-device-width: 479px) {
   .settings-panel {
     width: 100%;
   }
 }
 
 /*480px ______________________________*/
-@media only screen and (min-width: 480px) {
+@media only screen and (min-width: 481px) {
   .settings-panel {
     width: 480px;
   }
