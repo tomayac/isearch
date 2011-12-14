@@ -36,6 +36,7 @@ $(document).ready(function(){
 		 $(".datatab").hide(); 
 	  } else {
 		 $(".datatab").show();
+		 $("section").show();
 	  }
   });  
     
@@ -93,6 +94,14 @@ $(document).ready(function(){
     return false;
   });
   
+  $("span.delete").click(function(){
+    $(this).parent().hide();
+    var itemNameId = $(this).prev().attr('href');
+    itemNameId = itemNameId.substring(1,itemNameId.length);
+    $('#' + itemNameId + '-name').val('');
+    $('#' + itemNameId).hide();
+  });
+  
   $("#previous").click(function(){
     //Load the previous co
 	var prev = cofetchHandler.setPrevious();  
@@ -121,9 +130,9 @@ $(document).ready(function(){
   
   $("#save").click(function(e){
 	
-	e.preventDefault();  
+    e.preventDefault();  
 	
-	//post JSON to the correct handler server
+    //post JSON to the correct handler server
     cofetchHandler.save();
     
     return false;

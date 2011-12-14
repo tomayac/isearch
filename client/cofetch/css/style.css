@@ -523,6 +523,19 @@ header nav button[disabled="disabled"] {
 	background-color: #555;
 }
 
+.ui-tabs .ui-tabs-nav li span.delete {
+  color: #AA0000;
+  cursor: pointer;
+  font-weight: bold;
+  padding-right: 0.4em;
+  padding-top: 0.6em;
+  vertical-align: middle;
+}
+
+.ui-tabs .ui-tabs-nav li a.reduced {
+  padding-right: 0.4em;
+}
+
 footer,.push {
 	height: 30px; /* .push must be the same height as .footer */
 }
@@ -537,7 +550,7 @@ footer {
 }
 
 #main {
-	width: 750px;
+	width: 770px;
 	margin: 200px auto;
 	margin-bottom: 20px;
 }

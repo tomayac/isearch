@@ -1,8 +1,23 @@
 //var skp = require('./sketchup');
-//var yt = require('./youtube');
+var yt = require('./youtube');
 //var fs = require('./freesound');
 //var mdb = require('./modeldb');
 //var dbpedia = require('./dbpedia');
+//var weather = require('./wunderground');
+//var flickr = require('./flickr');
+
+//flickr.fetchImage('red cat',1,function(error, data) {
+//  if(error) {
+//    console.log('Error: '+error);
+//    return;
+//  }
+//  console.log(data);
+//});
+
+//weather.fetchWeather({Date: '1999-12-11 15:19:05', Location: [41.738528,42.13623]}, function(error, data) {
+//  console.log('error: '+error);
+//  console.log(data);
+//});
 
 //skp.fetchThreed('cow', function(error, data){
 //  //results is now filled in with 3d models from google warehouse
@@ -10,16 +25,23 @@
 //});
 
 //Uncomment this if you want to test Video
-//yt.fetchVideo('cow', function(error, data){
-//  //results is now filled in with YouTube videos
-//  console.log(data);
-//});
+yt.fetchVideo('cow', 1, function(error, data){
+  if(error) {
+    console.log('Error: '+error);
+    return;
+  }
+  //results is now filled in with the sounds
+  console.log(data);
+});
 
 //Uncomment that if you want to test Audio
-//var audioResults = [];
-//fs.fetch('cow', audioResults, true, function(error, data){
+//fs.fetchSound('cow', 1, function(error, data){
+//  if(error) {
+//    console.log('Error: '+error);
+//    return;
+//  }
 //  //results is now filled in with the sounds
-//  console.log(audioResults);
+//  console.log(data);
 //});
 
 //Uncomment that one to test dbpedia
@@ -34,7 +56,8 @@ var coJson = {"ID":1,"Name":"Blue Marlin","Screenshot":"http://gdv.fh-erfurt.de/
 rucod.store(coJson,1,function(info) {
 	 console.log(info);
 });*/
-
+// Test for best match selection
+/*
 var tq = "Samurai Sword";
 var tr = [{Name: "Samurai Swords"},
           {Name: "Samurai Swords"},
@@ -177,4 +200,61 @@ getBestMatch(tq, tr, function(error, data) {
 	}
 	console.log("The closest result:" + data[0].Name);
 	console.log("The second closest result:" + data[1].Name);
+});*/
+//Test get youtube video source
+/*
+var restler = require('restler'),
+    querystring = require('querystring');
+
+var getVideoSourceUrl = function(youtubeLink, id, callback) {
+
+  var result = false;
+
+  var videoId = youtubeLink.substr(youtubeLink.lastIndexOf('=') + 1);
+  var infoUrl = 'http://youtube.com/get_video_info?video_id=' + videoId;
+
+  restler
+  .get(infoUrl)
+  .on('complete', function(data) {    
+    try {
+      var vInfoResponse = querystring.parse(data);
+      
+      if (vInfoResponse['status'] === "fail") {
+        throw 'The video seems to be unavaiable in your country. Please choose another one.';
+      }
+
+      var vInfoUrls = vInfoResponse['url_encoded_fmt_stream_map'].split(',');
+      var vDataUrl = '';
+
+      for ( var u = 0; u < vInfoUrls.length; u++) {
+        vInfoUrls[u] = decodeURIComponent(vInfoUrls[u].replace(/\+/g, " "));
+        //get everything after 'url=' 
+        vInfoUrls[u] = vInfoUrls[u].substring(
+                vInfoUrls[u].indexOf('=') + 1,
+                vInfoUrls[u].lastIndexOf(';') < 0 ? vInfoUrls[u].length : vInfoUrls[u].lastIndexOf(';')
+        );
+        //get the right video format
+        if (vInfoUrls[u].indexOf('video/mp4') > 0) {
+          callback(null, id, decodeURIComponent(vInfoUrls[u]));
+          break;
+        }
+      }
+      
+    } catch (error) {
+      callback(error, id, null);
+    }
+  })
+  .on('error', function(error) {
+    callback(error, id, null);
+  }); 
+
+};
+
+getVideoSourceUrl('http://www.youtube.com/watch?v=hBUdimWVcyw', 0, function(error, id, data) {
+  if(error) {
+    console.log('Error ' + id + ': ' + error);
+    return;
+  }
+  console.log('Data ' + id + ': ' + data);
 });
+*/
