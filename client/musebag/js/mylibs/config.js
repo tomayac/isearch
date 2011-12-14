@@ -250,6 +250,7 @@ define("mylibs/config", ["mylibs/tags", "!js/mylibs/visualization/DefaultThumbRe
 
       		if(!data.error) {
       			$("#login-status").html("Hello " + data.Email);
+      			$("#button-login-settings").find('a:first').text('Logout');
       			getUserTags();
       		}
     	  },
