@@ -275,12 +275,43 @@ nav {
 	padding: 5px;
 	background-color: #444;
 	color: white;
-	text-align: right;
+	min-height: 1.3em;
 }
 
-#settings a {
+#settings ul {
+  position: relative;
+  top: -5px;
+  left: 5px;
+  z-index: 5;
+  margin: 0;
+  padding: 0;
+  float: right;
+}
+
+#settings ul li {
+  list-style: none;
+  float: left;
+  height: 2.6em;
+  padding: 0.1em 1em;
+  
+  background-color: #444;
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 4px;
+  box-shadow: 1px -1px 5px #ccc;
+}
+
+#settings ul li:hover {
+  background-color: #888;
+}
+
+#settings ul li a {
 	color: white;
-	display: block;
+	text-decoration: none;
+	line-height: 2.6em;
+}
+
+#settings ul li a img {
+  height: 2.4em;
 }
 
 #settings span {
@@ -291,36 +322,48 @@ nav {
 	display: inline;
 }
 
-#settings-panel {
-	background-color: #666;
-	border-bottom: 1px #999 solid;
-	color: white;
-	padding: 10px;
-	display: none;
-	overflow: hidden;
+#settings .active,
+#settings .active a,
+#settings .active:hover {
+  background-color: #caa;
+  background-image: none;
 }
 
-#settings-panel .setting {
+.settings-panel {
+  position: absolute;
+  top: 2.0em;
+  right: 0;
+  z-index: 3;
+    
+	background-color: #666;
+	color: white;
+	box-shadow: 0px 0px 3px #111;
+  border-bottom-left-radius: 4px;
+	
+	padding: 1em 2em 0.8em 3em;
+	display: none;
+}
+
+.settings-panel .setting {
 	float: left;
 	margin-right: 10px;
 }
 
-#settings-panel .float-button {
+.settings-panel .float-button {
 	float: left;
-	margin-right: 50px;
+	margin-right: 10px;
 }
 
-#settings-panel label,#settings-panel input,#settings-panel button,#settings-panel select
-	{
+.settings-panel label,.settings-panel input,.settings-panel button,.settings-panel select {
 	display: block;
 }
 
-#settings-panel button {
+.settings-panel button {
 	padding: 0.5em 0.35em;
 	margin-top: 0.5em;
 }
 
-#settings-panel input,#settings-panel select {
+.settings-panel input,.settings-panel select {
 	padding: 0.2em;
 	margin-bottom: 1em;
 	border-bottom: 1px solid #ccc;
@@ -621,8 +664,18 @@ footer {
  * Media queries for responsive design.
  */
 
+/*smaller screens ______________________________*/
+@media all and (max-width: 479px) {
+  .settings-panel {
+    width: 100%;
+  }
+}
+
 /*480px ______________________________*/
 @media only screen and (min-width: 480px) {
+  .settings-panel {
+    width: 480px;
+  }
 }
 
 /*768px ______________________________ */
