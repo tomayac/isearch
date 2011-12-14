@@ -274,7 +274,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 	rucod.exists(keyword, categoryPath, function(data) {
 	  if(data != undefined) {
 	    console.log("LOADED: query data for '" + keyword +"'.");
-		  callback(null,data);
+		  callback(null,data,index);
 	  } else {
   		console.log("LOAD: data for query '" + keyword +"'...");
   	
@@ -485,11 +485,11 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
   					console.log('Finished with CO "' + contentObject.Name + '"!');
   					
   					//Return the collected content object
-  					callback(null, contentObject);
+  					callback(null, contentObject, index);
   				}
   			); //End step function
   		} catch(e) {
-  			callback(e.message, null);
+  			callback(e.message, null, index);
   		}
   	} //End exists if
 	}); //End rucod.exists function
