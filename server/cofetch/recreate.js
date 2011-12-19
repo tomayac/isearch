@@ -41,8 +41,8 @@ walk(basepath, function(err, results) {
   
   var endtest = function() {
     if((errorcount+processed) == jsoncount) {
-      console.log('json: ' + jsoncount + ' xml: ' + countxml + ' processed: ' + processed + ' errors: ' + errorcount);
       console.log(errorlist);
+      console.log('json: ' + jsoncount + ' xml: ' + countxml + ' processed: ' + processed + ' errors: ' + errorcount);
     }
   };  
   
@@ -69,7 +69,7 @@ walk(basepath, function(err, results) {
           }
         });
       } catch (e) {
-        errorlist += 'Recreate error : '+ e.message + '\n';
+        errorlist += 'Recreate error in ' + file + ': ' + e.message + '\n';
         errorcount++;
         endtest();
       }
