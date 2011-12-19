@@ -66,6 +66,14 @@ var getISODateString = function(d) {
       + pad(d.getUTCMinutes()) + ':' + pad(d.getUTCSeconds()) + 'Z';
 };
 
+var encodeXml = function(s) {
+  return (s
+      .replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&apos;')
+      .replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/\t/g, '&#x9;').replace(/\n/g, '&#xA;').replace(/\r/g, '&#xD;')
+  );
+};
+
 var getVideoSourceUrl = function(youtubeLink, id, callback) {
 
   var result = false;
@@ -245,8 +253,7 @@ exports.publishRUCoD = function(data, outputPath, webOutputUrl, automatic, callb
   var uniqueTags = tagArray.unique();
   // and print the tags into the header
   for ( var t = 0; t < uniqueTags.length; t++) {
-    rucodBody += '<MetaTag name="UserTag" type="xsd:string">'
-        + uniqueTags[t] + '</MetaTag>';
+    rucodBody += '<MetaTag name="UserTag" type="xsd:string">' + encodeXml(uniqueTags[t]) + '</MetaTag>';
   }
 
   rucodBody += '</Tags>';
@@ -268,17 +275,17 @@ exports.publishRUCoD = function(data, outputPath, webOutputUrl, automatic, callb
       rucodBody += '<MultimediaContent type="' + data.Files[f].Type + '">';
       if (data.Files[f].Type == 'Text') {
         if(typeof(data.Files[f].FreeText) == 'string') {
-          rucodBody += '<FreeText>' + data.Files[f].FreeText.replace(/&/g, '&amp;') + '</FreeText>';
+          rucodBody += '<FreeText>' + encodeXml(data.Files[f].FreeText) + '</FreeText>';
         } else {
-          rucodBody += '<FreeText>' + data.Files[f].Name + '</FreeText>';
+          rucodBody += '<FreeText>' + encodeXml(data.Files[f].Name) + '</FreeText>';
         }
       } else {
         
         if (data.Files[f].Description) {
-          rucodBody += '<FreeText>' + data.Files[f].Description.replace(/&/g, '&amp;') + '</FreeText>';
+          rucodBody += '<FreeText>' + encodeXml(data.Files[f].Description) + '</FreeText>';
         }
         
-        rucodBody += '<MediaName>' + data.Files[f].Name + '</MediaName>';
+        rucodBody += '<MediaName>' + encodeXml(data.Files[f].Name) + '</MediaName>';
         
         if (mime[data.Files[f].Extension]) {
           rucodBody += '<FileFormat>' + mime[data.Files[f].Extension]
@@ -287,7 +294,7 @@ exports.publishRUCoD = function(data, outputPath, webOutputUrl, automatic, callb
         
         for ( var t = 0; t < data.Files[f].Tags.length; t++) {
           rucodBody += '<MetaTag name="UserTag" type="xsd:string">'
-              + data.Files[f].Tags[t] + '</MetaTag>';
+              + encodeXml(data.Files[f].Tags[t]) + '</MetaTag>';
         }
         
         rucodBody += '<MediaLocator>';
@@ -297,17 +304,17 @@ exports.publishRUCoD = function(data, outputPath, webOutputUrl, automatic, callb
         
         rucodBody += '<MediaCreationInformation>';
         rucodBody += '<Author>';
-        rucodBody += '<Name>' + data.Files[f].Author.replace(/&/g, '&amp;') + '</Name>';
+        rucodBody += '<Name>' + encodeXml(data.Files[f].Author) + '</Name>';
         rucodBody += '</Author>';
         rucodBody += '<Licensing>' + data.Files[f].License + '</Licensing>';
         rucodBody += '</MediaCreationInformation>';     
         
         if (data.Files[f].Size) {
-          rucodBody += '<Size>' + data.Files[f].Size + '</Size>';
+          rucodBody += '<Size>' + Math.ceil(data.Files[f].Size) + '</Size>';
         }
         
         if (data.Files[f].Length) {
-          rucodBody += '<MediaTime>' + data.Files[f].Length + '</MediaTime>';
+          rucodBody += '<MediaTime>' + Math.ceil(data.Files[f].Length) + '</MediaTime>';
         }
 
       }
