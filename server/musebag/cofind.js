@@ -31,10 +31,14 @@ var users = [];
 /**
  * private functions
  */
-var setupFunctions = function() {
-  if(!everyone) {
-    return;
-  }
+
+/**
+ * public functions
+ */
+exports.initialize = function(server) {
+  //Initialize now.js which is the base for CoFind
+  everyone = now.initialize(server);
+  console.log("Register CoFind functions...");
   //setup all functions needed for CoFind
   everyone.now.registerUser = function(email){
     console.log('Register: ' + email + '(' + this.user.clientId + ')');
@@ -45,15 +49,6 @@ var setupFunctions = function() {
     everyone.now.triggerInvitation(email);
   };
   
-};
-
-/**
- * public functions
- */
-exports.initialize = function(server) {
-  //Initialize now.js which is the base for CoFind
-  everyone = now.initialize(server);
-  setupFunctions();
 };
 
 
