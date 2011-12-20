@@ -64,8 +64,6 @@ define("mylibs/cofind", ["libs/modernizr-2.0.min", "/nowjs/now.js"], function(){
       $(options.addButtonTo + ":last-child").before(buttonSnippet);
     }
     if($(options.addSettingsTo)) {
-      console.log(options.addSettingsTo);
-      console.log($(options.addSettingsTo));
       $(options.addSettingsTo + ":last").after(settingSnippet);
     }
     if($(options.addWorkspaceTo)) {
@@ -76,6 +74,7 @@ define("mylibs/cofind", ["libs/modernizr-2.0.min", "/nowjs/now.js"], function(){
     $("#button-cofind-settings").click(function(){
       if($("#button-cofind-settings").hasClass('active')) {
         if(inviteUser($("#cofind-settings").find("#cofind-email").val())) {
+          $("#cofind-settings").hide(animationTime);
           options.messageCallback("Invitation sent...","info");
         } else {
           $("#cofind-settings").hide(animationTime);
