@@ -312,7 +312,9 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "!js/mylibs/visualizati
           });
         }
         event.stopPropagation();
-
+      });
+      panels.settings.click(function(event) {
+        event.stopPropagation();
       });
       
       panels.login = $("#login-settings");
@@ -338,6 +340,9 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "!js/mylibs/visualizati
           handleLogout();
           $("#button-login-settings").removeClass('active');
         }
+        event.stopPropagation();
+      });
+      panels.login.click(function(event) {
         event.stopPropagation();
       });
 
