@@ -391,6 +391,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "!js/mylibs/visualizati
     
     //Public variables and functions
     return {
+      constants : constants,
       set: set,
       initPanel: initPanel
     };
