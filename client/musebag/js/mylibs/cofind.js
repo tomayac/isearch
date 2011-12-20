@@ -102,6 +102,7 @@ define("mylibs/cofind", ["libs/modernizr-2.0.min", "/nowjs/now.js"], function(){
   };
   
   var remove = function() {
+    //need to trigger a disconnect function on the server instead of doing this:
     now.core.socketio.disconnect();
     
     $('button-cofind-settings').remove();
