@@ -1,7 +1,7 @@
 /*
  *  CoFind Client
  */
-define("mylibs/cofind", ["libs/modernizr-2.0.min", "/nowjs/now", "mylibs/config"], function(now, config){
+define("mylibs/cofind", ["libs/modernizr-2.0.min", "/nowjs/now.js", "mylibs/config"], function(now, config){
   
   //Static HTML snippets for CoFind interface
   var buttonSnippet = '<li id="button-cofind-settings"><a href="#"><img src="img/collaborate.png" alt="Collaborate" title="Collaboration panel" style="max-height: 31px;"></a></li>';
