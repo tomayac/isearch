@@ -66,7 +66,7 @@ define("mylibs/cofind", ["libs/modernizr-2.0.min", "/nowjs/now.js"], function(){
     if($(options.addSettingsTo)) {
       console.log(options.addSettingsTo);
       console.log($(options.addSettingsTo));
-      $(options.addSettingsTo + ":last-child").append(settingSnippet);
+      $(options.addSettingsTo + ":last").after(settingSnippet);
     }
     if($(options.addWorkspaceTo)) {
       $(options.addWorkspaceTo).append(generalSnippet);
