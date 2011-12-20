@@ -163,10 +163,11 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "!js/mylibs/visualizati
       $("#login-status").html("Hello " + data.Email);
       $("#button-login-settings").find('a:first').text('Logout');
       var cofindOptions = {
-         addButtonTo   : '#settings ul li',
-         addSettingsTo : '.settings-panel',
-         addWorkspaceTo: '#container'
-         
+         addButtonTo     : '#settings ul li',
+         addSettingsTo   : '.settings-panel',
+         addWorkspaceTo  : '#container',
+         panels          : panels,
+         messageCallback : sendNotifyMessage  
       };
       cofind.setup(cofindOptions);
       getUserTags();
@@ -390,10 +391,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "!js/mylibs/visualizati
     
     //Public variables and functions
     return {
-      constants: constants,
-      panels : panels,
       set: set,
-      sendNotifyMessage : sendNotifyMessage,
       initPanel: initPanel
     };
     
