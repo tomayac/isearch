@@ -64,10 +64,11 @@ define("mylibs/cofind", ["libs/modernizr-2.0.min", "/nowjs/now.js"], function(){
       $(options.addButtonTo + ":last-child").before(buttonSnippet);
     }
     if($(options.addSettingsTo)) {
+      console.log($(options.addSettingsTo + ":last-child"));
       $(options.addSettingsTo + ":last-child").append(settingSnippet);
     }
     if($(options.addWorkspaceTo)) {
-      $(options.addWorkspaceTo + ":last-child").append(generalSnippet);
+      $(options.addWorkspaceTo).append(generalSnippet);
     }
     
     //register mouse events to CoFind settings
