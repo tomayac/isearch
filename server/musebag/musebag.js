@@ -188,7 +188,6 @@ exports.setProfile = function(req, res) {
       try {
         //check if new settings are already in the session storage
         var newSettings = JSON.parse(data);
-        console.log(sessionStore[attrib]);
         var settings = JSON.parse(sessionStore[attrib]);
         
         for (var key in newSettings) {

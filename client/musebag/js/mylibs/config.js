@@ -186,10 +186,12 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "!js/mylibs/visualizati
       var mr = parseInt(panels.settings.find("#max-num-results").val());
       var ts = parseInt(panels.settings.find("#icon-size option:selected").val());
       var vm = panels.settings.find("#visualization-method option:selected").val();
+      console.log(constants.maxNumResults + ' - ' + mr);
+      console.log(constants.visOptions.thumbSize + ' - ' + ts);
       console.log(constants.visOptions.method + ' - ' + vm);
       if(constants.maxNumResults == mr &&
          constants.visOptions.thumbSize == ts &&
-         constants.visOptions.method == vm) 
+         constants.visOptions.method === vm) 
       {
         return;
       }  
@@ -305,6 +307,9 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "!js/mylibs/visualizati
           panels.hide(constants.slideDownAnimationTime);
           panels.settings.show(constants.slideUpAnimationTime);
           $("#button-global-settings").addClass('active');
+          $("body").one("click", function() {
+            panels.settings.hide(constants.slideDownAnimationTime);
+          });
         }
       });
       
@@ -323,6 +328,9 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "!js/mylibs/visualizati
             panels.hide(constants.slideDownAnimationTime);
             panels.login.show(constants.slideUpAnimationTime);
             $("#button-login-settings").addClass('active');
+            $("body").one("click", function() {
+              panels.login.hide(constants.slideDownAnimationTime);
+            });
           }
         } else {
           handleLogout();
@@ -352,11 +360,6 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "!js/mylibs/visualizati
           }
           return false;
         }
-      });
-      
-      panels.settings.blur( function() {
-        console.log('blurrring...');
-        handleSettingsSave();
       });
       
       //Get the user name if available
