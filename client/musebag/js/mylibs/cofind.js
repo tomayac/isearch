@@ -50,6 +50,12 @@ define("mylibs/cofind", ["libs/modernizr-2.0.min", "/nowjs/now.js"], function(){
       throw 'CoFind needs appropriate setup parameters in order to work.';
     }
     
+    //Try to register the user for CoFind
+    if(options.userEmail) {
+      registerUser(options.userEmail);
+    }
+    
+    //Attach the GUI for CoFind
     var animationTime = options.animationTime || 200;
     
     if($(options.addButtonTo)) {
@@ -96,6 +102,8 @@ define("mylibs/cofind", ["libs/modernizr-2.0.min", "/nowjs/now.js"], function(){
   };
   
   var remove = function() {
+    now.core.socketio.disconnect();
+    
     $('button-cofind-settings').remove();
     $('cofind-settings').remove();
     $('cofind-resultbag').remove();

@@ -163,6 +163,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "!js/mylibs/visualizati
       $("#login-status").html("Hello " + data.Email);
       $("#button-login-settings").find('a:first').text('Logout');
       var cofindOptions = {
+         userEmail       : data.Email, 
          addButtonTo     : '#settings ul li',
          addSettingsTo   : '.settings-panel',
          addWorkspaceTo  : '#container',
