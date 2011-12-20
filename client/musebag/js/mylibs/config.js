@@ -64,8 +64,8 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "!js/mylibs/visualizati
     var sendNotifyMessage = function(msg,type) {
       var type = type || 'info';
       var msgHtml = '<p class="' + type + '">' + msg + '</p>';
-      panels.messages.html(msgHtml);
-      panels.messages.show(constants.slideUpAnimationTime).delay(3000).hide(constants.slideDownAnimationTime);
+      $("#messages").html(msgHtml);
+      $("#messages").show(200).delay(3000).hide(200);
     }; 
     
     //Get tag recommendations for the user which is logged in
