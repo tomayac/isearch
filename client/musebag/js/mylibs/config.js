@@ -298,7 +298,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "!js/mylibs/visualizati
       
       panels.settings = $("#global-settings");
       panels.settings.hide();
-      $("#button-global-settings").click(function(){
+      $("#button-global-settings").click(function(event){
         if($("#button-global-settings").hasClass('active')) {
           handleSettingsSave();
           panels.settings.hide(constants.slideDownAnimationTime);
@@ -311,11 +311,13 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "!js/mylibs/visualizati
             panels.settings.hide(constants.slideDownAnimationTime);
           });
         }
+        event.stopPropagation();
+
       });
       
       panels.login = $("#login-settings");
       panels.login.hide();
-      $("#button-login-settings").click(function(){
+      $("#button-login-settings").click(function(event){
         if($("#button-login-settings").find('a:first').text() == 'Login') {
           if($("#button-login-settings").hasClass('active')) {
             if(panels.login.find("#email").val().length > 0 || panels.login.find("#pw").val().length > 0) {
@@ -336,6 +338,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "!js/mylibs/visualizati
           handleLogout();
           $("#button-login-settings").removeClass('active');
         }
+        event.stopPropagation();
       });
 
       //Listen to keypress click to change settings
