@@ -2,7 +2,7 @@
  *  CoFind Client
  */
 define("mylibs/cofind", ["libs/modernizr-2.0.min", "/nowjs/now.js", "mylibs/config"], function(config){
-  console.log(now);
+
   //Static HTML snippets for CoFind interface
   var buttonSnippet = '<li id="button-cofind-settings"><a href="#"><img src="img/collaborate.png" alt="Collaborate" title="Collaboration panel" style="max-height: 31px;"></a></li>';
   var settingSnippet = '<div class="settings-panel" id="cofind-settings"><form method="post" action="#" class="clearfix"><p>Just enter the Email address of a friend with which you would like to share your results.</p><section class="setting"><label for="email">Invite Email</label><input type="text" id="cofind-email" name="email" /></section><button id="invite-user" class="float-button">Invite</button></form></div>  ';

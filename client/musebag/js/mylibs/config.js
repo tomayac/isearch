@@ -308,7 +308,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "!js/mylibs/visualizati
           panels.settings.show(constants.slideUpAnimationTime);
           $("#button-global-settings").addClass('active');
           $("body").one("click", function() {
-            panels.settings.hide(constants.slideDownAnimationTime);
+            $("#button-global-settings").click();
           });
         }
         event.stopPropagation();
@@ -331,7 +331,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "!js/mylibs/visualizati
             panels.login.show(constants.slideUpAnimationTime);
             $("#button-login-settings").addClass('active');
             $("body").one("click", function() {
-              panels.login.hide(constants.slideDownAnimationTime);
+              $("#button-login-settings").click();
             });
           }
         } else {
