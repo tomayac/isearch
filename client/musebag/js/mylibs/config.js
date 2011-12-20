@@ -182,20 +182,20 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "!js/mylibs/visualizati
     };
     
     var handleSettingsSave = function() {
-      console.log('save setting');
+      //console.log('save setting');
       var mr = parseInt(panels.settings.find("#max-num-results").val());
       var ts = parseInt(panels.settings.find("#icon-size option:selected").val());
       var vm = panels.settings.find("#visualization-method option:selected").val();
-      console.log(constants.maxNumResults + ' - ' + mr);
-      console.log(constants.visOptions.thumbSize + ' - ' + ts);
-      console.log(constants.visOptions.method + ' - ' + vm);
+      //console.log(constants.maxNumResults + ' - ' + mr);
+      //console.log(constants.visOptions.thumbSize + ' - ' + ts);
+      //console.log(constants.visOptions.method + ' - ' + vm);
       if(constants.maxNumResults == mr &&
          constants.visOptions.thumbSize == ts &&
          constants.visOptions.method === vm) 
       {
         return;
       }  
-      console.log('its not the same');
+      //console.log('its not the same');
       set('maxNumResults', mr);
       set('visOptions.thumbSize', ts);
       set('visOptions.method', vm);
