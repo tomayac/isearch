@@ -13,6 +13,10 @@ define("mylibs/cofind", ["libs/modernizr-2.0.min", "/nowjs/now.js"], function(){
   //CoFind options
   var options = {};
   
+  now.ready(function(){
+    console.log('Now Im reeady---');
+  });
+  
   //Registers a logged in user for the use of CoFind
   var registerUser = function(email) {
     
