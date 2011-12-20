@@ -1,6 +1,107 @@
 /*
  *  CoFind Client
  */
-define("mylibs/cofind", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
-
+define("mylibs/cofind", ["libs/modernizr-2.0.min", "nowjs/now", "mylibs/config"], function(now, config){
+  
+  //Static HTML snippets for CoFind interface
+  var buttonSnippet = '<li id="button-cofind-settings"><a href="#"><img src="img/collaborate.png" alt="Collaborate" title="Collaboration panel" style="max-height: 31px;"></a></li>';
+  var settingSnippet = '<div class="settings-panel" id="cofind-settings"><form method="post" action="#" class="clearfix"><p>Just enter the Email address of a friend with which you would like to share your results.</p><section class="setting"><label for="email">Invite Email</label><input type="text" id="cofind-email" name="email" /></section><button id="invite-user" class="float-button">Invite</button></form></div>  ';
+  var generalSnippet = '<div class="bottom-overlay" id="cofind-resultbag"></div>';
+  
+  //RegEx for testing a valid email
+  var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  //CoFind options
+  var options = {};
+  
+  //Registers a logged in user for the use of CoFind
+  var registerUser = function(email) {
+    
+    if(re.test(email)) {
+      console.log('Now.js register...');
+      now.registerUser(email);
+      return true;
+    } else {
+      return false;
+    }
+  };
+  
+  //Invites a registered user to a CoFind session
+  var inviteUser = function(email) {
+    
+    if(re.test(email)) {
+      console.log('Now.js login...');
+      now.inviteUser(email);
+      return true;
+    } else {
+      return false;
+    }
+    
+  };
+  
+  now.triggerInvitation = function(email) {
+    console.log('You got an invitation from ' + email);
+  };
+  
+  var setup = function(options) {
+    
+    var constants = config.constants || { slideDownAnimationTime : 200, slideUpAnimationTime : 200 };
+    options = (options && typeof(options) == 'object') ? options : null; 
+    if(!options) {
+      throw 'CoFind needs appropriate setup parameters in order to work.';
+    }
+    
+    if($(options.addButtonTo)) {
+      $(options.addButtonTo + ":last-child").before(buttonSnippet);
+    }
+    if($(options.addSettingsTo)) {
+      $(options.addSettingsTo + ":last-child").append(settingSnippet);
+    }
+    if($(options.addWorkspaceTo)) {
+      $(options.addWorkspaceTo + ":last-child").append(generalSnippet);
+    }
+    
+    //register mouse events to CoFind settings
+    $("#button-cofind-settings").click(function(){
+      if($("#button-cofind-settings").hasClass('active')) {
+        if(inviteUser($("#cofind-settings").find("#cofind-email").val())) {
+          config.sendNotifyMessage("Invitation sent...","info");
+        } else {
+          $("#cofind-settings").hide(constants.slideDownAnimationTime);
+        }
+        $("#button-cofind-settings").removeClass('active');
+      } else {
+        config.panels.hide(constants.slideDownAnimationTime);
+        $("#cofind-settings").show(constants.slideUpAnimationTime);
+        $("#button-cofind-settings").addClass('active');
+      }
+    });
+    //register enter key down to
+    $("#cofind-settings form").keypress(function(event) {
+      if ( event.which == 13 ) {
+        event.preventDefault();
+        
+        if($("#button-cofind-settings").hasClass('active')) {
+          if(inviteUser($("#cofind-settings").find("#cofind-email").val())) {
+            config.sendNotifyMessage("Invitation sent...","info");
+          } else {
+            $("#cofind-settings").hide(constants.slideDownAnimationTime);
+          }
+          $("#button-cofind-settings").removeClass('active');
+        }
+        return false;
+      }
+    });
+  };
+  
+  var remove = function() {
+    $('button-cofind-settings').remove();
+    $('cofind-settings').remove();
+    $('cofind-resultbag').remove();
+  };
+  
+  return {
+    setup : setup,
+    remove: remove
+  };
+  
 });

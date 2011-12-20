@@ -70,12 +70,34 @@ var distributeFile = function(destinationUrl, callParams, fileInfo, callback) {
       
       callback(null,fileInfo);
     })
-    .on('error', function(error) {
-      msg.error = error;
+   .on('error', function(data,response) {
+      msg.error = response.message;
       callback(msg,null);
     });
     
   }); //end function fs.readFile
+};
+
+var isGuest = function(req) {
+  //Does a user is logged in?
+  if(req.session.user.ID == 'guest') {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+var getSessionStore = function(req) {
+  //Does a user is logged in?
+  if(!req.session.user) {
+    //If not create an guest session store
+    req.session.user = { 
+      ID : 'guest',
+      Settings : '{"maxResults" : 100}'
+    };
+  };
+    
+  return req.session.user;
 };
 
 /**
@@ -105,8 +127,8 @@ exports.login = function(req, res){
       res.send(JSON.stringify(data.user));
     }
 	})
-	.on('error', function(error) {
-		msg.error = error;
+	.on('error', function(data,response) {
+		msg.error = response.message;
 		res.send(JSON.stringify(msg));
 	});
 	
@@ -133,25 +155,116 @@ exports.logout = function(req, res) {
 exports.profile = function(req, res) {
 	
 	var attrib = req.params.attrib;
-	
-	//Does a user is logged in?
-	if(!req.session.user) {
-		res.send(JSON.stringify({error : 'You are not logged in!'}));
-		return;
-	}
+	//Get the right session storage (depending on log in status - guest if not, user if yes)
+	var sessionStore = getSessionStore(req);
+
 	//Does the requested profile attribute is available
-	if(req.session.user[attrib]) {
+	if(sessionStore[attrib]) {
 		var data = {};
-		data[attrib] = req.session.user[attrib];
+		data[attrib] = sessionStore[attrib];
 		res.send(JSON.stringify(data));
 	} else {
 		res.send(JSON.stringify({error : 'The requested user profile attribute is not available!'}));
 	}
 };
 
+exports.setProfile = function(req, res) {
+  
+  console.log("Set profile function called...");
+  
+  var attrib = req.params.attrib;
+  //get post data
+  var data   = req.body.data;
+  //Get the right session storage (depending on log in status - guest if not, user if yes)
+  var sessionStore = getSessionStore(req);
+  
+  //Does the requested profile attribute is available
+  if(sessionStore[attrib] && data.length > 0) {
+    
+    var changed = false;
+    
+    if(attrib === 'Settings') {
+      //treat user settings in JSON format
+      try {
+        //check if new settings are already in the session storage
+        var newSettings = JSON.parse(data);
+        console.log(sessionStore[attrib]);
+        var settings = JSON.parse(sessionStore[attrib]);
+        
+        for (var key in newSettings) {
+          if(!settings[key] || settings[key] !== newSettings[key]) {
+            settings[key] = newSettings[key];
+            changed = true;
+          }
+        } 
+        
+        //ok, the settings object is updated, so transform it back to a JSON string
+        //and store it in the session
+        sessionStore[attrib] = JSON.stringify(settings);
+        
+      } catch(e) {
+        res.send(JSON.stringify({error : 'malformed'}));
+        return;
+      }
+    } else {
+      //Set the profile attribute to the new value as long as it is a logged in user
+      if(sessionStore[attrib] !== data && !isGuest(req)) {
+        sessionStore[attrib] = data;
+        changed = true;
+      }
+    }
+
+    //If nothing changed we don't need to go on
+    if(!changed) {
+      res.send(JSON.stringify({error : 'nochange'}));
+      return;
+    }
+    
+    if(isGuest(req)) {
+      //if it's a guest user we don't store the information in the profile (it is stored already in the session)
+      res.send(JSON.stringify({info : 'guest'}));
+      return;
+    } else { 
+  
+      //if we have a logged in user, we store everything in the profile
+      var storeURL = "http://gdv.fh-erfurt.de/i-search/apc-dummy/index.php?"
+        + 'f=profileData';
+      
+      var callData = {
+          "userid" : sessionStore['ID'],
+          "data"   : sessionStore[attrib]
+      };
+      //save the user data in the user profile
+      restler
+      .post(storeURL, { 
+        data     : callData
+      })
+      .on('complete', function(data) {         
+        //Check if return data is ok
+        if(!data.success) {
+          msg.error = data.error;
+          res.send(JSON.stringify(msg));
+        } else {
+          //Notify client about success full save
+          res.send(JSON.stringify(data));
+        }
+      })
+      .on('error', function(data,response) {
+        msg.error = response.message;
+        res.send(JSON.stringify(msg));
+      });
+    } //end if guest
+  } else {
+    res.send(JSON.stringify({error : 'unknown parameter to set'}));
+    return;
+  }//end if requested profile attribute is available
+};
+
 exports.query = function(req, res) {
 	
 	console.log("Query function called...");
+	//Compose the query
+	
 	
 };
 

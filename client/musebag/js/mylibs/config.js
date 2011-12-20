@@ -1,5 +1,5 @@
-define("mylibs/config", ["mylibs/tags", "!js/mylibs/visualization/DefaultThumbRenderer.js"],
-  function(tags) {
+define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "!js/mylibs/visualization/DefaultThumbRenderer.js"],
+  function(tags,cofind) {
     
     var constants = {
       //Menu parameters
@@ -16,18 +16,21 @@ define("mylibs/config", ["mylibs/tags", "!js/mylibs/visualization/DefaultThumbRe
 
       //Visualization parameters  
   	  visOptions: {
-    		method: "tmap", //tmap, htree, hpan or classic
-    		thumbSize: 64, //16, 32, 48, 64
+    		method: "classic", //tmap, htree, hpan or classic
+    		thumbSize: 64, //16, 32, 48, 64, 128
     		iconArrange: "grid",
     		thumbRenderer: new DefaultThumbRenderer
     	}
     };
     
     var panels = {
+        messages : null,
         settings : null,
         login : null,
         hide : function(speed) {
-          if(this.settings) {
+          $('.settings-panel').hide(speed);
+          $(".settings ul li").removeClass('active');
+          /*if(this.settings) {
             this.settings.hide(speed);
             $("#button-global-settings").removeClass('active');
           }
@@ -35,18 +38,35 @@ define("mylibs/config", ["mylibs/tags", "!js/mylibs/visualization/DefaultThumbRe
             this.login.hide(speed);
             $("#button-login-settings").removeClass('active');
           }
+          if(this.messages) {
+            this.messages.hide(speed);
+          }*/
         }
     };
-
+    
     //Global set function
     var set = function(key, value) {
-      if(constants.hasOwnProperty(key)) {
-        constants[key] = value;
+      var keys = key.split('.');
+      
+      if(constants.hasOwnProperty(keys[0])) {
+        if(keys.length > 1) {
+          eval('constants.' + key + '=\'' + value + '\'');
+        } else {
+          constants[keys[0]] = value;
+        }
         return true;
       } else {
         return false;
       }
     };
+    
+    //Global message function
+    var sendNotifyMessage = function(msg,type) {
+      var type = type || 'info';
+      var msgHtml = '<p class="' + type + '">' + msg + '</p>';
+      panels.messages.html(msgHtml);
+      panels.messages.show(constants.slideUpAnimationTime).delay(3000).hide(constants.slideDownAnimationTime);
+    }; 
     
     //Get tag recommendations for the user which is logged in
     var getUserTags = function() {
@@ -93,16 +113,118 @@ define("mylibs/config", ["mylibs/tags", "!js/mylibs/visualization/DefaultThumbRe
       });
     };
     
+    var initSettings = function() {
+      
+      var setForm = function() {
+        //Initialize the form with the default values
+        panels.settings.find("#max-num-results")
+            .val(constants.maxNumResults);
+        panels.settings.find("#icon-size option[value=" + constants.visOptions.thumbSize + "]")
+            .attr('selected','selected');
+        panels.settings.find("#visualization-method option[value=" + constants.visOptions.method + "]")
+            .attr('selected','selected');
+      };
+      
+      $.ajax({
+        type: "GET",
+        url: "profile/Settings",
+        success: function(data) {
+          data = JSON.parse(data);
+          if(data.Settings) {
+            data = JSON.parse(data.Settings);
+  
+            if(data.maxResults) {
+              set('maxNumResults', data.maxResults);
+              panels.settings.find("#max-num-results")
+                .val(data.maxResults);
+            }
+            if(data.thumbSize) {
+              set('visOptions.thumbSize', data.thumbSize);
+              panels.settings.find("#icon-size option[value=" + data.thumbSize + "]")
+                .attr('selected','selected');
+            }
+            if(data.method) {
+              set('visOptions.method', data.method);
+              panels.settings.find("#visualization-method option[value=" + data.method + "]")
+                .attr('selected','selected');
+            }
+          }
+        },
+        error: function(error) {
+          console.log('Setting connect error: ' + error);
+          setForm();
+        },
+        dataType: "text",
+        contentType : "application/json; charset=utf-8"
+      });
+    };
+    
+    var performLoggedInSetup = function(data) {
+      $("#login-status").html("Hello " + data.Email);
+      $("#button-login-settings").find('a:first').text('Logout');
+      var cofindOptions = {
+         addButtonTo   : '#settings ul li',
+         addSettingsTo : '.settings-panel',
+         addWorkspaceTo: '#container'
+         
+      };
+      cofind.setup(cofindOptions);
+      getUserTags();
+    };
+    
+    var performLoggedOutSetup = function() {
+      $("#login-status").html("Hello Guest");
+      $("#button-login-settings").find('a:first').text('Login');
+      //Clearing tags
+      $("#query-field").tokenInput("clear");
+      $(".tags").html('');
+      cofind.remove();
+    };
+    
     var handleSettingsSave = function() {
-      set('maxNumResults', 
-        panels.settings.find("#max-num-results").val()
-      );
-      set('visOptions.thumbSize', 
-        panels.settings.find("#icon-size option:selected").val()
-      );
-      set('visOptions.method', 
-        panels.settings.find("#visualization-method option:selected").val()
-      );
+      console.log('save setting');
+      var mr = parseInt(panels.settings.find("#max-num-results").val());
+      var ts = parseInt(panels.settings.find("#icon-size option:selected").val());
+      var vm = panels.settings.find("#visualization-method option:selected").val();
+      console.log(constants.visOptions.method + ' - ' + vm);
+      if(constants.maxNumResults == mr &&
+         constants.visOptions.thumbSize == ts &&
+         constants.visOptions.method == vm) 
+      {
+        return;
+      }  
+      console.log('its not the same');
+      set('maxNumResults', mr);
+      set('visOptions.thumbSize', ts);
+      set('visOptions.method', vm);
+      
+      var postData = {
+          data : '{"maxResults" : ' + mr + ', "thumbSize" : ' + ts + ', "method" : "' + vm + '"}'
+      };
+      
+      //Send it to the server
+      $.ajax({
+        type: "POST",
+        url: "profile/Settings",
+        data: JSON.stringify(postData),
+        success: function(data) {
+          //parse the result
+          try {
+            data = JSON.parse(data);
+          } catch(e) {
+            data = {error: "The server gave me an invalid result."};  
+          }
+          
+          if(data.error) {
+            console.log("Error during save settings: " + data.error);
+          } else {
+            console.log("User settings saved: " + (data.success ? data.success : data.info));
+            sendNotifyMessage('Settings saved!', (data.success ? 'success' : 'info'));
+          }
+        },
+        dataType: "text",
+        contentType : "application/json; charset=utf-8"
+      });
 
       //Notify the user that their action has been successful -- close the panel
       panels.hide(constants.slideDownAnimationTime);
@@ -128,13 +250,12 @@ define("mylibs/config", ["mylibs/tags", "!js/mylibs/visualization/DefaultThumbRe
           }
           
           if(data.error) {
-          console.log("Error during login: " + data.error); 
-          alert("Sorry: " + data.error);
+            console.log("Error during login: " + data.error); 
+            sendNotifyMessage("Sorry: " + data.error,'error');
           } else {
             console.log("User logged in: " + data);
-            $("#login-status").html("Hello " + data.Email);
-            $("#button-login-settings").find('a:first').text('Logout');
-            getUserTags();
+            sendNotifyMessage("You're logged in.",'success');
+            performLoggedInSetup(data);
           }
         },
         dataType: "text",
@@ -148,8 +269,6 @@ define("mylibs/config", ["mylibs/tags", "!js/mylibs/visualization/DefaultThumbRe
     var handleLogout = function() {
       var serverURL = "login";    
       
-      console.log("Logging out...");
-      
       //Send it to the server
       $.ajax({
         type: "DELETE",
@@ -157,11 +276,9 @@ define("mylibs/config", ["mylibs/tags", "!js/mylibs/visualization/DefaultThumbRe
         success: function(data) {
             if(!data.error) { 
               console.log("User logged out");
-              $("#login-status").html("Hello Guest");
-              $("#button-login-settings").find('a:first').text('Login');
-              //Clearing tags
-              $("#query-field").tokenInput("clear");
-              $(".tags").html('');
+              //inform the User that he is logged out
+              sendNotifyMessage('You\'re logged out.', 'success');
+              performLoggedOutSetup();
             } else {
               alert("Something went wrong: " + data.error);
             }
@@ -172,7 +289,11 @@ define("mylibs/config", ["mylibs/tags", "!js/mylibs/visualization/DefaultThumbRe
     };
 
     var initPanel = function() {
-
+      
+      initSettings();
+      
+      panels.messages = $("#messages");
+      
       panels.settings = $("#global-settings");
       panels.settings.hide();
       $("#button-global-settings").click(function(){
@@ -209,14 +330,6 @@ define("mylibs/config", ["mylibs/tags", "!js/mylibs/visualization/DefaultThumbRe
         }
       });
 
-      //Initialize the form with the default values
-      panels.settings.find("#max-num-results")
-          .val(constants.maxNumResults);
-      panels.settings.find("#icon-size option[value=" + constants.visOptions.thumbSize + "]")
-          .attr('selected','selected');
-      panels.settings.find("#icon-size option[value=" + constants.visOptions.method + "]")
-          .attr('selected','selected');
-
       //Listen to keypress click to change settings
       $("#global-settings form").keypress(function(event) {
         if ( event.which == 13 ) {
@@ -241,6 +354,11 @@ define("mylibs/config", ["mylibs/tags", "!js/mylibs/visualization/DefaultThumbRe
         }
       });
       
+      panels.settings.blur( function() {
+        console.log('blurrring...');
+        handleSettingsSave();
+      });
+      
       //Get the user name if available
       $.ajax({
     	  type: "GET",
@@ -249,23 +367,22 @@ define("mylibs/config", ["mylibs/tags", "!js/mylibs/visualization/DefaultThumbRe
       		data = JSON.parse(data);
 
       		if(!data.error) {
-      			$("#login-status").html("Hello " + data.Email);
-      			$("#button-login-settings").find('a:first').text('Logout');
-      			getUserTags();
+      		  performLoggedInSetup(data);
       		}
     	  },
     	  dataType: "text",
     	  contentType : "application/json; charset=utf-8"
       });
 
-    }; //End of initPanel()
-    
+    }; //End of initPanel()   
     
     
     //Public variables and functions
     return {
       constants: constants,
+      panels : panels,
       set: set,
+      sendNotifyMessage : sendNotifyMessage,
       initPanel: initPanel
     };
     
