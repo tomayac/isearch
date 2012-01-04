@@ -42,24 +42,25 @@ define("mylibs/visualization/visualizer",
 		results = res ;
 		element = ele ;
 		
-		options.tagManager = tagManager ;
+		options.thumbOptions.tagManager = tagManager ;
 
 		setup(options) ;
 		redraw(options) ;
 	};
 
-	var setOptions = function(options) {
+	var setMethod = function(method)
+	{
+		config.constants.visOptions.method = method ;
+		redraw(config.constants.visOptions);
+	};
+		
+	var setThumbOptions = function(options) {
 		for ( var opt in options )
 		{
-			if ( options.hasOwnProperty(opt) )
-				config.constants.visOptions[opt] = options[opt] ;
+			config.constants.visOptions.thumbOptions[opt] = options[opt] ;
 		}	
 		
-		if (options.method) {
-			redraw(config.constants.visOptions);
-		} else {
-			widget.setOptions(options) ;
-		}
+		widget.setOptions(config.constants.visOptions) ;
 	};
 	
 	// create the main layout
@@ -126,45 +127,73 @@ define("mylibs/visualization/visualizer",
 			+ 	'<input type="radio" name="method" id="vis-htree"/><label for="vis-htree">Hyperbolic Tree</label>'
 			+	'<input type="radio" name="method" id="vis-tmap"/><label for="vis-tmap">Treemap</label></div></div>'
 			+	'<div class="formitem"><span style="margin-right: 5px;">Icon Size</span><div id="ts-buttons" style="display:inline;">'
-			+	'<input type="radio" name="ts" id="ts64"/><label for="ts64">64</label>'
-			+ 	'<input type="radio" name="ts" id="ts96"/><label for="ts96">96</label>'
-			+	'<input type="radio" name="ts" id="ts128"/><label for="ts128">128</label>'
+			+	'<input type="radio" name="ts" id="ts64"/><label for="ts64">Small</label>'
+			+ 	'<input type="radio" name="ts" id="ts96"/><label for="ts96">Medium</label>'
+			+	'<input type="radio" name="ts" id="ts128"/><label for="ts128">Large</label>'
 			+	'</div></div>'
 			+	'<div class="formitem"><span style="margin-right: 5px;">Layout</span><div id="arrange-buttons" style="display:inline;">'
 			+	'<input type="radio" name="ia" id="ia-grid"/><label for="ia-grid">Grid</label>'
 			+ 	'<input type="radio" name="ia" id="ia-smart"/><label for="ia-smart">Smart</label>'
 			+ 	'<input type="radio" name="ia" id="ia-smart-grid"/><label for="ia-smart-grid">Smart Grid</label>'
 			+	'</div></div>'
+			+	'<div class="formitem" style="float: right"><span style="margin-right: 5px;">Navigation Mode</span><div id="nav-buttons" style="display:inline;">'
+			+	'<input type="radio" name="nav" id="nav-browse"/><label for="nav-browse">Browse</label>'
+			+ 	'<input type="radio" name="nav" id="nav-feedback"/><label for="nav-feedback">Feedback</label>'
+			+	'</div></div>'
 			+ 	'</form>');
 			
 		// menu handlers
 		
 		$('#vis-' + config.constants.visOptions.method, menuPane).attr('checked', true);
-		$('#ts' + config.constants.visOptions.thumbSize, menuPane).attr('checked', true);
-		$('#ia-' + config.constants.visOptions.iconArrange, menuPane).attr('checked', true);
+		$('#ts' + config.constants.visOptions.thumbOptions.thumbSize, menuPane).attr('checked', true);
+		$('#ia-' + config.constants.visOptions.thumbOptions.iconArrange, menuPane).attr('checked', true);
+		$('#nav-' + config.constants.visOptions.thumbOptions.navMode, menuPane).attr('checked', true);
 					
-		$("#ts-buttons", menuPane).buttonset() ;
-		$("#method-buttons", menuPane).buttonset() ;
-		$("#arrange-buttons", menuPane).buttonset() ;
+		$("#method-buttons", menuPane).buttonset(
+			$('#vis-classic', menuPane).button( {text: false,  "icons": {primary:'ui-icon-method-classic'}}),
+			$('#vis-hpanel', menuPane).button( {text: false,  "icons": {primary:'ui-icon-method-hpanel'}}),
+			$('#vis-htree', menuPane).button( {text: false,  "icons": {primary:'ui-icon-method-htree'}}),
+			$('#vis-tmap', menuPane).button( {text: false,  "icons": {primary:'ui-icon-method-tmap'}})
+		) ;
+		
+		$("#ts-buttons", menuPane).buttonset(
+			$('#ts64', menuPane).button( {text: false,  "icons": {primary:'ui-icon-thumbs-small'}}),
+			$('#ts96', menuPane).button( {text: false,  "icons": {primary:'ui-icon-thumbs-medium'}}),
+			$('#ts128', menuPane).button( {text: false,  "icons": {primary:'ui-icon-thumbs-large'}})
+		) ;
+		
+		$("#arrange-buttons", menuPane).buttonset(
+			$('#ia-grid', menuPane).button( {text: false,  "icons": {primary:'ui-icon-layout-grid'}}),
+			$('#ia-smart', menuPane).button( {text: false,  "icons": {primary:'ui-icon-layout-smart'}}),
+			$('#ia-smart-grid', menuPane).button( {text: false,  "icons": {primary:'ui-icon-layout-smart-grid'}})
+		) ;
+		
+		$("#nav-buttons", menuPane).buttonset() ;
 		
 		var that = this ;
 		
 		$("input[name=method]", menuPane).click(function() {
 			var method = this.id.substr(4) ;
 								
-			setOptions({ "method": method }) ;
+			setMethod(method) ;
 		}) ;
 		
 		$("input[name=ts]", menuPane).click(function() {
 			var ts = this.id.substr(2) ;
 								
-			setOptions({thumbSize: ts}) ;
+			setThumbOptions({thumbSize: ts}) ;
 		}) ;
 		
 		$("input[name=ia]", menuPane).click(function() {
 			var ia = this.id.substr(3) ;
 								
-			setOptions({iconArrange: ia}) ;
+			setThumbOptions({iconArrange: ia}) ;
+		}) ;
+		
+		$("input[name=nav]", menuPane).click(function() {
+			var nav = this.id.substr(4) ;
+								
+			setThumbOptions({navMode: nav}) ;
 		}) ;
 		
 		// context menu
@@ -205,6 +234,7 @@ define("mylibs/visualization/visualizer",
   return {
     draw: draw,
     redraw: redraw, 
-    setOptions: setOptions
+    setThumbOptions: setThumbOptions,
+	setMethod: setMethod
   };
 })

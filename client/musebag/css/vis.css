@@ -1368,3 +1368,43 @@ div.jqmNotice .jqmClose {
 	font-weight: bold;
 	text-decoration: none;
 }
+
+.ui-icon-method-classic {
+    background-image: url("../img/ui-icon-method-classic.png") !important;
+}
+
+.ui-icon-method-hpanel {
+    background-image: url("../img/ui-icon-method-hpanel.png") !important;
+}
+
+.ui-icon-method-htree {
+    background-image: url("../img/ui-icon-method-htree.png") !important;
+}
+
+.ui-icon-method-tmap {
+    background-image: url("../img/ui-icon-method-tmap.png") !important;
+}
+
+.ui-icon-thumbs-small {
+    background-image: url("../img/ui-icon-thumb-small.png") !important;
+}
+
+.ui-icon-thumbs-medium {
+    background-image: url("../img/ui-icon-thumb-medium.png") !important;
+}
+
+.ui-icon-thumbs-large {
+    background-image: url("../img/ui-icon-thumb-large.png") !important;
+}
+
+.ui-icon-layout-grid {
+    background-image: url("../img/ui-icon-layout-grid.png") !important;
+}
+
+.ui-icon-layout-smart {
+    background-image: url("../img/ui-icon-layout-smart.png") !important;
+}
+
+.ui-icon-layout-smart-grid {
+    background-image: url("../img/ui-icon-layout-smart-grid.png") !important;
+}

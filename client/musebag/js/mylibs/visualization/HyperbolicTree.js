@@ -28,23 +28,8 @@ define("mylibs/visualization/HyperbolicTree",
 		this.container = container ;
 		this.searchResults = searchResults ;
 
-		this.thumbOptions = {  } ;
-
-		if ( options.thumbSize )
-			this.thumbOptions.thumbSize = options.thumbSize ;
-
-		if ( options.onItemClick )
-			this.thumbOptions.onClick = options.onItemClick ;
-			
-		if ( options.iconArrange )
-			this.thumbOptions.iconArrange = options.iconArrange ;
-		
-		if ( options.thumbRenderer )
-			this.thumbOptions.thumbRenderer = options.thumbRenderer ;
-			
-		if ( options.tagManager )
-			this.thumbOptions.tagManager = options.tagManager ;
-
+		this.thumbOptions = options.thumbOptions ;
+	
 		this.graph = new HyperGraph(searchResults) ;
 
 		this.createCanvas() ;
@@ -67,13 +52,9 @@ define("mylibs/visualization/HyperbolicTree",
 	HyperbolicTree.iconSize = 64 ;
 
 	p.setOptions = function(options) {
-		if ( options.thumbSize ) 
-			this.thumbOptions.thumbSize = options.thumbSize ;
-		if ( options.iconArrange ) 
-			this.thumbOptions.iconArrange = options.iconArrange ;
-		if ( options.thumbRenderer )
-			this.thumbOptions.thumbRenderer = options.thumbRenderer ;
-			
+	
+		this.thumbOptions = options.thumbOptions ;
+		
 		var pageBox = $('.page-container', this.container) ;
 		
 		if ( pageBox.length > 0 )

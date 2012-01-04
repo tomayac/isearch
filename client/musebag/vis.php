@@ -41,9 +41,7 @@
   <link rel="stylesheet" href="css/vis.css"/>
   <link rel="stylesheet" href="css/jquery-ui-1.8.14.custom.css"/>
   
-  <!-- Modernizr at the top. Rest at the bottom for better perf. -->
-  <script src="js/libs/modernizr-1.7.min.js"></script>
-
+ 
   <!-- get query parameters from request and put them in global variable -->
   <script>
 		var __queryParams = { out: "json", 
@@ -82,41 +80,16 @@
     </footer>
   </div>
 
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
+  <!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
   <script>window.jQuery || document.write("<script src='js/libs/jquery-1.6.2.min.js'>\x3C/script>")</script>
+  -->
   
+   
   <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=true"></script>
+  <script data-main="js/main" src="js/libs/require-jquery.js"></script>     
   
-  <script>
-  // curenntly this hack is required to load the library correctly
-  
-  var Timeline_urlPrefix = "js/libs/timeline_2.3.0/timeline_js/" ;
-  var Timeline_parameters='bundle=true';
-  var SimileAjax_urlPrefix = "js/libs/timeline_2.3.0/timeline_ajax/" ;
-  
-   $(document).ready(function() {
-		$('<script/>', { src: 'js/libs/timeline_2.3.0/timeline_js/timeline-api.js'} ).appendTo('head') ;
-		
-  }) ;
-  
-  </script>
-  
-  
-  <!-- All the script dependancies will be managed with requireJS
-       More info? Check http://requirejs.org -->
-  <script src="js/libs/require.js"></script>
-  <script>
-    require(
-        {baseUrl: "./js/"},
-        ["vis"],
-        function(main) {
-          main.start();
-        }
-    );
-  </script>
-
-  <!-- <script src="https://getfirebug.com/firebug-lite.js"></script> -->
-
+   
+ 
   <!--No need for GA right now. But maybe later...who knows?!-->
   <!-- <script> -->
   <!--   var _gaq=[["_setAccount","UA-XXXXX-X"],["_trackPageview"]]; -->

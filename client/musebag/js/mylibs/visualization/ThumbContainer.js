@@ -793,6 +793,52 @@ p.showTimeline = function()
 	
 	var theme = Timeline.ClassicTheme.create();
 	theme.mouseWheel = 'default' ;
+	theme.autoWidth = false ;
+	
+	var event_data = { "dateTimeFormat": "iso8601", events: [] } ;
+	
+	var mindate = new Date(), maxdate = new Date() ;
+	
+	for( var i=0 ; i<this.thumbs.length ; i++ )	
+	{	
+		var data = this.thumbs[i] ;	
+
+		if ( data.doc.hasOwnProperty("rw") && data.doc.rw )
+		{
+			if ( data.doc.rw.hasOwnProperty("time") )
+			{
+				// title ?
+				var d = new Date(data.doc.rw.time.dateTime) ;
+				
+				if ( d < mindate ) mindate = d ;
+				if ( d > maxdate ) maxdate = d ;
+				
+				function ISODateString(d) {
+					function pad(n){
+						return n<10 ? '0'+n : n;
+					}
+					return d.getUTCFullYear()+'-'
+					+ pad(d.getUTCMonth()+1)+'-'
+					+ pad(d.getUTCDate());
+				}
+				var dateStr = ISODateString(d) ;
+				
+				var event = { 
+					id:  data.doc.id, 
+					start: data.doc.rw.time.dateTime,
+					icon:  ThumbContainer.selectThumbUrl(data.doc),
+					data: data
+				//	title: ThumbContainer.selectTooltipText(data.doc)
+				} ;
+				
+				event_data.events.push(event) ;
+			}
+		}
+		
+	}
+	
+	theme.timeline_start = mindate ;
+	theme.timeline_stop = maxdate ;
 	
 	var obj = this ;
 	
@@ -864,8 +910,200 @@ p.showTimeline = function()
 		this._eventIdToElmt[evt.getID()] = result.iconElmtData.elmt;
 	};
 	
+	
+	Timeline.CompactEventPainter.prototype.paintStackedPreciseInstantEvents = function(events, metrics, theme, highlightIndex) {
+    var limit = "limit" in this._params.stackConcurrentPreciseInstantEvents ? 
+        this._params.stackConcurrentPreciseInstantEvents.limit : 10;
+    var moreMessageTemplate = "moreMessageTemplate" in this._params.stackConcurrentPreciseInstantEvents ? 
+        this._params.stackConcurrentPreciseInstantEvents.moreMessageTemplate : "%0 More Events";
+    var showMoreMessage = limit <= events.length - 2; // We want at least 2 more events above the limit.
+                                                      // Otherwise we'd need the singular case of "1 More Event"
 
+    var band = this._band;
+    var getPixelOffset = function(date) {
+        return Math.round(band.dateToPixelOffset(date));
+    };
+    var getIconData = function(evt) {
+        var iconData = {
+            url: evt.getIcon(),
+			data: evt._obj.data
+        };
+        if (iconData.url == null) {
+            iconData.url = metrics.defaultStackIcon;
+            iconData.width = metrics.defaultStackIconWidth;
+            iconData.height = metrics.defaultStackIconHeight;
+            iconData.className = "timeline-event-icon-stack timeline-event-icon-default";
+        } else {
+            iconData.width = evt.getProperty("iconWidth") || metrics.customIconWidth;
+            iconData.height = evt.getProperty("iconHeight") || metrics.customIconHeight;
+            iconData.className = "timeline-event-icon-stack";
+        }
+        return iconData;
+    };
+    
+    var firstIconData = getIconData(events[0]);
+    var horizontalIncrement = 5;
+    var leftIconEdge = 0;
+    var totalLabelWidth = 0;
+    var totalLabelHeight = 0;
+    var totalIconHeight = 0;
+    
+    var records = [];
+    for (var i = 0; i < events.length && (!showMoreMessage || i < limit); i++) {
+        var evt = events[i];
+        var text = evt.getText();
+        var iconData = getIconData(evt);
+        var labelSize = this._frc.computeSize(text);
+        var record = {
+            text:       text,
+            iconData:   iconData,
+            labelSize:  labelSize,
+            iconLeft:   firstIconData.width + i * horizontalIncrement - iconData.width
+        };
+        record.labelLeft = firstIconData.width + i * horizontalIncrement + metrics.iconLabelGap;
+        record.top = totalLabelHeight;
+        records.push(record);
+        
+        leftIconEdge = Math.min(leftIconEdge, record.iconLeft);
+        totalLabelHeight += labelSize.height;
+        totalLabelWidth = Math.max(totalLabelWidth, record.labelLeft + labelSize.width);
+        totalIconHeight = Math.max(totalIconHeight, record.top + iconData.height);
+    }
+    if (showMoreMessage) {
+        var moreMessage = String.substitute(moreMessageTemplate, [ events.length - limit ]);
+    
+        var moreMessageLabelSize = this._frc.computeSize(moreMessage);
+        var moreMessageLabelLeft = firstIconData.width + (limit - 1) * horizontalIncrement + metrics.iconLabelGap;
+        var moreMessageLabelTop = totalLabelHeight;
+        
+        totalLabelHeight += moreMessageLabelSize.height;
+        totalLabelWidth = Math.max(totalLabelWidth, moreMessageLabelLeft + moreMessageLabelSize.width);
+    }
+    totalLabelWidth += metrics.labelRightMargin;
+    totalLabelHeight += metrics.labelBottomMargin;
+    totalIconHeight += metrics.iconBottomMargin;
+    
+    var anchorPixel = getPixelOffset(events[0].getStart());
+    var newTracks = [];
+    
+    var trackCount = Math.ceil(Math.max(totalIconHeight, totalLabelHeight) / metrics.trackHeight);
+    var rightIconEdge = firstIconData.width + (events.length - 1) * horizontalIncrement;
+    for (var i = 0; i < trackCount; i++) {
+        newTracks.push({ start: leftIconEdge, end: rightIconEdge });
+    }
+    var labelTrackCount = Math.ceil(totalLabelHeight / metrics.trackHeight);
+    for (var i = 0; i < labelTrackCount; i++) {
+        var track = newTracks[i];
+        track.end = Math.max(track.end, totalLabelWidth);
+    }
+
+    var firstTrack = this._fitTracks(anchorPixel, newTracks);
+    var verticalPixelOffset = firstTrack * metrics.trackHeight + metrics.trackOffset;
+    
+    var iconStackDiv = this._timeline.getDocument().createElement("div");
+    iconStackDiv.className = 'timeline-event-icon-stack';
+    iconStackDiv.style.position = "absolute";
+    iconStackDiv.style.overflow = "visible";
+    iconStackDiv.style.left = anchorPixel + "px";
+    iconStackDiv.style.top = verticalPixelOffset + "px";
+    iconStackDiv.style.width = rightIconEdge + "px";
+    iconStackDiv.style.height = totalIconHeight + "px";
+	
+	//iconDiv.style.width = iconData.width + "px" ;
+	//	iconDiv.style.height = iconData.height + "px" ;
 		
+	obj.thumbRenderer.render(iconData.data, $(iconStackDiv), $(this._eventLayer)) ;
+		
+   // iconStackDiv.innerHTML = "<div style='position: relative'></div>";
+    this._eventLayer.appendChild(iconStackDiv);
+    
+    var self = this;
+    var onMouseOver = function(domEvt) {
+        try {
+            var n = parseInt(this.getAttribute("index"));
+            var childNodes = iconStackDiv.firstChild.childNodes;
+            for (var i = 0; i < childNodes.length; i++) {
+                var child = childNodes[i];
+                if (i == n) {
+                    child.style.zIndex = childNodes.length;
+                } else {
+                    child.style.zIndex = childNodes.length - i;
+                }
+            }
+        } catch (e) {
+        }
+    };
+    var paintEvent = function(index) {
+        var record = records[index];
+        var evt = events[index];
+        var tooltip = evt.getProperty("tooltip") || evt.getText();
+		var iconData = getIconData(evt) ;
+        
+        var labelElmtData = self._paintEventLabel(
+            { tooltip: tooltip },
+            { text: record.text },
+            anchorPixel + record.labelLeft,
+            verticalPixelOffset + record.top,
+            record.labelSize.width, 
+            record.labelSize.height, 
+            theme
+        );
+        labelElmtData.elmt.setAttribute("index", index);
+        labelElmtData.elmt.onmouseover = onMouseOver;
+        
+        var img = SimileAjax.Graphics.createTranslucentImage(record.iconData.url);
+        var iconDiv = self._timeline.getDocument().createElement("div");
+        iconDiv.className = 'timeline-event-icon' + ("className" in record.iconData ? (" " + record.iconData.className) : "");
+        iconDiv.style.left = record.iconLeft + "px";
+        iconDiv.style.top = record.top + "px";
+        iconDiv.style.zIndex = (records.length - index);
+		var imgDiv = self._timeline.getDocument().createElement("div");
+        iconDiv.appendChild(imgDiv);
+	  
+       // iconDiv.setAttribute("index", index);
+     //   iconDiv.onmouseover = onMouseOver;
+		obj.thumbRenderer.render(iconData.data, $(imgDiv), $(self._eventLayer)) ;
+        
+        iconStackDiv.firstChild.appendChild(iconDiv);
+        
+     //   var clickHandler = function(elmt, domEvt, target) {
+     //       return self._onClickInstantEvent(labelElmtData.elmt, domEvt, evt);
+    //    };
+        
+     //   SimileAjax.DOM.registerEvent(iconDiv, "mousedown", clickHandler);
+      //  SimileAjax.DOM.registerEvent(labelElmtData.elmt, "mousedown", clickHandler);
+        
+        self._eventIdToElmt[evt.getID()] = iconDiv;
+    };
+    for (var i = 0; i < records.length; i++) {
+        paintEvent(i);
+    }
+    
+    if (showMoreMessage) {
+        var moreEvents = events.slice(limit);
+        var moreMessageLabelElmtData = this._paintEventLabel(
+            { tooltip: moreMessage },
+            { text: moreMessage },
+            anchorPixel + moreMessageLabelLeft,
+            verticalPixelOffset + moreMessageLabelTop,
+            moreMessageLabelSize.width, 
+            moreMessageLabelSize.height, 
+            theme
+        );
+        
+        var moreMessageClickHandler = function(elmt, domEvt, target) {
+            return self._onClickMultiplePreciseInstantEvent(moreMessageLabelElmtData.elmt, domEvt, moreEvents);
+        };
+        SimileAjax.DOM.registerEvent(moreMessageLabelElmtData.elmt, "mousedown", moreMessageClickHandler);
+        
+        for (var i = 0; i < moreEvents.length; i++) {
+            this._eventIdToElmt[moreEvents[i].getID()] = moreMessageLabelElmtData.elmt;
+        }
+    }
+    //this._createHighlightDiv(highlightIndex, iconElmtData, theme);
+};
+
+  
 	var bandInfos = [
 		Timeline.createBandInfo({
 			date:           "Jun 28 2009 00:00:00 GMT",
@@ -883,31 +1121,33 @@ p.showTimeline = function()
                 iconHeight:       64,
                        
                 stackConcurrentPreciseInstantEvents: {
-                    limit: 10,
+                    limit: 5,
                     iconWidth:              64,
                     iconHeight:             64
                 }
 			
             },
 	
-			zoomIndex:      10,
+			zoomIndex:      6,
 			zoomSteps:      new Array(
-				{pixelsPerInterval: 280,  unit: Timeline.DateTime.HOUR},
-				{pixelsPerInterval: 140,  unit: Timeline.DateTime.HOUR},
-				{pixelsPerInterval:  70,  unit: Timeline.DateTime.HOUR},
-				{pixelsPerInterval:  35,  unit: Timeline.DateTime.HOUR},
+			//	{pixelsPerInterval: 280,  unit: Timeline.DateTime.HOUR},
+			//	{pixelsPerInterval: 140,  unit: Timeline.DateTime.HOUR},
+			//	{pixelsPerInterval:  70,  unit: Timeline.DateTime.HOUR},
+			//	{pixelsPerInterval:  35,  unit: Timeline.DateTime.HOUR},
 				{pixelsPerInterval: 400,  unit: Timeline.DateTime.DAY},
 				{pixelsPerInterval: 200,  unit: Timeline.DateTime.DAY},
 				{pixelsPerInterval: 100,  unit: Timeline.DateTime.DAY},
 				{pixelsPerInterval:  50,  unit: Timeline.DateTime.DAY},
 				{pixelsPerInterval: 400,  unit: Timeline.DateTime.MONTH},
 				{pixelsPerInterval: 200,  unit: Timeline.DateTime.MONTH},
-				{pixelsPerInterval: 100,  unit: Timeline.DateTime.MONTH},
-				{pixelsPerInterval: 400,  unit: Timeline.DateTime.YEAR},
-				{pixelsPerInterval: 200,  unit: Timeline.DateTime.YEAR},
-				{pixelsPerInterval: 100,  unit: Timeline.DateTime.YEAR}				// DEFAULT zoomIndex
+				{pixelsPerInterval: 100,  unit: Timeline.DateTime.MONTH}
+			//	,
+			//	{pixelsPerInterval: 400,  unit: Timeline.DateTime.YEAR},
+			//	{pixelsPerInterval: 200,  unit: Timeline.DateTime.YEAR},
+			//	{pixelsPerInterval: 100,  unit: Timeline.DateTime.YEAR}				// DEFAULT zoomIndex
 			)
-		}),
+		})
+		,
 		Timeline.createBandInfo({
 			date:           "Jun 28 2009 00:00:00 GMT",
 			width:          "10%", 
@@ -925,42 +1165,7 @@ p.showTimeline = function()
   
 	var tl = Timeline.create(timelineDialog.get(0), bandInfos);
 	
-	var event_data = { "dateTimeFormat": "iso8601", events: [] } ;
 	
-	for( var i=0 ; i<this.thumbs.length ; i++ )	
-	{	
-		var data = this.thumbs[i] ;	
-
-		if ( data.doc.hasOwnProperty("rw") && data.doc.rw )
-		{
-			if ( data.doc.rw.hasOwnProperty("time") )
-			{
-				// title ?
-				var d = new Date(data.doc.rw.time.dateTime) ;
-				
-				function ISODateString(d) {
-					function pad(n){
-						return n<10 ? '0'+n : n;
-					}
-					return d.getUTCFullYear()+'-'
-					+ pad(d.getUTCMonth()+1)+'-'
-					+ pad(d.getUTCDate());
-				}
-				var dateStr = ISODateString(d) ;
-				
-				var event = { 
-					id:  data.doc.id, 
-					start: data.doc.rw.time.dateTime,
-					icon:  ThumbContainer.selectThumbUrl(data.doc),
-					data: data
-				//	title: ThumbContainer.selectTooltipText(data.doc)
-				} ;
-				
-				event_data.events.push(event) ;
-			}
-		}
-		
-	}
 	
 	eventSource.loadJSON(event_data, document.location.href); 
 	

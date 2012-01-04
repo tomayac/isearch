@@ -17,22 +17,7 @@ define("mylibs/visualization/TreeMap",
 	TreeMap = function(searchResults, container, options) {
 		this.container = container ;
 
-		this.thumbOptions = {  } ;
-
-		if ( options.thumbSize )
-			this.thumbOptions.thumbSize = +options.thumbSize ;
-
-		if ( options.onItemClick )
-			this.thumbOptions.onClick = options.onItemClick ;
-			
-		if ( options.iconArrange )
-			this.thumbOptions.iconArrange = options.iconArrange ;
-			
-		if ( options.thumbRenderer )
-			this.thumbOptions.thumbRenderer = options.thumbRenderer ;
-			
-		if ( options.tagManager )
-			this.thumbOptions.tagManager = options.tagManager ;
+		this.thumbOptions = options.thumbOptions ;
 
 		this.tree = {} ;
 		this.history = [this.tree] ;
@@ -57,13 +42,8 @@ define("mylibs/visualization/TreeMap",
 
 
 	p.setOptions = function(options) {
-		if ( options.thumbSize )
-			this.thumbOptions.thumbSize = +options.thumbSize ;
-		if ( options.iconArrange )
-			this.thumbOptions.iconArrange = options.iconArrange ;
-		if ( options.thumbRenderer )
-			this.thumbOptions.thumbRenderer = options.thumbRenderer ;
-
+		this.thumbOptions = options.thumbOptions ;
+		
 		this.redraw(this.tree, 0) ;
 		
 		var pnode = this.history[this.history.length-1] ; 

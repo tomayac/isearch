@@ -238,7 +238,7 @@ define("mylibs/menu",
     var attach3dEvents = function() {
     
     	//Drag and Drop of files
-	    var handler = new filehandler.FileHandler('threedDrop',['dae','3ds'],'query/item',getQueryItemCount());
+	    var handler = new filehandler.FileHandler('threedDrop',['dae','3ds'],config.constants.fileUploadServer,getQueryItemCount());
 	    var pictureIcon = $('nav li[data-mode="3d"]');
 	    
 	    uiiface.registerEvent('threedDrop','drop',function(event) {
@@ -277,7 +277,7 @@ define("mylibs/menu",
     var attachPictureEvents = function() {
     	
     	//Drag and Drop of files
-	    var handler = new filehandler.FileHandler('imageDrop',['jpg','png','gif'],'query/item',getQueryItemCount());
+	    var handler = new filehandler.FileHandler('imageDrop',['jpg','png','gif'],config.constants.fileUploadServer,getQueryItemCount());
 	    var pictureIcon = $('nav li[data-mode="picture"]');
 	    
 	    //Drop trigger for image upload
@@ -328,7 +328,7 @@ define("mylibs/menu",
     var attachVideoEvents = function() {
     	
     	//Drag and Drop of files
-	    var handler = new filehandler.FileHandler('videoDrop',['webm','mp4', 'avi'],'query/item',getQueryItemCount());
+	    var handler = new filehandler.FileHandler('videoDrop',['webm','mp4', 'avi'],config.constants.fileUploadServer,getQueryItemCount());
 	    var videoIcon = $('nav li[data-mode="video"]');
 	    
 	    //Drop trigger for video upload
@@ -408,7 +408,7 @@ define("mylibs/menu",
     	  
         console.log('Button "sketch done" pressed');
         //We don't need to bind it to
-        var handler = new filehandler.FileHandler('sketch',['png'],'query/item',getQueryItemCount());
+        var handler = new filehandler.FileHandler('sketch',['png'],config.constants.fileUploadServer,getQueryItemCount());
         
         var sketchIcon = $('nav li[data-mode="sketch"]');
         sketchIcon.addClass('uploading');
@@ -429,7 +429,7 @@ define("mylibs/menu",
     var attachSoundEvents = function() {
     	
     	//Drag and Drop of files
-	    var handler = new filehandler.FileHandler('soundDrop',['oga','ogg','mp3','wav'],'query/item',getQueryItemCount());
+	    var handler = new filehandler.FileHandler('soundDrop',['oga','ogg','mp3','wav'],config.constants.fileUploadServer,getQueryItemCount());
 	    var pictureIcon = $('nav li[data-mode="sound"]');
 	    
 	    uiiface.registerEvent('soundDrop','drop',function(event) {
@@ -468,7 +468,7 @@ define("mylibs/menu",
     var attachRhythmEvents = function() {
     	
     	//Drag and Drop of files
-	    var handler = new filehandler.FileHandler('rhythmDrop',['oga','ogg','mp3','wav'],'query/item',getQueryItemCount());
+	    var handler = new filehandler.FileHandler('rhythmDrop',['oga','ogg','mp3','wav'],config.constants.fileUploadServer,getQueryItemCount());
 	    var rhythmIcon = $('nav li[data-mode="rhythm"]');
 	    
 	    uiiface.registerEvent('rhythmDrop','drop',function(event) {

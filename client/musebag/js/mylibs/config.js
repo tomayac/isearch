@@ -18,10 +18,17 @@ define("mylibs/config", ["mylibs/tags", "!js/mylibs/visualization/DefaultThumbRe
 	  
 	  visOptions: {
 		method: "tmap", //tmap, htree, hpan or classic
-		thumbSize: 64, //16, 32, 48, 64
-		iconArrange: "grid",
-		thumbRenderer: new DefaultThumbRenderer
-		}
+		thumbOptions: {
+			thumbSize: 64, //16, 32, 48, 64
+			iconArrange: "grid",
+			navMode: "browse",
+			thumbRenderer: new DefaultThumbRenderer
+			}
+		},
+		
+		// server for file upload. This is now passed as parameter to FileHandler in menu.js
+		
+		fileUploadServer: "http://vision.iti.gr/sotiris/isearch/upload.php" // query/item
     };
     
 

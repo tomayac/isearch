@@ -23,26 +23,8 @@ define("mylibs/visualization/HPanel",
 
 		this.containerDiv = containerDiv ;
 
-		this.thumbOptions = {  } ;
-
-		if ( options.thumbSize )
-			this.thumbOptions.thumbSize = +options.thumbSize ;
-
-		if ( options.onItemClick )
-			this.thumbOptions.onClick = options.onItemClick ;
-			
-		if ( options.thumbSize )
-			this.thumbOptions.thumbSize = +options.thumbSize ;
-
-		if ( options.iconArrange )
-			this.thumbOptions.iconArrange = options.iconArrange ;
-		
-		if ( options.thumbRenderer )
-			this.thumbOptions.thumbRenderer = options.thumbRenderer ;
-			
-		if ( options.tagManager )
-			this.thumbOptions.tagManager = options.tagManager ;
-			
+		this.thumbOptions = options.thumbOptions ;
+					
 		if ( options.hasOwnProperty("showGroups") )
 			this.showGroups = options.showGroups ;
 		
@@ -68,14 +50,9 @@ define("mylibs/visualization/HPanel",
 	p.onClick = null ;
 
 	p.setOptions = function(options) {
-		if ( options.thumbSize )
-			this.thumbOptions.thumbSize = +options.thumbSize ;
-		if ( options.iconArrange )
-			this.thumbOptions.iconArrange = options.iconArrange ;
-		if ( options.thumbRenderer )
-			this.thumbOptions.thumbRenderer = options.thumbRenderer ;
-		
-
+	
+		this.thumbOptions = options.thumbOptions ;
+	
 		this.resultsPanel = new ThumbContainer($('#hpanel-results'), this.icons, this.thumbOptions ) ;
 		this.resultsPanel.draw() ;
 

@@ -8,6 +8,10 @@ if(typeof console == "undefined") {
   };
 }
 
+ var Timeline_urlPrefix = "js/libs/timeline_2.3.0/timeline_js/" ;
+  var Timeline_parameters='bundle=false';
+  var SimileAjax_urlPrefix = "js/libs/timeline_2.3.0/timeline_ajax/" ;
+
 require(["jquery", 
          "mylibs/menu",
          "mylibs/config",
@@ -69,6 +73,14 @@ require(["jquery",
             $('.panel').slideUp(200);
           });
 
+		  // hack to hardcode query parameters
+		if ( typeof (__queryParams) != 'undefined' && __queryParams.q )
+		{
+			results.display();
+		}
+		else
+		{
+		 
           //Page behaviour when the query is submitted
           $( "#query-submit").click(function (e) {
 
@@ -90,10 +102,12 @@ require(["jquery",
               results.display(query);
 
             } else {
-              alert('woops! No query!');
+				
+				alert('woops! No query!');
             }
             return false;
           });
+		}
         }); //end document.ready()
       }); //end anonymous function     
     }
