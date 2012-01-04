@@ -37,9 +37,12 @@ walk(basepath, function(err, results) {
   var processed = 0;
   var countxml = 0;
   
+  var errorlist = '';
+  
   var endtest = function() {
     if((errorcount+processed) == jsoncount) {
-      console.log('json: ' + count + ' xml: ' + countxml + ' processed: ' + processed + ' errors: ' + errorcount);
+      console.log(errorlist);
+      console.log('json: ' + jsoncount + ' xml: ' + countxml + ' processed: ' + processed + ' errors: ' + errorcount);
     }
   };  
   
@@ -66,7 +69,7 @@ walk(basepath, function(err, results) {
           }
         });
       } catch (e) {
-        console.log('Recreate error : '+ e);
+        errorlist += 'Recreate error in ' + file + ': ' + e.message + '\n';
         errorcount++;
         endtest();
       }

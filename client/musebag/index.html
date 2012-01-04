@@ -47,54 +47,60 @@
 <link rel="stylesheet" href="css/jquery-ui-1.8.14.custom.css" />
 
 <body>
-	<div id="settings-panel">
-		<form method="post" action="#">
-
-			<section class="setting">
-				<label for="max-num-results">Max number of result</label> <input
-					type="text" id="max-num-results" />
-			</section>
-
-			<section class="setting">
-				<label for="icon-size">Icon size</label> <select id="icon-size">
-					<option value="16">16</option>
-					<option value="32">32</option>
-					<option value="64">64</option>
-					<option value="128">128</option>
-				</select>
-			</section>
-
-			<section class="setting">
-				<label for="visualization-method">Visualization Method</label> <select
-					id="visualization-method">
-					<option value="tmap">Tree Map</option>
-					<option value="htree">Hyperbolic Tree</option>
-					<option value="hpanel">Hierarchy Panels</option>
-
-				</select>
-			</section>
-
-			<button id="update-settings" class="float-button">Update the
-				settings!</button>
-
-			<section class="setting">
-				<label for="email">Email</label> <input type="text" id="email"
-					name="email" />
-			</section>
-
-			<section class="setting">
-				<label for="password">Password</label> <input type="password"
-					id="pw" name="pw" />
-			</section>
-
-			<button id="login-user" class="float-button">Login</button>
-
-		</form>
-	</div>
 	<div id="settings">
-		<span id="login-status">Hello Guest</span> <a href="#">Open/Close
-			Settings Panel</a>
+		<span id="login-status">Hello Guest</span> 
+		<ul class="clearfix">
+		  <li id="button-login-settings"><a href="#">Login</a></li>
+		  <li id="button-global-settings"><a href="#"><img src="img/settings.png" height="30" alt="Settings" title="General search settings"></a></li>
+		</ul>  
 	</div>
+	<div class="settings-panel" id="login-settings">
+    <form method="post" action="#" class="clearfix">
+      <section class="setting">
+        <label for="email">Email</label> <input type="text" id="email" name="email" />
+      </section>
+  
+      <section class="setting clearfix">
+        <label for="password">Password</label> <input type="password" id="pw" name="pw" />
+      </section>
+    </form>
+  </div>  
+  <div class="settings-panel" id="global-settings">
+    <form method="post" action="#" class="clearfix">
+      
+      <section class="setting">
+        <label for="audio-cluster-type">Audio Use Case?</label> 
+        <input type="checkbox" id="audio-cluster-type" />
+      </section>
+      
+      <section class="setting">
+        <label for="max-num-results">Size of result</label> 
+        <input type="text" id="max-num-results" size="8" />
+      </section>
+
+      <section class="setting">
+        <label for="icon-size">Icon size</label> <select id="icon-size">
+          <option value="16">16</option>
+          <option value="32">32</option>
+          <option value="64">64</option>
+          <option value="128">128</option>
+        </select>
+      </section>
+
+      <section class="setting clearfix">
+        <label for="visualization-method">Visualization Method</label> 
+        <select id="visualization-method">
+          <option value="classic">Classic</option>
+          <option value="tmap">Tree Map</option>
+          <option value="htree">Hyperbolic Tree</option>
+          <option value="hpanel">Hierarchy Panels</option>
+        </select>
+      </section>
+
+    </form>
+  </div>
+  <div class="settings-panel" id="messages">
+  </div>  
 	<div id="container">
 		<header>
 			<h1>

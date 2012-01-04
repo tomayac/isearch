@@ -782,6 +782,7 @@ var cofetchHandler = (function() {
     			  
     			  dialogHtml += '<p>You revised and saved every fetched Content Object. Please start a new search.</p>';
     			  $('#script-keywords').val('');
+    			  $(".datatab").show();
     			  $("#dialog").html(dialogHtml);
     			  
     		  } else {

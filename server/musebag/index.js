@@ -8,9 +8,10 @@
  * @company Google Deutschland GmbH, University of Applied Sciences Erfurt
  */
 
-var express = require('express'),
+var express    = require('express'),
     redisStore = require('connect-redis')(express),
-    musebag = require('./musebag');
+    musebag    = require('./musebag'),
+    cofind     = require('./cofind');
 
 var app = module.exports = express.createServer();
 
@@ -41,17 +42,18 @@ app.configure('production', function(){
 });
 
 // Routes
-app.post('/login'          , musebag.login);
-app.del ('/login'          , musebag.logout);
+app.post('/login'           , musebag.login);
+app.del ('/login'           , musebag.logout);
 
-app.get ('/profile/:attrib', musebag.profile);
+app.get ('/profile/:attrib' , musebag.profile);
+app.post('/profile/:attrib' , musebag.setProfile);
 
-app.post('/query/item'     , musebag.queryItem);
-app.post('/query'          , musebag.query);
+app.post('/query/item'      , musebag.queryItem);
+app.post('/query'           , musebag.query);
 
 app.listen(8081);
 
-//Set to cofind server js
-var everyone = require("now").initialize(app);
+//Start CoFind for collaborative search
+cofind.initialize(app);
 
 console.log("MuseBag Express server listening on port %d in %s mode", app.address().port, app.settings.env);

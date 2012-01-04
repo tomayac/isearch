@@ -208,18 +208,6 @@ Fetch.prototype.getPart = function(type, query, callback) {
 					//Fetch images for the given query
 					flickr.fetchImage(query,0,this);
 				},
-				function getWeather(error,data) {
-					//Be sure to have data before going on
-					if(!error && data.length < 1) {
-						error = 'No data could be retrieved.';
-					}
-					if(error) {
-						console.log('error: ' + error);
-						callback(error,[]);
-					} else {
-						weather.fetchWeather(data,this);
-					}	
-				},
 				function getResult(error,data) {
 					//Be sure to have data before going on
 					if(!error && data.length < 1) {
@@ -229,10 +217,7 @@ Fetch.prototype.getPart = function(type, query, callback) {
 						console.log('error: ' + error);
 						callback(error,[]);
 					} else {
-						
-						context.cleanResult(data,function(result) {
-							callback(null,result);
-						});
+						callback(null,data);
 					}
 				}
 			);
@@ -241,7 +226,7 @@ Fetch.prototype.getPart = function(type, query, callback) {
 			step(
 				function init() {
 					//Get videos for the given query
-					youtube.fetchVideo(query,this);
+					youtube.fetchVideo(query, 0, this);
 				},
 				function getResult(error,data) {
 					//Be sure to have data before going on
@@ -261,21 +246,9 @@ Fetch.prototype.getPart = function(type, query, callback) {
 			step(
 				function init() {
 					//Get audio for the given query
-					sound.fetchSound(query, true, this);
+					sound.fetchSound(query, 0, this);
 				},
-				function getWeather(error,data) {
-					if(error) {
-						console.log('error: ' + error);
-						callback(error,[]);
-					} else {
-						if(data.length < 1) {
-							sound.fetchSound(query, false, this);
-						} else {
-							weather.fetchWeather(data,this);
-						}
-					}
-				},
-				function getResult(error,data) {
+				function getResult(error, data) {
 					//Be sure to have data before going on
 					if(!error && data.length < 1) {
 						error = 'No data could be retrieved.';
@@ -284,10 +257,7 @@ Fetch.prototype.getPart = function(type, query, callback) {
 						console.log('error: ' + error);
 						callback(error,[]);
 					} else {
-					
-						context.cleanResult(data,function(result) {
-							callback(null,result);
-						});
+						callback(null,data);
 					}
 				}
 			);
@@ -304,248 +274,224 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 	rucod.exists(keyword, categoryPath, function(data) {
 	  if(data != undefined) {
 	    console.log("LOADED: query data for '" + keyword +"'.");
-		callback(null,data);
-		
+		  callback(null,data,index);
 	  } else {
-		  
-		console.log("LOAD: data for query '" + keyword +"'...");
-	
-		var queryAdjustment = {};
-		queryAdjustment['Fish'] = ' underwater';
-		
-		var category = categoryPath.split("/");
-		
-		//content object data storage
-		var contentObject = {
-				  "ID": index + '-' + new Date().getTime(),
-				  "Name": keyword.toLowerCase().replace(/\b[a-z]/g, function(letter) {
-					    	return letter.toUpperCase();
-				  		  }),
-				  "Screenshot": "",
-				  "Category": category[category.length-1],
-				  "CategoryPath": categoryPath, 
-				  "Files": []
-		};
-		
-		//console.log("FetchData: k=" + keyword + " c=" + categoryPath + " i=" + index +" a=" + automatic);
-		
-		try {
-			//Step through the content object data collection
-			step(
-				function getModelData() {	
-					
-					console.log('1. Start fetching Content Object data for 3D models with query "' + keyword + '"');
-					sketchup.fetchThreed(keyword, this);
-				},
-				function getTextData(error,data) {
-					
-					//Be sure to have data before storing something which is not there
-					if(!error && data.length < 1) {
-						error = 'No model data could be retrieved.';
-					}
-					if(error) {
-						console.log('SketchUp error: ' + error);
-					} else {
-						//Nothing went wrong so possibly we have something to store
-						console.log('2. 3D model data fetched!');
-						
-						//Use the preview image of the first 3D model as preview for the content object
-						contentObject.Screenshot = data[0].Preview;
-						
-						//If automatic mode is on, than just store the best matching retrieved model (e.g. the most relevant)
-						if(automatic === true) {
-							//Push the best matching 3D model to the files array of the content object
-							context.getBestMatch(contentObject.Name, data, function(error, matches) {
-								if(!error && matches !== null) {
-									for(var m=0; m < matches.length; m++) {
-										contentObject.Files.push(matches[m]);
-									}
-								} 
-							});
-							
-						} else {
-							for(var m=0; m < data.length; m++) {
-								contentObject.Files.push(data[m]);
-							}
-						}
-					}
-					
-					//Even if nothing was found for 3D, go on ant try to find some text
-					var dbpediaQuery = contentObject.Name;
-					
-					//Fetch free text data for the model
-					dbpedia.fetchText(dbpediaQuery, '', this);
-				},
-				function getImageData(error,data) {
-					//Be sure to have data before going on
-					if(!error && data[0].Type === undefined) {
-						error = 'No text data could be retrieved.';
-					}
-					if(error) {
-						console.log('dbpedia error: '+error);
-					} else {
-						
-						console.log('3. Text data fetched!');
-						//Push the text data in the Files array because it will be treated as MediaItem in RUCoD
-						contentObject.Files.push(data[0]);
-					}
-					
-					var flickrQuery = contentObject.Name;
-					
-					if (queryAdjustment[contentObject.Category]) {
-						flickrQuery += queryAdjustment[contentObject.Category];
-					}
-					
-					flickr.fetchImage(flickrQuery,1,this);
-				},
-				function getImageWeatherData(error,data) {
-					//Be sure to have data before going on
-					if(!error && data.length < 1) {
-						error = 'No image data could be retrieved.';
-					}
-					if(error) {
-						console.log('flickr error: '+error);
-						return [];
-					}
-					console.log('4. Flickr images fetched!');
-					//Get weather data for images
-					weather.fetchWeather(data,this);
-				},
-				function getVideoData(error,data) {
-					//Be sure to have data before going on
-					if(!error && data.length < 1) {
-						error = 'No weather data could be retrieved.';
-					}
-					if(error) {
-						console.log('weather error: '+error);
-					} else {
-						console.log('4.1. Weather data for flickr images fetched!');
-						
-						context.cleanResult(data,function(result) {
-		
-							//If automatic mode is on, than just store the first retrieved image (e.g. the most relevant)
-							if(automatic === true) {
-								//Push the best matching image to the files array of the content object
-								context.getBestMatch(contentObject.Name, result, function(error, matches) {
-									
-									if(!error && matches !== null) {
-										for(var m=0; m < matches.length; m++) {
-											contentObject.Files.push(matches[m]);
-										}
-									} 
-								});
-								
-							} else {
-								for(var w=0; w < result.length; w++) {
-									contentObject.Files.push(result[w]);
-								}
-							}
-						});
-					}
-					
-					//Some query adjustments for youtube
-					var youtubeQuery = contentObject.Name;
-					
-					if(queryAdjustment[contentObject.Category]) {
-						youtubeQuery += queryAdjustment[contentObject.Category];
-					} 
-					
-					//Get videos for content object
-					youtube.fetchVideo(youtubeQuery,this);
-				},
-				function getSoundData(error,data) {
-					//Be sure to have data before going on
-					if(!error && data.length < 1) {
-						error = 'No video data could be retrieved.';
-					}
-					if(error) {
-						console.log('youtube error: '+error);
-					} else {
-						console.log('5. YouTube data fetched!');
-						
-						//If automatic mode is on, than just store the first retrieved video (e.g. the most relevant)
-						if(automatic === true) {
-							//Push the best matching video to the files array of the content object
-							context.getBestMatch(contentObject.Name, data, function(error, matches) {
-			
-								if(!error && matches !== null) {
-									for(var m=0; m < matches.length; m++) {
-										contentObject.Files.push(matches[m]);
-									}
-								} 
-							});
-						} else {
-							for(var y=0; y < data.length; y++) {
-								contentObject.Files.push(data[y]);
-							}
-						}
-					}
-					var soundQuery = contentObject.Name; 
-					
-					//Get audio for content object
-					sound.fetchSound(soundQuery, true, this);
-				},
-				function evaluateSoundData(error,data) {
-					if(error) {
-						console.log('sound error: '+error);
-					}
-					
-					if(data.length < 1) {
-						
-						var soundQuery = contentObject.Name; 
-						
-						//Get audio for content object
-						sound.fetchSound(soundQuery, false, this);
-					} else {
-						console.log('5.1 Sound data with geo information fetched!');
-						//Get weather data for sounds
-						weather.fetchWeather(data,this);
-					}
-				},
-				function finalizeData(error,data) {
-					//Be sure to have data before going on
-					if(!error && data.length < 1) {
-						error = 'No composed sound data could be retrieved.';
-					}
-					if(error) {
-						console.log('sound error: '+error);
-					} else { 
-					
-						console.log('6. Composed Sound data fetched!');
-						
-						context.cleanResult(data,function(result) {
-							//If automatic mode is on, than just store the first retrieved sound (e.g. the most relevant)
-							if(automatic === true) {
-								//Push the best matching sound to the files array of the content object
-								context.getBestMatch(contentObject.Name, result, function(error, matches) {
-		
-									if(!error && matches !== null) {
-										for(var m=0; m < matches.length; m++) {
-											contentObject.Files.push(matches[m]);
-										}
-									} 
-								});
-			
-							} else {
-								for(var s=0; s < result.length; s++) {
-									contentObject.Files.push(result[s]);
-								}
-							}
-						});
-					}
-					
-					delete contentObject.Category;
-					
-					console.log('Finished with CO "' + contentObject.Name + '"!');
-					
-					//Return the collected content object
-					callback(null, contentObject);
-				}
-			); //End step function
-		} catch(e) {
-			callback(e.message, null);
-		}
-	  } //End exists if
+  		console.log("LOAD: data for query '" + keyword +"'...");
+  	
+  		var queryAdjustment = {};
+  		queryAdjustment['Fish'] = ' underwater';
+  		
+  		var category = categoryPath.split("/");
+  		
+  		//content object data storage
+  		var contentObject = {
+  				  "ID": index + '-' + new Date().getTime(),
+  				  "Name": keyword.toLowerCase().replace(/\b[a-z]/g, function(letter) {
+  					    	return letter.toUpperCase();
+  				  		  }),
+  				  "Screenshot": "",
+  				  "Category": category[category.length-1],
+  				  "CategoryPath": categoryPath, 
+  				  "Files": []
+  		};
+  		
+  		//console.log("FetchData: k=" + keyword + " c=" + categoryPath + " i=" + index +" a=" + automatic);
+  		
+  		try {
+  			//Step through the content object data collection
+  			step(
+  				function initialize() {	
+  					
+  					console.log('1. Start fetching Content Object data for 3D models with query "' + keyword + '"');
+  					sketchup.fetchThreed(keyword, this);
+  				},
+  				function getModelData(error,data) {
+  					
+  					//Be sure to have data before storing something which is not there
+  					if(!error && data.length < 1) {
+  						error = 'No model data could be retrieved.';
+  					}
+  					if(error) {
+  						console.log('SketchUp error: ' + error);
+  					} else {
+  						//Nothing went wrong so possibly we have something to store
+  						console.log('2. 3D model data fetched!');
+  						
+  						//Use the preview image of the first 3D model as preview for the content object
+  						contentObject.Screenshot = data[0].Preview;
+  						
+  						//If automatic mode is on, than just store the best matching retrieved model (e.g. the most relevant)
+  						if(automatic === true) {
+  							//Push the best matching 3D model to the files array of the content object
+  							context.getBestMatch(contentObject.Name, data, function(error, matches) {
+  								if(!error && matches !== null) {
+  									for(var m=0; m < matches.length; m++) {
+  										contentObject.Files.push(matches[m]);
+  									}
+  								} 
+  							});
+  							
+  						} else {
+  							for(var m=0; m < data.length; m++) {
+  								contentObject.Files.push(data[m]);
+  							}
+  						}
+  					}
+  					
+  					//Even if nothing was found for 3D, go on ant try to find some text
+  					var dbpediaQuery = contentObject.Name;
+  					
+  					//Fetch free text data for the model
+  					dbpedia.fetchText(dbpediaQuery, '', this);
+  				},
+  				function getTextData(error,data) {
+  					//Be sure to have data before going on
+  					if(!error && data[0].Type === undefined) {
+  						error = 'No text data could be retrieved.';
+  					}
+  					if(error) {
+  						console.log('dbpedia error: '+error);
+  					} else {
+  						
+  						console.log('3. Text data fetched!');
+  						//Push the text data in the Files array because it will be treated as MediaItem in RUCoD
+  						contentObject.Files.push(data[0]);
+  					}
+  					
+  					var flickrQuery = contentObject.Name;
+  					
+  					if (queryAdjustment[contentObject.Category]) {
+  						flickrQuery += queryAdjustment[contentObject.Category];
+  					}
+  					
+  					flickr.fetchImage(flickrQuery, 1, this);
+  				},
+  				function getImageData(error,data) {
+  					//Be sure to have data before going on
+  					if(!error && data.length < 1) {
+  						error = 'No image data could be retrieved.';
+  					}
+  					if(error) {
+  						console.log('flickr error: '+error);
+  						return [];
+  					}
+  					console.log('4. Flickr images fetched!');
+  					
+  				  //If automatic mode is on, than just store the first retrieved image (e.g. the most relevant)
+            if(automatic === true) {
+              //Push the best matching image to the files array of the content object
+              context.getBestMatch(contentObject.Name, data, function(error, matches) {
+                
+                if(!error && matches !== null) {
+                  for(var m=0; m < matches.length; m++) {
+                    contentObject.Files.push(matches[m]);
+                  }
+                } 
+              });
+              
+            } else {
+              for(var i=0; i < data.length; i++) {
+                contentObject.Files.push(data[i]);
+              }
+            } //end automatic if 
+            
+            //Some query adjustments for youtube
+            var youtubeQuery = contentObject.Name;
+            
+            if(queryAdjustment[contentObject.Category]) {
+              youtubeQuery += queryAdjustment[contentObject.Category];
+            } 
+            
+            //Get videos for content object
+            youtube.fetchVideo(youtubeQuery, 1, this);
+  				},
+  				function getVideoData(error,data) {
+  				  //Be sure to have data before going on
+            if(!error && data.length < 1) {
+              error = 'No video data could be retrieved.';
+            }
+            if(error) {
+              console.log('YouTube error: '+error);
+            } else {
+              console.log('5. YouTube data fetched!');
+              
+              //If automatic mode is on, than just store the first retrieved video (e.g. the most relevant)
+              if(automatic === true) {
+                //Push the best matching video to the files array of the content object
+                context.getBestMatch(contentObject.Name, data, function(error, matches) {
+        
+                  if(!error && matches !== null) {
+                    for(var m=0; m < matches.length; m++) {
+                      contentObject.Files.push(matches[m]);
+                    }
+                  } 
+                });
+              } else {
+                for(var y=0; y < data.length; y++) {
+                  contentObject.Files.push(data[y]);
+                }
+              } // end automatic if
+            }
+            
+            var soundQuery = contentObject.Name; 
+            //Get audio for content object
+            sound.fetchSound(soundQuery, 1, this);
+  				},
+  				function getSoundData(error,data) {
+  					if(error) {
+  						console.log('Freesound error: '+error);
+  					}
+  					
+  					if(data.length < 1) {
+  						var soundQuery = contentObject.Name; 
+  						//Get audio for content object
+  						sound.fetchSound(soundQuery, 0, this);
+  					} else {
+  						return data;
+  					}
+  				},
+  				function finalize(error,data) {
+  					//Be sure to have data before going on
+  					if(!error && data.length < 1) {
+  						error = 'No sound data could be retrieved.';
+  					}
+  					if(error) {
+  						console.log('Freesound error: '+error);
+  					} else { 
+  					
+  						console.log('6. Composed Sound data fetched!');
+  						
+  					  //If automatic mode is on, than just store the first retrieved sound (e.g. the most relevant)
+              if(automatic === true) {
+                //Push the best matching sound to the files array of the content object
+                context.getBestMatch(contentObject.Name, data, function(error, matches) {
+    
+                  if(!error && matches !== null) {
+                    for(var m=0; m < matches.length; m++) {
+                      contentObject.Files.push(matches[m]);
+                    }
+                  } 
+                });
+      
+              } else {
+                for(var s=0; s < data.length; s++) {
+                  contentObject.Files.push(data[s]);
+                }
+              } //end automatic if
+  					}
+  					
+  					delete contentObject.Category;
+  					
+  					console.log('Finished with CO "' + contentObject.Name + '"!');
+  					
+  					//Return the collected content object
+  					callback(null, contentObject, index);
+  				}
+  			); //End step function
+  		} catch(e) {
+  			callback(e.message, null, index);
+  		}
+  	} //End exists if
 	}); //End rucod.exists function
 };    
 

@@ -19,7 +19,8 @@ require(["jquery",
          "mylibs/results",
          "mylibs/uiiface", 
          "libs/jquery.tokeninput",
-         "libs/smiley-slider"], 
+         "libs/smiley-slider",
+         "/nowjs/now.js"], 
     function($, menu, config, tags, results, uiiface) {
       
       $(function() {

@@ -5,7 +5,11 @@
  * 
  * @author Jonas
  */
-var path = require('path'), fs = require('fs'), nodeio = require('node.io'), querystring = require('querystring');
+var path = require('path'), 
+    fs = require('fs'), 
+    nodeio = require('node.io'),
+    restler = require('restler'),
+    querystring = require('querystring');
 
 var basepath = '/var/www/isearch/client/cofetch/output';
 var publicOutputUrl = 'http://isearch.ai.fh-erfurt.de/cofetch/output';
@@ -62,6 +66,14 @@ var getISODateString = function(d) {
       + pad(d.getUTCMinutes()) + ':' + pad(d.getUTCSeconds()) + 'Z';
 };
 
+var encodeXml = function(s) {
+  return (s
+      .replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&apos;')
+      .replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/\t/g, '&#x9;').replace(/\n/g, '&#xA;').replace(/\r/g, '&#xD;')
+  );
+};
+
 var getVideoSourceUrl = function(youtubeLink, id, callback) {
 
   var result = false;
@@ -69,62 +81,40 @@ var getVideoSourceUrl = function(youtubeLink, id, callback) {
   var videoId = youtubeLink.substr(youtubeLink.lastIndexOf('=') + 1);
   var infoUrl = 'http://youtube.com/get_video_info?video_id=' + videoId;
 
-  var job = new nodeio.Job({
-        input : false,
-        run : function() {
-          var url = this.options.args[0];
-          this.get(
-                  url,
-                  function(err, data) {
-                    if (err) {
-                      this.exit(err);
-                    } else {
+  restler
+  .get(infoUrl)
+  .on('complete', function(data) {    
+    try {
+      var vInfoResponse = querystring.parse(data);
+      
+      if (vInfoResponse['status'] === "fail") {
+        throw 'The video seems to be unavaiable in your country. Please choose another one.';
+      }
 
-                      try {
+      var vInfoUrls = vInfoResponse['url_encoded_fmt_stream_map'].split(',');
+      var vDataUrl = '';
 
-                        var vInfoResponse = querystring.parse(data);
-
-                        if (vInfoResponse['status'] === "fail") {
-                          throw 'The video seems to be unavaiable in your country. Please choose another one.';
-                        }
-
-                        var vInfoUrls = vInfoResponse['url_encoded_fmt_stream_map']
-                            .split(',');
-                        var vDataUrl = '';
-
-                        for ( var u = 0; u < vInfoUrls.length; u++) {
-                          vInfoUrls[u] = decodeURIComponent(vInfoUrls[u]
-                              .replace(/\+/g, " "));
-                          vInfoUrls[u] = vInfoUrls[u]
-                              .substring(
-                                  vInfoUrls[u].indexOf('=') + 1,
-                                  vInfoUrls[u].lastIndexOf(';') < 0 ? vInfoUrls[u].length
-                                      : vInfoUrls[u].lastIndexOf(';'));
-                          if (vInfoUrls[u].indexOf('video/mp4') > 0) {
-                            vDataUrl = vInfoUrls[u];
-                          }
-                        }
-
-                        this.emit(vDataUrl);
-
-                      } catch (e) {
-                        this.exit(e);
-                      }
-                    }
-                  });
+      for ( var u = 0; u < vInfoUrls.length; u++) {
+        vInfoUrls[u] = decodeURIComponent(vInfoUrls[u].replace(/\+/g, " "));
+        //get everything after 'url=' 
+        vInfoUrls[u] = vInfoUrls[u].substring(
+                vInfoUrls[u].indexOf('=') + 1,
+                vInfoUrls[u].lastIndexOf(';') < 0 ? vInfoUrls[u].length : vInfoUrls[u].lastIndexOf(';')
+        );
+        //get the right video format
+        if (vInfoUrls[u].indexOf('video/mp4') > 0) {
+          callback(null, id, decodeURIComponent(vInfoUrls[u]));
+          break;
         }
-      });
-
-  nodeio.start(job, {args : [ infoUrl ]}, function(error, data) {
-
-    if (error) {
+      }
+      
+    } catch (error) {
       callback(error, id, null);
-      return;
     }
-
-    callback(null, id, data[0]);
-
-  }, true);
+  })
+  .on('error', function(data,response) {
+    callback(response.message, id, null);
+  }); 
 
 };
 
@@ -263,8 +253,7 @@ exports.publishRUCoD = function(data, outputPath, webOutputUrl, automatic, callb
   var uniqueTags = tagArray.unique();
   // and print the tags into the header
   for ( var t = 0; t < uniqueTags.length; t++) {
-    rucodBody += '<MetaTag name="UserTag" type="xsd:string">'
-        + uniqueTags[t] + '</MetaTag>';
+    rucodBody += '<MetaTag name="UserTag" type="xsd:string">' + encodeXml(uniqueTags[t]) + '</MetaTag>';
   }
 
   rucodBody += '</Tags>';
@@ -284,16 +273,19 @@ exports.publishRUCoD = function(data, outputPath, webOutputUrl, automatic, callb
       }
 
       rucodBody += '<MultimediaContent type="' + data.Files[f].Type + '">';
-
       if (data.Files[f].Type == 'Text') {
-        rucodBody += '<FreeText>' + data.Files[f].FreeText.replace(/&/g, '&amp;') + '</FreeText>';
+        if(typeof(data.Files[f].FreeText) == 'string') {
+          rucodBody += '<FreeText>' + encodeXml(data.Files[f].FreeText) + '</FreeText>';
+        } else {
+          rucodBody += '<FreeText>' + encodeXml(data.Files[f].Name) + '</FreeText>';
+        }
       } else {
         
         if (data.Files[f].Description) {
-          rucodBody += '<FreeText>' + data.Files[f].Description.replace(/&/g, '&amp;') + '</FreeText>';
+          rucodBody += '<FreeText>' + encodeXml(data.Files[f].Description) + '</FreeText>';
         }
         
-        rucodBody += '<MediaName>' + data.Files[f].Name + '</MediaName>';
+        rucodBody += '<MediaName>' + encodeXml(data.Files[f].Name) + '</MediaName>';
         
         if (mime[data.Files[f].Extension]) {
           rucodBody += '<FileFormat>' + mime[data.Files[f].Extension]
@@ -302,7 +294,7 @@ exports.publishRUCoD = function(data, outputPath, webOutputUrl, automatic, callb
         
         for ( var t = 0; t < data.Files[f].Tags.length; t++) {
           rucodBody += '<MetaTag name="UserTag" type="xsd:string">'
-              + data.Files[f].Tags[t] + '</MetaTag>';
+              + encodeXml(data.Files[f].Tags[t]) + '</MetaTag>';
         }
         
         rucodBody += '<MediaLocator>';
@@ -312,17 +304,17 @@ exports.publishRUCoD = function(data, outputPath, webOutputUrl, automatic, callb
         
         rucodBody += '<MediaCreationInformation>';
         rucodBody += '<Author>';
-        rucodBody += '<Name>' + data.Files[f].Author.replace(/&/g, '&amp;') + '</Name>';
+        rucodBody += '<Name>' + encodeXml(data.Files[f].Author) + '</Name>';
         rucodBody += '</Author>';
         rucodBody += '<Licensing>' + data.Files[f].License + '</Licensing>';
         rucodBody += '</MediaCreationInformation>';     
         
         if (data.Files[f].Size) {
-          rucodBody += '<Size>' + data.Files[f].Size + '</Size>';
+          rucodBody += '<Size>' + Math.ceil(data.Files[f].Size) + '</Size>';
         }
         
         if (data.Files[f].Length) {
-          rucodBody += '<MediaTime>' + data.Files[f].Length + '</MediaTime>';
+          rucodBody += '<MediaTime>' + Math.ceil(data.Files[f].Length) + '</MediaTime>';
         }
 
       }
@@ -448,7 +440,12 @@ exports.publishRUCoD = function(data, outputPath, webOutputUrl, automatic, callb
       }
     });
   }; // Function saveRucodMedia end
-
+  
+  saveRucodMedia(rucodBody, data, outputPath, callback);
+  
+  //The video source url is only a short time available, so it's senseless to store it in the RUCoD,
+  //it must be created right before the actual download of the video.
+  /*
   if (hasVideo) {
     // First run, get the video data url for youtube videos
     for ( var f = 0; f < data.Files.length; f++) {
@@ -481,7 +478,7 @@ exports.publishRUCoD = function(data, outputPath, webOutputUrl, automatic, callb
   } else {
     // No video in JSON so don't go through the video source url retrieval path
     saveRucodMedia(rucodBody, data, outputPath, callback);
-  }
+  }*/
 };
 
 /**
