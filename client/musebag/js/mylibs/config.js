@@ -121,11 +121,11 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/
     var initSettings = function() {
       
       // initialize settings from local configuration if any 
-      if(localConfig !== undefined) {
+      /*if(localConfig !== undefined) {
         if(typeof(localConfig) === "function") {
           localConfig(constants);
         }
-      }
+      }*/
 	  
       var setForm = function() {
         //Initialize the form with the default values
