@@ -253,6 +253,19 @@ var getSessionStore = function(req) {
   return req.session.user;
 };
 
+var getExternalSessionId = function(req) {
+  
+  if(req) {
+    var sessionStore = getSessionStore(req);
+    if(!req.session.user.extSessionId) {
+      var sid = req.sessionID.substring(req.sessionID.length-32,req.sessionID.length);
+      req.session.user.extSessionId = sid;
+    } 
+    return req.session.user.extSessionId;
+  }
+  
+};
+
 /**
  * login function
  */
@@ -419,7 +432,7 @@ exports.query = function(req, res) {
   //get post data
   var data = req.body;
   //Get the external session id of the MQF
-  var extSessionId = req.session.extSessionId;
+  var extSessionId = getExternalSessionId(req);
   //Get the right session storage (depending on log in status - guest if not, user if yes)
   var sessionStore = getSessionStore(req);
   //Url of MQF component
@@ -515,8 +528,7 @@ exports.queryItem = function(req, res) {
 	}
 	
 	//Store the session id
-	var sid = req.sessionID.substring(req.sessionID.length-32,req.sessionID.length);
-	req.session.extSessionId = sid;
+	var sid = getExternalSessionId(req);
 	
 	//Create the upload parser
 	var upload = new formidable.IncomingForm();
