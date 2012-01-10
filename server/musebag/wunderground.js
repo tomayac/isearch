@@ -2,7 +2,6 @@
  * Weather fetch for Content Object production.
  * Facilitates Node.io to get contents from wunderground.com
  */
-var nodeio = require('node.io');
 var restler = require('restler');
 var jsdom   = require('jsdom');
 
