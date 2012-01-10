@@ -256,7 +256,7 @@ nav {
 #messages p {
   margin: 10px;
   padding: 0;
-  font-size: 2em;
+  font-size: 1.5em;
   font-weight: bold;
   text-align: center;
 }
@@ -266,11 +266,11 @@ nav {
 }
 
 #messages p.error {
-  color: #F66;
+  color: #D44;
 }
 
 #messages p.success {
-  color: #6F6;
+  color: #4D4;
 }
 
 #navButtonLeft,#navButtonRight {
@@ -601,6 +601,25 @@ footer {
 	margin-top: 20px;
 }
 
+.bottom-overlay {
+  position: fixed;
+  bottom: -100px;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  
+  height: 100px;
+    
+  background-color: #444;
+  color: white;
+  box-shadow: 0px 0px 3px #555;
+  border-top-right-radius: 4px;
+  border-top-left-radius: 4px;
+  
+  padding: 1em;
+  margin: 0 auto;
+};
+
 /**
  * Style for the results page
  */
@@ -694,14 +713,16 @@ footer {
 /*smaller screens ______________________________*/
 @media only screen and (max-width: 479px),
 @media only screen and (max-device-width: 479px) {
-  .settings-panel {
+  .settings-panel,
+  .bottom-overlay {
     width: 100%;
   }
 }
 
 /*480px ______________________________*/
 @media only screen and (min-width: 481px) {
-  .settings-panel {
+  .settings-panel,
+  .bottom-overlay {
     width: 480px;
   }
 }

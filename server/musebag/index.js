@@ -30,7 +30,8 @@ app.configure(function(){
   app.use(express.cookieParser());
   app.use(express.session({ secret: "isearchsession", store: new redisStore }));
   app.use(app.router);
-  app.use(express.static('/var/www/isearch/client/musebag'));
+  app.use(express.static('../../client/musebag'));
+  app.use(express.logger({ format: ':method :url' }));
 });
 
 app.configure('development', function(){
@@ -42,6 +43,8 @@ app.configure('production', function(){
 });
 
 // Routes
+console.log("Register MuseBag functions...");
+
 app.post('/login'           , musebag.login);
 app.del ('/login'           , musebag.logout);
 

@@ -123,6 +123,7 @@ define("mylibs/filehandler", ["libs/glge-compiled-min"], function(GLGE){
 	        	
 	            var fileInfo = JSON.parse(xhr.responseText);
 	            var pictureIcon = {};
+	            var genericItemType = 'Text';
 	            
 	            if(fileInfo.error) {
 	              alert('Woops...somehow your query input got lost through an error in space. You can try it again or report this error to my creators: \n' + fileInfo.error);
@@ -133,6 +134,7 @@ define("mylibs/filehandler", ["libs/glge-compiled-min"], function(GLGE){
 	            if((/dae/i).test(fileInfo.name)) {
 	            	console.log("3D uploaded...");
 	            	pictureIcon = $('nav li[data-mode="3d"]');
+	            	genericItemType = 'Object3D';
 	            	var modelHandler = new that.ModelHandler(fileInfo.originPath,id);
 	            	modelHandler.initialize();
 	            }
@@ -147,20 +149,25 @@ define("mylibs/filehandler", ["libs/glge-compiled-min"], function(GLGE){
 		                console.log("Image uploaded...");
                     pictureIcon = $('nav li[data-mode="picture"]');
 		              }
+		              genericItemType = 'ImageType';
 		            }
 		            //Sound display in query field
 		            if((/audio/i).test(fileInfo.type)) {
 		            	console.log("Audio uploaded...");
 		            	pictureIcon = $('nav li[data-mode="sound"]');
+		            	genericItemType = 'SoundType';
 		            }
 		            //Video display in query field
 		            if((/video/i).test(fileInfo.type)) {
 		            	console.log("Video uploaded...");
 		            	pictureIcon = $('nav li[data-mode="video"]');
+		            	genericItemType = 'VideoType';
 		            }
 		            //set the appropriate data tags for the html element
-		            $('#' + id).attr({'src' : fileInfo.path,
-  		                            'alt' : fileInfo.name});
+		            $('#' + id).attr({'src'       : fileInfo.path,
+  		                            'alt'       : fileInfo.name,
+  		                            'class'     : fileInfo.subtype,
+  		                            'data-mode' : genericItemType});
 	            }
 	            
 	            pictureIcon.removeClass('uploading');

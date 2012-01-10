@@ -13,11 +13,11 @@ require(["jquery",
          "mylibs/config",
          "mylibs/tags",
          "mylibs/results",
-         "mylibs/uiiface", 
+         "mylibs/uiiface",
+         "mylibs/query",
          "libs/jquery.tokeninput",
-         "libs/smiley-slider",
-         "/nowjs/now.js"], 
-    function($, menu, config, tags, results, uiiface) {
+         "libs/smiley-slider"], 
+    function($, menu, config, tags, results, uiiface, query) {
       
       $(function() {
         console.log('In the start function');
@@ -41,8 +41,8 @@ require(["jquery",
           //Initializes the tagging system
           tags.init();
 
-          //Initializes the UIIFace
-          uiiface.initialize({gestureHint:false});
+          //Initializes the UIIFace // GestureHint display on every screen element with enabled gestures
+          uiiface.initialize({gestureHint:true});
           //test actions on logo
           //uiiface.registerEvent('logo','scale',function(event) {
           //  console.log(event);
@@ -76,9 +76,9 @@ require(["jquery",
             //prevent the page to reload
             e.preventDefault() ;
             
-            var query = menu.retrieveQuery(); 
-            console.log('searching for query ' + query);   
-            if (query) { 
+            var result = query.submit();
+            
+            if (result) { 
               //Collapses the menu
               menu.collapse();
 
@@ -88,11 +88,14 @@ require(["jquery",
               $(".token-input-dropdown-isearch").hide();
 
               //Displays the results
-              results.display(query);
+              console.log(result);
+              //Dummy result display
+              results.display('chair');
 
             } else {
               alert('woops! No query!');
             }
+            
             return false;
           });
         }); //end document.ready()

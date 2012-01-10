@@ -13,7 +13,8 @@
  */
 var fs         = require('fs'),
     restler    = require('restler'),
-    formidable = require('formidable');
+    formidable = require('formidable'),
+    wunder     = require('./wunderground');
 
 /**
  * Global variables
@@ -21,6 +22,57 @@ var fs         = require('fs'),
 var msg     = {error: 'Something went wrong.'};
 var tmpPath = '/var/www/isearch/client/musebag/tmp';
 var tmpUrl  = '/tmp';
+
+var queryRucodTpl   = '<?xml version="1.0" encoding="UTF-8"?>'
+                    + '<RUCoD xmlns="http://www.isearch-project.eu/isearch/RUCoD" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'
+                    + '<Header>'
+                    + '<ContentObjectType>Query</ContentObjectType>'
+                    + '<ContentObjectName xml:lang="en-US">[[NAME]]</ContentObjectName>'
+                    + '<ContentObjectID>[[SESSIONID]]</ContentObjectID>'
+                    + '<ContentObjectCreationInformation>'
+                    + '<Creator><Name>[[USER]]</Name></Creator>'
+                    + '</ContentObjectCreationInformation>'
+                    + '<Tags>[[TAGS]]</Tags>'
+                    + '<ContentObjectTypes>'
+                    + '[[MEDIACONTENT]]'
+                    + '<RealWorldInfo><MetadataUri filetype="rwml">[[SESSIONID]].rwml</MetadataUri></RealWorldInfo>'
+                    + '[[USERINFO]]'
+                    + '</ContentObjectTypes>'
+                    + '</Header>'
+                    + '</RUCoD>';
+
+var queryItemTpl    = '<MultimediaContent type="[[TYPE]]">'
+                    + '<MediaName>[[NAME]]</MediaName>'
+                    + '<MetaTag name="TypeTag" type="xsd:string">[[REALTYPE]]</MetaTag>'
+                    + '<MediaLocator><MediaUri>[[URL]]</MediaUri></MediaLocator>'
+                    + '</MultimediaContent>';
+
+var userInfoTpl     = '<UserInfo>'
+                    + '<UserInfoName>Emotion</UserInfoName>'
+                    + '<emotion><category name="[[NAME]]" intensity="[[INTENSITY]]" set="everydayEmotions"/></emotion>'
+                    + '</UserInfo>';
+
+var queryRwmlTpl    = '<RWML>'
+                    + '<ContextSlice>'
+                    + '<DateTime><Date>[[DATETIME]]</Date></DateTime>'
+                    + '[[LOCATION]]'
+                    + '[[WEATHER]]'
+                    + '</ContextSlice>'
+                    + '</RWML>';
+
+var queryLocTpl     = '<Location type="gml">'
+                    + '<gml:CircleByCenterPoint numArc="1">'
+                    + '<gml:pos>[[POSITION]]</gml:pos>'
+                    + '<gml:radius uom="M">10</gml:radius>'
+                    + '</gml:CircleByCenterPoint>'
+                    + '</Location>';
+
+var queryWeatherTpl = '<Weather>'
+                    + '<Condition>[[CONDITION]]</Condition>'
+                    + '<Temperature>[[TEMP]]</Temperature>'
+                    + '<WindSpeed>[[WIND]]</WindSpeed>'
+                    + '<Humidity>[[HUMIDITY]]</Humidity>'
+                    + '</Weather>';
 
 /**
  * private functions
@@ -76,6 +128,107 @@ var distributeFile = function(destinationUrl, callParams, fileInfo, callback) {
     });
     
   }); //end function fs.readFile
+};
+
+var getQueryRucod = function(query,sessionId,sessionStore,callback) {
+  if(!query) {
+    callback('No query', null);
+  }
+  
+  var queryRucod = queryRucodTpl;
+  var queryRwml  = queryRwmlTpl;
+  var mmItems = '';
+  var emotion = '';
+  var tags    = '';
+
+  for(var index in query.fileItems) {
+    
+    var item = query.fileItems[index];
+    
+    if(item.Type == 'Text') {
+      mmItems += '<MultimediaContent type="Text"><FreeText>' + item.Content + '</FreeText></MultimediaContent>';
+    } else {
+      var tmpItem = queryItemTpl;
+      tmpItem = tmpItem.replace("[[TYPE]]"    , item.Type + 'Type')
+                       .replace("[[REALTYPE]]", item.RealType)
+                       .replace("[[NAME]]"    , item.name)
+                       .replace("[[URL]]"     , item.Content);
+      
+      mmItems += tmpItem;
+    }
+  };
+  
+  if(query.tags) {
+    for(var index in query.tags) {
+      var tag = query.tags[index];
+      tags += '<MetaTag name="TagRecommendation" type="xsd:string">' + tag + '</MetaTag>';
+    }
+  }
+  
+  if(query.emotion) {
+    emotion = userInfoTpl;
+    emotion = emotion.replace("[[NAME]]"     , query.emotion.name)
+                     .replace("[[INTENSITY]]", query.emotion.intensity);
+  }
+  
+  queryRucod = queryRucod.replace("[[NAME]]"        , 'UserQuery-' + sessionId)
+                         .replace(/\[\[SESSIONID\]\]/g   , sessionId)
+                         .replace("[[USER]]"        , (sessionStore.Email || 'Guest'))
+                         .replace("[[TAGS]]"        , tags)
+                         .replace("[[MEDIACONTENT]]", mmItems)
+                         .replace("[[USERINFO]]"     , emotion);
+  
+  //Test what kind of real-world data we have and create the RWML for it
+  if(query.datetime) {
+    //Place holder for possible real-world data in query
+    var location = '';
+    var weather = '';
+    //Check if we have more than a date time for the query
+    if(query.location) {
+      location = queryLocTpl;
+      location = location.replace("[[POSITION]]", query.location);
+      
+      //Perform data format conversion for weather fetch
+      var position = query.location.split(' ');
+      position[2] = 0;
+      position[3] = 0;
+      
+      var datetime = query.datetime.replace(/T/g    , ' ')
+                                   .replace(/.000Z/g, '' )
+                                   .replace(/-/g    , '.');
+      
+      //Try to fetch weather data for this location
+      wunder.fetchWeather({Date: datetime, Location: position}, function(error, data) {
+
+        if(error) {
+          console.log('No weather data found for query with id ' + sessionId);
+        } else {
+          weather = queryWeatherTpl;
+          weather = weather.replace("[[CONDITION]]", data.condition)
+                           .replace("[[TEMP]]"     , data.temperature)
+                           .replace("[[WIND]]"     , data.wind)
+                           .replace("[[HUMIDITY]]" , data.humidity);
+        }
+        
+        //Create the RWML with at least location data
+        queryRwml = queryRwml.replace("[[DATETIME]]", query.datetime)
+                             .replace("[[LOCATION]]", location)
+                             .replace("[[WEATHER]]" , weather);
+        
+        callback(null, {rucod : queryRucod, rwml : queryRwml});
+      });
+    } else {
+      //Create the RWML without any additional real world data
+      queryRwml = queryRwml.replace("[[DATETIME]]", query.datetime)
+                           .replace("[[LOCATION]]", location)
+                           .replace("[[WEATHER]]" , weather);
+      
+      callback(null, {rucod : queryRucod, rwml : queryRwml});
+    }
+  } else {
+    queryRwml = false;
+    callback(null, {rucod : queryRucod, rwml : queryRwml});
+  }
 };
 
 var isGuest = function(req) {
@@ -184,7 +337,7 @@ exports.setProfile = function(req, res) {
     var changed = false;
     
     if(attrib === 'Settings') {
-      //treat user settings in JSON format
+      //threat user settings in JSON format
       try {
         //check if new settings are already in the session storage
         var newSettings = JSON.parse(data);
@@ -262,8 +415,74 @@ exports.setProfile = function(req, res) {
 exports.query = function(req, res) {
 	
 	console.log("Query function called...");
-	//Compose the query
 	
+  //get post data
+  var data = req.body;
+  //Get the external session id of the MQF
+  var extSessionId = req.session.extSessionId;
+  //Get the right session storage (depending on log in status - guest if not, user if yes)
+  var sessionStore = getSessionStore(req);
+  //Url of MQF component
+  var queryFormulatorURL = "http://gdv.fh-erfurt.de/i-search/mqf-dummy/handle.php";
+  
+  var result = {};
+  
+  try {
+    //Compose the query
+    getQueryRucod(data, extSessionId, sessionStore, function(error,queryData) {
+      if(error) {
+        result.error = 'Query error: ' + error;
+        console.log(result.error);
+        res.send(JSON.stringify(result));
+
+      } else {
+        
+        var queryOptions = sessionStore['Settings'];
+        
+        //creating the call parameters
+        var callData = {
+            "f"       : "submitQuery",
+            "rucod"   : queryData.rucod,
+            "rwml"    : queryData.rwml,
+            "session" : extSessionId,
+            "options" : queryOptions
+        };
+        
+        console.log(callData);
+        
+        //Submit the query to MQF
+        restler
+        .post(queryFormulatorURL, { 
+          data : callData
+        })
+        .on('complete', function(data) { 
+
+          //Check if result is ok
+          if(data.error) {
+            result.error = data.error;
+            console.log(result.error);
+          } else {
+            result.success = 'Result retrieved.';
+            result.data = data.result;
+            console.log(result);
+          }
+          
+          res.send(JSON.stringify(result));
+          
+       })
+       .on('error', function(data,response) {
+          msg.error = response.message;
+          callback(msg,null);
+       });
+        
+      } //End no error else
+    }); //End getQueryRucod
+    
+  } catch(error) {
+    result.error = 'Error while query processing: ' + error.message;
+    console.log(result.error);
+    res.send(JSON.stringify(result));
+  }
 	
 };
 

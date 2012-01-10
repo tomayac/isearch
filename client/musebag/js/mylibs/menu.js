@@ -189,7 +189,8 @@ define("mylibs/menu",
         pictureIcon.addClass('uploading');
 
         //N.B: COMPLETELY FAKE!! 
-        $("#query-field").tokenInput('add',{id:"geo",name:"<img src='img/fake/fake-geolocation.jpg'/>"});
+        var location = '50.985234 11.043992';
+        $("#query-field").tokenInput('add',{id:"geo",name:'<img src="img/fake/fake-geolocation.jpg" title="' + location + '" class="Location" data-mode="Image" />'});
         //Remove the "uploading style" | Note: this won't be visible, hopefully
         pictureIcon.removeClass('uploading');
 
@@ -220,7 +221,7 @@ define("mylibs/menu",
           emotionTimeout = setTimeout(function() {
             $("#query-field").tokenInput("remove", {id: "emotion"});
             $("#query-field").tokenInput('add',{id:"emotion",name:'<img src="' +
-                canvas.toDataURL("image/png") + '" title="' + p + '"/>'});
+                canvas.toDataURL("image/png") + '" title="' + p + '" class="Emotion" data-mode="Image" />'});
           }, 200);
         }
         
@@ -511,30 +512,17 @@ define("mylibs/menu",
     var collapse = function() {
       $(".query-composition").hide();  
       $("header h1").hide();
-      $(document.createElement('a'))
-          .html('Restart from scratch')
-          .attr('href','')
-          .attr('id','restart')
-          .insertAfter('#query');
-    };
-
-    var retrieveQuery = function() {
-      
-      //Retrieve the tokenized query
-      var queryString = $("#query-field").val();
-      //Check if the user has enter something which is not tokenized yet
-      var remainingInput = $(".token-input-list-isearch li input").val();
-      //Tokenize remaining input
-      if (remainingInput) {
-        $("#query-field").tokenInput('add',{id:remainingInput,name:remainingInput});
+      if($('#restart').length == 0) {
+        $(document.createElement('a'))
+            .html('Restart from scratch')
+            .attr('href','')
+            .attr('id','restart')
+            .insertAfter('#query');
       }
-      return queryString + remainingInput;
     };
-    
     
     return {
       attachEvents: attachEvents,
-      retrieveQuery: retrieveQuery,
       collapse: collapse, 
       showPanel: showPanel, 
       hidePanels: hidePanels,
