@@ -121,7 +121,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/
     var initSettings = function() {
       
       // initialize settings from local configuration if any 
-      if (localConfig) {
+      if(localConfig !== undefined) {
         if(typeof(localConfig) === "function") {
           localConfig(constants);
         }
