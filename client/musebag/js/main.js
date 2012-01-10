@@ -19,8 +19,8 @@ require(["jquery",
          "mylibs/results",
          "mylibs/uiiface", 
          "libs/jquery.tokeninput",
-         "libs/smiley-slider",
-         "/nowjs/now.js"], 
+         "libs/smiley-slider" /*,
+         "/nowjs/now.js"*/], 
     function($, menu, config, tags, results, uiiface) {
       
       $(function() {
@@ -75,7 +75,7 @@ require(["jquery",
           });
 
 		  // hack to hardcode query parameters
-		if ( typeof (__queryParams) != 'undefined' && __queryParams.q )
+		if ( typeof (__queryParams) != 'undefined'  )
 		{
 			results.display();
 		}
@@ -108,6 +108,8 @@ require(["jquery",
             }
             return false;
           });
+		  
+		  
 		}
         }); //end document.ready()
       }); //end anonymous function     

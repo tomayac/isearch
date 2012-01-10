@@ -1,6 +1,6 @@
-define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "!js/mylibs/visualization/DefaultThumbRenderer.js"],
+define("mylibs/config", ["mylibs/tags", /* "mylibs/cofind", */ "!js/mylibs/visualization/DefaultThumbRenderer.js"],
   function(tags,cofind) {
-    
+	
     var constants = {
       //Menu parameters
       slideUpAnimationTime: 200,
@@ -17,19 +17,23 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "!js/mylibs/visualizati
 
       //Visualization parameters
 	  
-	  visOptions: {
+	 visOptions: {
 		method: "tmap", //tmap, htree, hpan or classic
 		thumbOptions: {
 			thumbSize: 64, //16, 32, 48, 64
 			iconArrange: "grid",
 			navMode: "browse",
 			thumbRenderer: new DefaultThumbRenderer
-			}
-		},
+			},
+		showFilterPane: true,
+		filterBar: {
+			modalities: { "image": { label: "Images" }, "3d": { label: "3D models" }  }, // this is the modalities that the user can switch between, depending on use case.
+		}
+	},
 		
 		// server for file upload. This is now passed as parameter to FileHandler in menu.js
 		
-		fileUploadServer: "http://vision.iti.gr/sotiris/isearch/upload.php" // query/item
+	
     };
     
     var panels = {
@@ -125,6 +129,10 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "!js/mylibs/visualizati
     
     var initSettings = function() {
       
+	  // initialize settings from local configuration if any
+	  
+	  if ( localConfig && typeof(localConfig) == "function" ) localConfig(constants) ;
+	  
       var setForm = function() {
         //Initialize the form with the default values
         panels.settings.find("#max-num-results")

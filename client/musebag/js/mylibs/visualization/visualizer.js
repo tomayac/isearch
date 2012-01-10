@@ -27,23 +27,23 @@ define("mylibs/visualization/visualizer",
 		"order!js/mylibs/visualization/TagEditor.js",
 		"mylibs/config",
 		"mylibs/visualization/TagManager",
+		"mylibs/visualization/FilterBar",
 		"mylibs/visualization/TreeMap",
 		"mylibs/visualization/HyperbolicTree", 
 		"mylibs/visualization/HPanel" ], 
-    function(undefined, undefined, undefined, undefined, undefined, config, tagManager, treeMap, hyperbolicTree, hPanel) {
+    function(undefined, undefined, undefined, undefined, undefined, config, tagManager, filterBar, treeMap, hyperbolicTree, hPanel) {
   
 	var widget = null;
 	var results = null;
 	var element = null;
 	var visPane = null;
 	var menuPane = null;
+	var ctx = {} ;
 
 	var draw = function(res, ele, options) {
 		results = res ;
 		element = ele ;
-		
-		options.thumbOptions.tagManager = tagManager ;
-
+	
 		setup(options) ;
 		redraw(options) ;
 	};
@@ -66,11 +66,15 @@ define("mylibs/visualization/visualizer",
 	// create the main layout
 	var setup = function(options) {
 	
-		
-		
+				
 		//Let's empty the DOM element first
 		$(element).empty() ;
 		
+		tagManager.init(results, __queryParams.index) ;
+		
+		ctx.tagManager = tagManager ;
+		ctx.filterBar = filterBar ;
+					
 		// create a filter pane on the top if requested
 		var filterPane = null ;
 		
@@ -83,14 +87,17 @@ define("mylibs/visualization/visualizer",
 						position: "absolute", 
 						width: "100%", 
 						top: 0,
-						height: 40
+						bottom: 50,
+						height: 50,
+						display: "table"
 					} 
 				}
 			).appendTo(element) ;
 			
-			tagManager.init(filterPane, results, __queryParams.index, function() {
+			filterBar.init(filterPane, options.filterBar, tagManager, results.docs, function() {
 				redraw(config.constants.visOptions);
 			}) ;
+			
 			
 		}
 		
@@ -101,8 +108,8 @@ define("mylibs/visualization/visualizer",
 				{ 
 					position: "absolute", 
 					width: "100%", 
-					top: ( options.showFilterPane ) ? 40 : 0,
-					bottom: 40
+					top: ( options.showFilterPane ) ? 50 : 0,
+					bottom: 50
 				} 
 			}
 		).appendTo(element) ;
@@ -204,6 +211,9 @@ define("mylibs/visualization/visualizer",
 				<li id="tags">Edit tags</li>\
 				<li id="remove">Remove items</li>\
 			</ul>').appendTo(element) ;
+			
+			
+		var loader = $('<div class="ui-loader" style="top: 313.5px;"><span class="ui-icon-loading"></span><h1>loading</h1></div>').appendTo(element) ;
 
 	
 	} ;
@@ -215,18 +225,18 @@ define("mylibs/visualization/visualizer",
 		var method = options.method ;
 		
 		if (method == "hpanel") {
-		  widget = hPanel.create(results, visPane, options) ;
+		  widget = hPanel.create(results, visPane, options, ctx) ;
 		} else if (method == "tmap") {
-		  widget = treeMap.create(results, visPane, options) ;  
+		  widget = treeMap.create(results, visPane, options, ctx) ;  
 		} else if (method == "htree") {
-		  widget = hyperbolicTree.create(results, visPane, options) ;
+		  widget = hyperbolicTree.create(results, visPane, options, ctx) ;
 		}
 		else if ( method == "classic" ) {
 			// for the moment just reuse hpanel with group navigation
 			var opt = {} ;
 			for (var i in options) opt[i] = options[i] ;
         	opt.showGroups = false ;
-			widget = hPanel.create(results, visPane, opt) ;
+			widget = hPanel.create(results, visPane, opt, ctx) ;
 		}
 
   };

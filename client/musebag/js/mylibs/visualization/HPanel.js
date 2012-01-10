@@ -16,10 +16,11 @@ define("mylibs/visualization/HPanel",
 	], function(){
   
   
-	HPanel = function( searchResults, containerDiv, options ) {
+	HPanel = function( searchResults, containerDiv, options, ctx ) {
 		this.searchResults = searchResults ;
 		this.currentCluster = searchResults.clusters ;
 		this.hierarchy = [searchResults.clusters] ;
+		this.ctx = ctx ;
 
 		this.containerDiv = containerDiv ;
 
@@ -53,7 +54,7 @@ define("mylibs/visualization/HPanel",
 	
 		this.thumbOptions = options.thumbOptions ;
 	
-		this.resultsPanel = new ThumbContainer($('#hpanel-results'), this.icons, this.thumbOptions ) ;
+		this.resultsPanel = new ThumbContainer($('#hpanel-results'), this.icons, this.thumbOptions, this.ctx ) ;
 		this.resultsPanel.draw() ;
 
 	};
@@ -133,7 +134,7 @@ define("mylibs/visualization/HPanel",
 			this.icons.push(obj) ;
 		}
 
-		this.resultsPanel = new ThumbContainer($('#hpanel-results'), this.icons, this.thumbOptions) ;
+		this.resultsPanel = new ThumbContainer($('#hpanel-results'), this.icons, this.thumbOptions, this.ctx) ;
 
 		this.resultsPanel.draw() ;
 	};
@@ -163,8 +164,8 @@ define("mylibs/visualization/HPanel",
 	};
   
 	return {
-		create: function(searchResults, containerDiv, options) {
-					return new HPanel(searchResults, containerDiv, options);
+		create: function(searchResults, containerDiv, options, ctx) {
+					return new HPanel(searchResults, containerDiv, options, ctx);
 			}
 	};
 });

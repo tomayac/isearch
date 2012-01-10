@@ -24,11 +24,12 @@ define("mylibs/visualization/HyperbolicTree",
 	};	 
 
 
-	HyperbolicTree = function(searchResults, container, options) {
+	HyperbolicTree = function(searchResults, container, options, ctx) {
 		this.container = container ;
 		this.searchResults = searchResults ;
 
 		this.thumbOptions = options.thumbOptions ;
+		this.ctx = ctx ;
 	
 		this.graph = new HyperGraph(searchResults) ;
 
@@ -191,7 +192,7 @@ define("mylibs/visualization/HyperbolicTree",
 	
 	p.redrawThumbView = function(ele, idx)
 	{
-		this.icons = new ThumbContainer(ele, this.graph.icons[idx], this.thumbOptions) ;
+		this.icons = new ThumbContainer(ele, this.graph.icons[idx], this.thumbOptions, this.ctx) ;
 		this.icons.draw() ;
 		
 	};
@@ -362,8 +363,8 @@ define("mylibs/visualization/HyperbolicTree",
 	};
   
 	return {
-		create: function(searchResults, container, options) {
-			return new HyperbolicTree(searchResults, container, options);
+		create: function(searchResults, container, options, ctx) {
+			return new HyperbolicTree(searchResults, container, options, ctx);
 		}
 	};
 });

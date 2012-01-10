@@ -1,16 +1,18 @@
-TagEditor = function(tags, callBack) {	
+TagEditor = function(ele, tags, allTags, callBack) {	
+	this.ele = ele ;
 	this.tags = tags ;
+	this.allTags = allTags ;
 	this.callBack = callBack ;
 	
-	this.show() ;
+	this.create() ;
 };	
 
 var p = TagEditor.prototype;	
 
-p.show = function()
+p.create = function()
 {
-	var popupDiv = $('<div/>', { id: "tags-popup", "class": "tag-editor", title: "Add/Edit Tags"} ) ;
-	var tagsDiv = $('<div/>', { "class": "tags-container" }).appendTo(popupDiv) ;
+	
+	var tagsDiv = $('<div/>', { "class": "tags-container" }).appendTo(this.ele) ;
 	
 	this.tagsContainer = tagsDiv ;
 	
@@ -24,6 +26,10 @@ p.show = function()
 	var addTagDiv = $('<div/>').appendTo(tagsDiv) ;
 	var tagInput = $('<input/>', { "class": "add-tag-input",  value:"add a tag",  autocomplete: "off" }).appendTo(addTagDiv) ;
 	
+	tagInput.autocomplete({
+			source: this.allTags
+		});
+	
 	this.tagsInput = addTagDiv ;
 	
 	$(tagInput).keydown(function(event) {
@@ -31,6 +37,7 @@ p.show = function()
 		
 			that.addTag($(this).attr("value")) ;
 			$(this).attr("value", "") ;
+			if ( that.callBack ) that.callBack() ;
 			event.preventDefault();
 		}
    }) ;
@@ -41,11 +48,7 @@ p.show = function()
 
 	var tagsClear = $('<div/>', { "class": "tags-clear" }).appendTo(addTagDiv) ;
 		
-	$(popupDiv).dialog( { 
-		close: function(event, ui) 	{ 
-			that.callBack(that.tags)
-		}
-	}) ;
+	
 
 } ;
 
@@ -71,6 +74,8 @@ p.appendTagBox = function(tag, tagsDiv)
 		$('.add-tag-input', that.tagsContainer).attr("value", "add a tag") ;
 		
 		box.remove() ;
+		
+		that.callBack() ;
 	}) ;	
 };
 

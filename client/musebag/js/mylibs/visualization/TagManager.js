@@ -2,18 +2,14 @@ define("mylibs/visualization/TagManager",
 	[],
 function() {
 
-	var ele, index, docs ;
-	var currentTags = [], tagsButtons, filterTags = [] ;
-	var callback  ;
+	var index, docs ;
+			
+	var init = function(results_, index_) {
 		
-	var init = function(ele_, results_, index_, callback_) {
-		ele = ele_ ;
 		index = index_ ;
 		docs = results_.docs ;
-		callback = callback_ ;
 		
 		load() ;
-		update() ;
 	};
 	
 	var getAllTags = function() {
@@ -70,85 +66,8 @@ function() {
 		}
 	} ;
 	
-	var update = function()
-	{
-		var tags = currentTags = getAllTags() ;
-		
-		$(ele).empty() ;
-		
-		tagsButtons = $('<div/>', { css: { position: "absolute", left: 0 } } ).appendTo(ele) ;
-				
-		for(var i=0 ; i<Math.min(tags.length, 7) ; i++ )
-		{
-			var item = $("<input/>", { type: "checkbox", id: "tag-item-" + i }).appendTo(tagsButtons) ;
-			var label = $("<label/>", { "for": "tag-item-" + i, text: tags[i] }).appendTo(tagsButtons) ;
-			
-			item.click(function() { 
-				var id = $(this).attr('id').substr(9) ; 
-				var tag = currentTags[id] ;
-			
-				var idx = $.inArray(tag, filterTags) ;
-				if ( idx == -1 ) filterTags.push(tag) ;
-				else filterTags.splice(idx, 1) ;
-				
-			}) ;
-			
-		}
-		
-		tagsButtons.buttonset() ;
-		
-		var buttonCont = $('<div/>', { css: { position: "absolute", "right": 0 }}).appendTo(ele) ;
-		
-		var filterButton = $('<button/>', { text: "Filter", css: { "float": "right" }}).appendTo(buttonCont) ;
-		filterButton.button() ;
-		
-		filterButton.click(function() {
-			applyFilter() ;
-		}) ;
-		
-		var downloadButton = $('<button/>', { text: "Download", css: { "float": "right" }}).appendTo(buttonCont) ;
-		downloadButton.button() ;
-		
-		downloadButton.click(function() {
-			download() ;
-		}) ;
-		
-		
-		var clearButton = $('<button/>', { text: "Clear Tags", css: { "float": "right" }}).appendTo(buttonCont) ;
-		clearButton.button() ;
-		
-		clearButton.click(function() {
-			clear() ;
-		}) ;
-		
-		
-		
-	}
+
 	
-	var applyFilter = function()
-	{
-		// reset all documents
-		
-		for(var i=0 ; i<docs.length ; i++ )
-		{
-			docs[i].filtered = false ;
-		}
-		
-		for(var i=0 ; i<filterTags.length ; i++ )
-		{
-			var tag = filterTags[i] ;
-			
-			for( var i=0 ; i<docs.length ; i++ )
-			{
-				var doc = docs[i] ;
-				
-				if ( doc.tags && $.inArray(tag, doc.tags) ) doc.filtered = true ;
-			}
-		}
-		
-		callback() ;
-			
-	}
 	var store = function(doc)
 	{
 		var tags = doc.tags ;
@@ -211,14 +130,15 @@ function() {
 			docs[i].tags = [] ;
 		}
 		
-		update() ;
+	
 	};
 	
 	return { 
+		docs: docs,
 		init: init, 
 		tags: getAllTags,
 		store: store,
-		update: update
+		clear: clear
 	} ;
 
 }) ;

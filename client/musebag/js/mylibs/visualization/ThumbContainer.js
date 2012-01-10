@@ -1,6 +1,6 @@
 require(["jquery","libs/timeline_2.3.0/timeline_js/timeline-api"],
     function($) {
-ThumbContainer = function(containerDiv, data, options) {	
+ThumbContainer = function(containerDiv, data, options, ctx) {	
   
 	$(containerDiv).empty() ;	
 
@@ -20,13 +20,16 @@ ThumbContainer = function(containerDiv, data, options) {
 	if ( options.tagManager )
 		this.tagManager = options.tagManager ;
 		
+	if ( options.navMode )
+		this.navMode = options.navMode ;
+		
 	this.containerDiv = containerDiv ;	
 
+	this.ctx = ctx ;
+		
 	this.createCanvas() ;	
 
 	this.thumbs = data ;	
-
-	
 	
 };	
 
@@ -36,9 +39,9 @@ ThumbContainer.GRID_MODE = 0 ;
 ThumbContainer.TRANS_MODE = 1 ;	
 ThumbContainer.TRANS_GRID_MODE = 2 ;	
 
-ThumbContainer.NAV_FIXED = 0 ;	
-ThumbContainer.NAV_HOVER = 1 ;	
-ThumbContainer.NAV_HIDDEN = 2 ;	
+ThumbContainer.NAVBAR_FIXED = 0 ;	
+ThumbContainer.NAVBAR_HOVER = 1 ;	
+ThumbContainer.NAVBAR_HIDDEN = 2 ;	
 
 ThumbContainer.margin = 4 ;	
 ThumbContainer.navBarSize = 32 ;	
@@ -69,10 +72,11 @@ p.thumbSize = 64 ;
 p.mode = ThumbContainer.GRID_MODE ;	
 p.offset = 0 ;	
 p.pageCount = 0 ;	
-p.navMode = ThumbContainer.NAV_FIXED ;	
+p.navBarMode = ThumbContainer.NAVBAR_FIXED ;	
 p.navBar = null ;	
 p.menuBar = null ;
 p.thumbRenderer = null ;
+p.navMode = null ;
 
 
 ThumbContainer.zoomScales = [0.25, 0.5, 1.0, 1.5, 2.0, 3.0, 4.0] ;	
@@ -85,13 +89,13 @@ p.createCanvas = function()	{
 
 	// add navigation bar	
 	
-	if ( this.mode == ThumbContainer.GRID_MODE && this.navMode != ThumbContainer.NAV_HIDDEN ) {	
+	if ( this.mode == ThumbContainer.GRID_MODE && this.navBarMode != ThumbContainer.NAV_HIDDEN ) {	
 		this.navBar = $("<div/>", { "class": "thumb-container-nav-bar", 	
 					  css: { 	"position": "absolute", 	
 								"z-index": 1,
 								"width": "100%", 	
 								"height": ThumbContainer.navBarSize,	
-								"display": ( this.navMode == ThumbContainer.NAV_HOVER ) ? "none" : "block",	
+								"display": ( this.navBarMode == ThumbContainer.NAV_HOVER ) ? "none" : "block",	
 								"overflow": "hidden",	
 								"padding" : "4px",	
 								"bottom": 0	
@@ -144,10 +148,16 @@ p.createCanvas = function()	{
 	
 	
 	// on shift-click start selection rubberband
-	$(this.thumbViewport).bind("mousedown", function(e) {
+	
+	if ( this.navMode == 'feedback' )
+	{
+		$(this.thumbViewport).unbind("mousedown") ;
+		
+		$(this.thumbViewport).bind("mousedown", function(e) {
             if ( e.shiftKey ) 
 				obj.handleSelection(e) ;
-	});
+		});
+	}
 	
 	// setup zoom functionality using the mousewheel
 	
@@ -196,7 +206,7 @@ p.handleSelection = function(e)
 	var captureMouseMove = function(e) 
 	{
 	
-		if ( that.startDrag && e.shiftKey )
+		if ( that.startDrag && e.shiftKey  )
 		{
 			var relativeX = e.pageX - ox;
 			var relativeY = e.pageY - oy;
@@ -261,6 +271,8 @@ p.handleSelection = function(e)
 				}) ;
 			
 			}
+			
+			e.preventDefault() ;
 		}
 	}) ;
 	
@@ -419,17 +431,22 @@ p.draw = function() {
 
 // Select the appropriate preview url from the media items associated with this document.
 
-ThumbContainer.selectThumbUrl = function(doc)
+ThumbContainer.selectThumbUrl = function(doc, modalities)
 {
 	for( var i=0 ; i<doc.media.length ; i++ )
 	{
 		var mediaType = doc.media[i] ;
-		if ( mediaType.type == "ImageType" )
+		if ( mediaType.type == "ImageType" && ( $.inArray("image", modalities) != -1 ) )
 		{
 			if ( mediaType.previews && mediaType.previews.length > 0 )
 				return mediaType.previews[0].url ;
 		}
-		else if ( mediaType.type == "SoundType" )
+		else if ( mediaType.type == "Object3D" && ( $.inArray("3d", modalities) != -1 ) )
+		{
+			if ( mediaType.previews && mediaType.previews.length > 0 )
+				return mediaType.previews[0].url ;
+		}
+		else if ( mediaType.type == "SoundType" && ( $.inArray("audio", modalities) != -1 ) )
 		{
 			if ( mediaType.previews && mediaType.previews.length > 0 )
 			{
@@ -462,6 +479,36 @@ ThumbContainer.selectTooltipText = function(doc)
 
 } ;
 
+ThumbContainer.modalFilter = function(doc, modalities)
+{
+	var filtered = true ;
+	
+	for( var i=0 ; i<doc.media.length ; i++ )
+	{
+		var mediaType = doc.media[i] ;
+		if ( mediaType.type == "ImageType" && ( $.inArray("image", modalities) != -1 ) )
+		{
+			filtered = false ;
+			break ;
+	
+		}
+		else if ( mediaType.type == "Object3D" && ( $.inArray("3d", modalities) != -1 ) )
+		{
+			filtered = false ;
+			break ;
+		}
+		else if ( mediaType.type == "SoundType" && ( $.inArray("audio", modalities) != -1 ) )
+		{	
+			filtered = false ;
+			break ;
+		}
+	}
+	
+	return filtered ;
+};
+
+
+
 // This creates each thumbnail div and handles thumbnail interaction
 p.createThumbnail = function(i, x, y)
 {
@@ -474,8 +521,7 @@ p.createThumbnail = function(i, x, y)
 	// create a place-holder for the "star" icon.
 	var trans = $('<div/>', { "class": "thumbnail-overlay", css: {  display: (item.relevant) ? "block" : "none" } }).appendTo(imgOut) ;
 	
-	// use the thumbRenderer to actually render the item in the box
-	this.thumbRenderer.render(item, imgOut, this.thumbViewport) ;
+	
 	
 	var that = this ;
 	
@@ -486,6 +532,8 @@ p.createThumbnail = function(i, x, y)
 			var id = $(this).attr('id').substr(6) ;
 			that.thumbs[id].selected = !that.thumbs[id].selected ;
 			$(this).toggleClass("selected") ;
+			e.stopPropagation() ;
+			return true ;
 			
 		}
 	}) ;
@@ -495,6 +543,7 @@ p.createThumbnail = function(i, x, y)
 		var id = $(this).parent().attr('id').substr(6) ;
 		that.thumbs[id].relevant = false ;
 		$(this).hide() ;
+		e.stopImmediatePropagation() ;
 	}) ;
 		
 	// setup context menu handler
@@ -540,33 +589,40 @@ p.createThumbnail = function(i, x, y)
 			}
 
 			// open the tag editor
-			var tagEditor = new TagEditor(allTags, function(_tags) {
-				// we will be here when the user closes the tag editor				
-				$(".thumbnail.selected", that.containerDiv).each( function(item) {
-					var id = $(this).attr('id').substr(6) ;
-					var tags = that.thumbs[id].doc.tags ;
+			
+			var popupDiv = $('<div/>', { id: "tags-popup", "class": "tag-editor", title: "Add/Edit Tags"} ) ;
+			
+			var tagEditor = new TagEditor(popupDiv, allTags, that.ctx.tagManager.tags()) ;
+						
+			$(popupDiv).dialog( { 
+				close: function(event, ui) 	{ // we will be here when the user closes the tag editor				
+					$(".thumbnail.selected", that.containerDiv).each( function(item) {
+						var id = $(this).attr('id').substr(6) ;
+						var tags = that.thumbs[id].doc.tags ;
 					
-					if ( !tags ) tags = [] ;
+						if ( !tags ) tags = [] ;
 				
-					// update tags of selected items based on the user provided tags
-					for( tag in _tags )
-					{	
-						var idx = $.inArray(tag, tags) ;
-						if ( _tags[tag] == 1 && idx >= 0 ) delete tags.splice(idx,1) ;
-						else if ( _tags[tag] == 2  && idx == -1 ) tags.push(tag) ;
-					}
+						// get user provided tags ;
+						var _tags = tagEditor.tags ;
+						
+						// update tags of selected items based on the user provided tags
+						for( tag in _tags )
+						{	
+							var idx = $.inArray(tag, tags) ;
+							if ( _tags[tag] == 1 && idx >= 0 ) delete tags.splice(idx,1) ;
+							else if ( _tags[tag] == 2  && idx == -1 ) tags.push(tag) ;
+						}
 					
-					that.thumbs[id].doc.tags = tags ;
-					// save tags into permanent storage
+						that.thumbs[id].doc.tags = tags ;
+						// save tags into permanent storage
 					
-					that.tagManager.store(that.thumbs[id].doc) ;
-				}) ;
+						that.ctx.tagManager.store(that.thumbs[id].doc) ;
+					}) ;
 				
-				that.tagManager.update() ;
+					
+				}
 			}) ;
-          
-
-        },
+		},
 
         'remove': function(t) {
 
@@ -583,6 +639,9 @@ p.createThumbnail = function(i, x, y)
 	  
 
     });
+	
+	// use the thumbRenderer to actually render the item in the box
+	this.thumbRenderer.render(item, imgOut, { viewport: this.thumbViewport, modalities: this.ctx.filterBar.modalities(), hover: (this.navMode=='browse')?true:false }) ;
 	
 };
 
@@ -601,7 +660,7 @@ p.redraw = function(contentWidth, contentHeight)
 		var m = ThumbContainer.margin ;	
 		var of = this.thumbSize + m ;	
 
-		var sh = ( this.navMode != ThumbContainer.NAV_HIDDEN ) ? (contentHeight - ThumbContainer.navBarSize - m ) : contentHeight - m ;	
+		var sh = ( this.navBarMode != ThumbContainer.NAVBAR_HIDDEN ) ? (contentHeight - ThumbContainer.navBarSize - m ) : contentHeight - m ;	
 		var sw = contentWidth - m ;	
 
 		var nc = Math.floor(sw/of) ;	
@@ -613,12 +672,23 @@ p.redraw = function(contentWidth, contentHeight)
 
 		var x = m, y = m ;	
 		var r = 0, c = 0 ;	
+		
+		var itemCount = 0 ;
+		for(var i=0 ; i< this.thumbs.length; i++)
+		{
+			var item = this.thumbs[i] ;	
+			if ( item.doc.filtered === true ) continue ;
+			if ( ThumbContainer.modalFilter(item.doc, this.ctx.filterBar.modalities()) == true ) continue ;
+			itemCount++ ;
+		}
+			
 
 		for( var i=this.offset ; i<Math.min(this.offset + this.pageCount, this.thumbs.length) ; i++ )	
 		{	
 			var item = this.thumbs[i] ;	
 			
 			if ( item.doc.filtered === true ) continue ;
+			if ( ThumbContainer.modalFilter(item.doc, this.ctx.filterBar.modalities()) == true ) continue ;
 			
 			this.createThumbnail(i, x, y) ;
 			
@@ -635,10 +705,10 @@ p.redraw = function(contentWidth, contentHeight)
 			if ( r == nr ) break ;	
 		}	
 
-		if ( this.navMode != ThumbContainer.NAV_HIDDEN )	
+		if ( this.navBarMode != ThumbContainer.NAV_HIDDEN )	
 		{	
 			var page = Math.floor(this.offset/this.pageCount) ;	
-			var maxPage = Math.ceil(this.thumbs.length/this.pageCount) ;	
+			var maxPage = Math.ceil(itemCount/this.pageCount) ;	
 			this.redrawNavBar(page+1, maxPage, contentWidth) ;	
 		}	
 
@@ -660,6 +730,7 @@ p.redraw = function(contentWidth, contentHeight)
 			var item = this.thumbs[i] ;	
 			
 			if ( item.doc.filtered === true ) continue ;
+			if ( ThumbContainer.modalFilter(item.doc, this.ctx.filterBar.modalities()) == true ) continue ;
 
 			lmanager.addLabelGraphic(i, item.x * contentWidth, item.y * contentHeight, sz, sz) ;	
 		}	
@@ -746,7 +817,7 @@ p.showMap = function()
 			{
 				var lat = data.doc.rw.pos.coords.lat ;
 				var lon = data.doc.rw.pos.coords.lon ;
-				var thumb = ThumbContainer.selectThumbUrl(data.doc) ;
+				var thumb = ThumbContainer.selectThumbUrl(data.doc, this.ctx.filterBar.modalities()) ;
 				var tooltip = ThumbContainer.selectTooltipText(data.doc) ;
 				
 				markerImages.push({ "lat": lat, "lon": lon, "icon": thumb, "tooltip": tooltip, data: data }) ;	
@@ -826,7 +897,7 @@ p.showTimeline = function()
 				var event = { 
 					id:  data.doc.id, 
 					start: data.doc.rw.time.dateTime,
-					icon:  ThumbContainer.selectThumbUrl(data.doc),
+					icon:  ThumbContainer.selectThumbUrl(data.doc, this.ctx.filterBar.modalities()),
 					data: data
 				//	title: ThumbContainer.selectTooltipText(data.doc)
 				} ;
@@ -851,7 +922,7 @@ p.showTimeline = function()
 		iconDiv.style.width = iconData.width + "px" ;
 		iconDiv.style.height = iconData.height + "px" ;
 		
-		obj.thumbRenderer.render(iconData.data, $(iconDiv), $(this._eventLayer)) ;
+		obj.thumbRenderer.render(iconData.data, $(iconDiv), $(this._eventLayer), { modalities: obj.ctx.filterBar.modalities() }) ;
 		//iconDiv.appendChild(img);
     
 		//if ("tooltip" in commonData && typeof commonData.tooltip == "string") {
@@ -1012,7 +1083,7 @@ p.showTimeline = function()
 	//iconDiv.style.width = iconData.width + "px" ;
 	//	iconDiv.style.height = iconData.height + "px" ;
 		
-	obj.thumbRenderer.render(iconData.data, $(iconStackDiv), $(this._eventLayer)) ;
+	obj.thumbRenderer.render(iconData.data, $(iconStackDiv), $(this._eventLayer), { moadlities: obj.ctx.filterBar.modalities() }) ;
 		
    // iconStackDiv.innerHTML = "<div style='position: relative'></div>";
     this._eventLayer.appendChild(iconStackDiv);
@@ -1062,7 +1133,7 @@ p.showTimeline = function()
 	  
        // iconDiv.setAttribute("index", index);
      //   iconDiv.onmouseover = onMouseOver;
-		obj.thumbRenderer.render(iconData.data, $(imgDiv), $(self._eventLayer)) ;
+		obj.thumbRenderer.render(iconData.data, $(imgDiv), $(self._eventLayer), { modalities: obj.ctx.filterBar.modalities() }) ;
         
         iconStackDiv.firstChild.appendChild(iconDiv);
         

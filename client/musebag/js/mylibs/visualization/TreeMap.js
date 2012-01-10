@@ -14,10 +14,11 @@ define("mylibs/visualization/TreeMap",
 		"order!js/mylibs/visualization/Rectangle.js"
 	],	function(){
   
-	TreeMap = function(searchResults, container, options) {
+	TreeMap = function(searchResults, container, options, ctx) {
 		this.container = container ;
 
 		this.thumbOptions = options.thumbOptions ;
+		this.ctx = ctx ;
 
 		this.tree = {} ;
 		this.history = [this.tree] ;
@@ -201,7 +202,7 @@ define("mylibs/visualization/TreeMap",
 				icons.style.height = "100%" ;
 				$(box).append(icons) ;
 
-				var tc = new ThumbContainer(icons, node.icons, this.thumbOptions) ;
+				var tc = new ThumbContainer(icons, node.icons, this.thumbOptions, this.ctx) ;
 				tc.draw() ;
 			}
 
@@ -304,8 +305,8 @@ define("mylibs/visualization/TreeMap",
 	};
   
 	return {
-		create: function(searchResults, container, options) {
-			return new TreeMap(searchResults, container, options);
+		create: function(searchResults, container, options, ctx) {
+			return new TreeMap(searchResults, container, options, ctx);
 		}
 	};
   
