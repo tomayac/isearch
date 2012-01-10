@@ -27,49 +27,54 @@ define("mylibs/visualization/visualizer",
 		"order!js/mylibs/visualization/TagEditor.js",
 		"mylibs/config",
 		"mylibs/visualization/TagManager",
+		"mylibs/visualization/FilterBar",
 		"mylibs/visualization/TreeMap",
 		"mylibs/visualization/HyperbolicTree", 
 		"mylibs/visualization/HPanel" ], 
-    function(undefined, undefined, undefined, undefined, undefined, config, tagManager, treeMap, hyperbolicTree, hPanel) {
+    function(undefined, undefined, undefined, undefined, undefined, config, tagManager, filterBar, treeMap, hyperbolicTree, hPanel) {
   
 	var widget = null;
 	var results = null;
 	var element = null;
 	var visPane = null;
 	var menuPane = null;
+	var ctx = {} ;
 
 	var draw = function(res, ele, options) {
 		results = res ;
 		element = ele ;
-		
-		options.tagManager = tagManager ;
-
+	
 		setup(options) ;
 		redraw(options) ;
 	};
 
-	var setOptions = function(options) {
+	var setMethod = function(method)
+	{
+		config.constants.visOptions.method = method ;
+		redraw(config.constants.visOptions);
+	};
+		
+	var setThumbOptions = function(options) {
 		for ( var opt in options )
 		{
-			if ( options.hasOwnProperty(opt) )
-				config.constants.visOptions[opt] = options[opt] ;
+			config.constants.visOptions.thumbOptions[opt] = options[opt] ;
 		}	
 		
-		if (options.method) {
-			redraw(config.constants.visOptions);
-		} else {
-			widget.setOptions(options) ;
-		}
+		widget.setOptions(config.constants.visOptions) ;
 	};
 	
 	// create the main layout
 	var setup = function(options) {
 	
-		
-		
+				
 		//Let's empty the DOM element first
 		$(element).empty() ;
 		
+		tagManager.init(results, __queryParams.index) ;
+		
+		ctx.tagManager = tagManager ;
+		ctx.filterBar = filterBar ;
+					
 		// create a filter pane on the top if requested
 		var filterPane = null ;
 		
@@ -82,14 +87,17 @@ define("mylibs/visualization/visualizer",
 						position: "absolute", 
 						width: "100%", 
 						top: 0,
-						height: 40
+						bottom: 50,
+						height: 50,
+						display: "table"
 					} 
 				}
 			).appendTo(element) ;
 			
-			tagManager.init(filterPane, results, __queryParams.index, function() {
+			filterBar.init(filterPane, options.filterBar, tagManager, results.docs, function() {
 				redraw(config.constants.visOptions);
 			}) ;
+			
 			
 		}
 		
@@ -100,8 +108,8 @@ define("mylibs/visualization/visualizer",
 				{ 
 					position: "absolute", 
 					width: "100%", 
-					top: ( options.showFilterPane ) ? 40 : 0,
-					bottom: 40
+					top: ( options.showFilterPane ) ? 50 : 0,
+					bottom: 50
 				} 
 			}
 		).appendTo(element) ;
@@ -126,45 +134,73 @@ define("mylibs/visualization/visualizer",
 			+ 	'<input type="radio" name="method" id="vis-htree"/><label for="vis-htree">Hyperbolic Tree</label>'
 			+	'<input type="radio" name="method" id="vis-tmap"/><label for="vis-tmap">Treemap</label></div></div>'
 			+	'<div class="formitem"><span style="margin-right: 5px;">Icon Size</span><div id="ts-buttons" style="display:inline;">'
-			+	'<input type="radio" name="ts" id="ts64"/><label for="ts64">64</label>'
-			+ 	'<input type="radio" name="ts" id="ts96"/><label for="ts96">96</label>'
-			+	'<input type="radio" name="ts" id="ts128"/><label for="ts128">128</label>'
+			+	'<input type="radio" name="ts" id="ts64"/><label for="ts64">Small</label>'
+			+ 	'<input type="radio" name="ts" id="ts96"/><label for="ts96">Medium</label>'
+			+	'<input type="radio" name="ts" id="ts128"/><label for="ts128">Large</label>'
 			+	'</div></div>'
 			+	'<div class="formitem"><span style="margin-right: 5px;">Layout</span><div id="arrange-buttons" style="display:inline;">'
 			+	'<input type="radio" name="ia" id="ia-grid"/><label for="ia-grid">Grid</label>'
 			+ 	'<input type="radio" name="ia" id="ia-smart"/><label for="ia-smart">Smart</label>'
 			+ 	'<input type="radio" name="ia" id="ia-smart-grid"/><label for="ia-smart-grid">Smart Grid</label>'
 			+	'</div></div>'
+			+	'<div class="formitem" style="float: right"><span style="margin-right: 5px;">Navigation Mode</span><div id="nav-buttons" style="display:inline;">'
+			+	'<input type="radio" name="nav" id="nav-browse"/><label for="nav-browse">Browse</label>'
+			+ 	'<input type="radio" name="nav" id="nav-feedback"/><label for="nav-feedback">Feedback</label>'
+			+	'</div></div>'
 			+ 	'</form>');
 			
 		// menu handlers
 		
 		$('#vis-' + config.constants.visOptions.method, menuPane).attr('checked', true);
-		$('#ts' + config.constants.visOptions.thumbSize, menuPane).attr('checked', true);
-		$('#ia-' + config.constants.visOptions.iconArrange, menuPane).attr('checked', true);
+		$('#ts' + config.constants.visOptions.thumbOptions.thumbSize, menuPane).attr('checked', true);
+		$('#ia-' + config.constants.visOptions.thumbOptions.iconArrange, menuPane).attr('checked', true);
+		$('#nav-' + config.constants.visOptions.thumbOptions.navMode, menuPane).attr('checked', true);
 					
-		$("#ts-buttons", menuPane).buttonset() ;
-		$("#method-buttons", menuPane).buttonset() ;
-		$("#arrange-buttons", menuPane).buttonset() ;
+		$("#method-buttons", menuPane).buttonset(
+			$('#vis-classic', menuPane).button( {text: false,  "icons": {primary:'ui-icon-method-classic'}}),
+			$('#vis-hpanel', menuPane).button( {text: false,  "icons": {primary:'ui-icon-method-hpanel'}}),
+			$('#vis-htree', menuPane).button( {text: false,  "icons": {primary:'ui-icon-method-htree'}}),
+			$('#vis-tmap', menuPane).button( {text: false,  "icons": {primary:'ui-icon-method-tmap'}})
+		) ;
+		
+		$("#ts-buttons", menuPane).buttonset(
+			$('#ts64', menuPane).button( {text: false,  "icons": {primary:'ui-icon-thumbs-small'}}),
+			$('#ts96', menuPane).button( {text: false,  "icons": {primary:'ui-icon-thumbs-medium'}}),
+			$('#ts128', menuPane).button( {text: false,  "icons": {primary:'ui-icon-thumbs-large'}})
+		) ;
+		
+		$("#arrange-buttons", menuPane).buttonset(
+			$('#ia-grid', menuPane).button( {text: false,  "icons": {primary:'ui-icon-layout-grid'}}),
+			$('#ia-smart', menuPane).button( {text: false,  "icons": {primary:'ui-icon-layout-smart'}}),
+			$('#ia-smart-grid', menuPane).button( {text: false,  "icons": {primary:'ui-icon-layout-smart-grid'}})
+		) ;
+		
+		$("#nav-buttons", menuPane).buttonset() ;
 		
 		var that = this ;
 		
 		$("input[name=method]", menuPane).click(function() {
 			var method = this.id.substr(4) ;
 								
-			setOptions({ "method": method }) ;
+			setMethod(method) ;
 		}) ;
 		
 		$("input[name=ts]", menuPane).click(function() {
 			var ts = this.id.substr(2) ;
 								
-			setOptions({thumbSize: ts}) ;
+			setThumbOptions({thumbSize: ts}) ;
 		}) ;
 		
 		$("input[name=ia]", menuPane).click(function() {
 			var ia = this.id.substr(3) ;
 								
-			setOptions({iconArrange: ia}) ;
+			setThumbOptions({iconArrange: ia}) ;
+		}) ;
+		
+		$("input[name=nav]", menuPane).click(function() {
+			var nav = this.id.substr(4) ;
+								
+			setThumbOptions({navMode: nav}) ;
 		}) ;
 		
 		// context menu
@@ -175,6 +211,9 @@ define("mylibs/visualization/visualizer",
 				<li id="tags">Edit tags</li>\
 				<li id="remove">Remove items</li>\
 			</ul>').appendTo(element) ;
+			
+			
+		var loader = $('<div class="ui-loader" style="top: 313.5px;"><span class="ui-icon-loading"></span><h1>loading</h1></div>').appendTo(element) ;
 
 	
 	} ;
@@ -186,18 +225,18 @@ define("mylibs/visualization/visualizer",
 		var method = options.method ;
 		
 		if (method == "hpanel") {
-		  widget = hPanel.create(results, visPane, options) ;
+		  widget = hPanel.create(results, visPane, options, ctx) ;
 		} else if (method == "tmap") {
-		  widget = treeMap.create(results, visPane, options) ;  
+		  widget = treeMap.create(results, visPane, options, ctx) ;  
 		} else if (method == "htree") {
-		  widget = hyperbolicTree.create(results, visPane, options) ;
+		  widget = hyperbolicTree.create(results, visPane, options, ctx) ;
 		}
 		else if ( method == "classic" ) {
 			// for the moment just reuse hpanel with group navigation
 			var opt = {} ;
 			for (var i in options) opt[i] = options[i] ;
         	opt.showGroups = false ;
-			widget = hPanel.create(results, visPane, opt) ;
+			widget = hPanel.create(results, visPane, opt, ctx) ;
 		}
 
   };
@@ -205,6 +244,7 @@ define("mylibs/visualization/visualizer",
   return {
     draw: draw,
     redraw: redraw, 
-    setOptions: setOptions
+    setThumbOptions: setThumbOptions,
+	setMethod: setMethod
   };
 })

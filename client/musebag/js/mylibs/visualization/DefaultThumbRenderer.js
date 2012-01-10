@@ -6,11 +6,15 @@ var p = DummyThumbRenderer.prototype;
 
 DummyThumbRenderer.thumbMargin = 4 ;
 
-p.render = function(item, container, visBox)
+p.render = function(item, container, options)
 {
 	var tm = DummyThumbRenderer.thumbMargin ;
 	var w = $(container).width() ;
 	var h = $(container).height() ;
+	if ( options.hover ) this.hover = options.hover ;
+	else this.hover = true ;
+	
+
 	
 	var img = $('<div/>', { css: { border: "1px solid black", position: "absolute", left: tm, top: tm, width: w - tm - tm, height: h - tm - tm }  }).appendTo(container) ;
 	
@@ -31,7 +35,7 @@ p.hoverItem = null ;
 
 DefaultThumbRenderer.thumbMargin = 4 ;
 
-p.render = function(item, container, visBox)
+p.render = function(item, container, options)
 {
 
 	var mediaTypes  = this.getMediaTypes(item) ;
@@ -40,11 +44,15 @@ p.render = function(item, container, visBox)
 	var w = $(container).width() ;
 	var h = $(container).height() ;
 	
+	var visBox = options.viewport ;
+	if ( options.hover ) this.hover = options.hover ;
+	else this.hover = true ;
+		
 	
 	if ( mediaTypes.count == 1 )
 	{
 		var img = $('<div/>', { css: { position: "absolute", left: tm, top: tm, width: w - tm - tm, height: h - tm - tm }  }).appendTo(container) ;
-		img.thumb(ThumbContainer.selectThumbUrl(item.doc)) ;
+		img.thumb(ThumbContainer.selectThumbUrl(item.doc, options.modalities)) ;
 	}
 	else // stack metaphor
 	{
@@ -57,20 +65,39 @@ p.render = function(item, container, visBox)
 			"border-style": "solid", "border-width": "0px " + tm + "px " + tm + "px 0px", "border-color": "#afafaf" }}).appendTo(container) ;
 		var img = $('<div/>', { css: { position: "absolute", left: 0,  top: 0, width: w - tm - tm, height: h - tm - tm,
 "border": "1px solid black"		}  }).appendTo(container) ;
-		img.thumb(ThumbContainer.selectThumbUrl(item.doc)) ;
+		img.thumb(ThumbContainer.selectThumbUrl(item.doc, options.modalities)) ;
 	}
 	
-	// setup tooltip
+	// setup tooltip mode
+	
 	var obj = this ;
-	img.mouseover( 	function(e) {
-					obj.showTooltip(item, container, visBox) ;
+	
+	if ( options.hover )
+	{
+		img.mouseover( 	function(e) {
+					obj.showTooltip(item, container, visBox, false) ;
 				}
-	) ;
+		) ;
 		
-	img.mouseout( 	function(e) {
+		img.mouseout( 	function(e) {
 					if ( !$('.tooltip').is(':visible') ) obj.hoverItem = null ;
 			}
-	) ;
+		) ;
+	}
+	else
+	{
+	
+					
+		img.click(function(e) {
+			if ( e.shiftKey || e.ctrlKey ) return ;
+			else	obj.showTooltip(item, container, visBox, true) ;
+		});
+		
+		img.mouseout( 	function(e) {
+					if ( !$('.tooltip').is(':visible') ) obj.hoverItem = null ;
+			}
+		) ;
+	}  
 		
 	
 	/*		
@@ -308,7 +335,7 @@ p.doShowTooltip = function(thumb, container, visBox)
 
 };	
 
-p.showTooltip = function(item, container, visBox)	
+p.showTooltip = function(item, container, visBox, showNow)	
 {	
 	
 	var obj = this ;	
@@ -316,10 +343,12 @@ p.showTooltip = function(item, container, visBox)
 	this.hoverItem = item ;
 	
 	
-	
-	setTimeout( function() { 	
-		if ( obj.hoverItem === item ) obj.doShowTooltip(item, container, visBox) ;
-	}, 500) ;	
+	if ( showNow == true )
+		obj.doShowTooltip(item, container, visBox) ;
+	else
+		setTimeout( function() { 	
+			if ( obj.hoverItem === item ) obj.doShowTooltip(item, container, visBox) ;
+		}, 500) ;	
 
 };	
 

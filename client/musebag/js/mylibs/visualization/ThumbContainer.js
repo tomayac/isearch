@@ -1,6 +1,6 @@
 require(["jquery","libs/timeline_2.3.0/timeline_js/timeline-api"],
     function($) {
-ThumbContainer = function(containerDiv, data, options) {	
+ThumbContainer = function(containerDiv, data, options, ctx) {	
   
 	$(containerDiv).empty() ;	
 
@@ -20,13 +20,16 @@ ThumbContainer = function(containerDiv, data, options) {
 	if ( options.tagManager )
 		this.tagManager = options.tagManager ;
 		
+	if ( options.navMode )
+		this.navMode = options.navMode ;
+		
 	this.containerDiv = containerDiv ;	
 
+	this.ctx = ctx ;
+		
 	this.createCanvas() ;	
 
 	this.thumbs = data ;	
-
-	
 	
 };	
 
@@ -36,9 +39,9 @@ ThumbContainer.GRID_MODE = 0 ;
 ThumbContainer.TRANS_MODE = 1 ;	
 ThumbContainer.TRANS_GRID_MODE = 2 ;	
 
-ThumbContainer.NAV_FIXED = 0 ;	
-ThumbContainer.NAV_HOVER = 1 ;	
-ThumbContainer.NAV_HIDDEN = 2 ;	
+ThumbContainer.NAVBAR_FIXED = 0 ;	
+ThumbContainer.NAVBAR_HOVER = 1 ;	
+ThumbContainer.NAVBAR_HIDDEN = 2 ;	
 
 ThumbContainer.margin = 4 ;	
 ThumbContainer.navBarSize = 32 ;	
@@ -69,10 +72,11 @@ p.thumbSize = 64 ;
 p.mode = ThumbContainer.GRID_MODE ;	
 p.offset = 0 ;	
 p.pageCount = 0 ;	
-p.navMode = ThumbContainer.NAV_FIXED ;	
+p.navBarMode = ThumbContainer.NAVBAR_FIXED ;	
 p.navBar = null ;	
 p.menuBar = null ;
 p.thumbRenderer = null ;
+p.navMode = null ;
 
 
 ThumbContainer.zoomScales = [0.25, 0.5, 1.0, 1.5, 2.0, 3.0, 4.0] ;	
@@ -85,13 +89,13 @@ p.createCanvas = function()	{
 
 	// add navigation bar	
 	
-	if ( this.mode == ThumbContainer.GRID_MODE && this.navMode != ThumbContainer.NAV_HIDDEN ) {	
+	if ( this.mode == ThumbContainer.GRID_MODE && this.navBarMode != ThumbContainer.NAV_HIDDEN ) {	
 		this.navBar = $("<div/>", { "class": "thumb-container-nav-bar", 	
 					  css: { 	"position": "absolute", 	
 								"z-index": 1,
 								"width": "100%", 	
 								"height": ThumbContainer.navBarSize,	
-								"display": ( this.navMode == ThumbContainer.NAV_HOVER ) ? "none" : "block",	
+								"display": ( this.navBarMode == ThumbContainer.NAV_HOVER ) ? "none" : "block",	
 								"overflow": "hidden",	
 								"padding" : "4px",	
 								"bottom": 0	
@@ -144,10 +148,16 @@ p.createCanvas = function()	{
 	
 	
 	// on shift-click start selection rubberband
-	$(this.thumbViewport).bind("mousedown", function(e) {
+	
+	if ( this.navMode == 'feedback' )
+	{
+		$(this.thumbViewport).unbind("mousedown") ;
+		
+		$(this.thumbViewport).bind("mousedown", function(e) {
             if ( e.shiftKey ) 
 				obj.handleSelection(e) ;
-	});
+		});
+	}
 	
 	// setup zoom functionality using the mousewheel
 	
@@ -196,7 +206,7 @@ p.handleSelection = function(e)
 	var captureMouseMove = function(e) 
 	{
 	
-		if ( that.startDrag && e.shiftKey )
+		if ( that.startDrag && e.shiftKey  )
 		{
 			var relativeX = e.pageX - ox;
 			var relativeY = e.pageY - oy;
@@ -261,6 +271,8 @@ p.handleSelection = function(e)
 				}) ;
 			
 			}
+			
+			e.preventDefault() ;
 		}
 	}) ;
 	
@@ -419,17 +431,22 @@ p.draw = function() {
 
 // Select the appropriate preview url from the media items associated with this document.
 
-ThumbContainer.selectThumbUrl = function(doc)
+ThumbContainer.selectThumbUrl = function(doc, modalities)
 {
 	for( var i=0 ; i<doc.media.length ; i++ )
 	{
 		var mediaType = doc.media[i] ;
-		if ( mediaType.type == "ImageType" )
+		if ( mediaType.type == "ImageType" && ( $.inArray("image", modalities) != -1 ) )
 		{
 			if ( mediaType.previews && mediaType.previews.length > 0 )
 				return mediaType.previews[0].url ;
 		}
-		else if ( mediaType.type == "SoundType" )
+		else if ( mediaType.type == "Object3D" && ( $.inArray("3d", modalities) != -1 ) )
+		{
+			if ( mediaType.previews && mediaType.previews.length > 0 )
+				return mediaType.previews[0].url ;
+		}
+		else if ( mediaType.type == "SoundType" && ( $.inArray("audio", modalities) != -1 ) )
 		{
 			if ( mediaType.previews && mediaType.previews.length > 0 )
 			{
@@ -462,6 +479,36 @@ ThumbContainer.selectTooltipText = function(doc)
 
 } ;
 
+ThumbContainer.modalFilter = function(doc, modalities)
+{
+	var filtered = true ;
+	
+	for( var i=0 ; i<doc.media.length ; i++ )
+	{
+		var mediaType = doc.media[i] ;
+		if ( mediaType.type == "ImageType" && ( $.inArray("image", modalities) != -1 ) )
+		{
+			filtered = false ;
+			break ;
+	
+		}
+		else if ( mediaType.type == "Object3D" && ( $.inArray("3d", modalities) != -1 ) )
+		{
+			filtered = false ;
+			break ;
+		}
+		else if ( mediaType.type == "SoundType" && ( $.inArray("audio", modalities) != -1 ) )
+		{	
+			filtered = false ;
+			break ;
+		}
+	}
+	
+	return filtered ;
+};
+
+
+
 // This creates each thumbnail div and handles thumbnail interaction
 p.createThumbnail = function(i, x, y)
 {
@@ -474,8 +521,7 @@ p.createThumbnail = function(i, x, y)
 	// create a place-holder for the "star" icon.
 	var trans = $('<div/>', { "class": "thumbnail-overlay", css: {  display: (item.relevant) ? "block" : "none" } }).appendTo(imgOut) ;
 	
-	// use the thumbRenderer to actually render the item in the box
-	this.thumbRenderer.render(item, imgOut, this.thumbViewport) ;
+	
 	
 	var that = this ;
 	
@@ -486,6 +532,8 @@ p.createThumbnail = function(i, x, y)
 			var id = $(this).attr('id').substr(6) ;
 			that.thumbs[id].selected = !that.thumbs[id].selected ;
 			$(this).toggleClass("selected") ;
+			e.stopPropagation() ;
+			return true ;
 			
 		}
 	}) ;
@@ -495,6 +543,7 @@ p.createThumbnail = function(i, x, y)
 		var id = $(this).parent().attr('id').substr(6) ;
 		that.thumbs[id].relevant = false ;
 		$(this).hide() ;
+		e.stopImmediatePropagation() ;
 	}) ;
 		
 	// setup context menu handler
@@ -540,33 +589,40 @@ p.createThumbnail = function(i, x, y)
 			}
 
 			// open the tag editor
-			var tagEditor = new TagEditor(allTags, function(_tags) {
-				// we will be here when the user closes the tag editor				
-				$(".thumbnail.selected", that.containerDiv).each( function(item) {
-					var id = $(this).attr('id').substr(6) ;
-					var tags = that.thumbs[id].doc.tags ;
+			
+			var popupDiv = $('<div/>', { id: "tags-popup", "class": "tag-editor", title: "Add/Edit Tags"} ) ;
+			
+			var tagEditor = new TagEditor(popupDiv, allTags, that.ctx.tagManager.tags()) ;
+						
+			$(popupDiv).dialog( { 
+				close: function(event, ui) 	{ // we will be here when the user closes the tag editor				
+					$(".thumbnail.selected", that.containerDiv).each( function(item) {
+						var id = $(this).attr('id').substr(6) ;
+						var tags = that.thumbs[id].doc.tags ;
 					
-					if ( !tags ) tags = [] ;
+						if ( !tags ) tags = [] ;
 				
-					// update tags of selected items based on the user provided tags
-					for( tag in _tags )
-					{	
-						var idx = $.inArray(tag, tags) ;
-						if ( _tags[tag] == 1 && idx >= 0 ) delete tags.splice(idx,1) ;
-						else if ( _tags[tag] == 2  && idx == -1 ) tags.push(tag) ;
-					}
+						// get user provided tags ;
+						var _tags = tagEditor.tags ;
+						
+						// update tags of selected items based on the user provided tags
+						for( tag in _tags )
+						{	
+							var idx = $.inArray(tag, tags) ;
+							if ( _tags[tag] == 1 && idx >= 0 ) delete tags.splice(idx,1) ;
+							else if ( _tags[tag] == 2  && idx == -1 ) tags.push(tag) ;
+						}
 					
-					that.thumbs[id].doc.tags = tags ;
-					// save tags into permanent storage
+						that.thumbs[id].doc.tags = tags ;
+						// save tags into permanent storage
 					
-					that.tagManager.store(that.thumbs[id].doc) ;
-				}) ;
+						that.ctx.tagManager.store(that.thumbs[id].doc) ;
+					}) ;
 				
-				that.tagManager.update() ;
+					
+				}
 			}) ;
-          
-
-        },
+		},
 
         'remove': function(t) {
 
@@ -583,6 +639,9 @@ p.createThumbnail = function(i, x, y)
 	  
 
     });
+	
+	// use the thumbRenderer to actually render the item in the box
+	this.thumbRenderer.render(item, imgOut, { viewport: this.thumbViewport, modalities: this.ctx.filterBar.modalities(), hover: (this.navMode=='browse')?true:false }) ;
 	
 };
 
@@ -601,7 +660,7 @@ p.redraw = function(contentWidth, contentHeight)
 		var m = ThumbContainer.margin ;	
 		var of = this.thumbSize + m ;	
 
-		var sh = ( this.navMode != ThumbContainer.NAV_HIDDEN ) ? (contentHeight - ThumbContainer.navBarSize - m ) : contentHeight - m ;	
+		var sh = ( this.navBarMode != ThumbContainer.NAVBAR_HIDDEN ) ? (contentHeight - ThumbContainer.navBarSize - m ) : contentHeight - m ;	
 		var sw = contentWidth - m ;	
 
 		var nc = Math.floor(sw/of) ;	
@@ -613,12 +672,23 @@ p.redraw = function(contentWidth, contentHeight)
 
 		var x = m, y = m ;	
 		var r = 0, c = 0 ;	
+		
+		var itemCount = 0 ;
+		for(var i=0 ; i< this.thumbs.length; i++)
+		{
+			var item = this.thumbs[i] ;	
+			if ( item.doc.filtered === true ) continue ;
+			if ( ThumbContainer.modalFilter(item.doc, this.ctx.filterBar.modalities()) == true ) continue ;
+			itemCount++ ;
+		}
+			
 
 		for( var i=this.offset ; i<Math.min(this.offset + this.pageCount, this.thumbs.length) ; i++ )	
 		{	
 			var item = this.thumbs[i] ;	
 			
 			if ( item.doc.filtered === true ) continue ;
+			if ( ThumbContainer.modalFilter(item.doc, this.ctx.filterBar.modalities()) == true ) continue ;
 			
 			this.createThumbnail(i, x, y) ;
 			
@@ -635,10 +705,10 @@ p.redraw = function(contentWidth, contentHeight)
 			if ( r == nr ) break ;	
 		}	
 
-		if ( this.navMode != ThumbContainer.NAV_HIDDEN )	
+		if ( this.navBarMode != ThumbContainer.NAV_HIDDEN )	
 		{	
 			var page = Math.floor(this.offset/this.pageCount) ;	
-			var maxPage = Math.ceil(this.thumbs.length/this.pageCount) ;	
+			var maxPage = Math.ceil(itemCount/this.pageCount) ;	
 			this.redrawNavBar(page+1, maxPage, contentWidth) ;	
 		}	
 
@@ -660,6 +730,7 @@ p.redraw = function(contentWidth, contentHeight)
 			var item = this.thumbs[i] ;	
 			
 			if ( item.doc.filtered === true ) continue ;
+			if ( ThumbContainer.modalFilter(item.doc, this.ctx.filterBar.modalities()) == true ) continue ;
 
 			lmanager.addLabelGraphic(i, item.x * contentWidth, item.y * contentHeight, sz, sz) ;	
 		}	
@@ -746,7 +817,7 @@ p.showMap = function()
 			{
 				var lat = data.doc.rw.pos.coords.lat ;
 				var lon = data.doc.rw.pos.coords.lon ;
-				var thumb = ThumbContainer.selectThumbUrl(data.doc) ;
+				var thumb = ThumbContainer.selectThumbUrl(data.doc, this.ctx.filterBar.modalities()) ;
 				var tooltip = ThumbContainer.selectTooltipText(data.doc) ;
 				
 				markerImages.push({ "lat": lat, "lon": lon, "icon": thumb, "tooltip": tooltip, data: data }) ;	
@@ -793,6 +864,52 @@ p.showTimeline = function()
 	
 	var theme = Timeline.ClassicTheme.create();
 	theme.mouseWheel = 'default' ;
+	theme.autoWidth = false ;
+	
+	var event_data = { "dateTimeFormat": "iso8601", events: [] } ;
+	
+	var mindate = new Date(), maxdate = new Date() ;
+	
+	for( var i=0 ; i<this.thumbs.length ; i++ )	
+	{	
+		var data = this.thumbs[i] ;	
+
+		if ( data.doc.hasOwnProperty("rw") && data.doc.rw )
+		{
+			if ( data.doc.rw.hasOwnProperty("time") )
+			{
+				// title ?
+				var d = new Date(data.doc.rw.time.dateTime) ;
+				
+				if ( d < mindate ) mindate = d ;
+				if ( d > maxdate ) maxdate = d ;
+				
+				function ISODateString(d) {
+					function pad(n){
+						return n<10 ? '0'+n : n;
+					}
+					return d.getUTCFullYear()+'-'
+					+ pad(d.getUTCMonth()+1)+'-'
+					+ pad(d.getUTCDate());
+				}
+				var dateStr = ISODateString(d) ;
+				
+				var event = { 
+					id:  data.doc.id, 
+					start: data.doc.rw.time.dateTime,
+					icon:  ThumbContainer.selectThumbUrl(data.doc, this.ctx.filterBar.modalities()),
+					data: data
+				//	title: ThumbContainer.selectTooltipText(data.doc)
+				} ;
+				
+				event_data.events.push(event) ;
+			}
+		}
+		
+	}
+	
+	theme.timeline_start = mindate ;
+	theme.timeline_stop = maxdate ;
 	
 	var obj = this ;
 	
@@ -805,7 +922,7 @@ p.showTimeline = function()
 		iconDiv.style.width = iconData.width + "px" ;
 		iconDiv.style.height = iconData.height + "px" ;
 		
-		obj.thumbRenderer.render(iconData.data, $(iconDiv), $(this._eventLayer)) ;
+		obj.thumbRenderer.render(iconData.data, $(iconDiv), $(this._eventLayer), { modalities: obj.ctx.filterBar.modalities() }) ;
 		//iconDiv.appendChild(img);
     
 		//if ("tooltip" in commonData && typeof commonData.tooltip == "string") {
@@ -864,8 +981,200 @@ p.showTimeline = function()
 		this._eventIdToElmt[evt.getID()] = result.iconElmtData.elmt;
 	};
 	
+	
+	Timeline.CompactEventPainter.prototype.paintStackedPreciseInstantEvents = function(events, metrics, theme, highlightIndex) {
+    var limit = "limit" in this._params.stackConcurrentPreciseInstantEvents ? 
+        this._params.stackConcurrentPreciseInstantEvents.limit : 10;
+    var moreMessageTemplate = "moreMessageTemplate" in this._params.stackConcurrentPreciseInstantEvents ? 
+        this._params.stackConcurrentPreciseInstantEvents.moreMessageTemplate : "%0 More Events";
+    var showMoreMessage = limit <= events.length - 2; // We want at least 2 more events above the limit.
+                                                      // Otherwise we'd need the singular case of "1 More Event"
 
+    var band = this._band;
+    var getPixelOffset = function(date) {
+        return Math.round(band.dateToPixelOffset(date));
+    };
+    var getIconData = function(evt) {
+        var iconData = {
+            url: evt.getIcon(),
+			data: evt._obj.data
+        };
+        if (iconData.url == null) {
+            iconData.url = metrics.defaultStackIcon;
+            iconData.width = metrics.defaultStackIconWidth;
+            iconData.height = metrics.defaultStackIconHeight;
+            iconData.className = "timeline-event-icon-stack timeline-event-icon-default";
+        } else {
+            iconData.width = evt.getProperty("iconWidth") || metrics.customIconWidth;
+            iconData.height = evt.getProperty("iconHeight") || metrics.customIconHeight;
+            iconData.className = "timeline-event-icon-stack";
+        }
+        return iconData;
+    };
+    
+    var firstIconData = getIconData(events[0]);
+    var horizontalIncrement = 5;
+    var leftIconEdge = 0;
+    var totalLabelWidth = 0;
+    var totalLabelHeight = 0;
+    var totalIconHeight = 0;
+    
+    var records = [];
+    for (var i = 0; i < events.length && (!showMoreMessage || i < limit); i++) {
+        var evt = events[i];
+        var text = evt.getText();
+        var iconData = getIconData(evt);
+        var labelSize = this._frc.computeSize(text);
+        var record = {
+            text:       text,
+            iconData:   iconData,
+            labelSize:  labelSize,
+            iconLeft:   firstIconData.width + i * horizontalIncrement - iconData.width
+        };
+        record.labelLeft = firstIconData.width + i * horizontalIncrement + metrics.iconLabelGap;
+        record.top = totalLabelHeight;
+        records.push(record);
+        
+        leftIconEdge = Math.min(leftIconEdge, record.iconLeft);
+        totalLabelHeight += labelSize.height;
+        totalLabelWidth = Math.max(totalLabelWidth, record.labelLeft + labelSize.width);
+        totalIconHeight = Math.max(totalIconHeight, record.top + iconData.height);
+    }
+    if (showMoreMessage) {
+        var moreMessage = String.substitute(moreMessageTemplate, [ events.length - limit ]);
+    
+        var moreMessageLabelSize = this._frc.computeSize(moreMessage);
+        var moreMessageLabelLeft = firstIconData.width + (limit - 1) * horizontalIncrement + metrics.iconLabelGap;
+        var moreMessageLabelTop = totalLabelHeight;
+        
+        totalLabelHeight += moreMessageLabelSize.height;
+        totalLabelWidth = Math.max(totalLabelWidth, moreMessageLabelLeft + moreMessageLabelSize.width);
+    }
+    totalLabelWidth += metrics.labelRightMargin;
+    totalLabelHeight += metrics.labelBottomMargin;
+    totalIconHeight += metrics.iconBottomMargin;
+    
+    var anchorPixel = getPixelOffset(events[0].getStart());
+    var newTracks = [];
+    
+    var trackCount = Math.ceil(Math.max(totalIconHeight, totalLabelHeight) / metrics.trackHeight);
+    var rightIconEdge = firstIconData.width + (events.length - 1) * horizontalIncrement;
+    for (var i = 0; i < trackCount; i++) {
+        newTracks.push({ start: leftIconEdge, end: rightIconEdge });
+    }
+    var labelTrackCount = Math.ceil(totalLabelHeight / metrics.trackHeight);
+    for (var i = 0; i < labelTrackCount; i++) {
+        var track = newTracks[i];
+        track.end = Math.max(track.end, totalLabelWidth);
+    }
+
+    var firstTrack = this._fitTracks(anchorPixel, newTracks);
+    var verticalPixelOffset = firstTrack * metrics.trackHeight + metrics.trackOffset;
+    
+    var iconStackDiv = this._timeline.getDocument().createElement("div");
+    iconStackDiv.className = 'timeline-event-icon-stack';
+    iconStackDiv.style.position = "absolute";
+    iconStackDiv.style.overflow = "visible";
+    iconStackDiv.style.left = anchorPixel + "px";
+    iconStackDiv.style.top = verticalPixelOffset + "px";
+    iconStackDiv.style.width = rightIconEdge + "px";
+    iconStackDiv.style.height = totalIconHeight + "px";
+	
+	//iconDiv.style.width = iconData.width + "px" ;
+	//	iconDiv.style.height = iconData.height + "px" ;
 		
+	obj.thumbRenderer.render(iconData.data, $(iconStackDiv), $(this._eventLayer), { moadlities: obj.ctx.filterBar.modalities() }) ;
+		
+   // iconStackDiv.innerHTML = "<div style='position: relative'></div>";
+    this._eventLayer.appendChild(iconStackDiv);
+    
+    var self = this;
+    var onMouseOver = function(domEvt) {
+        try {
+            var n = parseInt(this.getAttribute("index"));
+            var childNodes = iconStackDiv.firstChild.childNodes;
+            for (var i = 0; i < childNodes.length; i++) {
+                var child = childNodes[i];
+                if (i == n) {
+                    child.style.zIndex = childNodes.length;
+                } else {
+                    child.style.zIndex = childNodes.length - i;
+                }
+            }
+        } catch (e) {
+        }
+    };
+    var paintEvent = function(index) {
+        var record = records[index];
+        var evt = events[index];
+        var tooltip = evt.getProperty("tooltip") || evt.getText();
+		var iconData = getIconData(evt) ;
+        
+        var labelElmtData = self._paintEventLabel(
+            { tooltip: tooltip },
+            { text: record.text },
+            anchorPixel + record.labelLeft,
+            verticalPixelOffset + record.top,
+            record.labelSize.width, 
+            record.labelSize.height, 
+            theme
+        );
+        labelElmtData.elmt.setAttribute("index", index);
+        labelElmtData.elmt.onmouseover = onMouseOver;
+        
+        var img = SimileAjax.Graphics.createTranslucentImage(record.iconData.url);
+        var iconDiv = self._timeline.getDocument().createElement("div");
+        iconDiv.className = 'timeline-event-icon' + ("className" in record.iconData ? (" " + record.iconData.className) : "");
+        iconDiv.style.left = record.iconLeft + "px";
+        iconDiv.style.top = record.top + "px";
+        iconDiv.style.zIndex = (records.length - index);
+		var imgDiv = self._timeline.getDocument().createElement("div");
+        iconDiv.appendChild(imgDiv);
+	  
+       // iconDiv.setAttribute("index", index);
+     //   iconDiv.onmouseover = onMouseOver;
+		obj.thumbRenderer.render(iconData.data, $(imgDiv), $(self._eventLayer), { modalities: obj.ctx.filterBar.modalities() }) ;
+        
+        iconStackDiv.firstChild.appendChild(iconDiv);
+        
+     //   var clickHandler = function(elmt, domEvt, target) {
+     //       return self._onClickInstantEvent(labelElmtData.elmt, domEvt, evt);
+    //    };
+        
+     //   SimileAjax.DOM.registerEvent(iconDiv, "mousedown", clickHandler);
+      //  SimileAjax.DOM.registerEvent(labelElmtData.elmt, "mousedown", clickHandler);
+        
+        self._eventIdToElmt[evt.getID()] = iconDiv;
+    };
+    for (var i = 0; i < records.length; i++) {
+        paintEvent(i);
+    }
+    
+    if (showMoreMessage) {
+        var moreEvents = events.slice(limit);
+        var moreMessageLabelElmtData = this._paintEventLabel(
+            { tooltip: moreMessage },
+            { text: moreMessage },
+            anchorPixel + moreMessageLabelLeft,
+            verticalPixelOffset + moreMessageLabelTop,
+            moreMessageLabelSize.width, 
+            moreMessageLabelSize.height, 
+            theme
+        );
+        
+        var moreMessageClickHandler = function(elmt, domEvt, target) {
+            return self._onClickMultiplePreciseInstantEvent(moreMessageLabelElmtData.elmt, domEvt, moreEvents);
+        };
+        SimileAjax.DOM.registerEvent(moreMessageLabelElmtData.elmt, "mousedown", moreMessageClickHandler);
+        
+        for (var i = 0; i < moreEvents.length; i++) {
+            this._eventIdToElmt[moreEvents[i].getID()] = moreMessageLabelElmtData.elmt;
+        }
+    }
+    //this._createHighlightDiv(highlightIndex, iconElmtData, theme);
+};
+
+  
 	var bandInfos = [
 		Timeline.createBandInfo({
 			date:           "Jun 28 2009 00:00:00 GMT",
@@ -883,31 +1192,33 @@ p.showTimeline = function()
                 iconHeight:       64,
                        
                 stackConcurrentPreciseInstantEvents: {
-                    limit: 10,
+                    limit: 5,
                     iconWidth:              64,
                     iconHeight:             64
                 }
 			
             },
 	
-			zoomIndex:      10,
+			zoomIndex:      6,
 			zoomSteps:      new Array(
-				{pixelsPerInterval: 280,  unit: Timeline.DateTime.HOUR},
-				{pixelsPerInterval: 140,  unit: Timeline.DateTime.HOUR},
-				{pixelsPerInterval:  70,  unit: Timeline.DateTime.HOUR},
-				{pixelsPerInterval:  35,  unit: Timeline.DateTime.HOUR},
+			//	{pixelsPerInterval: 280,  unit: Timeline.DateTime.HOUR},
+			//	{pixelsPerInterval: 140,  unit: Timeline.DateTime.HOUR},
+			//	{pixelsPerInterval:  70,  unit: Timeline.DateTime.HOUR},
+			//	{pixelsPerInterval:  35,  unit: Timeline.DateTime.HOUR},
 				{pixelsPerInterval: 400,  unit: Timeline.DateTime.DAY},
 				{pixelsPerInterval: 200,  unit: Timeline.DateTime.DAY},
 				{pixelsPerInterval: 100,  unit: Timeline.DateTime.DAY},
 				{pixelsPerInterval:  50,  unit: Timeline.DateTime.DAY},
 				{pixelsPerInterval: 400,  unit: Timeline.DateTime.MONTH},
 				{pixelsPerInterval: 200,  unit: Timeline.DateTime.MONTH},
-				{pixelsPerInterval: 100,  unit: Timeline.DateTime.MONTH},
-				{pixelsPerInterval: 400,  unit: Timeline.DateTime.YEAR},
-				{pixelsPerInterval: 200,  unit: Timeline.DateTime.YEAR},
-				{pixelsPerInterval: 100,  unit: Timeline.DateTime.YEAR}				// DEFAULT zoomIndex
+				{pixelsPerInterval: 100,  unit: Timeline.DateTime.MONTH}
+			//	,
+			//	{pixelsPerInterval: 400,  unit: Timeline.DateTime.YEAR},
+			//	{pixelsPerInterval: 200,  unit: Timeline.DateTime.YEAR},
+			//	{pixelsPerInterval: 100,  unit: Timeline.DateTime.YEAR}				// DEFAULT zoomIndex
 			)
-		}),
+		})
+		,
 		Timeline.createBandInfo({
 			date:           "Jun 28 2009 00:00:00 GMT",
 			width:          "10%", 
@@ -925,42 +1236,7 @@ p.showTimeline = function()
   
 	var tl = Timeline.create(timelineDialog.get(0), bandInfos);
 	
-	var event_data = { "dateTimeFormat": "iso8601", events: [] } ;
 	
-	for( var i=0 ; i<this.thumbs.length ; i++ )	
-	{	
-		var data = this.thumbs[i] ;	
-
-		if ( data.doc.hasOwnProperty("rw") && data.doc.rw )
-		{
-			if ( data.doc.rw.hasOwnProperty("time") )
-			{
-				// title ?
-				var d = new Date(data.doc.rw.time.dateTime) ;
-				
-				function ISODateString(d) {
-					function pad(n){
-						return n<10 ? '0'+n : n;
-					}
-					return d.getUTCFullYear()+'-'
-					+ pad(d.getUTCMonth()+1)+'-'
-					+ pad(d.getUTCDate());
-				}
-				var dateStr = ISODateString(d) ;
-				
-				var event = { 
-					id:  data.doc.id, 
-					start: data.doc.rw.time.dateTime,
-					icon:  ThumbContainer.selectThumbUrl(data.doc),
-					data: data
-				//	title: ThumbContainer.selectTooltipText(data.doc)
-				} ;
-				
-				event_data.events.push(event) ;
-			}
-		}
-		
-	}
 	
 	eventSource.loadJSON(event_data, document.location.href); 
 	

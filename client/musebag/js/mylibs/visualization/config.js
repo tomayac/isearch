@@ -20,7 +20,8 @@ define("mylibs/config",
 	  visOptions: {
 		method: "tmap", //tmap, htree, hpan or classic
 		thumbSize: 64, //16, 32, 48, 64
-		iconArrange: "grid",
+		iconArrange: "grid", // smart, smart-grid
+		navMode: "browse", // feedback
 		showFilterPane: true,
 		thumbRenderer: new DefaultThumbRenderer,
 	//	thumbRenderer: new DummyThumbRenderer

@@ -86,7 +86,6 @@
   
    
   <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=true"></script>
-  <script type="text/javascript" src="js/mylibs/local.js"></script>
   <script data-main="js/main" src="js/libs/require-jquery.js"></script>     
   
    

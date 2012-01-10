@@ -17,11 +17,18 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/
 
       //Visualization parameters  
   	  visOptions: {
-    		method: "classic", //tmap, htree, hpan or classic
-    		thumbSize: 64, //16, 32, 48, 64, 128
-    		iconArrange: "grid",
-    		thumbRenderer: new DefaultThumbRenderer()
-    	}
+  	    method: "classic", //tmap, htree, hpan or classic
+  	    thumbOptions: {
+  	      thumbSize: 64, //16, 32, 48, 64
+  	      iconArrange: "grid",
+  	      navMode: "browse",
+  	      thumbRenderer: new DefaultThumbRenderer()
+  			},
+  			showFilterPane: true,
+  			filterBar: {
+  			  modalities: { "image": { label: "Images"}, "3d": { label: "3D models" }  } // this is the modalities that the user can switch between, depending on use case.
+  			}
+  	  }
     };
     
     var panels = {
@@ -43,6 +50,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/
             this.messages.hide(speed);
           }*/
         }
+
     };
     
     //Global set function
@@ -101,7 +109,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/
             var tokens = tags.getTokens();
             $(".token-input-list-isearch").remove();
             $("#query-field").tokenInput("clear");
-            $("#query-field").tokenInput('init',tokens, {theme: "isearch", preventDuplicates:true});
+            $("#query-field").tokenInput('init',tokens, {theme: "isearch", preventDuplicates: true} );
             
           },
           dataType: "text",
@@ -112,11 +120,16 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/
     
     var initSettings = function() {
       
+      // initialize settings from local configuration if any 
+      if ( localConfig && typeof(localConfig) == "function" ) {
+        localConfig(constants) ;
+      }
+	  
       var setForm = function() {
         //Initialize the form with the default values
         panels.settings.find("#max-num-results")
             .val(constants.maxNumResults);
-        panels.settings.find("#icon-size option[value=" + constants.visOptions.thumbSize + "]")
+        panels.settings.find("#icon-size option[value=" + constants.visOptions.thumbOptions.thumbSize + "]")
             .attr('selected','selected');
         panels.settings.find("#visualization-method option[value=" + constants.visOptions.method + "]")
             .attr('selected','selected');
@@ -132,18 +145,15 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/
   
             if(data.maxResults) {
               set('maxNumResults', data.maxResults);
-              panels.settings.find("#max-num-results")
-                .val(data.maxResults);
+              panels.settings.find("#max-num-results").val(data.maxResults);
             }
             if(data.thumbSize) {
-              set('visOptions.thumbSize', data.thumbSize);
-              panels.settings.find("#icon-size option[value=" + data.thumbSize + "]")
-                .attr('selected','selected');
+              set('visOptions.thumbOptions.thumbSize', data.thumbSize);
+              panels.settings.find("#icon-size option[value=" + data.thumbSize + "]").attr('selected','selected');
             }
             if(data.method) {
               set('visOptions.method', data.method);
-              panels.settings.find("#visualization-method option[value=" + data.method + "]")
-                .attr('selected','selected');
+              panels.settings.find("#visualization-method option[value=" + data.method + "]").attr('selected','selected');
             }
           } else {
             //store the basic settings in the session initially if there is no setting data
@@ -203,7 +213,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/
       var ct = panels.settings.find("#audio-cluster-type").val() !== undefined ? 'audio' : '3D';
 
       if(constants.maxNumResults == mr &&
-         constants.visOptions.thumbSize == ts &&
+         constants.visOptions.thumbOptions.thumbSize == ts &&
          constants.visOptions.method === vm &&
          constants.clusterType === ct &&
          !ow) 
@@ -212,7 +222,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/
       }  
 
       set('maxNumResults', mr);
-      set('visOptions.thumbSize', ts);
+      set('visOptions.thumbOptions.thumbSize', ts);
       set('visOptions.method', vm);
       set('clusterType', ct);
       

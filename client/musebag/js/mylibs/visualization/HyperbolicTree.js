@@ -24,27 +24,13 @@ define("mylibs/visualization/HyperbolicTree",
 	};	 
 
 
-	HyperbolicTree = function(searchResults, container, options) {
+	HyperbolicTree = function(searchResults, container, options, ctx) {
 		this.container = container ;
 		this.searchResults = searchResults ;
 
-		this.thumbOptions = {  } ;
-
-		if ( options.thumbSize )
-			this.thumbOptions.thumbSize = options.thumbSize ;
-
-		if ( options.onItemClick )
-			this.thumbOptions.onClick = options.onItemClick ;
-			
-		if ( options.iconArrange )
-			this.thumbOptions.iconArrange = options.iconArrange ;
-		
-		if ( options.thumbRenderer )
-			this.thumbOptions.thumbRenderer = options.thumbRenderer ;
-			
-		if ( options.tagManager )
-			this.thumbOptions.tagManager = options.tagManager ;
-
+		this.thumbOptions = options.thumbOptions ;
+		this.ctx = ctx ;
+	
 		this.graph = new HyperGraph(searchResults) ;
 
 		this.createCanvas() ;
@@ -67,13 +53,9 @@ define("mylibs/visualization/HyperbolicTree",
 	HyperbolicTree.iconSize = 64 ;
 
 	p.setOptions = function(options) {
-		if ( options.thumbSize ) 
-			this.thumbOptions.thumbSize = options.thumbSize ;
-		if ( options.iconArrange ) 
-			this.thumbOptions.iconArrange = options.iconArrange ;
-		if ( options.thumbRenderer )
-			this.thumbOptions.thumbRenderer = options.thumbRenderer ;
-			
+	
+		this.thumbOptions = options.thumbOptions ;
+		
 		var pageBox = $('.page-container', this.container) ;
 		
 		if ( pageBox.length > 0 )
@@ -210,7 +192,7 @@ define("mylibs/visualization/HyperbolicTree",
 	
 	p.redrawThumbView = function(ele, idx)
 	{
-		this.icons = new ThumbContainer(ele, this.graph.icons[idx], this.thumbOptions) ;
+		this.icons = new ThumbContainer(ele, this.graph.icons[idx], this.thumbOptions, this.ctx) ;
 		this.icons.draw() ;
 		
 	};
@@ -381,8 +363,8 @@ define("mylibs/visualization/HyperbolicTree",
 	};
   
 	return {
-		create: function(searchResults, container, options) {
-			return new HyperbolicTree(searchResults, container, options);
+		create: function(searchResults, container, options, ctx) {
+			return new HyperbolicTree(searchResults, container, options, ctx);
 		}
 	};
 });

@@ -8,6 +8,10 @@ if(typeof console == "undefined") {
   };
 }
 
+ var Timeline_urlPrefix   = "js/libs/timeline_2.3.0/timeline_js/" ;
+ var Timeline_parameters  = "bundle=false";
+ var SimileAjax_urlPrefix = "js/libs/timeline_2.3.0/timeline_ajax/" ;
+
 require(["jquery", 
          "mylibs/menu",
          "mylibs/config",
@@ -20,7 +24,9 @@ require(["jquery",
     function($, menu, config, tags, results, uiiface, query) {
       
       $(function() {
+        
         console.log('In the start function');
+        
         $(document).ready(function(){
           
           //Resizing of the menu on load and when window resizes
@@ -70,34 +76,43 @@ require(["jquery",
             $('.panel').slideUp(200);
           });
 
-          //Page behaviour when the query is submitted
-          $( "#query-submit").click(function (e) {
-
-            //prevent the page to reload
-            e.preventDefault() ;
-            
-            var result = query.submit();
-            
-            if (result) { 
-              //Collapses the menu
-              menu.collapse();
-
-              //Remove the tags
-              $(".tags").hide();
-              //Remove the autosuggestions
-              $(".token-input-dropdown-isearch").hide();
-
-              //Displays the results
-              console.log(result);
-              //Dummy result display
-              results.display('chair');
-
-            } else {
-              alert('woops! No query!');
-            }
-            
-            return false;
-          });
+          //hack to hardcode query parameters
+      		if ( typeof (__queryParams) != 'undefined'  )
+      		{
+      			results.display();
+      		}
+      		else
+      		{
+		 
+            //Page behaviour when the query is submitted
+            $( "#query-submit").click(function (e) {
+      
+              //prevent the page to reload
+              e.preventDefault() ;
+              
+              var result = query.submit();
+              
+              if (result) { 
+                //Collapses the menu
+                menu.collapse();
+      
+                //Remove the tags
+                $(".tags").hide();
+                //Remove the autosuggestions
+                $(".token-input-dropdown-isearch").hide();
+      
+                //Displays the results
+                console.log(result);
+                //Dummy result display
+                results.display('chair');
+      
+              } else {
+                alert('woops! No query!');
+              }
+              
+              return false;
+            }); 
+      		}
         }); //end document.ready()
       }); //end anonymous function     
     }
