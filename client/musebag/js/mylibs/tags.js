@@ -20,6 +20,7 @@ define("mylibs/tags", function(){
     $(".tags a").click(function() {
       var tagText = $(this).text();
       var query = $('#query-field').val();
+      //Recommended tags will get a special behaviour for search, unlike normal text input
       $("#query-field").tokenInput('add',{id: tagText,name: '<span class="Tag">' + tagText + '</span>'});    
     });
   };
