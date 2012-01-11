@@ -72,11 +72,11 @@ p.drawImage = function(ctx, x, y)
 	ctx.drawImage(this.image, x - thumbw/2, y - thumbh/2, thumbw, thumbh) ;	
 };	
 
-HyperGraph = function(res)	
+HyperGraph = function(res, ctx)	
 {	
 	this.nodes = [] ;	
 	this.icons = [] ;	
-	this.createNodes(res.docs, res.clusters, null) ;	
+	this.createNodes(res.docs, res.clusters, null, ctx.filterBar.modalities()) ;	
 	this.calculatePositions() ;	
 };	
 
@@ -85,7 +85,7 @@ var p = HyperGraph.prototype ;
 p.nodes = null ;	
 p.icons = null ;	
 			
-p.createNodes = function(docs, c, parent)	
+p.createNodes = function(docs, c, parent, modalities)	
 {	
 		
 	var iconSize = 48 ;	
@@ -98,7 +98,7 @@ p.createNodes = function(docs, c, parent)
 																			
 		var img = new Image ; 	
 				
-		var thumbUrl = ThumbContainer.selectThumbUrl(doc) ;	
+		var thumbUrl = ThumbContainer.selectThumbUrl(doc, modalities) ;	
 									
 		var arr = [] ;	
 					
@@ -128,7 +128,7 @@ p.createNodes = function(docs, c, parent)
 						
 	for(var i=0 ; i<c.children.length ; i++)	
 	{	
-		this.createNodes(docs, c.children[i], gnode) ;	
+		this.createNodes(docs, c.children[i], gnode, modalities) ;	
 	}	
 };	
 			

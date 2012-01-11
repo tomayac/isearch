@@ -31,7 +31,7 @@ define("mylibs/visualization/HyperbolicTree",
 		this.thumbOptions = options.thumbOptions ;
 		this.ctx = ctx ;
 	
-		this.graph = new HyperGraph(searchResults) ;
+		this.graph = new HyperGraph(searchResults, ctx) ;
 
 		this.createCanvas() ;
 

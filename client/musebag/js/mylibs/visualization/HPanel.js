@@ -90,7 +90,7 @@ define("mylibs/visualization/HPanel",
 		}
 	};
 	
-	p.populatePanels = function()  {
+	p.populatePanels = function(modalities)  {
   	
 		var groupIcons = [] ;
 		var _this = this ;
@@ -106,7 +106,7 @@ define("mylibs/visualization/HPanel",
 			var idx = cluster.nodes[0].idx ;
 			var doc = this.searchResults.docs[idx] ;
 
-			var thumbUrl = ThumbContainer.selectThumbUrl(doc) ;
+			var thumbUrl = ThumbContainer.selectThumbUrl(doc, this.ctx.filterBar.modalities()) ;
 
 			groupIcons.push({url: thumbUrl, cluster: c, clicked: 
 				(function(item) {
