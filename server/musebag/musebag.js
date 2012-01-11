@@ -19,6 +19,7 @@ var fs         = require('fs'),
  * Global variables
  */
 var msg     = {error: 'Something went wrong.'};
+var tmpPath = '../../client/musebag/tmp';
 var tmpUrl  = '/tmp';
 
 var queryRucodTpl   = '<?xml version="1.0" encoding="UTF-8"?>'
