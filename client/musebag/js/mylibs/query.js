@@ -1,4 +1,4 @@
-define("mylibs/query", [], function() {
+define("mylibs/query", ["mylibs/config",], function(config) {
   
   var getQueryItems = function() {
     
@@ -99,7 +99,7 @@ define("mylibs/query", [], function() {
       //Send it to the server
       $.ajax({
         type: "POST",
-        url: "query",
+        url: config.constants.queryFormulatorUrl,
         data: JSON.stringify(query),
         success: function(data) {
           //parse the result

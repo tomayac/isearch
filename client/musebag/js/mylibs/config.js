@@ -1,6 +1,9 @@
-define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/mylibs/visualization/DefaultThumbRenderer.js"],
-  function(tags, cofind, profile) {
+//define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/mylibs/visualization/DefaultThumbRenderer.js"],
+//  function(tags, cofind, profile) {
     
+define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualization/DefaultThumbRenderer.js"],
+  function(tags, profile) {
+
     var constants = {
       //Menu parameters
       slideUpAnimationTime: 200,
