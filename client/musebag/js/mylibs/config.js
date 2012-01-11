@@ -1,6 +1,6 @@
-define("mylibs/config", ["mylibs/tags", /* "mylibs/cofind", */ "!js/mylibs/visualization/DefaultThumbRenderer.js"],
-  function(tags,cofind) {
-	
+define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/mylibs/visualization/DefaultThumbRenderer.js"],
+  function(tags, cofind, profile) {
+    
     var constants = {
       //Menu parameters
       slideUpAnimationTime: 200,
@@ -9,31 +9,26 @@ define("mylibs/config", ["mylibs/tags", /* "mylibs/cofind", */ "!js/mylibs/visua
 
       //Query parameters
       maxNumResults: 100,
+      clusterType: '3D',
       clusters0: 5,
       clusters1: 3, 
       trans: "rand", //Can be "lle" or "rand" 
       outFormat: "out",
 
-
-      //Visualization parameters
-	  
-	 visOptions: {
-		method: "tmap", //tmap, htree, hpan or classic
-		thumbOptions: {
-			thumbSize: 64, //16, 32, 48, 64
-			iconArrange: "grid",
-			navMode: "browse",
-			thumbRenderer: new DefaultThumbRenderer
-			},
-		showFilterPane: true,
-		filterBar: {
-			modalities: { "image": { label: "Images" }, "3d": { label: "3D models" }  }, // this is the modalities that the user can switch between, depending on use case.
-		}
-	},
-		
-		// server for file upload. This is now passed as parameter to FileHandler in menu.js
-		
-	
+      //Visualization parameters  
+  	  visOptions: {
+  	    method: "classic", //tmap, htree, hpan or classic
+  	    thumbOptions: {
+  	      thumbSize: 64, //16, 32, 48, 64
+  	      iconArrange: "grid",
+  	      navMode: "browse",
+  	      thumbRenderer: new DefaultThumbRenderer()
+  			},
+  			showFilterPane: true,
+  			filterBar: {
+  			  modalities: { "image": { label: "Images"}, "3d": { label: "3D models" }  } // this is the modalities that the user can switch between, depending on use case.
+  			}
+  	  }
     };
     
     var panels = {
@@ -42,7 +37,7 @@ define("mylibs/config", ["mylibs/tags", /* "mylibs/cofind", */ "!js/mylibs/visua
         login : null,
         hide : function(speed) {
           $('.settings-panel').hide(speed);
-          $(".settings ul li").removeClass('active');
+          $("#settings ul li").removeClass('active');
           /*if(this.settings) {
             this.settings.hide(speed);
             $("#button-global-settings").removeClass('active');
@@ -75,69 +70,68 @@ define("mylibs/config", ["mylibs/tags", /* "mylibs/cofind", */ "!js/mylibs/visua
     };
     
     //Global message function
-    var sendNotifyMessage = function(msg,type) {
+    var sendNotifyMessage = function(msg,type,actionContent) {
       var type = type || 'info';
-      var msgHtml = '<p class="' + type + '">' + msg + '</p>';
+      var modal = actionContent ? true : false;
+      var msgHtml = '<p class="' + type + '">' + msg + '</p>' + actionContent;
       $("#messages").html(msgHtml);
-      $("#messages").show(200).delay(3000).hide(200);
+      if(!modal) {
+        $("#messages").show(200).delay(3000).hide(200);
+      } else {
+        $("#messages").show(200);
+      }
     }; 
     
     //Get tag recommendations for the user which is logged in
     var getUserTags = function() {
-      $.ajax({
-        type: "GET",
-        url: "profile/ID",
-        success: function(data) {
-          data = JSON.parse(data);
+      
+      var userId = profile.get('ID');
+      
+      if(userId) {
+        //Ask for tag recommendations
+        $.ajax({
+          type: "GET",
+          url: "ptag/tagRecommendations?userID=" + userId,
+          success: function(data) {
+            data = JSON.parse(data);
 
-          if(!data.error) {
+            var html = '';
+            console.log(data);
+            for(var t=0; t < data.length; t++) {
+              html += '<a href="#" data-rank="' + data[t][1] + '">' + data[t][0] + '</a>';
+            }
+              
+            $(".tags").html(html);
             
-            //Ask for tag recommendations
-            $.ajax({
-              type: "GET",
-              url: "ptag/tagRecommendations?userID=" + data.ID,
-              success: function(data) {
-                data = JSON.parse(data);
-
-                var html = '';
-                console.log(data);
-                for(var t=0; t < data.length; t++) {
-                  html += '<a href="#" data-rank="' + data[t][1] + '">' + data[t][0] + '</a>';
-                }
-                  
-                $(".tags").html(html);
-                
-                //Initializes the tagging system
-                tags.init();
-                //Get tokens and load them as auto suggestions for the user
-                var tokens = tags.getTokens();
-                $(".token-input-list-isearch").remove();
-                $("#query-field").tokenInput("clear");
-                $("#query-field").tokenInput('init',tokens, {theme: "isearch", preventDuplicates:true});
-                
-              },
-              dataType: "text",
-              contentType : "application/json; charset=utf-8"
-            });
+            //Initializes the tagging system
+            tags.init();
+            //Get tokens and load them as auto suggestions for the user
+            var tokens = tags.getTokens();
+            $(".token-input-list-isearch").remove();
+            $("#query-field").tokenInput("clear");
+            $("#query-field").tokenInput('init',tokens, {theme: "isearch", preventDuplicates: true} );
             
-          } // end if data.error
-        },
-        dataType: "text",
-        contentType : "application/json; charset=utf-8"
-      });
+          },
+          dataType: "text",
+          contentType : "application/json; charset=utf-8"
+        });
+      }
     };
     
     var initSettings = function() {
       
-	  // initialize settings from local configuration if any
-	  
-	  if ( localConfig && typeof(localConfig) == "function" ) localConfig(constants) ;
+      // initialize settings from local configuration if any 
+      /*if(localConfig !== undefined) {
+        if(typeof(localConfig) === "function") {
+          localConfig(constants);
+        }
+      }*/
 	  
       var setForm = function() {
         //Initialize the form with the default values
         panels.settings.find("#max-num-results")
             .val(constants.maxNumResults);
-        panels.settings.find("#icon-size option[value=" + constants.visOptions.thumbSize + "]")
+        panels.settings.find("#icon-size option[value=" + constants.visOptions.thumbOptions.thumbSize + "]")
             .attr('selected','selected');
         panels.settings.find("#visualization-method option[value=" + constants.visOptions.method + "]")
             .attr('selected','selected');
@@ -153,19 +147,19 @@ define("mylibs/config", ["mylibs/tags", /* "mylibs/cofind", */ "!js/mylibs/visua
   
             if(data.maxResults) {
               set('maxNumResults', data.maxResults);
-              panels.settings.find("#max-num-results")
-                .val(data.maxResults);
+              panels.settings.find("#max-num-results").val(data.maxResults);
             }
             if(data.thumbSize) {
-              set('visOptions.thumbSize', data.thumbSize);
-              panels.settings.find("#icon-size option[value=" + data.thumbSize + "]")
-                .attr('selected','selected');
+              set('visOptions.thumbOptions.thumbSize', data.thumbSize);
+              panels.settings.find("#icon-size option[value=" + data.thumbSize + "]").attr('selected','selected');
             }
             if(data.method) {
               set('visOptions.method', data.method);
-              panels.settings.find("#visualization-method option[value=" + data.method + "]")
-                .attr('selected','selected');
+              panels.settings.find("#visualization-method option[value=" + data.method + "]").attr('selected','selected');
             }
+          } else {
+            //store the basic settings in the session initially if there is no setting data
+            handleSettingsSave(true);
           }
         },
         error: function(error) {
@@ -177,51 +171,65 @@ define("mylibs/config", ["mylibs/tags", /* "mylibs/cofind", */ "!js/mylibs/visua
       });
     };
     
-    var performLoggedInSetup = function(data) {
-      $("#login-status").html("Hello " + data.Email);
+    var performLoggedInSetup = function() {
+      
+      if(arguments.length == 1) {
+        //Set profile
+        profile.set(arguments[0]);
+      } 
+      
+      $("#login-status").html("Hello " + profile.get('Email'));
       $("#button-login-settings").find('a:first').text('Logout');
       var cofindOptions = {
-         userEmail       : data.Email, 
+         user            : profile.get('Email'), 
          addButtonTo     : '#settings ul li',
          addSettingsTo   : '.settings-panel',
          addWorkspaceTo  : '#container',
          panels          : panels,
          messageCallback : sendNotifyMessage  
       };
+      
       cofind.setup(cofindOptions);
       getUserTags();
     };
     
     var performLoggedOutSetup = function() {
+      
       $("#login-status").html("Hello Guest");
       $("#button-login-settings").find('a:first').text('Login');
       //Clearing tags
       $("#query-field").tokenInput("clear");
       $(".tags").html('');
-      cofind.remove();
+      cofind.remove(profile.get('Email'));
+      
+      profile.reset();
     };
     
-    var handleSettingsSave = function() {
-      //console.log('save setting');
+    var handleSettingsSave = function(overwrite) {
+      
+      var ow = overwrite || false;
+      
       var mr = parseInt(panels.settings.find("#max-num-results").val());
       var ts = parseInt(panels.settings.find("#icon-size option:selected").val());
       var vm = panels.settings.find("#visualization-method option:selected").val();
-      //console.log(constants.maxNumResults + ' - ' + mr);
-      //console.log(constants.visOptions.thumbSize + ' - ' + ts);
-      //console.log(constants.visOptions.method + ' - ' + vm);
+      var ct = panels.settings.find("#audio-cluster-type").val() !== undefined ? 'audio' : '3D';
+
       if(constants.maxNumResults == mr &&
-         constants.visOptions.thumbSize == ts &&
-         constants.visOptions.method === vm) 
+         constants.visOptions.thumbOptions.thumbSize == ts &&
+         constants.visOptions.method === vm &&
+         constants.clusterType === ct &&
+         !ow) 
       {
         return;
       }  
-      //console.log('its not the same');
+
       set('maxNumResults', mr);
-      set('visOptions.thumbSize', ts);
+      set('visOptions.thumbOptions.thumbSize', ts);
       set('visOptions.method', vm);
+      set('clusterType', ct);
       
       var postData = {
-          data : '{"maxResults" : ' + mr + ', "thumbSize" : ' + ts + ', "method" : "' + vm + '"}'
+          data : '{"maxResults" : ' + mr + ', "clusterType" : "' + ct + '", "thumbSize" : ' + ts + ', "method" : "' + vm + '"}'
       };
       
       //Send it to the server
@@ -241,7 +249,7 @@ define("mylibs/config", ["mylibs/tags", /* "mylibs/cofind", */ "!js/mylibs/visua
             console.log("Error during save settings: " + data.error);
           } else {
             console.log("User settings saved: " + (data.success ? data.success : data.info));
-            sendNotifyMessage('Settings saved!', (data.success ? 'success' : 'info'));
+            sendNotifyMessage('Settings saved!', (data.success ? 'success' : 'info'), false);
           }
         },
         dataType: "text",
@@ -273,10 +281,9 @@ define("mylibs/config", ["mylibs/tags", /* "mylibs/cofind", */ "!js/mylibs/visua
           
           if(data.error) {
             console.log("Error during login: " + data.error); 
-            sendNotifyMessage("Sorry: " + data.error,'error');
+            sendNotifyMessage("Sorry: " + data.error,'error',false);
           } else {
-            console.log("User logged in: " + data);
-            sendNotifyMessage("You're logged in.",'success');
+            sendNotifyMessage("You're logged in.",'success',false);
             performLoggedInSetup(data);
           }
         },
@@ -299,7 +306,7 @@ define("mylibs/config", ["mylibs/tags", /* "mylibs/cofind", */ "!js/mylibs/visua
             if(!data.error) { 
               console.log("User logged out");
               //inform the User that he is logged out
-              sendNotifyMessage('You\'re logged out.', 'success');
+              sendNotifyMessage('You\'re logged out.', 'success', false);
               performLoggedOutSetup();
             } else {
               alert("Something went wrong: " + data.error);
@@ -328,12 +335,13 @@ define("mylibs/config", ["mylibs/tags", /* "mylibs/cofind", */ "!js/mylibs/visua
           panels.settings.show(constants.slideUpAnimationTime);
           $("#button-global-settings").addClass('active');
           $("body").one("click", function() {
-            $("#button-global-settings").click();
+            panels.hide(constants.slideDownAnimationTime);
           });
         }
         event.stopPropagation();
       });
       panels.settings.click(function(event) {
+        event.preventDefault();
         event.stopPropagation();
       });
       
@@ -353,7 +361,7 @@ define("mylibs/config", ["mylibs/tags", /* "mylibs/cofind", */ "!js/mylibs/visua
             panels.login.show(constants.slideUpAnimationTime);
             $("#button-login-settings").addClass('active');
             $("body").one("click", function() {
-              $("#button-login-settings").click();
+              panels.hide(constants.slideDownAnimationTime);
             });
           }
         } else {
@@ -363,6 +371,7 @@ define("mylibs/config", ["mylibs/tags", /* "mylibs/cofind", */ "!js/mylibs/visua
         event.stopPropagation();
       });
       panels.login.click(function(event) {
+        event.preventDefault();
         event.stopPropagation();
       });
 
@@ -390,20 +399,10 @@ define("mylibs/config", ["mylibs/tags", /* "mylibs/cofind", */ "!js/mylibs/visua
         }
       });
       
-      //Get the user name if available
-      $.ajax({
-    	  type: "GET",
-    	  url: "profile/Email",
-    	  success: function(data) {
-      		data = JSON.parse(data);
-
-      		if(!data.error) {
-      		  performLoggedInSetup(data);
-      		}
-    	  },
-    	  dataType: "text",
-    	  contentType : "application/json; charset=utf-8"
-      });
+      //Get the user email to identify if user is logged in
+      if(profile.get('Email')) {
+        performLoggedInSetup();
+      };
 
     }; //End of initPanel()   
     

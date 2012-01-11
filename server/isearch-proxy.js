@@ -4,30 +4,29 @@
  * GUI services. Currently it routes to the following services which are hosted
  * on this server:
  * 
- * - pTag as Personal Content Tagging Service for I-SEARCH
- * - CoFind as Collaborative Search Service for I-SEARCH
- * - CoFetch for Semi-automatic Content Object creation based on the FHE 3D Model Database or 3D Warehouse of Google
  * - Multimodal Search Interface as general GUI for I-SEARCH
+ * - Server component of Multimodal Search interface, which handles the communication between GUI and Search Engine
+ * - pTag as Personal Content Tagging Service for I-SEARCH
+ * - CoFind as Collaborativ Search Service for I-SEARCH
+ * - CoFetch for Semi-automatic Content Object creation based on the FHE 3D Model Database
  *    
  * @author Jonas Etzold
  * 
  */
 //Required packages
-var httpProxy = require('http-proxy');
-var server = 'isearch.ai.fh-erfurt.de';
-var port   = 80;
+var httpProxy = require('http-proxy'); 
 
 //Configuration variables
 var options = {
   router: {
-    'isearch.ai.fh-erfurt.de/ptag'    : 'isearch.ai.fh-erfurt.de:8083',
-    'isearch.ai.fh-erfurt.de/cofind'  : 'isearch.ai.fh-erfurt.de:8084',
-    'isearch.ai.fh-erfurt.de/cofetch' : 'isearch.ai.fh-erfurt.de:8085',
-    'isearch.ai.fh-erfurt.de'         : 'isearch.ai.fh-erfurt.de:8081'	
+    'localhost/ptag'    : '127.0.0.1:8083',
+    'localhost/cofind'  : '127.0.0.1:8084',
+    'localhost/cofetch' : '127.0.0.1:8085',
+    'localhost'         : '127.0.0.1:8081'	
   }
 };
 
 //Server, Router setup
 var proxyServer = httpProxy.createServer(options);
-proxyServer.listen(port);
-console.log("I-SEARCH proxy is listing on port " + port + " at " + server);
+proxyServer.listen(80);
+console.log("I-SEARCH proxy is listing on port 80 at localhost");
