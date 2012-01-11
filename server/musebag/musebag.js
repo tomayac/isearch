@@ -245,19 +245,20 @@ var getSessionStore = function(req) {
     //If not create an guest session store
     req.session.user = { 
       ID : 'guest',
-      Settings : '{"maxResults" : 100, "clusterType" : "3D"}'
+      Settings : '{"maxResults" : 100, "clusterType" : "3D"}',
+      QueryCounter: 0
     };
   };
     
   return req.session.user;
 };
 
-var getExternalSessionId = function(req) {
+var getExternalSessionId = function(req,renew) {
   
   if(req) {
     var sessionStore = getSessionStore(req);
     if(!req.session.user.extSessionId) {
-      var sid = req.sessionID.substring(req.sessionID.length-32,req.sessionID.length);
+      var sid = req.sessionID.substring(req.sessionID.length-32,req.sessionID.length) + '-' + sessionStore.QueryCounter;
       req.session.user.extSessionId = sid;
     } 
     return req.session.user.extSessionId;
@@ -481,7 +482,8 @@ exports.query = function(req, res) {
           }
           
           res.send(JSON.stringify(result));
-          
+          //After successful submission of query increase the query counter
+          sessionStore.QueryCounter++;
        })
        .on('error', function(data,response) {
           msg.error = response.message;
