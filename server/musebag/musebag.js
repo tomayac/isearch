@@ -245,7 +245,7 @@ var getSessionStore = function(req) {
     //If not create an guest session store
     req.session.user = { 
       ID : 'guest',
-      Settings : '{"maxResults" : 100}'
+      Settings : '{"maxResults" : 100, "clusterType" : "3D"}'
     };
   };
     
