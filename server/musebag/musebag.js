@@ -13,14 +13,13 @@
  */
 var fs         = require('fs'),
     restler    = require('restler'),
-    formidable = require('formidable'),
     wunder     = require('./wunderground');
 
 /**
  * Global variables
  */
 var msg     = {error: 'Something went wrong.'};
-var tmpPath = '/var/www/isearch/client/musebag/tmp';
+var tmpPath = '../../client/musebag/tmp';
 var tmpUrl  = '/tmp';
 
 var queryRucodTpl   = '<?xml version="1.0" encoding="UTF-8"?>'
@@ -149,7 +148,7 @@ var getQueryRucod = function(query,sessionId,sessionStore,callback) {
       mmItems += '<MultimediaContent type="Text"><FreeText>' + item.Content + '</FreeText></MultimediaContent>';
     } else {
       var tmpItem = queryItemTpl;
-      tmpItem = tmpItem.replace("[[TYPE]]"    , item.Type + 'Type')
+      tmpItem = tmpItem.replace("[[TYPE]]"    , item.Type)
                        .replace("[[REALTYPE]]", item.RealType)
                        .replace("[[NAME]]"    , item.name)
                        .replace("[[URL]]"     , item.Content);
@@ -246,19 +245,20 @@ var getSessionStore = function(req) {
     //If not create an guest session store
     req.session.user = { 
       ID : 'guest',
-      Settings : '{"maxResults" : 100}'
+      Settings : '{"maxResults" : 100, "clusterType" : "3D"}',
+      QueryCounter: 0
     };
   };
     
   return req.session.user;
 };
 
-var getExternalSessionId = function(req) {
+var getExternalSessionId = function(req,renew) {
   
   if(req) {
     var sessionStore = getSessionStore(req);
     if(!req.session.user.extSessionId) {
-      var sid = req.sessionID.substring(req.sessionID.length-32,req.sessionID.length);
+      var sid = req.sessionID.substring(req.sessionID.length-32,req.sessionID.length) + '-' + sessionStore.QueryCounter;
       req.session.user.extSessionId = sid;
     } 
     return req.session.user.extSessionId;
@@ -441,6 +441,7 @@ exports.query = function(req, res) {
   var result = {};
   
   try {
+    
     //Compose the query
     getQueryRucod(data, extSessionId, sessionStore, function(error,queryData) {
       if(error) {
@@ -481,7 +482,8 @@ exports.query = function(req, res) {
           }
           
           res.send(JSON.stringify(result));
-          
+          //After successful submission of query increase the query counter
+          sessionStore.QueryCounter++;
        })
        .on('error', function(data,response) {
           msg.error = response.message;
@@ -502,7 +504,7 @@ exports.query = function(req, res) {
 exports.queryItem = function(req, res) {
 	
 	console.log("Queryitem function called...");
-  
+
 	//Url for forwarding the uploaded file to the multimodal query formulator
   var queryFormulatorURL = "http://gdv.fh-erfurt.de/i-search/mqf-dummy/handle.php";
 	
@@ -511,15 +513,12 @@ exports.queryItem = function(req, res) {
     if(error) {
       res.send(JSON.stringify(error));
       return;
-    }
-    
+    }   
     //Store query item data in session
-    console.log(data);
     req.session.query.items.push(data);
 
     //Return query item path to client
     res.send(JSON.stringify(data));
-    
   };
   
 	//Check if a query object exists in this session
@@ -530,68 +529,51 @@ exports.queryItem = function(req, res) {
 	//Store the session id
 	var sid = getExternalSessionId(req);
 	
-	//Create the upload parser
-	var upload = new formidable.IncomingForm();
-	//Set the upload settings
-	upload.uploadDir = tmpPath; 
-	upload.keepExtensions = true;
-	upload.maxFieldsSize = 8 * 1024 * 1024; // 8 MB
-	upload.encoding = 'binary';
-	//Check for every uploaded file
-	upload.addListener('file', function(name, file) {
-
-		//The temporary information about the uploaded file
-		var uploadItem = { path : file.path,
-				               name : file.name, 
-				               type : file.type,
-				               size : file.size};
+	//Check if we have a file item as query item
+	if(req.files.files) {
+	  
+    var file = req.files.files;
     
-		distributeFile(queryFormulatorURL, 
-		  {"f": "storeQueryItem", "session": sid}, 
-		  uploadItem, 
-		  externalCallback
-	  );
-		
-	});
+    //The temporary information about the uploaded file
+    var uploadItem = { path : file.path,
+                       name : file.name, 
+                       type : file.type,
+                       size : file.size };
+	  
+	  distributeFile(queryFormulatorURL, 
+      {"f": "storeQueryItem", "session": sid}, 
+      uploadItem, 
+      externalCallback
+    );
+	}
 	
-	//Parse the upload data
-	upload.parse(req, function(error, fields, files) {
-		
-		if(error) {
-			msg.error = error;
-			res.send(JSON.stringify(msg));
-			return;
-		}
-		
-		if(fields.canvas) {
-
-		  var base64Data = fields.canvas.replace(/^data:image\/png;base64,/,"");
-		  var dataBuffer = new Buffer(base64Data, 'base64');
-		  
-		  //The temporary information about the created file
-      var uploadItem = { path : tmpPath + "/" + fields.name,
-                         name : fields.name, 
-                         type : 'image/png',
-                         subtype: fields.subtype,
-                         size : dataBuffer.length};
-		  
-		  fs.writeFile(uploadItem.path, dataBuffer, function(error) {
-		    if(error) {
-		      msg.error = error;
-		      res.send(JSON.stringify(msg));
-		      return;
-		    }
-		    
-		    distributeFile(queryFormulatorURL, 
-		      {"f": "storeQueryItem", "session": sid}, 
-		      uploadItem, 
-		      externalCallback
-		    );
-		  });
-		  
-		}
-
-	}); //end function upload.parse
+	//Check if we have sketch data as query item
+	if(req.body.canvas) {
+	  
+    var base64Data = req.body.canvas.replace(/^data:image\/png;base64,/,"");
+    var dataBuffer = new Buffer(base64Data, 'base64');
+    
+    //The temporary information about the created file
+    var uploadItem = { path : tmpPath + "/" + req.body.name,
+                       name : req.body.name, 
+                       type : 'image/png',
+                       subtype: req.body.subtype,
+                       size : dataBuffer.length};
+    
+    fs.writeFile(uploadItem.path, dataBuffer, function(error) {
+      if(error) {
+        msg.error = error;
+        res.send(JSON.stringify(msg));
+        return;
+      }
+      
+      distributeFile(queryFormulatorURL, 
+        {"f": "storeQueryItem", "session": sid}, 
+        uploadItem, 
+        externalCallback
+      );
+    });
+	}
 	
 }; //end function queryItem
 

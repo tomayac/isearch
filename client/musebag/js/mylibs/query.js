@@ -39,10 +39,10 @@ define("mylibs/query", ["mylibs/config",], function(config) {
           var localIntensity = 0;
           console.log('found emotion with intensity ' + intensity);
           if(intensity >= 0.8) {
-            localIntensity = 1 - (1 / 0.19) * (intensity - 0.8); 
+            localIntensity = (1 / 0.19) * (intensity - 0.8); 
             queryJson.emotion = {name : 'Happy', intensity : localIntensity};
           } else if(intensity >= 0.5 && intensity < 0.8) {
-            localIntensity = 1 - (1 / 0.29) * (intensity - 0.5);
+            localIntensity = (1 / 0.29) * (intensity - 0.5);
             queryJson.emotion = {name : 'Content', intensity : localIntensity};
           } else if(intensity >= 0.3 && intensity < 0.5) {
             localIntensity = 1 - (1 / 0.19) * (intensity - 0.3);

@@ -204,8 +204,8 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
       
       $("#login-status").html("Hello Guest");
       $("#button-login-settings").find('a:first').text('Login');
-      //Clearing tags
-      $("#query-field").tokenInput("clear");
+      //Clearing query (quite silly to do that - turned off)
+      //$("#query-field").tokenInput("clear");
       $(".tags").html('');
       cofind.remove(profile.get('Email'));
       
