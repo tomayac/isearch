@@ -55,7 +55,7 @@
 	if ( isset($_GET['url']) ) echo 'url: "' . $_GET['url'] . '", ' ;
 	
 	if ( isset($_GET['tr']) ) echo 'tr: "' . $_GET['tr'] . '", ' ;
-	else echo 'tr: "lle", ' ;
+	else echo 'tr: "mst", ' ;
 	
 	if ( isset($_GET['cls']) ) echo 'cls: "' . $_GET['cls'] . '", ' ;
 	else echo 'cls: "5,3", ' ;

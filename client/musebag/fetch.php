@@ -6,8 +6,9 @@ function invokeService($url = null)
 	if ( $url == null )
 	{
 		set_time_limit(100) ;
-		$ch = curl_init("http://vision.iti.gr:8080/fcgi-bin/indexer2.exe?" . $_SERVER['QUERY_STRING']);
+		$ch = curl_init("http://vision.iti.gr:8080/isearch/server.exe?" . $_SERVER['QUERY_STRING']);
 
+	//	echo "http://vision.iti.gr:8080/isearch/server.exe?" . $_SERVER['QUERY_STRING'] ;
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 
@@ -77,6 +78,7 @@ function parseClusters($outerNode)
 
 function xml2json($data)
 {
+
 	$xml = DOMDocument::loadXML($data);
 	$callback = '' ;
 	if ( isset($_GET['callback'] ) ) $callback = $_GET['callback'] ; 

@@ -124,12 +124,16 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
     var initSettings = function() {
       
       // initialize settings from local configuration if any 
-      /*if(localConfig !== undefined) {
+      if(localConfig !== undefined) {
         if(typeof(localConfig) === "function") {
           localConfig(constants);
         }
-      }*/
-	  
+      }
+	
+	// This should be updated. Visualisation options do not need to be in the setup menu. Only serialize/desierialize the constants.visOptions object
+	// to the user profile. The settings menu should contain query specific options such as the number of results, the type of clustering algorithm to 
+	// apply, the transformation algorithm, the number of clusters ...
+	
       var setForm = function() {
         //Initialize the form with the default values
         panels.settings.find("#max-num-results")

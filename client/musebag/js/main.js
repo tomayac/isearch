@@ -79,39 +79,47 @@ require(["jquery",
           //hack to hardcode query parameters
       		if ( typeof (__queryParams) != 'undefined'  )
       		{
-      			results.display();
+      			results.display('');
       		}
       		else
       		{
 		 
-            //Page behaviour when the query is submitted
-            $( "#query-submit").click(function (e) {
-      
-              //prevent the page to reload
-              e.preventDefault() ;
-              
-              var result = query.submit();
-              
-              if (result) { 
-                //Collapses the menu
-                menu.collapse();
-      
-                //Remove the tags
-                $(".tags").hide();
-                //Remove the autosuggestions
-                $(".token-input-dropdown-isearch").hide();
-      
-                //Displays the results
-                console.log(result);
-                //Dummy result display
-                results.display('chair');
-      
-              } else {
-                alert('woops! No query!');
-              }
-              
-              return false;
-            }); 
+				//Page behaviour when the query is submitted
+				$( "#query-submit").click(function (e) {
+		  
+					//prevent the page to reload
+					e.preventDefault() ;
+				  
+					// Sotiris: submit takes callaback function
+					query.submit( 
+						function(result, data) 
+						{
+							if ( result )
+							{
+								//Collapses the menu
+								menu.collapse();
+		  
+								//Remove the tags
+								$(".tags").hide();
+								//Remove the autosuggestions
+								$(".token-input-dropdown-isearch").hide();
+		  
+								//Displays the results
+								//console.log(result);
+						
+								results.display(data) ;
+							
+							//Dummy result display
+							//  results.display('chair');
+							}
+							else {
+								alert('woops! No query!');
+							}
+						}
+					) ;
+				  
+				return false;
+				}); 
       		}
         }); //end document.ready()
       }); //end anonymous function     

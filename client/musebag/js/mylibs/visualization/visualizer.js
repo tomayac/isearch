@@ -70,7 +70,7 @@ define("mylibs/visualization/visualizer",
 		//Let's empty the DOM element first
 		$(element).empty() ;
 		
-		tagManager.init(results, __queryParams.index) ;
+		tagManager.init(results, "index") ;
 		
 		ctx.tagManager = tagManager ;
 		ctx.filterBar = filterBar ;
