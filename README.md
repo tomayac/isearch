@@ -81,10 +81,8 @@ your Linux server:
      `npm install connect-redis -g`
    - Install express module via
      `npm install express -g`
-   - Install eyes module via
-     `npm install eyes -g`    
-   - Install formidable module via
-     `npm install formidable -g`          
+   - Install jsdom module via
+     `npm install jsdom -g`                
    - Install now module via
      `npm install now -g`
    - Install restler module via
@@ -101,9 +99,7 @@ your Linux server:
 5. Pull this github repository into this folder by changing into the directory "/var/www/isearch" and typing
    `git clone git://github.com/tomayac/isearch.git`
 6. Make sure you reserve 1 public port (default: 80) for the GUI Framework as well as 5 local ports for GUI services (default: 8081,8082,8083,8084,8085)
-7. Please change the paths in the following Javascript file within the repository and replace all "isearch.ai.fh-erfurt.de" and "http://isearch.ai.fh-erfurt.de" with your server URL/IP address:
-   server/isearch-proxy.js
-8. Start the server scripts for the GUI framework:
+7. Start the server scripts for the GUI framework:
    - change directory to /var/www/isearch/server/pTag
    - enter: `forever start index-ptag.js`
    - change directory to /var/www/isearch/server/musebag
