@@ -99,6 +99,7 @@ define("mylibs/query", ["mylibs/config",], function(config) {
       //Send it to the server
       $.ajax({
         type: "POST",
+		crossDomain: true,
         url:  config.constants.queryFormulatorUrl || 'query',
         data: JSON.stringify(query),
         success: function(data) {

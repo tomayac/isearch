@@ -21,7 +21,7 @@ define("mylibs/visualization/FilterBar",  [ ],
 		
 		$(ele).empty() ;
 			
-		mediaDiv = $('<div/>', {"class": "formitem", css: { "display": "table-cell", "vertical-align": "middle", "width": "200px"}}).appendTo(ele) ;
+		mediaDiv = $('<div/>', {"class": "formitem", css: { "display": "table-cell", "vertical-align": "middle", "width": "150px"}}).appendTo(ele) ;
 		$('<span/>', { css: { "display": "table-cell", "vertical-align": "middle", "padding-right": "5px"},  text: "Media:" } ).appendTo(mediaDiv) ;
 		mediaButtons = $('<div/>', { css: { display: "table-cell" } } ).appendTo(mediaDiv) ;
 			
@@ -54,6 +54,44 @@ define("mylibs/visualization/FilterBar",  [ ],
 		}
 		
 		
+		// draw the sort by buttons
+		
+		sortbyDiv = $('<div/>', {"class": "formitem", css: { "display": "table-cell", "vertical-align": "middle", "width": "200px"}}).appendTo(ele) ;
+		$('<span/>', { css: { "display": "table-cell", "vertical-align": "middle", "padding-right": "5px"},  text: "Sort by:" } ).appendTo(sortbyDiv) ;
+		sortbyButtons = $('<div/>', { css: { display: "table-cell" } } ).appendTo(sortbyDiv) ;
+		
+		var item = $("<input/>", { type: "radio", name:"sortby", id: "sortby-relevance", "checked": "checked"  }).appendTo(sortbyButtons) ;
+		var label = $("<label/>", { "for": "sortby-relevance", text: "Relevance" }).appendTo(sortbyButtons) ;
+			
+		item.button( {text: false,  "icons": {primary:'ui-icon-sortby-relevance'}}) ;
+			
+		item.click(function() {
+			filter() ;
+			callback() ;
+		});
+		
+		item = $("<input/>", { type: "radio", name:"sortby", id: "sortby-location"  }).appendTo(sortbyButtons) ;
+		label = $("<label/>", { "for": "sortby-location", text: "Location" }).appendTo(sortbyButtons) ;
+			
+		item.button( {text: false,  "icons": {primary:'ui-icon-sortby-location'}}) ;
+			
+		item.click(function() {
+			filter() ;
+			callback() ;
+		});
+		
+		item = $("<input/>", { type: "radio", name:"sortby",  id: "sortby-time"  }).appendTo(sortbyButtons) ;
+		label = $("<label/>", { "for": "sortby-time", text: "Time" }).appendTo(sortbyButtons) ;
+			
+		item.button( {text: false,  "icons": {primary:'ui-icon-sortby-time'}}) ;
+			
+		item.click(function() {
+			filter() ;
+			callback() ;
+		});
+		
+		sortbyButtons.buttonset() ;
+		
 		// draw tag filter bar
 		var tags = currentTags = tagManager.tags() ;
 		
@@ -74,6 +112,8 @@ define("mylibs/visualization/FilterBar",  [ ],
 			callback() ;		
 			
 		}) ;
+		
+		
 		
 	};
 	

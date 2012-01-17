@@ -66,9 +66,15 @@ define("mylibs/visualization/visualizer",
 	// create the main layout
 	var setup = function(options) {
 	
-				
 		//Let's empty the DOM element first
 		$(element).empty() ;
+		
+		
+		if ( results.docs.length == 0 )
+		{
+			$('<span>No results found</span>').appendTo(element) ;
+			return ;
+		}
 		
 		tagManager.init(results, "index") ;
 		

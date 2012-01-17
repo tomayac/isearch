@@ -144,9 +144,12 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
             .attr('selected','selected');
       };
       
+	  var profileSettingsUrl = constants.userProfileServerUrl || "profile/" ;
+	  profileSettingsUrl += "Settings" ;
+	  
       $.ajax({
         type: "GET",
-        url: "profile/Settings",
+        url: profileSettingsUrl,
         success: function(data) {
           data = JSON.parse(data);
           if(data.Settings) {
@@ -196,7 +199,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
          messageCallback : sendNotifyMessage  
       };
       
-      cofind.setup(cofindOptions);
+  //?    cofind.setup(cofindOptions);
       getUserTags();
     };
     
@@ -239,10 +242,13 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
           data : '{"maxResults" : ' + mr + ', "clusterType" : "' + ct + '", "thumbSize" : ' + ts + ', "method" : "' + vm + '"}'
       };
       
+	  var profileSettingsUrl = constants.userProfileServerUrl || "profile/" ;
+	  profileSettingsUrl += "Settings" ;
+	  
       //Send it to the server
       $.ajax({
         type: "POST",
-        url: "profile/Settings",
+        url: profileSettingsUrl,
         data: JSON.stringify(postData),
         success: function(data) {
           //parse the result
@@ -269,7 +275,8 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
     
     var handleLogin = function() {
       
-      var serverURL = "login";        
+      var serverURL = constants.userLoginServerUrl || "login";        
+	  
       var postData = {email: panels.login.find("#email").val() || '',
                          pw: panels.login.find("#pw").val()    || ''};
       
@@ -303,8 +310,8 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
     };
     
     var handleLogout = function() {
-      var serverURL = "login";    
-      
+       var serverURL = constants.userLoginServerUrl || "login";       
+	   
       //Send it to the server
       $.ajax({
         type: "DELETE",
@@ -326,8 +333,11 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
 
     var initPanel = function() {
       
-      initSettings();
-      
+	  initSettings(); 
+	  
+	  // basically pass the url of the profile server 
+	  profile.init(constants) ;
+	  
       panels.messages = $("#messages");
       
       panels.settings = $("#global-settings");
