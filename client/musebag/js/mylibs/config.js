@@ -358,7 +358,11 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
         event.stopPropagation();
       });
       panels.settings.click(function(event) {
-        event.preventDefault();
+    	/**
+    	 * Triantafillos: event.preventDefault() breaks checkbox 
+    	 * functionality on global settings.
+    	 */ 
+//        event.preventDefault();
         event.stopPropagation();
       });
       
