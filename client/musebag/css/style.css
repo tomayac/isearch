@@ -404,7 +404,7 @@ nav {
 	position: relative;
 }
 
-#query input[type=submit] {
+#query input[type=button] {
 	display: block;
 	position: absolute;
 	top: 3px;
@@ -415,7 +415,7 @@ nav {
 	background-color: #e0e0e0;
 }
 
-#query input[type=submit]:hover {
+#query input[type=button]:hover {
 	background-color: #838383;
 	color: #fff;
 }
