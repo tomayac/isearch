@@ -2,21 +2,60 @@ define("mylibs/visualization/TagManager",
 	[],
 function() {
 
-	var index, docs ;
+	var index, docs, tagServerUrl, sortedTagList = [] ;
 			
-	var init = function(results_, index_) {
+	var init = function(results_, options) {
 		
-		index = index_ ;
 		docs = results_.docs ;
+		tagServerUrl = options.tagServerUrl ;
 		
 		load() ;
 	};
-	
+/*	
 	var getAllTags = function() {
 
 		// load all tags associated with this index
 
 		var allTags = {} ;
+		
+		var data = '' ;
+		
+		for(var i=0 ; i< docs.length ; i++ )
+		{
+			var doc = docs[i] ;
+		
+			data += doc.id + ';' ;
+		}
+		
+		$.ajax({
+			type: 'POST',
+			url: tagServerUrl + '&a=all',
+			data: data,
+			success: function(data) {
+				if ( data.error ) {
+				}
+				else
+				{
+					for( var i=0 ; i<data.length ; i++ )
+					{
+						var tags = data[i].tags ;
+						
+						if ( !tags ) continue ;
+			
+						for(var j=0 ; j<tags.length ; j++ )
+						{
+							var tag = tags[j] ;
+							if ( allTags.hasOwnProperty(tag) ) 	allTags[tag] ++ ;
+							else allTags[tag] = 1 ;
+						}
+						
+					}
+				}
+			},
+			dataType: 'json'
+		});
+		
+		
 		
 		for(var i=0 ; i< docs.length ; i++ )
 		{
@@ -52,20 +91,67 @@ function() {
 		
 		return res ;
 	};
-	
+*/	
 	var load = function()	{
+	
+		var data = [] ;
+		
 		for(var i=0 ; i< docs.length ; i++ )
 		{
 			var doc = docs[i] ;
-		
-			var tags = JSON.parse(localStorage.getItem(index + ':' + doc.id)) ;
-		
-			if ( !tags ) continue ;
-			
-			doc.tags = tags ;
+			data.push(doc.id) ;
 		}
+		
+		$.ajax({
+			type: 'POST',
+			url: tagServerUrl + '&a=all',
+			data: { "tags":	JSON.stringify(data) },
+			success: function(data) {
+				if ( data.error ) {
+				}
+				else
+				{
+					var allTags = {} ;
+				
+					for( var i=0 ; i<data.length ; i++ )
+					{
+						var tags = data[i].tags ;
+						
+						if ( !tags ) continue ;
+						
+						docs[i].tags  = tags ;
+						
+						if ( !tags ) continue ;
+			
+						for(var j=0 ; j<tags.length ; j++ )
+						{
+							var tag = tags[j] ;
+							if ( allTags.hasOwnProperty(tag) ) 	allTags[tag] ++ ;
+							else allTags[tag] = 1 ;
+						}
+					}
+					
+					// make a sorted array with most common tags in the front
+		
+					var sortedTags = [] ;
+					
+					for (var tag in allTags)
+						sortedTags.push({tag: tag, count: allTags[tag]}) ;
+			
+					sortedTags.sort(function(a, b) { return b.count - a.count ; }) ;
+		
+					sortedTagList = [] ;
+		
+					for( var i=0 ; i<sortedTags.length ; i++ )
+					{
+						sortedTagList.push(sortedTags[i].tag) ;
+					}
+				}
+			},
+			dataType: 'json'
+		});
+		
 	} ;
-	
 
 	
 	var store = function(doc)
@@ -73,12 +159,13 @@ function() {
 		var tags = doc.tags ;
 		var docid = doc.id ;
 		
-		var key  = index + ":" + docid ;
+		var data = { "id": docid, "tags": JSON.stringify(tags)  } ;
 		
-		if ( tags && tags.length > 0 )				
-			localStorage[key] = JSON.stringify(tags) ;
-		else
-			localStorage.removeItem(key) ;
+		$.ajax({
+			type: 'GET',
+			url: tagServerUrl + '&a=store',
+			data: data
+		});
 	}
 	
 	// this is to download the list of tag assignements. Currently we do this be sending the content
@@ -136,7 +223,7 @@ function() {
 	return { 
 		docs: docs,
 		init: init, 
-		tags: getAllTags,
+		tags: sortedTagList,
 		store: store,
 		clear: clear
 	} ;

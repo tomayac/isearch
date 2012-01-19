@@ -1,5 +1,5 @@
 /**
- * HTML5 ✰ Boilerplate
+ * HTML5 Boilerplate
  */
 html,body,div,span,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,abbr,address,cite,code,del,dfn,em,img,ins,kbd,q,samp,small,strong,sub,sup,var,b,i,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,figcaption,figure,footer,header,hgroup,menu,nav,section,summary,time,mark,audio,video
 	{
@@ -225,7 +225,11 @@ a:hover {
 }
 
 #container {
-	max-width: 920px;
+	/**
+	 * Triantafillos: changed max-width from 920 to 1240px 
+	 * for better look on WXGA screens.
+	 */
+	max-width: 1240px;
 	margin: 0 auto;
 	position: relative;
 }
@@ -400,7 +404,7 @@ nav {
 	position: relative;
 }
 
-#query input[type=submit] {
+#query input[type=button] {
 	display: block;
 	position: absolute;
 	top: 3px;
@@ -411,7 +415,7 @@ nav {
 	background-color: #e0e0e0;
 }
 
-#query input[type=submit]:hover {
+#query input[type=button]:hover {
 	background-color: #838383;
 	color: #fff;
 }

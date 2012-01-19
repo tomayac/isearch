@@ -75,7 +75,7 @@ function uploadPicture($name, $uploaddir, &$file, &$errors)
 	if ( !move_uploaded_file($_FILES[$name]['tmp_name'], $uploaddir . 'orig/' . $tmpfname) ||
 		 !createThumbnail($uploaddir . 'orig/' . $tmpfname, $uploaddir . 'thumb/' . $tmpfname, $thumbLarge, $thumbLarge )			 )
 	{
-		$errors[$name] = "Error uploading file" ;
+		$errors['error'] = "Error uploading file" ;
 		return false ;
 	}
 
@@ -104,7 +104,7 @@ function uploadFile($name, $uploaddir, &$file, &$errors)
 		
 	if ( !move_uploaded_file($_FILES[$name]['tmp_name'], $uploaddir . 'orig/' . $tmpfname) 	 )
 	{
-		$errors[$name] = "Error uploading file" ;
+		$errors['error'] = "Error uploading file" ;
 		return false ;
 	}
 
@@ -120,10 +120,20 @@ function uploadFile($name, $uploaddir, &$file, &$errors)
 	
 }
 
+session_start() ;
+
+header('Content-Type: application/json; charset=utf8');
+
+if( !isset($_SESSION['query']) ) 
+{
+	$_SESSION['query'] = array( "items" => array() ) ;
+}
+
 $localFile = null ;
 $errors = array() ;
 $uploadurl = "http://vision.iti.gr/sotiris/isearch/" ;
 $uploaddir = "tmp/uploads/" ; // local folder to store files 
+$fileinfo = null ;
 
 if( isset($_FILES['files']) && !empty($_FILES['files']['name']))  // file upload
 {
@@ -132,20 +142,30 @@ if( isset($_FILES['files']) && !empty($_FILES['files']['name']))  // file upload
 	if ( $_FILES['files']['size'] > 2000000000 ) // file size check
 	{
 			
-		$errors['files'] =  "$fileName: the maximum upload size is set to 2MB!";
-		exit ;
+		$errors['error'] =  "$fileName: the maximum upload size is set to 2MB!";
+		echo json_encode($errors) ;
 	}	
 	
 	if( eregi('image/', $_FILES['files']['type']) ) // if it is a picture
 	{
 		if ( !uploadPicture("files", $uploaddir, $localFile, $errors)  )
 		{
-			exit ;
+			echo json_encode($errors) ;
 		}
 		else
 		{
 			$url = $uploadurl .  $uploaddir . 'orig/' . $localFile ;
-			echo '{ "type": "' . $_FILES['files']['type'] . '", "originPath": "' . $_FILES['files']['name'] . '", "path":"' . $url . '" }' ;
+			
+			// Probably another field is needed for thumbnails or previews.
+			$fileInfo = array("type" => $_FILES['files']['type'], "subtype" => "image", 
+				"originPath" => $_FILES['files']['name'], "path" => $url ) ;
+				
+			echo json_encode($fileInfo) ;
+			
+			$fileInfo['localFileName'] = 'orig/' . $localFile ;
+			
+			$_SESSION['query']['items'][] = $fileInfo ;
+			
 		
 		}
 	
@@ -154,13 +174,19 @@ if( isset($_FILES['files']) && !empty($_FILES['files']['name']))  // file upload
 	{
 		if ( !uploadFile("files", $uploaddir, $localFile, $errors) )
 		{
-			exit ;
+			echo json_encode($errors) ;
 		}
 		else
 		{
 			$url = $uploadurl .  $uploaddir . 'orig/' . $localFile ;
-			echo '{ "type": "' . $_FILES['files']['type'] . '", "originPath": "' . $_FILES['files']['name'] . '", "path":"' . $url . '" }' ;
-
+			
+			$fileInfo = array("type" => $_FILES['files']['type'], "originPath" => $_FILES['files']['name'], "path" => $url ) ;
+									
+			echo json_encode($fileInfo) ;
+			
+			$fileInfo['localFileName'] = 'orig/' . $localFile ;
+			
+			$_SESSION['query']['items'][] = $fileInfo ;
 		}		
 	
 	}
@@ -188,9 +214,18 @@ else if ( isset($_POST['canvas']) ) // handle inline images from canvas
 	
 	$url = $uploadurl .  $uploaddir . 'orig/' . $tmpfname ;
 	
-	echo '{ "type": "' . $mime . '", "subtype":"' . $subtype . '", "originPath": "' . $origName . '", "path":"' . $url . '" }' ;
+	$fileInfo = array("type" => $mime, "subtype" => $subtype, "originPath" => $origName, "path" => $url ) ;
+			
+	echo json_encode($fileInfo) ;
+	
+	$fileInfo['localFileName'] = 'orig/' . $tmpfname ;
+			
+	$_SESSION['query']['items'][] = $fileInfo ;
 }
 	
-
+if ( $fileinfo && $fileinfo['subtype'] == 'image' )
+{
+	// call low level descriptor extraction
+}
 
 ?>

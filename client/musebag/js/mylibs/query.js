@@ -1,4 +1,4 @@
-define("mylibs/query", [], function() {
+define("mylibs/query", ["mylibs/config",], function(config) {
   
   var getQueryItems = function() {
     
@@ -89,7 +89,7 @@ define("mylibs/query", [], function() {
     return queryJson;
   };
   
-  var submit = function() {
+  var submit = function(callback) {
     
     var query = getQueryItems();
     
@@ -99,7 +99,8 @@ define("mylibs/query", [], function() {
       //Send it to the server
       $.ajax({
         type: "POST",
-        url: "query",
+		crossDomain: true,
+        url:  config.constants.queryFormulatorUrl || 'query',
         data: JSON.stringify(query),
         success: function(data) {
           //parse the result
@@ -112,8 +113,12 @@ define("mylibs/query", [], function() {
           
           if(data.error) {
             console.log("Error during submitting query: " + data.error);
+			
+			callback(false, data) ;
           } else {
             console.log("Search query submitted.");
+			
+			callback(true, data) ;
           }
         },
         dataType: "text",

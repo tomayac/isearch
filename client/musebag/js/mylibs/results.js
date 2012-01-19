@@ -7,9 +7,14 @@ define("mylibs/results",
   //Private variable to hold the results
   var jsonData = null;
   
-  var display = function(query){
+  var display = function(queryOrResults){
     init();
-    fetch(query);
+		
+    if ( typeof(queryOrResults) == 'string' ) fetch(queryOrResults);
+	else {
+		store(queryOrResults) ;
+		visualize() ;
+	}
     attachEvents();
   };
 

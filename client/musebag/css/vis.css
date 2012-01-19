@@ -1422,6 +1422,18 @@ div.jqmNotice .jqmClose {
 	background-image: url("../img/ui-icon-media-image.png") !important;
 }
 
+.ui-icon-sortby-relevance {
+	background-image: url("../img/ui-icon-sortby-relevance.png") !important;
+}
+
+.ui-icon-sortby-time {
+	background-image: url("../img/ui-icon-sortby-time.png") !important;
+}
+
+.ui-icon-sortby-location {
+	background-image: url("../img/ui-icon-sortby-location.png") !important;
+}
+
 .ui-button-text {
     line-height: 1.0;
 	font-size: 10px;

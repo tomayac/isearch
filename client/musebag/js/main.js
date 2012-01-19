@@ -79,39 +79,65 @@ require(["jquery",
           //hack to hardcode query parameters
       		if ( typeof (__queryParams) != 'undefined'  )
       		{
-      			results.display();
+      			results.display('');
       		}
       		else
       		{
+			
+			  /**
+      		   * Triantafillos:
+      		   * Override the form submit event, so that in case the user
+      		   * enters text and presses "Enter", then the query is not
+      		   * submitted, only the text is tokenized, so the user can 
+      		   * continue entering query tokens. The query will be
+      		   * submitted only by clicking on the query-submit button.
+      		   */
+      		  $('#query').live('submit', function(e) {
+      		    e.preventDefault();
+      		    var searchQuery = $(".token-input-list-isearch li input").val();
+      		    //Tokenize text input
+      		    if (searchQuery) {
+      		      $("#query-field").tokenInput('add',{id:searchQuery,name:searchQuery});
+      		    }
+      		      return false;
+      		  });
 		 
-            //Page behaviour when the query is submitted
-            $( "#query-submit").click(function (e) {
-      
-              //prevent the page to reload
-              e.preventDefault() ;
-              
-              var result = query.submit();
-              
-              if (result) { 
-                //Collapses the menu
-                menu.collapse();
-      
-                //Remove the tags
-                $(".tags").hide();
-                //Remove the autosuggestions
-                $(".token-input-dropdown-isearch").hide();
-      
-                //Displays the results
-                console.log(result);
-                //Dummy result display
-                results.display('chair');
-      
-              } else {
-                alert('woops! No query!');
-              }
-              
-              return false;
-            }); 
+				//Page behaviour when the query is submitted
+				$( "#query-submit").click(function (e) {
+		  
+					//prevent the page to reload
+					e.preventDefault() ;
+				  
+					// Sotiris: submit takes callaback function
+					query.submit( 
+						function(result, data) 
+						{
+							if ( result )
+							{
+								//Collapses the menu
+								menu.collapse();
+		  
+								//Remove the tags
+								$(".tags").hide();
+								//Remove the autosuggestions
+								$(".token-input-dropdown-isearch").hide();
+		  
+								//Displays the results
+								//console.log(result);
+						
+								results.display(data) ;
+							
+							//Dummy result display
+							//  results.display('chair');
+							}
+							else {
+								alert('woops! No query!');
+							}
+						}
+					) ;
+				  
+				return false;
+				}); 
       		}
         }); //end document.ready()
       }); //end anonymous function     

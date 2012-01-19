@@ -50,8 +50,8 @@
 	<div id="settings">
 		<span id="login-status">Hello Guest</span> 
 		<ul class="clearfix">
-		  <li id="button-login-settings"><a href="#">Login</a></li>
-		  <li id="button-global-settings"><a href="#"><img src="img/settings.png" height="30" alt="Settings" title="General search settings"></a></li>
+		  <li id="button-login-settings"><a href="javascript:void(0)">Login</a></li>
+		  <li id="button-global-settings"><a href="javascript:void(0)"><img src="img/settings.png" height="30" alt="Settings" title="General search settings"></a></li>
 		</ul>  
 	</div>
 	<div class="settings-panel" id="login-settings">
@@ -77,7 +77,7 @@
         <label for="max-num-results">Size of result</label> 
         <input type="text" id="max-num-results" size="8" />
       </section>
-
+<!--
       <section class="setting">
         <label for="icon-size">Icon size</label> <select id="icon-size">
           <option value="16">16</option>
@@ -96,7 +96,7 @@
           <option value="hpanel">Hierarchy Panels</option>
         </select>
       </section>
-
+-->
     </form>
   </div>
   <div class="settings-panel" id="messages">
@@ -112,8 +112,9 @@
 			<div id="cofind"></div>
 
 			<form id="query" action="#" method="post">
-				<input type="text" name="query" id="query-field" /> <input
-					type="submit" name="submit" id="query-submit" value=">" />
+				<input type="text" name="query" id="query-field" />
+				<input type="button" name="query-submit" id="query-submit" value=">" />
+				<input type="submit" style="visibility:hidden;" />
 			</form>
 
 			<nav class="query-composition">
@@ -274,6 +275,7 @@
 	</div>
 
 	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=true&amp;v=3.2"></script>
+	<script type="text/javascript" src="js/mylibs/local.js"></script>
 	<!-- All the script dependancies will be managed with requireJS
        More info? Check http://requirejs.org -->
   <script data-main="js/main" src="js/libs/require-jquery.js"></script>     

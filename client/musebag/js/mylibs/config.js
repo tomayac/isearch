@@ -1,6 +1,9 @@
-define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/mylibs/visualization/DefaultThumbRenderer.js"],
-  function(tags, cofind, profile) {
+//define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/mylibs/visualization/DefaultThumbRenderer.js"],
+//  function(tags, cofind, profile) {
     
+define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualization/DefaultThumbRenderer.js"],
+  function(tags, profile) {
+
     var constants = {
       //Menu parameters
       slideUpAnimationTime: 200,
@@ -8,12 +11,13 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/
       menuWidth: 470, //cf style.css for more explanations
 
       //Query parameters
-      maxNumResults: 100,
-      clusterType: '3D',
-      clusters0: 5,
-      clusters1: 3, 
-      trans: "rand", //Can be "lle" or "rand" 
-      outFormat: "out",
+	  
+	  queryOptions: {
+		maxNumResults: 100,
+		clusters0: 5,
+		clusters1: 3, 
+		trans: "rand", //Can be "lle" or "rand" 
+      },
 
       //Visualization parameters  
   	  visOptions: {
@@ -76,7 +80,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/
       var msgHtml = '<p class="' + type + '">' + msg + '</p>' + actionContent;
       $("#messages").html(msgHtml);
       if(!modal) {
-        $("#messages").show(200).delay(3000).hide(200);
+        $("#messages").show(200).delay(1000).hide(200);
       } else {
         $("#messages").show(200);
       }
@@ -121,25 +125,34 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/
     var initSettings = function() {
       
       // initialize settings from local configuration if any 
-      /*if(localConfig !== undefined) {
+      if(localConfig !== undefined) {
         if(typeof(localConfig) === "function") {
           localConfig(constants);
         }
-      }*/
-	  
+      }
+	
+	// This should be updated. Visualisation options do not need to be in the setup menu. Only serialize/desierialize the constants.visOptions object
+	// to the user profile. The settings menu should contain query specific options such as the number of results, the type of clustering algorithm to 
+	// apply, the transformation algorithm, the number of clusters ...
+	
       var setForm = function() {
         //Initialize the form with the default values
         panels.settings.find("#max-num-results")
-            .val(constants.maxNumResults);
+            .val(constants.queryOptions.maxNumResults);
+/*			
         panels.settings.find("#icon-size option[value=" + constants.visOptions.thumbOptions.thumbSize + "]")
             .attr('selected','selected');
         panels.settings.find("#visualization-method option[value=" + constants.visOptions.method + "]")
             .attr('selected','selected');
+*/			
       };
       
+	  var profileSettingsUrl = constants.userProfileServerUrl || "profile/" ;
+	  profileSettingsUrl += "Settings" ;
+	  
       $.ajax({
         type: "GET",
-        url: "profile/Settings",
+        url: profileSettingsUrl,
         success: function(data) {
           data = JSON.parse(data);
           if(data.Settings) {
@@ -149,6 +162,8 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/
               set('maxNumResults', data.maxResults);
               panels.settings.find("#max-num-results").val(data.maxResults);
             }
+			
+			/*
             if(data.thumbSize) {
               set('visOptions.thumbOptions.thumbSize', data.thumbSize);
               panels.settings.find("#icon-size option[value=" + data.thumbSize + "]").attr('selected','selected');
@@ -157,6 +172,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/
               set('visOptions.method', data.method);
               panels.settings.find("#visualization-method option[value=" + data.method + "]").attr('selected','selected');
             }
+			*/
           } else {
             //store the basic settings in the session initially if there is no setting data
             handleSettingsSave(true);
@@ -189,7 +205,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/
          messageCallback : sendNotifyMessage  
       };
       
-      cofind.setup(cofindOptions);
+  //?    cofind.setup(cofindOptions);
       getUserTags();
     };
     
@@ -210,7 +226,9 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/
       var ow = overwrite || false;
       
       var mr = parseInt(panels.settings.find("#max-num-results").val());
-      var ts = parseInt(panels.settings.find("#icon-size option:selected").val());
+    
+	/*
+	var ts = parseInt(panels.settings.find("#icon-size option:selected").val());
       var vm = panels.settings.find("#visualization-method option:selected").val();
       var ct = panels.settings.find("#audio-cluster-type").val() !== undefined ? 'audio' : '3D';
 
@@ -222,20 +240,25 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/
       {
         return;
       }  
-
-      set('maxNumResults', mr);
-      set('visOptions.thumbOptions.thumbSize', ts);
-      set('visOptions.method', vm);
-      set('clusterType', ct);
+*/
+	  if ( constants.queryOptions.maxNumResults == mr ) return ;
+	  
+      set('queryOptions.maxNumResults', mr);
+//      set('visOptions.thumbOptions.thumbSize', ts);
+//      set('visOptions.method', vm);
+//     set('clusterType', ct);
       
       var postData = {
-          data : '{"maxResults" : ' + mr + ', "clusterType" : "' + ct + '", "thumbSize" : ' + ts + ', "method" : "' + vm + '"}'
+          data : {"maxResults" :  mr /*, "clusterType" : ct , "thumbSize" : ts , "method" : vm */ }
       };
       
+	  var profileSettingsUrl = constants.userProfileServerUrl || "profile/" ;
+	  profileSettingsUrl += "Settings" ;
+	  
       //Send it to the server
       $.ajax({
         type: "POST",
-        url: "profile/Settings",
+        url: profileSettingsUrl,
         data: JSON.stringify(postData),
         success: function(data) {
           //parse the result
@@ -262,7 +285,8 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/
     
     var handleLogin = function() {
       
-      var serverURL = "login";        
+      var serverURL = constants.userLoginServerUrl || "login";        
+	  
       var postData = {email: panels.login.find("#email").val() || '',
                          pw: panels.login.find("#pw").val()    || ''};
       
@@ -296,8 +320,8 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/
     };
     
     var handleLogout = function() {
-      var serverURL = "login";    
-      
+       var serverURL = constants.userLoginServerUrl || "login";       
+	   
       //Send it to the server
       $.ajax({
         type: "DELETE",
@@ -319,8 +343,11 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/
 
     var initPanel = function() {
       
-      initSettings();
-      
+	  initSettings(); 
+	  
+	  // basically pass the url of the profile server 
+	  profile.init(constants) ;
+	  
       panels.messages = $("#messages");
       
       panels.settings = $("#global-settings");
@@ -341,7 +368,11 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/
         event.stopPropagation();
       });
       panels.settings.click(function(event) {
-        event.preventDefault();
+    	/**
+    	 * Triantafillos: event.preventDefault() breaks checkbox 
+    	 * functionality on global settings.
+    	 */ 
+//        event.preventDefault();
         event.stopPropagation();
       });
       
