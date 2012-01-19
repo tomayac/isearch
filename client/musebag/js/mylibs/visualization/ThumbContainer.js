@@ -592,7 +592,7 @@ p.createThumbnail = function(i, x, y)
 			
 			var popupDiv = $('<div/>', { id: "tags-popup", "class": "tag-editor", title: "Add/Edit Tags"} ) ;
 			
-			var tagEditor = new TagEditor(popupDiv, allTags, that.ctx.tagManager.tags()) ;
+			var tagEditor = new TagEditor(popupDiv, allTags, that.ctx.tagManager.tags) ;
 						
 			$(popupDiv).dialog( { 
 				close: function(event, ui) 	{ // we will be here when the user closes the tag editor				

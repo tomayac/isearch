@@ -37,7 +37,7 @@ if ( isset($_GET['mode']) )
 				else
 				{
 					$row = mysql_fetch_assoc($result);
-			
+		
 					$_SESSION['user'] = array("ID" => $row['ID'], "Email" => $row["EMAIL"], "Settings" => json_decode($row['PROFILE'], true) ) ;
 					
 					echo json_encode($_SESSION['user']) ;
@@ -63,14 +63,16 @@ if ( isset($_GET['mode']) )
 				if ( isset($_SESSION['user']) )
 				{	
 					$data = json_decode( $HTTP_RAW_POST_DATA, true) ;
-					
+										
 					$_SESSION['user']['Settings'] = $data['data'] ;
 					
-					echo $data['data'] ;
+					$edata = json_encode($data['data']) ;
+					
+					echo $edata ;
 					
 					$db = connectDb() ;
 					
-					$sql = "UPDATE `users` SET PROFILE = '" . json_encode($data['data']) . "' WHERE ID = '" . $_SESSION['user']['ID']  . "';" ;
+					$sql = "UPDATE `users` SET PROFILE = '" . $edata . "' WHERE ID = '" . $_SESSION['user']['ID']  . "';" ;
 					
 					$result = mysql_query($sql, $db) ;
 				
@@ -91,6 +93,71 @@ if ( isset($_GET['mode']) )
 			else echo '{}' ;
 		}
 	}
+	else if ( $_GET['mode'] == 'tags' )
+	{
+		$index = $_GET['index'] ;
+		
+		if ( $_GET['a'] == 'all' )
+		{
+			$userid = 0 ;
+			if ( isset($_SESSION['user']) ) $userid = $_SESSION['user']['ID'] ;
+		
+			$db = connectDb() ;
+					
+			$sql = "SELECT * FROM `tags` WHERE USERID = '$userid' AND IDX = '$index' AND DOCID = " ;
+		
+			$data = json_decode( $_POST['tags'] ) ;
+		
+			$docs = array() ;
+		
+			foreach ( $data as $docid )
+			{
+				$sqls = $sql . "'$docid'" ;
+					
+				$result = mysql_query($sqls, $db) ;
+			
+				$row = mysql_fetch_assoc($result) ;
+			
+				if ( mysql_num_rows($result) == 0 )
+					$docs[] = array("id" => $docid, "tags" => array()) ;
+				else
+				{
+					$stags = preg_split("/#/", $row["TAGS"]) ;
+				
+					$docs[] = array("id" => $docid, "tags" => $stags) ;
+				}
+			}
+
+			echo json_encode($docs) ;
+		}
+		else if ( $_GET['a'] == 'store' )
+		{
+			$userid = 0 ;
+			if ( isset($_SESSION['user']) ) $userid = $_SESSION['user']['ID'] ;
+		
+			$db = connectDb() ;
+		
+			$docid = $_GET['id'] ;
+			$tags = json_decode($_GET['tags']) ;
+			
+			if ( empty($tags) )
+			{
+				$sql = "DELETE FROM `tags` WHERE USERID = '$userid' AND IDX = '$index' AND DOCID = '$docid'" ;
+				$result = mysql_query($sql, $db) ;
+			}
+			else
+			{
+				$stags = mysql_real_escape_string(implode("#", $tags)) ;
+				
+				$sql = "INSERT INTO `tags` (USERID, IDX, DOCID, TAGS) VALUES ( '$userid', '$index', '$docid', '$stags' ) ON DUPLICATE KEY UPDATE TAGS='$stags';" ;
+				$result = mysql_query($sql, $db) ;
+			}
+				
+		
+		}
+	}
+		
+		
 	
 	
 }

@@ -93,7 +93,7 @@ define("mylibs/visualization/FilterBar",  [ ],
 		sortbyButtons.buttonset() ;
 		
 		// draw tag filter bar
-		var tags = currentTags = tagManager.tags() ;
+		var tags = currentTags = tagManager.tags ;
 		
 		tagsDiv = $('<div/>', {"class": "formitem", css: { "display": "table-cell", "vertical-align": "middle"}}).appendTo(ele) ;
 		$('<span/>', { css: { "display": "table-cell", "vertical-align": "middle", "padding-right": "5px"},  text: "Tags:" } ).appendTo(tagsDiv) ;

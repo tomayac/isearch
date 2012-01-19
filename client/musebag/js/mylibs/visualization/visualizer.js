@@ -76,7 +76,7 @@ define("mylibs/visualization/visualizer",
 			return ;
 		}
 		
-		tagManager.init(results, "index") ;
+		tagManager.init(results, config.constants) ;
 		
 		ctx.tagManager = tagManager ;
 		ctx.filterBar = filterBar ;

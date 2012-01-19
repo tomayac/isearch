@@ -11,12 +11,13 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
       menuWidth: 470, //cf style.css for more explanations
 
       //Query parameters
-      maxNumResults: 100,
-      clusterType: '3D',
-      clusters0: 5,
-      clusters1: 3, 
-      trans: "rand", //Can be "lle" or "rand" 
-      outFormat: "out",
+	  
+	  queryOptions: {
+		maxNumResults: 100,
+		clusters0: 5,
+		clusters1: 3, 
+		trans: "rand", //Can be "lle" or "rand" 
+      },
 
       //Visualization parameters  
   	  visOptions: {
@@ -79,7 +80,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
       var msgHtml = '<p class="' + type + '">' + msg + '</p>' + actionContent;
       $("#messages").html(msgHtml);
       if(!modal) {
-        $("#messages").show(200).delay(3000).hide(200);
+        $("#messages").show(200).delay(1000).hide(200);
       } else {
         $("#messages").show(200);
       }
@@ -137,11 +138,13 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
       var setForm = function() {
         //Initialize the form with the default values
         panels.settings.find("#max-num-results")
-            .val(constants.maxNumResults);
+            .val(constants.queryOptions.maxNumResults);
+/*			
         panels.settings.find("#icon-size option[value=" + constants.visOptions.thumbOptions.thumbSize + "]")
             .attr('selected','selected');
         panels.settings.find("#visualization-method option[value=" + constants.visOptions.method + "]")
             .attr('selected','selected');
+*/			
       };
       
 	  var profileSettingsUrl = constants.userProfileServerUrl || "profile/" ;
@@ -159,6 +162,8 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
               set('maxNumResults', data.maxResults);
               panels.settings.find("#max-num-results").val(data.maxResults);
             }
+			
+			/*
             if(data.thumbSize) {
               set('visOptions.thumbOptions.thumbSize', data.thumbSize);
               panels.settings.find("#icon-size option[value=" + data.thumbSize + "]").attr('selected','selected');
@@ -167,6 +172,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
               set('visOptions.method', data.method);
               panels.settings.find("#visualization-method option[value=" + data.method + "]").attr('selected','selected');
             }
+			*/
           } else {
             //store the basic settings in the session initially if there is no setting data
             handleSettingsSave(true);
@@ -220,7 +226,9 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
       var ow = overwrite || false;
       
       var mr = parseInt(panels.settings.find("#max-num-results").val());
-      var ts = parseInt(panels.settings.find("#icon-size option:selected").val());
+    
+	/*
+	var ts = parseInt(panels.settings.find("#icon-size option:selected").val());
       var vm = panels.settings.find("#visualization-method option:selected").val();
       var ct = panels.settings.find("#audio-cluster-type").val() !== undefined ? 'audio' : '3D';
 
@@ -232,14 +240,16 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
       {
         return;
       }  
-
-      set('maxNumResults', mr);
-      set('visOptions.thumbOptions.thumbSize', ts);
-      set('visOptions.method', vm);
-      set('clusterType', ct);
+*/
+	  if ( constants.queryOptions.maxNumResults == mr ) return ;
+	  
+      set('queryOptions.maxNumResults', mr);
+//      set('visOptions.thumbOptions.thumbSize', ts);
+//      set('visOptions.method', vm);
+//     set('clusterType', ct);
       
       var postData = {
-          data : '{"maxResults" : ' + mr + ', "clusterType" : "' + ct + '", "thumbSize" : ' + ts + ', "method" : "' + vm + '"}'
+          data : {"maxResults" :  mr /*, "clusterType" : ct , "thumbSize" : ts , "method" : vm */ }
       };
       
 	  var profileSettingsUrl = constants.userProfileServerUrl || "profile/" ;
