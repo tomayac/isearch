@@ -103,10 +103,10 @@ define("mylibs/query", [], function() {
         data: JSON.stringify(query),
         success: function(data) {
           //parse the result
+          console.log(data);
           try {
             data = JSON.parse(data);
           } catch(e) {
-            console.log(data);
             data = {error: "The server gave me an invalid result."};  
           }
           
