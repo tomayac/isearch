@@ -181,6 +181,9 @@ define("mylibs/menu",
       });
     };
 
+    /**
+     * Triantafillos: find real location with HTML5 geo-location API.
+     */
     var attachGeolocationEvents = function() {
       $('.panel.geolocation button').click(function(){
         console.log('Button geolocation pressed');
@@ -188,9 +191,23 @@ define("mylibs/menu",
         var pictureIcon = $('nav li[data-mode="geolocation"]');
         pictureIcon.addClass('uploading');
 
-        //N.B: COMPLETELY FAKE!! 
-        var location = '50.985234 11.043992';
-        $("#query-field").tokenInput('add',{id:"geo",name:'<img src="img/fake/fake-geolocation.jpg" title="' + location + '" class="Location" data-mode="Image" />'});
+        // default location (Thessaloniki, GR)
+        var location = "40.639350 22.944607";
+        navigator.geolocation.getCurrentPosition(
+        		
+          function(position) {
+        	location =  position.coords.latitude+" "+position.coords.longitude;
+        	$("#query-field").tokenInput('add',{id:"geo",name:'<img src="img/fake/fake-geolocation.jpg" title="' + location + '" class="Location" data-mode="Image" />'});
+        	console.log(location);
+          },
+          
+          function(error) {
+        	alert("Error getting your current location");
+          },
+          
+          {enableHighAccuracy: true}
+        );
+        
         //Remove the "uploading style" | Note: this won't be visible, hopefully
         pictureIcon.removeClass('uploading');
 
@@ -511,6 +528,14 @@ define("mylibs/menu",
     var collapse = function() {
       $(".query-composition").hide();  
       $("header h1").hide();
+      /**
+       * Triantafillos: hide panel in case it was open.
+       */ 
+      $(".panel").hide();
+      /** Triantafillos: added top property so that the query form 
+  	   *  on top of visualization is not cropped by the settings bar.
+  	   */
+      $("#query").css("top", "0.85em");
       if($('#restart').length == 0) {
         $(document.createElement('a'))
             .html('Restart from scratch')
