@@ -47,7 +47,7 @@ define("mylibs/visualization/FilterBar",  [ ],
 			item.click(function() {
 						
 				filter() ;
-				callback() ;
+				rerank() ;
 					
 			});
 		
@@ -67,7 +67,8 @@ define("mylibs/visualization/FilterBar",  [ ],
 			
 		item.click(function() {
 			filter() ;
-			callback() ;
+			rerank() ;
+			
 		});
 		
 		item = $("<input/>", { type: "radio", name:"sortby", id: "sortby-location"  }).appendTo(sortbyButtons) ;
@@ -77,7 +78,7 @@ define("mylibs/visualization/FilterBar",  [ ],
 			
 		item.click(function() {
 			filter() ;
-			callback() ;
+			rerank() ;
 		});
 		
 		item = $("<input/>", { type: "radio", name:"sortby",  id: "sortby-time"  }).appendTo(sortbyButtons) ;
@@ -87,7 +88,8 @@ define("mylibs/visualization/FilterBar",  [ ],
 			
 		item.click(function() {
 			filter() ;
-			callback() ;
+			rerank() ;
+
 		});
 		
 		sortbyButtons.buttonset() ;
@@ -107,9 +109,9 @@ define("mylibs/visualization/FilterBar",  [ ],
 				if ( this.tags[tag] == 2 ) 	filterTags.push(tag) ;
 			}
 			
+			
 			filter() ;
-									
-			callback() ;		
+			rerank() ;
 			
 		}) ;
 		
@@ -159,6 +161,64 @@ define("mylibs/visualization/FilterBar",  [ ],
 		
 		
 	};
+	
+	var geodist = function(lat1, lon1, lat2, lon2)
+	{
+		var R = 6371; // km
+		var dLat = (lat2-lat1) *  Math.PI / 180;
+		var dLon = (lon2-lon1) *  Math.PI / 180;
+		var lat1 = lat1 *  Math.PI / 180;
+		var lat2 = lat2 *  Math.PI / 180;
+
+		var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+			Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
+		var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+		var d = R * c;
+		
+		return d ;
+	
+	};
+	
+	var rerank = function()
+	{
+		var btn =  $('[name=sortby]:checked');
+		var sortby = btn.attr('id').substr(7) ;
+		
+		if ( sortby == 'time' ) {
+			docs.sort(function(a, b) { 
+				return new Date(b.rw.time.dateTime) - new Date(a.rw.time.dateTime)  ; 
+			}) ;
+			callback() ;
+		}
+		else if ( sortby == 'relevance' ) {
+			docs.sort(function(a, b) { 
+				return b.score - a.score  ; 
+			}) ;
+			callback() ;
+		}
+		else if ( sortby == 'location' )
+		{
+			if ( navigator.geolocation )
+			{
+				navigator.geolocation.getCurrentPosition(function(position) {
+					var lat = position.coords.latitude ;
+					var lon = position.coords.longitude ;
+				
+					docs.sort(function(a, b) { 
+						var distb = geodist(b.rw.pos.coords.lat, b.rw.pos.coords.lon, lat, lon) ;
+						var dista = geodist(a.rw.pos.coords.lat, a.rw.pos.coords.lon, lat, lon) ;
+						return distb - dista  ; 
+					}) ;
+					
+					callback() ;
+					
+				}) ;
+			}
+		
+		}
+			
+	
+	} ;
 	
 	var modalities = function()
 	{

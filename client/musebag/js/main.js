@@ -75,6 +75,15 @@ require(["jquery",
           $('.panel footer a').click(function(){
             $('.panel').slideUp(200);
           });
+		  
+		  // adding a global loader animation for long processes
+		  loader = $('<div class="ui-loader" style="top: 313.5px;"><span class="ui-icon-loading"></span><h1>loading</h1></div>').appendTo('#main') ;
+		  
+			loader.ajaxStart(function() {
+				$(this).show();
+			}).ajaxStop(function() {
+				$(this).hide();
+			}); 
 
           //hack to hardcode query parameters
       		if ( typeof (__queryParams) != 'undefined'  )
@@ -105,11 +114,26 @@ require(["jquery",
 				//Page behaviour when the query is submitted
 				$( "#query-submit").click(function (e) {
 		  
+					var resubmit = $(this).hasClass('resubmit') ;
+					if ( !resubmit ) $(this).addClass('resubmit') ;
+					
 					//prevent the page to reload
 					e.preventDefault() ;
-				  
-					// Sotiris: submit takes callaback function
-					query.submit( 
+					
+					var relevant = []  ;
+					
+					if ( resubmit ) // gother user relevance feedback from the current document list
+					{
+						var docs = results.get() ;
+						for(var i=0 ; i<docs.docs.length ; i++ )
+						{
+							if ( docs.docs[i].relevant == true )
+							relevant.push(docs.docs[i].id) ;
+						}
+					}
+				  					
+					// Sotiris: submit takes callaback function and a list of document id's that the user has marked as relevant
+					query.submit( relevant, 
 						function(result, data) 
 						{
 							if ( result )
@@ -123,8 +147,6 @@ require(["jquery",
 								$(".token-input-dropdown-isearch").hide();
 		  
 								//Displays the results
-								//console.log(result);
-						
 								results.display(data) ;
 							
 							//Dummy result display

@@ -519,7 +519,7 @@ p.createThumbnail = function(i, x, y)
 	// create the main thumbnail box
 	var imgOut = $('<div/>', { "class": "thumbnail", id: "thumb-" + i, css: {  overflow: "hidden", position: "absolute", width: this.thumbSize, height: this.thumbSize, left: x, top: y } }).appendTo(this.thumbView) ;
 	// create a place-holder for the "star" icon.
-	var trans = $('<div/>', { "class": "thumbnail-overlay", css: {  display: (item.relevant) ? "block" : "none" } }).appendTo(imgOut) ;
+	var trans = $('<div/>', { "class": "thumbnail-overlay", css: {  display: (item.doc.relevant) ? "block" : "none" } }).appendTo(imgOut) ;
 	
 	
 	
@@ -541,7 +541,7 @@ p.createThumbnail = function(i, x, y)
 	// if a click on the star remove relevance marker
 	trans.bind("click", function(e) {
 		var id = $(this).parent().attr('id').substr(6) ;
-		that.thumbs[id].relevant = false ;
+		that.thumbs[id].doc.relevant = false ;
 		$(this).hide() ;
 		e.stopImmediatePropagation() ;
 	}) ;
@@ -553,7 +553,7 @@ p.createThumbnail = function(i, x, y)
         'relevant': function(t) {
 			$(".thumbnail.selected", that.containerDiv).each( function(item) {
 				var id = $(this).attr('id').substr(6) ;
-				that.thumbs[id].relevant = !that.thumbs[id].relevant ;
+				that.thumbs[id].doc.relevant = !that.thumbs[id].doc.relevant ;
 				$(".thumbnail-overlay", this).toggle() ;
 			}) ;
 	    },
