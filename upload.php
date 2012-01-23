@@ -123,6 +123,9 @@ function uploadFile($name, $uploaddir, &$file, &$errors)
 session_start() ;
 
 header('Content-Type: application/json; charset=utf8');
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS, HEAD, PUT") ;
+header("Access-Control-Allow-Headers: Origin, Content-Type, Accept") ;
 
 if( !isset($_SESSION['query']) ) 
 {
