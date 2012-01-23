@@ -20,7 +20,7 @@ define("mylibs/results",
 
 	var fetch = function(query) 
 	{
-		var urlToFetch = "http://vision.iti.gr/sotiris/isearch/client/musebag/fetch.php";
+		var urlToFetch = "http://vision.iti.gr/sotiris/isearch/fetch.php";
 
 		if ( query ) __queryParams.q = query ;
 	
