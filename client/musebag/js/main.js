@@ -92,7 +92,6 @@ require(["jquery",
       		}
       		else
       		{
-			
 			  /**
       		   * Triantafillos:
       		   * Override the form submit event, so that in case the user
