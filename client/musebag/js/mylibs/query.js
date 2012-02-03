@@ -99,12 +99,12 @@ define("mylibs/query", ["mylibs/config",], function(config) {
       //Send it to the server
       $.ajax({
         type: "POST",
-		crossDomain: true,
+        crossDomain: true,
         url:  config.constants.queryFormulatorUrl || 'query',
         data: JSON.stringify(query),
         success: function(data) {
           //parse the result
-          console.log(data);
+          //console.log(data);
           try {
             data = JSON.parse(data);
           } catch(e) {
@@ -113,12 +113,10 @@ define("mylibs/query", ["mylibs/config",], function(config) {
           
           if(data.error) {
             console.log("Error during submitting query: " + data.error);
-			
-			callback(false, data) ;
+            callback(false, data) ;
           } else {
             console.log("Search query submitted.");
-			
-			callback(true, data) ;
+            callback(true, data) ;
           }
         },
         dataType: "text",

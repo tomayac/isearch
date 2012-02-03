@@ -346,7 +346,7 @@ define("mylibs/menu",
     var attachVideoEvents = function() {
     	
     	//Drag and Drop of files
-	    var handler = new filehandler.FileHandler('videoDrop',['webm','mp4', 'avi'],config.constants.fileUploadServer,getQueryItemCount());
+	    var handler = new filehandler.FileHandler('videoDrop',['webm','mp4','avi','ogv'],config.constants.fileUploadServer,getQueryItemCount());
 	    var videoIcon = $('nav li[data-mode="video"]');
 	    
 	    //Drop trigger for video upload
