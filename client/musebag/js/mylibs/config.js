@@ -1,8 +1,8 @@
-//define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/mylibs/visualization/DefaultThumbRenderer.js"],
-//  function(tags, cofind, profile) {
+define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/mylibs/visualization/DefaultThumbRenderer.js"],
+  function(tags, cofind, profile) {
     
-define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualization/DefaultThumbRenderer.js"],
-  function(tags, profile) {
+//define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualization/DefaultThumbRenderer.js"],
+//  function(tags, profile) {
 
     var constants = {
       //Menu parameters
@@ -11,12 +11,11 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
       menuWidth: 470, //cf style.css for more explanations
 
       //Query parameters
-	  
-	  queryOptions: {
-		maxNumResults: 100,
-		clusters0: 5,
-		clusters1: 3, 
-		trans: "rand", //Can be "lle" or "rand" 
+  	  queryOptions: {
+    		maxNumResults: 100,
+    		clusters0: 5,
+    		clusters1: 3, 
+    		trans: "rand" //Can be "lle" or "rand" 
       },
 
       //Visualization parameters  
@@ -74,13 +73,24 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
     };
     
     //Global message function
-    var sendNotifyMessage = function(msg,type,actionContent) {
+    //actionButton is used to add action buttons to messages,
+    //where a user should react to a message instead of just noticing it 
+    var sendNotifyMessage = function(msg,type,actionButton) {
+      //Set defaults
       var type = type || 'info';
-      var modal = actionContent ? true : false;
-      var msgHtml = '<p class="' + type + '">' + msg + '</p>' + actionContent;
+      var time = msg.length > 45 ? 3000 : 2000;
+      var modal = false;
+      var msgHtml = '<p class="' + type + '">' + msg + '</p>';
+      //Check for customizations
+      if(actionButton) {
+        modal = true;
+        msgHtml += actionButton;
+      }
+      //Make message visible
       $("#messages").html(msgHtml);
+      //Set its appearance time
       if(!modal) {
-        $("#messages").show(200).delay(1000).hide(200);
+        $("#messages").show(200).delay(time).hide(200);
       } else {
         $("#messages").show(200);
       }
@@ -95,7 +105,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
         //Ask for tag recommendations
         $.ajax({
           type: "GET",
-          url: "ptag/tagRecommendations?userID=" + userId,
+          url: "ptag/tagRecommendations?userId=" + userId,
           success: function(data) {
             data = JSON.parse(data);
 
@@ -130,7 +140,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
           localConfig(constants);
         }
       }
-	
+      
 	// This should be updated. Visualisation options do not need to be in the setup menu. Only serialize/desierialize the constants.visOptions object
 	// to the user profile. The settings menu should contain query specific options such as the number of results, the type of clustering algorithm to 
 	// apply, the transformation algorithm, the number of clusters ...
@@ -203,9 +213,9 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
          addWorkspaceTo  : '#container',
          panels          : panels,
          messageCallback : sendNotifyMessage  
-      };
+      };      
+      cofind.setup(cofindOptions);
       
-  //?    cofind.setup(cofindOptions);
       getUserTags();
     };
     
@@ -227,8 +237,8 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
       
       var mr = parseInt(panels.settings.find("#max-num-results").val());
     
-	/*
-	var ts = parseInt(panels.settings.find("#icon-size option:selected").val());
+      /*
+	    var ts = parseInt(panels.settings.find("#icon-size option:selected").val());
       var vm = panels.settings.find("#visualization-method option:selected").val();
       var ct = panels.settings.find("#audio-cluster-type").val() !== undefined ? 'audio' : '3D';
 
@@ -240,20 +250,20 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
       {
         return;
       }  
-*/
-	  if ( constants.queryOptions.maxNumResults == mr ) return ;
+	    */
+      if ( constants.queryOptions.maxNumResults == mr ) return ;
 	  
       set('queryOptions.maxNumResults', mr);
-//      set('visOptions.thumbOptions.thumbSize', ts);
-//      set('visOptions.method', vm);
-//     set('clusterType', ct);
+      //set('visOptions.thumbOptions.thumbSize', ts);
+      //set('visOptions.method', vm);
+      //set('clusterType', ct);
       
       var postData = {
           data : {"maxResults" :  mr /*, "clusterType" : ct , "thumbSize" : ts , "method" : vm */ }
       };
       
-	  var profileSettingsUrl = constants.userProfileServerUrl || "profile/" ;
-	  profileSettingsUrl += "Settings" ;
+  	  var profileSettingsUrl = constants.userProfileServerUrl || "profile/" ;
+  	  profileSettingsUrl += "Settings" ;
 	  
       //Send it to the server
       $.ajax({
@@ -343,10 +353,10 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
 
     var initPanel = function() {
       
-	  initSettings(); 
-	  
-	  // basically pass the url of the profile server 
-	  profile.init(constants) ;
+  	  initSettings(); 
+  	  
+  	  // basically pass the url of the profile server 
+  	  profile.init(constants) ;
 	  
       panels.messages = $("#messages");
       

@@ -20,7 +20,7 @@
 */
 
 define("mylibs/visualization/visualizer",
-    [	"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js",
+    [	"order!https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js",
 		"order!js/libs/slides.jquery.js",
 		"order!js/libs/jquery.mousewheel.js",
 		"order!js/mylibs/visualization/ContextMenu.js",
@@ -217,11 +217,7 @@ define("mylibs/visualization/visualizer",
 				<li id="tags">Edit tags</li>\
 				<li id="remove">Remove items</li>\
 			</ul>').appendTo(element) ;
-			
-			
-		var loader = $('<div class="ui-loader" style="top: 313.5px;"><span class="ui-icon-loading"></span><h1>loading</h1></div>').appendTo(element) ;
-
-	
+		
 	} ;
 
 	// redraw visualization area when some option has changed

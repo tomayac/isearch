@@ -536,12 +536,12 @@ define("mylibs/menu",
   	   *  on top of visualization is not cropped by the settings bar.
   	   */
       $("#query").css("top", "0.85em");
+       /** Triantafillos: restart button.
+  	   */
       if($('#restart').length == 0) {
-        $(document.createElement('a'))
-            .html('Restart from scratch')
-            .attr('href','')
-            .attr('id','restart')
-            .insertAfter('#query');
+        $("#query").append('<a href="#" id="restart">Start from scratch</a>');
+        $("#restart").button();
+        $("#restart").click(function(){window.location = "index.html";});
       }
     };
     

@@ -14,8 +14,8 @@ var port      = 8085;
 
 //
 //Create a node-static server to serve the current directory
-//
-var file = new(fileserve.Server)('/var/www/isearch/client/cofetch');   
+///var/www/isearch/client/cofetch
+var file = new(fileserve.Server)('../../client/cofetch');   
 
 http.createServer(function (request, response) {     
 	//Set response timeout to 5 min

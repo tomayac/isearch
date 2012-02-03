@@ -89,13 +89,16 @@ define("mylibs/query", ["mylibs/config",], function(config) {
     return queryJson;
   };
   
-  var submit = function(callback) {
+  var submit = function(relevant, callback) {
     
     var query = getQueryItems();
     
     if (query.fileItems.length > 0 || query.emotion != false || query.location != false) { 
       console.log('searching for query data: ');
       console.log(query);
+	
+	  query.relevant = relevant ;
+	  
       //Send it to the server
       $.ajax({
         type: "POST",

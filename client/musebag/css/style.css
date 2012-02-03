@@ -720,9 +720,8 @@ footer {
 }
 
 #restart {
-	text-align: right;
-	display: block;
-	padding-right: 5%;
+	float: right;
+	margin-right:4.75em;
 }
 
 /**

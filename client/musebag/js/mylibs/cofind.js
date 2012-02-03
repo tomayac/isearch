@@ -1,21 +1,25 @@
 /*
  *  CoFind Client
  */
-define("mylibs/cofind", ["libs/modernizr-2.0.min", "/nowjs/now.js"], function(){
-
+define("mylibs/cofind", ["libs/modernizr-2.0.min", "order!libs/jquery.hoverIntent.min", "/nowjs/now.js", "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js"], function(){
+  
   //Static HTML snippets for CoFind interface
   var buttonSnippet = '<li id="button-cofind-settings"><a href="#"><img src="img/collaborate.png" alt="Collaborate" title="Collaboration panel" style="max-height: 31px;"></a></li>';
-  var settingSnippet = '<div class="settings-panel" id="cofind-settings"><form method="post" action="#" class="clearfix"><p>Just enter the Email address of a friend with which you would like to share your results.</p><section><label for="email">Invite Email</label><input type="text" id="cofind-email" name="email" /></section></form></div>  ';
-  var generalSnippet = '<div class="bottom-overlay" id="cofind-resultbag"></div>';
+  var settingSnippet = '<div class="settings-panel" id="cofind-settings"><form method="post" action="#" class="clearfix"><section><label for="email">Invite a friend to collaborate:</label><input type="text" id="cofind-email" name="Email" value="Email" /></section></form></div>  ';
+  var generalSnippet = '<div class="bottom-overlay" id="cofind-resultbasket"><p>Your result basket is empty.<br/>Drop here any results you like to share.</p></div>';
   
   //RegEx for testing a valid email
   var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   //CoFind options
   var options = {};
-  //Indicates wether CoFind is connected
+  //Indicates whether CoFind is connected or not
   var online = false;
   //queue for CoFind functions which needs a real-time connection to the server 
   var callQueue = [];
+  //storage for last notification message
+  var lastMsg = {content: '', time: 0};
+  
+  var dummyCounter = 0;
   
   //Queues CoFind function calls and executes them as soon as now.js is connected to the server component of CoFind 
   var callFunction = function(func, args) {
@@ -38,15 +42,31 @@ define("mylibs/cofind", ["libs/modernizr-2.0.min", "/nowjs/now.js"], function(){
           now[func[0]].apply(this, func[1]);
         }
       });
+      //After executing all functions of queue, reset it
+      callQueue = [];
     }
   }; 
+  
+  //Helper function
+  var hasItem = function(value,key,items) {
+    var itemExists = false;
+    for(var index in items) {
+      var item = items[index];
+      if(value == item[key]) {
+        itemExists = true;
+        break;
+      }
+    }
+    return itemExists;
+  };
   
   //Registers a logged in user for the use of CoFind
   var registerUser = function(email) {
     
     if(re.test(email)) {
       console.log('Now.js register...');
-      callFunction('registerUser',[email]);
+      var groups = options.groups;
+      callFunction('registerUser',[email,groups]);
       return true;
     } else {
       return false;
@@ -81,19 +101,240 @@ define("mylibs/cofind", ["libs/modernizr-2.0.min", "/nowjs/now.js"], function(){
   
   //Fired when CoFind gets a real-time connection to the server via now.js  
   now.ready(function() {
-    console.log('nowjs connected...');
+    console.log('CoFind connected...');
     online = true;
     callFunction();
     
     now.core.socketio.on('disconnect', function () {
-      console.log('nowjs disconnected...');
+      console.log('CoFind disconnected...');
       online = false;
-    }); 
+      registerUser(options.user || '');
+    });   
+    
+    now.core.socketio.on('reconnect', function () {
+      console.log('CoFind reconnect...');    
+    });     
   });
   
   //Basic notification function for CoFind
   now.notify = function(message, type) {
-    options.messageCallback(message,type,false);
+    var time = Math.round(new Date().getTime() / 1000);
+    if(message != lastMsg.content || (message == lastMsg.content && (time - lastMsg.time) > 3)) {
+      options.messageCallback(message,type,false);
+      lastMsg.content = message;
+      lastMsg.time = time;
+    }
+  };
+  
+  //Add result basket function
+  now.addResultBasket = function() {
+    if($('#cofind-resultbasket').length < 1 && $(options.addWorkspaceTo)) {
+      $(options.addWorkspaceTo).append($(generalSnippet).css('bottom','-150px').animate({bottom: '-110px'},500));
+      
+      //register hover event and touch events for result basket
+      attachBasketEvents();
+    }
+  };
+  //Remove result basket function
+  now.removeResultBasket = function() {
+    if($('#cofind-resultbasket').length > 0) {
+      $('#cofind-resultbasket').remove();
+    }
+  };
+  
+  //Information update for user invitation auto-complete
+  now.updateUserList = function(users) {
+    var excludeIndex = users.indexOf(options.user);
+    users.splice(excludeIndex, 1);
+    $('#cofind-email').autocomplete({ 
+      source: users,
+      open: function() { 
+        $('.ui-autocomplete').width($('#cofind-email').width()+5);
+        $('.ui-autocomplete').removeClass('ui-corner-all');
+      }
+    });
+  };
+  
+  //Information update function for the members of the current session
+  now.updateGroupState = function(groupName,users) {
+    console.log('updateGroupState...');
+    
+    //if no group is provided remove all group sections
+    if(groupName === false) {
+      options.groups = [];
+      $('#cofind-settings .groupstatus').remove();
+      return;
+    }
+    
+    //save groupName in options
+    if(options.groups) {
+      if($.inArray(groupName, options.groups) == -1) {
+        options.groups.push(groupName);
+      }
+    } else {
+      options.groups = [groupName];
+    }
+    
+    //generate group status html
+    var stateHtml = '';
+    var groupId = groupName.replace('@','-').replace('.','-'); 
+    if(users) {
+      if(users.length > 0) {
+        stateHtml += '<section id="' + groupId + '" class="groupstatus"><h6>Your team mates in ' + groupName + ' <button class="textbutton" name="' + groupName + '" id="leave-' + groupId + '" title="Leave group">X</button></h6><ul>';
+        for(var index in users) {
+          var email = users[index];
+          stateHtml += '<li>' + email + '</li>';
+        }
+        stateHtml += '</ul></section>';
+      }
+    }
+    
+    //handle the appropriate group section and update the group status
+    if($('#' + groupId).length) {
+      $('#' + groupId).replaceWith(stateHtml);
+    } else {
+      $('#cofind-settings').append(stateHtml);
+    }
+    
+    //add the group delete event to the group leave buttons
+    $('#leave-' + groupId).on('click', { group : groupName }, function(event) {
+      console.log('leaveGroup clicked...');
+      //unregister user from CoFind group
+      callFunction('leaveGroup',[event.data.group]);
+    });
+  };
+  
+  //Result basket update function
+  now.updateResultBasket = function(resultBasket) {
+    console.log('updateResultBasket...');
+    
+    if(typeof resultBasket === "undefined" || resultBasket === null) {
+      return;
+    }    
+    
+    //Stuff for eye candy and visualization
+    var items = resultBasket.items;
+    var currentItems = $('#cofind-resultbasket .item').length;
+    var newItems = items.length;
+    var diff = newItems - currentItems;
+    //distance between items
+    var distance = 10;
+    //No changes, so nothing to do
+    if(diff == 0) {
+      return;
+    }  
+    
+    if(currentItems == 0 && newItems > 0) {
+      $('#cofind-resultbasket p').hide();
+    }
+    
+    //pop-up the result basket
+    $('#cofind-resultbasket').animate({
+      bottom: '-30px'
+    }, 500, function() {
+      // Animation complete.
+      // determine how close the items should be to each other
+      if(newItems > 4) {
+        distance = distance - ((newItems - 3) * 10);
+      }
+      
+      if(diff > 0) {
+        for(var index in items) {
+          var item = items[index];
+          //Array converting 
+          var tags = [];
+          for(var prop in item.tags)
+          {
+            tags.push(item.tags[prop]);
+          }
+          item.tags = tags;
+          if(currentItems > 0) {
+            //check if the current processed item is not in the list of existing items
+            if($('#cofind-resultbasket').has('#' + item.id).length < 1) {
+              //and then just append it and put an animation on it
+              $('#cofind-resultbasket').append($('<section class="item" id="' + item.id + '" title="' + item.tags.join(',') + '" style="opacity : 0;">' + item.html + '</section>').animate({'opacity': 1,'margin-right': distance}, 500));
+            };
+          } else {
+            $('#cofind-resultbasket').append($('<section class="item" id="' + item.id + '" title="' + item.tags.join(',') + '" style="opacity : 0;">' + item.html + '</section>').animate({'opacity': 1,'margin-right': distance}, 500));
+          }
+        }
+      } else {
+        //check which items to delete from the basket
+        $('#cofind-resultbasket .item').each(function(index) {
+          if(!hasItem($(this).attr('id'),'id',items)) {
+            $(this).remove();
+          }
+        });
+        //check if there are no result items left in the basket
+        if($('#cofind-resultbasket .item').length < 1) {
+          $('#cofind-resultbasket p').show();
+        }
+      }
+      
+      //register draggable and droppable events
+      $('#cofind-resultbasket .item').draggable({
+        opacity : 0.7,
+        delay : 500, 
+        revert: 'invalid',
+        containment : 'document',
+        stop: function(event, ui) {
+           
+           //callFunction('deleteItem',[$(this).attr('id')]);
+           //$(this).hide('slow');
+        }
+      });
+      
+      //hide the result basket away again
+      $('#cofind-resultbasket').delay(500).animate({bottom: '-110px'}, 500);
+    });
+    
+  };
+  
+  //Result basket save function
+  now.saveResultBasket = function(resultBasket,callback) {
+    console.log('saveResultBasket...');
+    
+    //nothing needs to be stored if the group has no result basket
+    if(typeof(resultBasket) === 'undefined' || resultBasket === null) {
+      callback(true);
+      return;
+    }  
+    
+    //Clean up the result basket for storage
+    var resultItems = resultBasket.items;
+    //reduce items to only contain the CO id and tags
+    for(var index in resultItems) {
+      resultItems[index] = { 
+          id   : resultItems[index].id,
+          tags : resultItems[index].tags
+      }; 
+    }
+    
+    //Send it to the server
+    $.ajax({
+      type: "POST",
+      url: "profile/history",
+      data: JSON.stringify(resultItems),
+      success: function(data) {
+        //parse the result
+        try {
+          data = JSON.parse(data);
+        } catch(e) {
+          data = {error: "The server gave me an invalid result."};  
+        }
+        //check the result
+        if(data.error) {
+          console.log("Error during save history: " + data.error);
+          callback(false);
+        } else {
+          console.log("History data saved.");
+          callback(true);
+        }
+      },
+      dataType: "text",
+      contentType : "application/json; charset=utf-8"
+    });
+    
   };
   
   now.triggerInvitation = function(email) {
@@ -101,23 +342,40 @@ define("mylibs/cofind", ["libs/modernizr-2.0.min", "/nowjs/now.js"], function(){
     var actionHtml = '<button id="cofind-invite-accept">Accept</button>' + 
                      '<button id="cofind-invite-decline">Decline</button>';
 
+    //Display invite message with accept and decline button
+    options.messageCallback('You got an invitation from ' + email, 'info', actionHtml);
+    
     //Bind the event handlers for both buttons
-    $("#cofind-invite-accept").on('click', function(event) {
-      
+    $(document).on('click', '#cofind-invite-accept', function(event) {
       setInvitationResponse('accept',email);
       
       $("#messages").hide(200);
       event.stopPropagation();
     });
-    $("#cofind-invite-decline").on('click', function(event) {
-      
+    $(document).on('click', '#cofind-invite-decline', function(event) {
       setInvitationResponse('decline',email);
       
       $("#messages").hide(200);
       event.stopPropagation();
     });
-    //Display invite message with accept and decline button
-    options.messageCallback('You got an invitation from ' + email, 'info', actionHtml);
+  };
+  
+  var attachBasketEvents = function() {
+    //register hover event and touch events for result basket
+    $('#cofind-resultbasket').hoverIntent({    
+      over: function() { $(this).animate({bottom: '-30px'}, 500); },    
+      timeout: 300,    
+      out: function () { $(this).animate({bottom: '-110px'}, 500); }
+    });
+
+    $('#cofind-resultbasket').on('MozTouchUp touchend', function() {
+      console.log($(this).css('bottom'));
+      if($(this).css('bottom') < 0) {
+        $(this).animate({bottom: '-30px'}, 500);
+      } else {
+        $(this).animate({bottom: '-110px'}, 500);
+      }
+    });
   };
   
   var setup = function(opt) {
@@ -125,8 +383,11 @@ define("mylibs/cofind", ["libs/modernizr-2.0.min", "/nowjs/now.js"], function(){
     options = (opt && typeof(opt) == 'object') ? opt : null; 
     
     if(!options) {
-      throw 'Appropriate setup parameters for collaboration functions are missing.';
+      throw 'Missing appropriate setup parameters for collaboration functions.';
     }
+    
+    //Adding a group array in the options object
+    options.groups = [];
     
     //Try to register the user for CoFind
     if(options.user) {
@@ -149,9 +410,6 @@ define("mylibs/cofind", ["libs/modernizr-2.0.min", "/nowjs/now.js"], function(){
     if($(options.addSettingsTo)) {
       $(options.addSettingsTo + ":last").after(settingSnippet);
     }
-    if($(options.addWorkspaceTo)) {
-      $(options.addWorkspaceTo).append(generalSnippet);
-    }
     
     //register mouse events to CoFind settings
     $("#button-cofind-settings").click(function(event){
@@ -159,6 +417,8 @@ define("mylibs/cofind", ["libs/modernizr-2.0.min", "/nowjs/now.js"], function(){
         if(inviteUser($("#cofind-settings").find("#cofind-email").val())) {
           $("#cofind-settings").hide(animationTime);
           options.messageCallback("Invitation sent...","info");
+          //reset input field
+          $("#cofind-settings").find("#cofind-email").val('');
         }
         $("#cofind-settings").hide(animationTime);
         $("#button-cofind-settings").removeClass('active');
@@ -174,7 +434,7 @@ define("mylibs/cofind", ["libs/modernizr-2.0.min", "/nowjs/now.js"], function(){
       event.stopPropagation();
     });
     
-    //register enter key down to
+    //register enter key down to close settings panel
     $("#cofind-settings form").keypress(function(event) {
       if ( event.which == 13 ) {
         event.preventDefault();
@@ -182,6 +442,8 @@ define("mylibs/cofind", ["libs/modernizr-2.0.min", "/nowjs/now.js"], function(){
         if($("#button-cofind-settings").hasClass('active')) {
           if(inviteUser($("#cofind-settings").find("#cofind-email").val())) {
             options.messageCallback("Invitation sent...","info");
+            //reset input field
+            $("#cofind-settings").find("#cofind-email").val('');
           }
           $("#cofind-settings").hide(animationTime);
           $("#button-cofind-settings").removeClass('active');
@@ -189,16 +451,56 @@ define("mylibs/cofind", ["libs/modernizr-2.0.min", "/nowjs/now.js"], function(){
         return false;
       }
     });
+    
+    //register clear input on focus event for invitation input
+    $('#cofind-email').focus(function(event) {
+      if($(this).val() == $(this).attr('name')) {
+        $(this).val('');
+      }
+    });
+    $('#cofind-email').blur(function(event) {
+      if($(this).val() == '') {
+        $(this).val($(this).attr('name'));
+      }
+    });
+    
+    //register dummy test function for adding result items
+    $('#dummyHistorySave').click(function(event){ 
+      var itemsData = { 
+        items: [{
+            "id": 'r8uw0ieYq7d0N8HcDXblBq1jKHGVjQR0',
+            "html": '<img src="http://sketchup.google.com/3dwarehouse/download?mid=56f098c1e82c670fae6199c1fc70ff97&rtyp=lt&ctyp=other&ts=1233886689000&ct=gd" alt="" />',
+            "tags": ["Sword","Blade","Legend of Zelda"]
+          },{
+            "id": 'r8uw0ieYq7d0N8HcPIblBq1jKHGVjQR0',
+            "html": '<img src="http://gdv.fh-erfurt.de/modeldb/media/model/Bld_25.jpg" alt="" />',
+            "tags": ["House","California","Beach"]
+          },{
+            "id": 'r0010ieYq7d0N8HcDXblBq1jKHGVjQX0',
+            "html": '<img src="http://sketchup.google.com/3dwarehouse/download?mid=82a0e998b86ba6935cc68572e7c311ae&rtyp=lt&ctyp=other&ts=1211358160000&ct=gd" alt="" />',
+            "tags": ["Pick-Up","Truck","Ford"]
+          }]
+      };
+
+      callFunction('addItem',[itemsData.items[dummyCounter]]);
+      
+      dummyCounter++;
+      return false;
+    });
   };
   
   var remove = function(user) {
-    console.log('Remove CoFind called...');
-    //need to trigger a disconnect function on the server instead of doing this:
+    console.log('Remove CoFind called...' + user);
+    
+    //unregister user from cofind session
     callFunction('unregisterUser',[user]);
     
     $('#button-cofind-settings').remove();
     $('#cofind-settings').remove();
-    $('#cofind-resultbag').remove();
+    $('#cofind-resultbasket').remove();
+    
+    //reset options
+    options = {};
   };
   
   return {
