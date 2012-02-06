@@ -1,8 +1,7 @@
 /**
  * HTML5 Boilerplate
  */
-html,body,div,span,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,abbr,address,cite,code,del,dfn,em,img,ins,kbd,q,samp,small,strong,sub,sup,var,b,i,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,figcaption,figure,footer,header,hgroup,menu,nav,section,summary,time,mark,audio,video
-	{
+html,body,div,span,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,abbr,address,cite,code,del,dfn,em,img,ins,kbd,q,samp,small,strong,sub,sup,var,b,i,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,figcaption,figure,footer,header,hgroup,menu,nav,section,summary,time,mark,audio,video {
 	margin: 0;
 	padding: 0;
 	border: 0;
@@ -11,8 +10,7 @@ html,body,div,span,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,abbr,address
 	vertical-align: baseline;
 }
 
-article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section
-	{
+article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {
 	display: block;
 }
 
@@ -156,8 +154,7 @@ input[type="checkbox"] {
 	vertical-align: text-bottom;
 }
 
-label,input[type="button"],input[type="submit"],input[type="image"],button
-	{
+label,input[type="button"],input[type="submit"],input[type="image"],button {
 	cursor: pointer;
 }
 
@@ -224,6 +221,12 @@ a:hover {
 	color: #036;
 }
 
+button {
+  border: 1px solid #CCC;
+  background-color: #E0E0E0;
+  font-weight: bold;
+}
+
 #container {
 	/**
 	 * Triantafillos: changed max-width from 920 to 1240px 
@@ -238,7 +241,7 @@ header h1 {
 	width: 50%;
 	min-width: 200px;
 	/* We don't want the logo too tiny on mobile devices */
-	margin: 10% auto;
+	margin: 10% auto 6% auto;
 }
 /* Make the logo scale */
 header img {
@@ -255,6 +258,10 @@ nav {
 	-moz-box-shadow: 0 2px 6px #ccc;
 	-webkit-box-shadow: 0 2px 6px #ccc;
 	box-shadow: 0 2px 6px #ccc;
+}
+
+#messages {
+  text-align: center;
 }
 
 #messages p {
@@ -342,7 +349,6 @@ nav {
 
 #settings ul li a img {
   max-height: 2.4em;
-  vertical-align: center;
 }
 
 #settings span {
@@ -361,7 +367,7 @@ nav {
 }
 
 .settings-panel {
-  position: absolute;
+  position: fixed;
   top: 2.0em;
   right: 0;
   z-index: 100;
@@ -371,8 +377,37 @@ nav {
 	box-shadow: 0px 0px 3px #111;
   border-bottom-left-radius: 4px;
 	
-	padding: 1em 2em 0.8em 3em;
+	padding: 1em 2em 1em 3em;
 	display: none;
+}
+
+.settings-panel section {
+  text-align: center;
+  padding: 0.5em 0;
+}
+
+.settings-panel section ul {
+  display: inline-block;
+  width: 90%;
+  text-align: left;
+  list-style-type: none;
+  margin-top: 0.2em;
+}
+
+.settings-panel section ul li:first-child {
+  border-top : 1px solid #999;
+}
+
+.settings-panel section ul li {
+  padding : 0.3em 0.5em 0.3em 0.1em;
+  border-bottom: 1px solid #999;
+}
+
+.settings-panel section ul li button {
+  background-color: #bbb;
+  border: 1px solid #999;
+  margin: 0 0 0 0.2em;
+  padding: 0.1em;
 }
 
 .settings-panel .setting {
@@ -385,19 +420,35 @@ nav {
 	margin-right: 10px;
 }
 
-.settings-panel label,.settings-panel input,.settings-panel button,.settings-panel select {
-	display: block;
+.settings-panel label,.settings-panel input,.settings-panel select, .settings-panel button {
+	display: inline-block;
 }
 
 .settings-panel button {
-	padding: 0.5em 0.35em;
-	margin-top: 0.5em;
+	padding: 0.4em 0.8em;
+	margin: 0.5em;
+}
+
+.settings-panel .textbutton {
+  border: none;
+  background-color: transparent;
+  display: inline-block;
+  padding: 0;
+  margin: 0.1em 0.2em;
+  
+  font-weight: bold;
+  text-shadow: 0px 0px 1px #fcc;
+  color: #d88;
+}
+
+.settings-panel label {
+  margin: 0.5em 0.5em 0 0;
 }
 
 .settings-panel input,.settings-panel select {
 	padding: 0.2em;
-	margin-bottom: 1em;
-	border-bottom: 1px solid #ccc;
+	border: 1px solid #ccc;
+	vertical-align: baseline;
 }
 
 #query {
@@ -607,12 +658,12 @@ footer {
 
 .bottom-overlay {
   position: fixed;
-  bottom: -100px;
+  bottom: -110px;
   left: 0;
   right: 0;
   z-index: 100;
   
-  height: 100px;
+  height: 120px;
     
   background-color: #444;
   color: white;
@@ -622,7 +673,34 @@ footer {
   
   padding: 1em;
   margin: 0 auto;
-};
+  
+  text-align: center;
+}
+
+.bottom-overlay p {
+  font-weight: bold;
+  line-height: 2em;
+  padding: 0em 1em;
+}
+
+.bottom-overlay .item {
+  position: relative;
+  width: 100px;
+  height: 80px;
+  bottom: -2px;
+  display: inline-block;
+  overflow: hidden;
+  margin-right: 10px;
+  vertical-align: top;
+}
+
+.bottom-overlay .item img {
+  box-shadow: 0px 0px 3px #555;
+  border-top-right-radius: 4px;
+  border-top-left-radius: 4px;
+  border: 1px solid #999;
+  max-width: 100px;
+}
 
 /**
  * Style for the results page
@@ -713,47 +791,37 @@ footer {
  * Media queries for responsive design.
  */
 
-/*smaller screens ______________________________*/
-@media only screen and (max-width: 479px),
-@media only screen and (max-device-width: 479px) {
-  .settings-panel,
-  .bottom-overlay {
-    width: 100%;
-  }
-}
-
-/*480px ______________________________*/
+/*768px ______________________________ */
 @media only screen and (min-width: 481px) {
+  .results #flash-container {
+    width: 70%;
+  }
+  .results aside {
+    width: 25%;
+    position: absolute;
+    top: 70px;
+    right: 10px;
+  }
+  
   .settings-panel,
   .bottom-overlay {
     width: 480px;
   }
 }
 
-/*768px ______________________________ */
-@media only screen and (min-width: 768px) {
-	.results #flash-container {
-		width: 70%;
-	}
-	.results aside {
-		width: 25%;
-		position: absolute;
-		top: 70px;
-		right: 10px;
-	}
+/*480px ______________________________*/
+@media only screen and (max-width: 480px) {
+  .settings-panel {
+    width: 87%;
+  }
+  .bottom-overlay {
+    width: 90%;
+  }
 }
 
-/*992px ______________________________ */
-@media only screen and (min-width: 992px) {
-}
-
-/*1382px _____________________________ */
-@media only screen and (min-width: 1382px) {
-}
 
 /*2x _________________________________ */
-@media only screen and (-webkit-min-device-pixel-ratio: 2) , only screen
-	and (min-device-pixel-ratio: 2) {
+@media only screen and (-webkit-min-device-pixel-ratio: 2) , only screen and (min-device-pixel-ratio: 2) {
 }
 
 /*Portrait ___________________________ */

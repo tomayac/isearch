@@ -267,6 +267,14 @@ var getExternalSessionId = function(req,renew) {
 };
 
 /**
+ * a little but effective number test function
+ */
+var isNumber = function(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+};
+
+
+/**
  * login function
  */
 exports.login = function(req, res){
@@ -425,6 +433,68 @@ exports.setProfile = function(req, res) {
   }//end if requested profile attribute is available
 };
 
+exports.updateProfileHistory = function(req, res) {
+  
+  console.log("Update profile history function called...");
+  
+  //get post data
+  var data = req.body;
+  
+  //Get the right session storage (depending on log in status - guest if not, user if yes)
+  var sessionStore = getSessionStore(req);
+  
+  //Check what we got with this POST request
+  if(data.items) {
+    sessionStore.items = sessionStore.items ? data.items.concat(sessionStore.items) : data.items;
+  }
+  
+  var result = {};
+  
+  //Check if history update data is complete 
+  if(isNumber(sessionStore.ID) && sessionStore.query && sessionStore.items) {
+    //Submit the query to authentication/personalisation component
+    var storeURL = "http://gdv.fh-erfurt.de/i-search/apc-dummy/index.php";
+    
+    var callData = {
+        "f"      : "updateSearchHistory",
+        "userid" : sessionStore.ID,
+        "query"  : JSON.stringify(sessionStore.query),
+        "items"  : JSON.stringify(sessionStore.items)
+    };
+    
+    console.log('callData:');
+    console.log(callData);
+    
+    restler
+    .post(storeURL, { 
+      data : callData
+    })
+    .on('complete', function(data) { 
+
+      //Check if result is ok
+      if(data.error) {
+        result.error = data.error;
+        console.log(result.error);
+      } else {
+        result.success = 'History entry saved.';
+        console.log(result);
+        //After successful storing of search history entry reset session data
+        sessionStore.query = undefined;
+        sessionStore.items = undefined;
+      }
+      
+      res.send(JSON.stringify(result));
+   })
+   .on('error', function(data,response) {
+     result.error = response.message;
+     res.send(JSON.stringify(result));
+   });
+  } else {
+    result.error = 'History data cannot be saved because of insufficient data.';
+    res.send(JSON.stringify(result));
+  }//end if
+};
+
 exports.query = function(req, res) {
 	
 	console.log("Query function called...");
@@ -453,6 +523,12 @@ exports.query = function(req, res) {
         
         var queryOptions = sessionStore['Settings'];
         
+        //store the query in the session
+        sessionStore.query = {
+            id: extSessionId,
+            rucod: queryData.rucod
+        };
+        
         //creating the call parameters
         var callData = {
             "f"       : "submitQuery",
@@ -461,8 +537,6 @@ exports.query = function(req, res) {
             "session" : extSessionId,
             "options" : queryOptions
         };
-        
-        console.log(callData);
         
         //Submit the query to MQF
         restler
@@ -476,8 +550,7 @@ exports.query = function(req, res) {
             result.error = data.error;
             console.log(result.error);
           } else {
-            result.success = 'Result retrieved.';
-            result.data = data.result;
+            result = data.result;
             console.log(result);
           }
           
@@ -486,8 +559,8 @@ exports.query = function(req, res) {
           sessionStore.QueryCounter++;
        })
        .on('error', function(data,response) {
-          msg.error = response.message;
-          callback(msg,null);
+          result.error = response.message;
+          res.send(JSON.stringify(result));
        });
         
       } //End no error else
@@ -576,5 +649,3 @@ exports.queryItem = function(req, res) {
 	}
 	
 }; //end function queryItem
-
-

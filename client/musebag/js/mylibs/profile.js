@@ -11,7 +11,7 @@ define("mylibs/profile", ["libs/modernizr-2.0.min"], function(){
   };
   
   var init = function(options) {
-	profileServerUrl = options.userProfileServerUrl || "profile/" ;
+    profileServerUrl = options.userProfileServerUrl || "profile/" ;
   } ;
   
   var get = function(key) {
@@ -19,8 +19,7 @@ define("mylibs/profile", ["libs/modernizr-2.0.min"], function(){
       return profile[key];
     } else {
       console.log('Profile key does not exist...get it');
-      //Get the user data if available
-		  
+      //Get the user data if available		  
       $.ajax({
         type: "GET",
         url: profileServerUrl + key,
@@ -70,7 +69,7 @@ define("mylibs/profile", ["libs/modernizr-2.0.min"], function(){
   };
   
   return {
-	init  : init,
+    init  : init,
     get   : get,
     getAll: getAll,
     set   : set,

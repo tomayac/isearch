@@ -13,13 +13,8 @@ var express    = require('express'),
     musebag    = require('./musebag'),
     cofind     = require('./cofind');
 
-var app = module.exports = express.createServer();
-
-//Nodules module reloading    
-/*require.reloadable(function(){
- 	musebag = require('./musebag');
-});
-*/
+var sess  = new redisStore;
+var app   = module.exports = express.createServer();
 
 // Configuration
 app.configure(function(){
@@ -28,7 +23,7 @@ app.configure(function(){
   app.use(express.bodyParser({uploadDir: '../../client/musebag/tmp', encoding: 'binary', keepExtensions: true}));
   app.use(express.methodOverride());
   app.use(express.cookieParser());
-  app.use(express.session({ secret: "isearchsession", store: new redisStore }));
+  app.use(express.session({ secret: "isearchsession", store: sess }));
   app.use(app.router);
   app.use(express.static('../../client/musebag'));
   app.use(express.logger({ format: ':method :url' }));
@@ -49,6 +44,7 @@ app.post('/login'           , musebag.login);
 app.del ('/login'           , musebag.logout);
 
 app.get ('/profile/:attrib' , musebag.profile);
+app.post('/profile/history' , musebag.updateProfileHistory);
 app.post('/profile/:attrib' , musebag.setProfile);
 
 app.post('/query/item'      , musebag.queryItem);
@@ -57,6 +53,6 @@ app.post('/query'           , musebag.query);
 app.listen(8081);
 
 //Start CoFind for collaborative search
-cofind.initialize(app);
+cofind.initialize(app,sess);
 
 console.log("MuseBag Express server listening on port %d in %s mode", app.address().port, app.settings.env);

@@ -1029,7 +1029,28 @@
 	-khtml-border-radius: 8px;
 	-webkit-border-radius: 8px;
 	border-radius: 8px;
-} /*
+} 
+/* jQuery UI Autocomplete 1.8.17
+ *
+ * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ * http://jquery.org/license
+ *
+ * http://docs.jquery.com/UI/Autocomplete#theming
+ */
+.ui-autocomplete { position: absolute; cursor: default; } 
+
+.ui-autocomplete .ui-menu-item { padding: 0.3em 0.5em; }
+
+.ui-autocomplete .ui-menu-item:hover { background-color: #999; }
+
+.ui-autocomplete .ui-menu-item a:hover { background:none; border:none; } 
+
+/* workarounds */
+* html .ui-autocomplete { width:1px; } /* without this, the menu expands to 100% in IE6 */
+
+
+/*
  * jQuery UI Button 1.8.14
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)

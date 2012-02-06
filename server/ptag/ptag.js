@@ -5,7 +5,7 @@
  * within I-SEARCH.
  * 
  * @author Jonas Etzold
- * @company University of Applied Sciences Erfurt
+ * @company University of Applied Sciences Fulda
  */
 var restler = require('restler');
 
@@ -28,8 +28,8 @@ var tags = [[['flight',1.0],['travel',1.5],['airplane',2.8],['sky',0.8],['rocket
 exports.tagRecommendations = function(options, callback){
 	
 	var id = 1;
-	if(options.userID > 0 && options.userID <= 6) {
-		id = (options.userID-1);
+	if(options.userId > 0 && options.userId <= 6) {
+		id = (options.userId-1);
 	} 
 	var userTags = tags[id];
 	
@@ -38,8 +38,8 @@ exports.tagRecommendations = function(options, callback){
 //Documentation for tagRecommendations function
 exports.tagRecommendations.description = "This method generates tag recommendations for search queries based on a user profile. The user profile is gathered through the provided user ID.";
 exports.tagRecommendations.schema = {
-  userID: { 
-    type: 'int',
+  userId: { 
+    type: 'string',
     optional: false 
   }
 };
@@ -50,8 +50,8 @@ exports.tagRecommendations.schema = {
 exports.filterTags = function(options, callback){
 	
 	var id = 1;
-	if(options.userID > 0 && options.userID <= 6) {
-		id = (options.userID-1);
+	if(options.userId > 0 && options.userId <= 6) {
+		id = (options.userId-1);
 	} 
 	var userTags = tags[id];
 	var filterTags = [];
@@ -65,8 +65,8 @@ exports.filterTags = function(options, callback){
 //Documentation for filterTags function
 exports.filterTags.description = "This method generates tag recommendations as filter tags for a given result set based on a user profile. A user ID as well as the textual parts of the user query needs to be provided.";
 exports.filterTags.schema = {
-  userID: { 
-    type: 'int',
+  userId: { 
+    type: 'string',
     optional: false 
   },
   query: { 
@@ -89,8 +89,8 @@ exports.resultTagRecommendations = function(options, callback){
 //Documentation for resultTagRecommendations function
 exports.resultTagRecommendations.description = "Serves a personalised tag list, specific for the requested result item. To be used before the �Download� event of a result item.";
 exports.resultTagRecommendations.schema = {
-  userID: { 
-    type: 'int',
+  userId: { 
+    type: 'string',
     optional: false 
   },
   query: { 
@@ -110,7 +110,7 @@ exports.tag = function(options, callback){
 	var stored = false;
 	//storeUserTags(RUCoDID,Tags) options.tags
 	var rucodMangerUrl = "http://www.isearch-project.eu/rmn/storeUserTags?" 
-		               + "rucodid=" + options.resultItemID + "&" 
+		               + "rucodid=" + options.resultItemId + "&" 
 		               + "tags=" + options.tags;
 	
 	//Use restler to post the data to external RUCoD manager
@@ -121,15 +121,15 @@ exports.tag = function(options, callback){
 //Documentation for tag function
 exports.tag.description = "Stores the provided tag in the RUCoD header for the provided Content Object provided via the resultItemID. To be used if a user supplies tags.";
 exports.tag.schema = {
-  userID: { 
-    type: 'int',
+  userId: { 
+    type: 'string',
     optional: false 
   },
   tags: { 
     type: 'string',
     optional: false 
   },
-  resultItemID: { 
+  resultItemId: { 
     type: 'string',
     optional: false 
   }
@@ -147,7 +147,7 @@ exports.implicitTags = function(options, callback){
 	
 	//Store tags with RUCoD Manager 
 	var rucodMangerURL = "http://www.isearch-project.eu/rmn/storeUserTags?" 
-		               + "rucodid=" + options.resultItemID + "&" 
+		               + "rucodid=" + options.resultItemId + "&" 
 		               + "tags=" + options.tags;
 	
 	//Use restler to post the data to external RUCoD manager
@@ -158,15 +158,15 @@ exports.implicitTags = function(options, callback){
 //Documentation for implicitTags function
 exports.implicitTags.description = "Derives a tag for the resultItem based on the query and user profile and stores it in the referring RUCoD. To be used if a �Download� event occurs without a user specified tag.";
 exports.implicitTags.schema = {
-  userID: { 
-    type: 'int',
+  userId: { 
+    type: 'string',
     optional: false 
   },
   query: { 
     type: 'string',
     optional: false 
   },
-  resultItemID: { 
+  resultItemId: { 
     type: 'string',
     optional: false 
   }
