@@ -32,7 +32,7 @@
 
 .token-input-token-isearch  canvas,.token-input-token-isearch  audio,.token-input-token-isearch  video
 	{
-	position: relative;
+	position: relative; 
 	border: 1px solid #aaa;
 }
 
