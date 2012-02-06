@@ -5,7 +5,7 @@ define("mylibs/cofind", ["libs/modernizr-2.0.min", "order!libs/jquery.hoverInten
   
   //Static HTML snippets for CoFind interface
   var buttonSnippet = '<li id="button-cofind-settings"><a href="#"><img src="img/collaborate.png" alt="Collaborate" title="Collaboration panel" style="max-height: 31px;"></a></li>';
-  var settingSnippet = '<div class="settings-panel" id="cofind-settings"><form method="post" action="#" class="clearfix"><section><label for="email">Invite a friend to collaborate:</label><input type="text" id="cofind-email" name="Email" value="Email" /></section></form></div>  ';
+  var settingSnippet = '<div class="settings-panel" id="cofind-settings"><form method="post" action="#" class="clearfix"><section class="setting"><label for="email">Invite a friend to collaborate:</label><input type="text" id="cofind-email" name="Email" value="Email" /></section></form></div>  ';
   var generalSnippet = '<div class="bottom-overlay" id="cofind-resultbasket"><p>Your result basket is empty.<br/>Drop here any results you like to share.</p></div>';
   
   //RegEx for testing a valid email
@@ -234,8 +234,10 @@ define("mylibs/cofind", ["libs/modernizr-2.0.min", "order!libs/jquery.hoverInten
     }, 500, function() {
       // Animation complete.
       // determine how close the items should be to each other
+      console.log('new: '+newItems);
       if(newItems > 4) {
         distance = distance - ((newItems - 3) * 10);
+        console.log(distance + ' = ' + distance + ' - ((' + newItems + ' - 3) * 10');
       }
       
       if(diff > 0) {
@@ -253,7 +255,9 @@ define("mylibs/cofind", ["libs/modernizr-2.0.min", "order!libs/jquery.hoverInten
             if($('#cofind-resultbasket').has('#' + item.id).length < 1) {
               //and then just append it and put an animation on it
               $('#cofind-resultbasket').append($('<section class="item" id="' + item.id + '" title="' + item.tags.join(',') + '" style="opacity : 0;">' + item.html + '</section>').animate({'opacity': 1,'margin-right': distance}, 500));
-            };
+            } else {
+              $('#cofind-resultbasket #' + item.id).css('margin-right', distance);
+            }
           } else {
             $('#cofind-resultbasket').append($('<section class="item" id="' + item.id + '" title="' + item.tags.join(',') + '" style="opacity : 0;">' + item.html + '</section>').animate({'opacity': 1,'margin-right': distance}, 500));
           }
@@ -479,6 +483,14 @@ define("mylibs/cofind", ["libs/modernizr-2.0.min", "order!libs/jquery.hoverInten
             "id": 'r0010ieYq7d0N8HcDXblBq1jKHGVjQX0',
             "html": '<img src="http://sketchup.google.com/3dwarehouse/download?mid=82a0e998b86ba6935cc68572e7c311ae&rtyp=lt&ctyp=other&ts=1211358160000&ct=gd" alt="" />',
             "tags": ["Pick-Up","Truck","Ford"]
+          },{
+            "id": 'ee5daf6ec184e9cd8814af42a81e8b78',
+            "html": '<img src="http://sketchup.google.com/3dwarehouse/download?mid=ee5daf6ec184e9cd8814af42a81e8b78&rtyp=lt&ctyp=other&ts=1243527875000&ct=gd" alt="" />',
+            "tags": ["CABALLERO","Aviles","Human"]
+          },{
+            "id": '5aa5fbd6cc0cad538e307882acdd83d0',
+            "html": '<img src="http://sketchup.google.com/3dwarehouse/download?mid=5aa5fbd6cc0cad538e307882acdd83d0&rtyp=lt&ctyp=other&ts=1218023433000&ct=gd" alt="" />',
+            "tags": ["Elf","Fantasy","World of Warcraft"]
           }]
       };
 

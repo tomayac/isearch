@@ -357,7 +357,16 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/
   	  
   	  // basically pass the url of the profile server 
   	  profile.init(constants) ;
-	  
+  	  
+  	  //init custom checkbox events
+  	  $('.checkbox').toggle(function() {
+  	    $(this).addClass('checked');
+  	    $(this).find(':checkbox').attr('checked', true);
+  	  }, function() {
+  	    $(this).removeClass('checked');
+  	    $(this).find(':checkbox').attr('checked', false);
+  	  });
+  	  
       panels.messages = $("#messages");
       
       panels.settings = $("#global-settings");

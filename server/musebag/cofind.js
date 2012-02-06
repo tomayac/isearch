@@ -263,6 +263,8 @@ var setupLogic = function() {
         getGroupEmails(group, function(error, emails) {
           group.now.updateGroupState(groupName,emails);
         });
+        //update result basket view of all group members
+        group.now.updateResultBasket({items: []});
       }
     }
     
@@ -350,7 +352,7 @@ var setupLogic = function() {
       var group = now.getGroup(groupName);
       //add the user who invited 
       group.addUser(this.user.clientId);
-      //add the newly generated group to the users group
+      //add the newly generated group to the users group list
       if(users[emailFrom].groups.indexOf(groupName) < 0) {
         users[emailFrom].groups.push(groupName);
       }
@@ -365,12 +367,14 @@ var setupLogic = function() {
    */
   everyone.now.acceptInvitation = function(email){
     console.log('acceptInvitation...');
+    
     var emailFrom = getUserByClient(this.user.clientId);
     var groupName = 'group-' + email;
     var group = now.getGroup(groupName);
-    //add the user who accepted the invitation to the group creator 
+    
+    //add the user who accepted the invitation to the group creators group 
     group.addUser(this.user.clientId);
-    //add the group to the users group
+    //add the group to the users group list
     if(users[emailFrom].groups.indexOf(groupName) < 0) {
       users[emailFrom].groups.push(groupName);
     }
@@ -390,8 +394,15 @@ var setupLogic = function() {
    *  declineInvitation function 
    */
   everyone.now.declineInvitation = function(email){
+    console.log('declineInvitation...');
     
-    var emailFrom = getUserByClient(this.user.clientId);   
+    var emailFrom = getUserByClient(this.user.clientId);
+    var groupName = 'group-' + email;
+    //remove the group reference from the user group list
+    removeGroupFromUser(email,groupName);
+    //remove the group
+    now.removeGroup(groupName);
+    //notify group creator
     callUserFunction(email, 'notify', [emailFrom + ' rejected your invitation.','error']);
   };
   
@@ -528,6 +539,18 @@ var setupLogic = function() {
         } else {
           console.log('user offline');
           users[email].clients = [];
+          for(var index in users[email].groups) {
+            var groupName = users[email].groups[index];
+            var group = now.getGroup(groupName);
+            //Notify other group members of connection lose
+            group.now.notify(email + ' is offline.', 'info');
+            //unregister user from group
+            group.removeUser(this.user.clientId);
+            //update the group user list of all group members in the client
+            getGroupEmails(group, function(error, emails) {
+              group.now.updateGroupState(group.groupName,emails);
+            });
+          }
         }
       } 
       userIndex++;  
