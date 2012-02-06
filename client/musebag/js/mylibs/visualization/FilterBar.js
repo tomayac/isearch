@@ -56,41 +56,38 @@ define("mylibs/visualization/FilterBar",  [ ],
 		
 		// draw the sort by buttons
 		
-		sortbyDiv = $('<div/>', {"class": "formitem", css: { "display": "table-cell", "vertical-align": "middle", "width": "200px"}}).appendTo(ele) ;
+		var sortbyDiv = $('<div/>', {"class": "formitem", css: { "display": "table-cell", "vertical-align": "middle", "width": "200px"}}).appendTo(ele) ;
 		$('<span/>', { css: { "display": "table-cell", "vertical-align": "middle", "padding-right": "5px"},  text: "Sort by:" } ).appendTo(sortbyDiv) ;
-		sortbyButtons = $('<div/>', { css: { display: "table-cell" } } ).appendTo(sortbyDiv) ;
+		var sortbyButtons = $('<div/>', { css: { display: "table-cell" } } ).appendTo(sortbyDiv) ;
 		
-		var item = $("<input/>", { type: "radio", name:"sortby", id: "sortby-relevance", "checked": "checked"  }).appendTo(sortbyButtons) ;
-		var label = $("<label/>", { "for": "sortby-relevance", text: "Relevance" }).appendTo(sortbyButtons) ;
-			
-		item.button( {text: false,  "icons": {primary:'ui-icon-sortby-relevance'}}) ;
-			
-		item.click(function() {
-			filter() ;
-			rerank() ;
-			
-		});
+		/**
+		 * Triantafillos:
+		 * optimized existing code
+		 */
+		// sort by relevance button
+		$("<label/>", { "for": "sortby-relevance", text: "Relevance" }).appendTo(sortbyButtons);
+		$("<input/>", { type: "radio", name:"sortby", id: "sortby-relevance", "checked": "checked" })
+		.appendTo(sortbyButtons)
+		.button( {text: false,  "icons": {primary:'ui-icon-sortby-relevance'}});
 		
-		item = $("<input/>", { type: "radio", name:"sortby", id: "sortby-location"  }).appendTo(sortbyButtons) ;
-		label = $("<label/>", { "for": "sortby-location", text: "Location" }).appendTo(sortbyButtons) ;
-			
-		item.button( {text: false,  "icons": {primary:'ui-icon-sortby-location'}}) ;
-			
-		item.click(function() {
-			filter() ;
-			rerank() ;
-		});
+		// sort by time button
+		$("<label/>", { "for": "sortby-time", text: "Time" }).appendTo(sortbyButtons) ;
+		$("<input/>", { type: "radio", name:"sortby",  id: "sortby-time"  })
+		.appendTo(sortbyButtons)
+		.button( {text: false,  "icons": {primary:'ui-icon-sortby-time'}});
 		
-		item = $("<input/>", { type: "radio", name:"sortby",  id: "sortby-time"  }).appendTo(sortbyButtons) ;
-		label = $("<label/>", { "for": "sortby-time", text: "Time" }).appendTo(sortbyButtons) ;
-			
-		item.button( {text: false,  "icons": {primary:'ui-icon-sortby-time'}}) ;
-			
-		item.click(function() {
-			filter() ;
-			rerank() ;
-
-		});
+		// sort by location button
+		$("<label/>", { "for": "sortby-location", text: "Location" }).appendTo(sortbyButtons);
+		$("<input/>", { type: "radio", name:"sortby", id: "sortby-location"  })
+		.appendTo(sortbyButtons) 
+		.button( {text: false,  "icons": {primary:'ui-icon-sortby-location'}});
+		
+		$('[name=sortby]').click(function(event) {
+		  event.preventDefault();
+		  filter() ;
+		  rerank() ;
+		  return false;
+	    });
 		
 		sortbyButtons.buttonset() ;
 		
@@ -179,46 +176,65 @@ define("mylibs/visualization/FilterBar",  [ ],
 	
 	};
 	
-	var rerank = function()
-	{
-		var btn =  $('[name=sortby]:checked');
-		var sortby = btn.attr('id').substr(7) ;
+	/**
+	 * Triantafillos: 
+	 * optimized code
+	 */
+	var rerank = function() {
 		
-		if ( sortby == 'time' ) {
-			docs.sort(function(a, b) { 
-				return new Date(b.rw.time.dateTime) - new Date(a.rw.time.dateTime)  ; 
-			}) ;
-			callback() ;
-		}
-		else if ( sortby == 'relevance' ) {
-			docs.sort(function(a, b) { 
-				return b.score - a.score  ; 
-			}) ;
-			callback() ;
-		}
-		else if ( sortby == 'location' )
-		{
-			if ( navigator.geolocation )
-			{
-				navigator.geolocation.getCurrentPosition(function(position) {
-					var lat = position.coords.latitude ;
-					var lon = position.coords.longitude ;
-				
-					docs.sort(function(a, b) { 
-						var distb = geodist(b.rw.pos.coords.lat, b.rw.pos.coords.lon, lat, lon) ;
-						var dista = geodist(a.rw.pos.coords.lat, a.rw.pos.coords.lon, lat, lon) ;
-						return distb - dista  ; 
-					}) ;
-					
-					callback() ;
-					
-				}) ;
-			}
-		
-		}
-			
+	  var btn =  $('[name=sortby]:checked');
+	  var sortby = btn.attr('id').substr(7) ;
 	
-	} ;
+	  switch (sortby) {
+	  
+	  	case 'relevance':
+		  docs.sort(function(a, b) { 
+			return b.score - a.score  ; 
+		  });
+		  callback() ;
+		  break;
+	    
+	    case 'time':
+		  docs.sort(function(a, b) { 
+		    return new Date(b.rw.time.dateTime) - new Date(a.rw.time.dateTime); 
+		  }) ;
+		  callback();
+		  break;
+	    
+		/**
+		 * Triantafillos:
+		 * In geolocation reranking because not all Content Objects have rw.pos.
+		 * Added location error callback function
+		 */
+	    case 'location':
+		  
+		  if ( navigator.geolocation ) {
+			navigator.geolocation.getCurrentPosition(
+			
+			  function(position) { 
+			    var lat = position.coords.latitude;
+			    var lon = position.coords.longitude;
+			    docs.sort(function(a, b) {
+			      if (a.rw.pos && b.rw.pos) {
+				    var dista = geodist(a.rw.pos.coords.lat, a.rw.pos.coords.lon, lat, lon);
+				    var distb = geodist(b.rw.pos.coords.lat, b.rw.pos.coords.lon, lat, lon);
+			      }
+			      return distb - dista;
+			    });
+			    callback();					
+			  },
+			  
+			  function(error) {
+				console.log('error getting current geolocation');
+			  }
+			);
+		  }
+		  break;
+		  
+		default:
+		  return;
+	  }
+	};
 	
 	var modalities = function()
 	{
