@@ -1,0 +1,49 @@
+<html>
+  <body>
+    <p>
+      <progress id="progress-bar" max="10" value="0"></progress>
+      <label for="progress-bar">Elapsed time in seconds:
+        <span id="elapsed-span"></span>
+      </label>    
+    </p>
+    <p>  
+      <button id="rhythm-button">Tap</button>
+
+      <input id="duration-spinner" type="number" max="10" min="5" step="1" />
+      <label for="duration-spinner">Duration in seconds</label>
+    </p>
+    
+    <script type="application/javascript">
+      var progressBar = document.getElementById('progress-bar');
+      var rhythmButton = document.getElementById('rhythm-button');
+      var durationSpinner = document.getElementById('duration-spinner');
+      var elapsedSpan = document.getElementById('elapsed-span');
+      var running = false;
+      var start = 0;
+      var timer = false;
+
+      rhythmButton.addEventListener('click', function(e) {
+        if (!running) {
+          running = true;
+          start = new Date().getTime();
+          timer = setInterval(function() {
+            var elapsed = Math.floor((new Date().getTime() - start) / 1000);
+            elapsedSpan.innerHTML = elapsed;
+            progressBar.value = elapsed;
+            if (elapsed >= progressBar.max) {
+              clearInterval(timer);
+            }
+          }, 1000);          
+        } else {
+          console.log('Tap ' + new Date().getTime());          
+        }
+      }, false);
+      
+      durationSpinner.addEventListener('change', function(e) {
+        progressBar.max = durationSpinner.value;
+      }, false);
+      
+    </script>
+    
+  </body>
+</html>
