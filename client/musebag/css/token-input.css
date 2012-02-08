@@ -31,7 +31,7 @@ ul.token-input-list-isearch li input {
 }
 
 li.token-input-token-isearch {
-	overflow: hidden;
+	
 	height: auto !important;
 	height: 15px;
 	margin: 2px;
@@ -46,13 +46,15 @@ li.token-input-token-isearch {
 	float: left;
 	white-space: nowrap;
 	font-size: 1.2em;
+	overflow: visible;
 }
 
 li.token-input-token-isearch p {
-	display: inline-block;
+	display: inline-block; 
 	padding: 0;
 	height: 1.9em;
 	line-height: 1.9em;
+	vertical-align: middle;
 }
 
 li.token-input-token-isearch span {

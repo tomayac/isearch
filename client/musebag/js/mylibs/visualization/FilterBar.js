@@ -176,65 +176,48 @@ define("mylibs/visualization/FilterBar",  [ ],
 	
 	};
 	
-	/**
-	 * Triantafillos: 
-	 * optimized code
-	 */
-	var rerank = function() {
+	var rerank = function()
+	{
+		var btn =  $('[name=sortby]:checked');
+		var sortby = btn.attr('id').substr(7) ;
 		
-	  var btn =  $('[name=sortby]:checked');
-	  var sortby = btn.attr('id').substr(7) ;
-	
-	  switch (sortby) {
-	  
-	  	case 'relevance':
-		  docs.sort(function(a, b) { 
-			return b.score - a.score  ; 
-		  });
-		  callback() ;
-		  break;
-	    
-	    case 'time':
-		  docs.sort(function(a, b) { 
-		    return new Date(b.rw.time.dateTime) - new Date(a.rw.time.dateTime); 
-		  }) ;
-		  callback();
-		  break;
-	    
-		/**
-		 * Triantafillos:
-		 * In geolocation reranking because not all Content Objects have rw.pos.
-		 * Added location error callback function
-		 */
-	    case 'location':
-		  
-		  if ( navigator.geolocation ) {
-			navigator.geolocation.getCurrentPosition(
-			
-			  function(position) { 
-			    var lat = position.coords.latitude;
-			    var lon = position.coords.longitude;
-			    docs.sort(function(a, b) {
-			      if (a.rw.pos && b.rw.pos) {
-				    var dista = geodist(a.rw.pos.coords.lat, a.rw.pos.coords.lon, lat, lon);
-				    var distb = geodist(b.rw.pos.coords.lat, b.rw.pos.coords.lon, lat, lon);
-			      }
-			      return distb - dista;
-			    });
-			    callback();					
-			  },
-			  
-			  function(error) {
-				console.log('error getting current geolocation');
-			  }
-			);
-		  }
-		  break;
-		  
-		default:
-		  return;
-	  }
-	};
+		if ( sortby == 'time' ) {
+			docs.sort(function(a, b) { 
+				return new Date(b.rw.time.dateTime) - new Date(a.rw.time.dateTime)  ; 
+			}) ;
+			callback() ;
+		}
+		else if ( sortby == 'relevance' ) {
+			docs.sort(function(a, b) { 
+				return b.score - a.score  ; 
+			}) ;
+			callback() ;
+		}
+		else if ( sortby == 'location' )
+		{
+			if ( navigator.geolocation )
+			{
+				navigator.geolocation.getCurrentPosition(function(position) {
+					var lat = position.coords.latitude ;
+					var lon = position.coords.longitude ;
+				
+					docs.sort(function(a, b) { 
+					
+						if ( b.rw.pos && a.rw.pos )
+						{	
+							var distb = geodist(b.rw.pos.coords.lat, b.rw.pos.coords.lon, lat, lon) ;
+							var dista = geodist(a.rw.pos.coords.lat, a.rw.pos.coords.lon, lat, lon) ;
+							return distb - dista  ; 
+						}
+						else return 0 ;
+					}) ;
+					
+					callback() ;
+					
+				}) ;
+			}
+		}
+	}
 	
 	var modalities = function()
 	{

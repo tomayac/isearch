@@ -150,10 +150,10 @@
 				<p class="instruction" id="soundDrop">Grab an audio file and
 					drop it here</p>
 				<p class="instruction">
-					Upload a file with this button: <input type="file" id="soundUpload"
-						style="display: none;" />
+					Upload a file with this button: 
 					<button class="upload">Upload</button>
 				</p>
+				<input type="file" id="soundUpload"	style="visibility: hidden;" />
 				<p class="instruction">
 					Use your device and start to say/sing something:
 					<button>Start</button>
@@ -167,10 +167,10 @@
 				<p class="instruction" id="rhythmDrop">Grab an audio file with a rhythm and
 					drop it here</p>
 				<p class="instruction">
-					Upload a file with this button: <input type="file" id="rhythmUpload"
-						style="display: none;" />
+					Upload a file with this button: 
 					<button class="upload">Upload</button>
 				</p>
+				<input type="file" id="rhythmUpload" style="visibility: hidden;" />
 				<p class="instruction">
 					Use your device and start tapping a rhythm:
             <div>
@@ -291,10 +291,10 @@
 					<span>Grab a picture and drop it here</span>
 				</p>
 				<p class="instruction">
-					Upload a image with this button: <input type="file"
-						id="imageUpload" style="display: none;" />
+					Upload a image with this button: 
 					<button class="upload">Upload</button>
 				</p>
+				<input type="file"	id="imageUpload" style="visibility: hidden;" />
 				<p class="instruction">
 					Take a picture with your device:
 					<button class="shoot">Shoot!</button>
@@ -310,9 +310,10 @@
         </p>
         <p class="instruction">
           Upload a video with this button: 
-          <input type="file" id="videoUpload" style="display:none;"/>
+          
           <button class="upload">Upload</button>
         </p>
+		<input type="file" id="videoUpload" style="visibility:hidden;"/>
         <p class="instruction">
           Take a video with your device: <button class="shoot">Shoot!</button>
         </p>
@@ -338,10 +339,11 @@
 				<p class="instruction" id="threedDrop">Drag'n'drop one of your
 					3D model here</p>
 				<p class="instruction">
-					Upload a 3D file with this button: <input type="file"
-						id="threedUpload" style="display: none;" />
+					Upload a 3D file with this button: 
 					<button class="upload">Upload</button>
 				</p>
+				<input type="file"
+						id="threedUpload" style="visibility: hidden;" />
 				<footer>
 					<a href="#">close</a>
 				</footer>
@@ -380,6 +382,7 @@
 	</div>
 
 	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=true&amp;v=3.2"></script>
+	<script type="text/javascript" src="js/local/iaprtc12.js"></script>
 	<!-- All the script dependancies will be managed with requireJS
        More info? Check http://requirejs.org -->
   <script data-main="js/main" src="js/libs/require-jquery.js"></script>     

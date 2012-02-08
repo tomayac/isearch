@@ -156,6 +156,10 @@ define("mylibs/filehandler", ["libs/glge-compiled-min"], function(GLGE){
 		            	console.log("Audio uploaded...");
 		            	pictureIcon = $('nav li[data-mode="sound"]');
 		            	genericItemType = 'SoundType';
+						
+						
+						
+						
 		            }
 		            //Video display in query field
 		            if((/video/i).test(fileInfo.type)) {
@@ -163,11 +167,36 @@ define("mylibs/filehandler", ["libs/glge-compiled-min"], function(GLGE){
 		            	pictureIcon = $('nav li[data-mode="video"]');
 		            	genericItemType = 'VideoType';
 		            }
+					
+					var ele = $('#' + id) ;
+					
 		            //set the appropriate data tags for the html element
-		            $('#' + id).attr({'src'       : fileInfo.path,
-  		                            'alt'       : fileInfo.name,
-  		                            'class'     : fileInfo.subtype,
-  		                            'data-mode' : genericItemType});
+		            ele.attr({'alt'       : fileInfo.name,
+  		                      'class'     : fileInfo.subtype,
+  		                      'data-mode' : genericItemType});
+									
+					// Sotiris: special handling for multiple audio formats
+					// The path element may contain multiple objects pointing to files in different formats
+					// Also a token attribute is returned to allow for reusing temporary files on the server during the query
+						
+						
+					if ( !$.isArray(fileInfo.path) )
+					{
+						ele.attr({'src': fileInfo.path, 'data-token': fileInfo.token}) ;
+					}
+					else 
+					{	
+						ele.empty().removeAttr('src').attr({'preload':'auto', 'data-token':fileInfo.token }) ;
+							
+						for ( var i=0 ; i<fileInfo.path.length ; i++ )
+						{
+							var url = fileInfo.path[i].url ;
+							var mime = fileInfo.path[i].mime ;
+								
+							$('<source/>', { src: url, type: mime }).appendTo(ele) ;
+						}
+												
+					}
 	            }
 	            
 	            pictureIcon.removeClass('uploading');
@@ -222,9 +251,9 @@ define("mylibs/filehandler", ["libs/glge-compiled-min"], function(GLGE){
         			token = '<img id="' + id + '" alt="" src="" />';
         			
         		} else if((/audio/i).test(files[i].type) || (/ogg/i).test(files[i].name)) {
-        			token = '<audio src="" controls="" id="' + id + '" width="60" height="25">No audio preview.</audio>';
+        			token = '<audio controls="controls" id="' + id + '" >No audio preview.</audio>';
         		} else if((/video/i).test(files[i].type)) {
-	        		token = '<video src="" controls="" id="' + id + '" width="60" height="25">No video preview.</video>';
+	        		token = '<video src="" controls="controls" id="' + id + '" width="60" height="25">No video preview.</video>';
         		} else if((/dae/i).test(files[i].name) || (/3ds/i).test(files[i].name) || (/md2/i).test(files[i].name) || (/obj/i).test(files[i].name)) {
         			token = '<canvas id="' + id + '" width="60" height="25"></canvas>';
         			supportDirectData = false;

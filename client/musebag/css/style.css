@@ -173,6 +173,11 @@ input:invalid,textarea:invalid {
 	box-shadow: 0px 0px 5px red;
 }
 
+input[type="file"] {
+    float: right;
+    width: 1px;
+} 
+
 .no-boxshadow input:invalid,.no-boxshadow textarea:invalid {
 	background-color: #f0dddd;
 }

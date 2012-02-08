@@ -66,6 +66,8 @@ define("mylibs/visualization/dataParser", function(){
 
   var parseJSON = function(data) {
 
+	docs = [] ;
+		
   	for (var i=0 ; i<data.documentList.length ; i++ ) {
   		var doc = data.documentList[i] ;
   		docs.push(doc) ;
