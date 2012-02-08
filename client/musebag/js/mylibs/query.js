@@ -73,7 +73,8 @@ define("mylibs/query", ["mylibs/config",], function(config) {
           queryItem.RealType = queryToken.attr('class');
           queryItem.Name     = queryToken.attr('alt');
           queryItem.Content  = queryToken.attr('src');
-
+		  queryItem.Token    = queryToken.attr('data-token') ;
+		  
           console.log('found file item with name ' + queryItem.Name);
           queryJson.fileItems.push(queryItem);
           

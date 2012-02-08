@@ -205,9 +205,14 @@ define("mylibs/visualization/FilterBar",  [ ],
 					var lon = position.coords.longitude ;
 				
 					docs.sort(function(a, b) { 
-						var distb = geodist(b.rw.pos.coords.lat, b.rw.pos.coords.lon, lat, lon) ;
-						var dista = geodist(a.rw.pos.coords.lat, a.rw.pos.coords.lon, lat, lon) ;
-						return distb - dista  ; 
+					
+						if ( b.rw.pos && a.rw.pos )
+						{	
+							var distb = geodist(b.rw.pos.coords.lat, b.rw.pos.coords.lon, lat, lon) ;
+							var dista = geodist(a.rw.pos.coords.lat, a.rw.pos.coords.lon, lat, lon) ;
+							return distb - dista  ; 
+						}
+						else return 0 ;
 					}) ;
 					
 					callback() ;

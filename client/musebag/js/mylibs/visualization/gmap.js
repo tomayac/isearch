@@ -213,7 +213,161 @@ p.updateVisibility = function( zoom, minZoom, maxZoom )
 };
 
 ///////////////////////////////////////////////////////////////////////////////
+var MarkerFactory = (function() {
+  var width = 16;
+  var height = 32;
+  return new function() {
 
+    var h = 1;
+    var s = 78; // constant saturation
+    var l = 63; // constant luminance
+    var a = 1;
+
+    var getColor = function(val, range) {
+      h = Math.floor((360 / range) * val);
+
+      return "hsla(" + h +"," + s + "%," + l +"%," + a +")";
+    };
+
+    var getColor1 = function() {
+      return "hsla(" + h +"," + s + "%," + (l - 30) +"%," + a +")";
+    };
+
+    // draws a rounded rectangle
+    var drawRect = function(context, x, y, width, height) {
+      var radius = 5
+      context.beginPath();
+      context.moveTo(x + radius, y);
+      context.lineTo(x + width - radius, y);
+      context.quadraticCurveTo(x + width, y, x + width, y + radius);
+      context.lineTo(x + width, y + height - radius);
+      context.quadraticCurveTo(x + width, y + height, x + width -
+      radius, y + height);
+      context.lineTo(x + radius, y + height);
+      context.quadraticCurveTo(x, y + height, x, y + height - radius);
+      context.lineTo(x, y + radius);
+      context.quadraticCurveTo(x, y, x + radius, y);
+      context.closePath();
+    }
+	
+	var drawMarker = function(c, x, y, width, height) {
+      var radius = 0.5*width ;
+	  
+		c.beginPath();
+		
+		var x0 = x + radius ;
+		var y0 = y ;
+		
+		var r = 0.9*radius ;
+		var h = height ;
+
+		c.moveTo(x0, y0); 
+		c.bezierCurveTo(x0,y0,x0-r,y0,x0-r, y0+r);
+		c.bezierCurveTo(x0-r, y0+0.45*h, x0, y0+0.55*h, x0, y0+0.9*h);
+		c.bezierCurveTo(x0, y0+0.55*h, x0+r, y0+0.45*h,x0+r, y0+r);
+		c.bezierCurveTo(x0+r,y0,x0,y0,x0,y0);
+	    c.closePath();
+    }
+	
+	
+		
+    this.createCanvas = function(range) {
+		var canvas = document.createElement("canvas");
+		canvas.width = width;
+		canvas.height = height;
+
+		var context = canvas.getContext("2d");
+
+		context.clearRect(0,0,width,height);
+		
+		var color0 = "black" ;// getColor(val, range);
+
+		context.fillStyle = getColor(range, 200);
+		context.strokeStyle = color0;
+
+		drawMarker(context, 0, 0, width, height);
+	 		
+		context.fill();
+		context.stroke();
+
+		context.fillStyle = "white";
+		context.strokeStyle = "black"
+	
+		return canvas;
+    };
+
+    this.create = function(range) {
+		var canvas = this.createCanvas(range);
+		return canvas.toDataURL();
+    };
+  }
+})();
+
+/////////////////////////////////////////////////////////////////////////////////
+
+function hslToRgb(h, s, l){
+    var r, g, b;
+
+    if(s == 0){
+        r = g = b = l; // achromatic
+    }else{
+        function hue2rgb(p, q, t){
+            if(t < 0) t += 1;
+            if(t > 1) t -= 1;
+            if(t < 1/6) return p + (q - p) * 6 * t;
+            if(t < 1/2) return q;
+            if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+            return p;
+        }
+
+        var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        var p = 2 * l - q;
+        r = hue2rgb(p, q, h + 1/3);
+        g = hue2rgb(p, q, h);
+        b = hue2rgb(p, q, h - 1/3);
+    }
+
+    return [r * 255, g * 255, b * 255];
+}
+
+function ScaleBarControl(controlDiv, map) {
+
+	// Set CSS styles for the DIV containing the control
+	// Setting padding to 5 px will offset the control
+	// from the edge of the map.
+	controlDiv.style.padding = '5px';
+
+	// Set CSS for the control border.
+	var controlUI = document.createElement('DIV');
+	controlUI.style.cursor = 'pointer';
+	controlUI.title = 'Relevance scale';
+	controlDiv.appendChild(controlUI);
+  
+	var canvas = document.createElement('canvas');
+  
+	canvas.width = 200;
+	canvas.height = 18;
+
+	var context = canvas.getContext("2d");
+	
+	var x = 0 ;
+	for(var i=0 ; i<200 ; i+=5 )
+	{
+		var rgb = hslToRgb(i/360, 0.78, 0.63) ;
+		var clr = 'rgb(' + Math.floor(rgb[0]) + ',' + Math.floor(rgb[1]) +  ',' + Math.floor(rgb[2]) + ')' ;
+		context.fillStyle = clr;
+		context.fillRect(x, 0, 5, 18) ;
+		x += 5 ;
+	}
+		   
+	context.strokeStyle = "white" ;
+	context.strokeRect(0, 0, 200, 18) ;	
+	controlUI.appendChild(canvas);
+
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
 GoogleMap = function(mapDiv, thumbRenderer, layers_) {
 
 	this.map = null ;
@@ -325,6 +479,7 @@ p.addLayers = function(_layers)
 							title: data.tooltip,
 							visible: true,
 							icon: markerImage  
+							
 					} ) ;
 				}
 				else
@@ -333,7 +488,8 @@ p.addLayers = function(_layers)
 							position: pos,
 							map: map,
 							title: data.tooltip,
-							visible: true
+							visible: true,
+							icon: MarkerFactory.create(data.score*100) 
 					} ) ;
 				}							
 		
@@ -378,7 +534,14 @@ p.initMap = function(mapDiv, _layers) {
 		}	 
 	};
 	
-   	var map = this.map = new google.maps.Map(mapDiv, options);
+	var map = this.map = new google.maps.Map(mapDiv, options);
+		
+	var homeControlDiv = document.createElement('DIV');
+	var homeControl = new ScaleBarControl(homeControlDiv, map);
+
+	homeControlDiv.index = 1;
+	map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(homeControlDiv);
+	
 		
 	this.addLayers(_layers) ;
 	

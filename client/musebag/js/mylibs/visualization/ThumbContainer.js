@@ -807,7 +807,7 @@ p.showMap = function()
 	var markerImages = [];	
 	var markerImages2 = [];	
 
-	for( var i=0 ; i<this.thumbs.length ; i++ )	
+	for( var i=this.thumbs.length-1 ; i>=0 ; i-- )	
 	{	
 		var data = this.thumbs[i] ;	
 
@@ -821,7 +821,7 @@ p.showMap = function()
 				var tooltip = ThumbContainer.selectTooltipText(data.doc) ;
 				
 				markerImages.push({ "lat": lat, "lon": lon, "icon": thumb, "tooltip": tooltip, data: data }) ;	
-				markerImages2.push({ "lat": lat, "lon": lon, "tooltip": tooltip, data: data }) ;	
+				markerImages2.push({ "lat": lat, "lon": lon, "tooltip": tooltip, "score": i/this.thumbs.length, data: data }) ;	
 			}
 		}
 	}	
