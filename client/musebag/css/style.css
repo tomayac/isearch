@@ -382,13 +382,15 @@ nav {
 	box-shadow: 0px 0px 3px #111;
   border-bottom-left-radius: 4px;
 	
-	padding: 1em 2em 1em 3em;
+	padding: 1.5em 1em 1.5em 3em;
 	display: none;
+	
+	text-align: center;
 }
 
 .settings-panel section {
   text-align: center;
-  padding: 0.5em 0;
+  padding: 0.5em 0 0 0;
 }
 
 .settings-panel section ul {
@@ -408,25 +410,44 @@ nav {
   border-bottom: 1px solid #999;
 }
 
+/*
 .settings-panel section ul li button {
   background-color: #bbb;
   border: 1px solid #999;
   margin: 0 0 0 0.2em;
   padding: 0.1em;
 }
+*/
+.settings-panel label,
+.settings-panel input,
+.settings-panel select {
+	float: left;
+}
+
+.settings-panel label,
+.settings-panel input,
+.settings-panel select,
+.settings-panel button,
+.settings-panel .setting {
+  display: inline-block;
+}
 
 .settings-panel .setting {
-	float: left;
-	margin-right: 10px;
+  margin-right: 1em;
+  vertical-align: top;
 }
 
-.settings-panel .float-button {
-	float: left;
-	margin-right: 10px;
+.settings-panel .setting:last-child {
+  margin-right: 0;
 }
 
-.settings-panel label,.settings-panel input,.settings-panel select, .settings-panel button {
-	display: inline-block;
+.settings-panel .setting label {
+  margin: 0 0.5em 0 0;
+  padding: 0.3em 0.5em;
+  background-color: #999;
+  min-width: 3em;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
 }
 
 .settings-panel button {
@@ -446,14 +467,31 @@ nav {
   color: #d88;
 }
 
-.settings-panel label {
-  margin: 0.5em 0.5em 0 0;
-}
-
 .settings-panel input,.settings-panel select {
 	padding: 0.2em;
-	border: 1px solid #ccc;
+	border: 1px solid #fff;
 	vertical-align: baseline;
+	width: 12em;
+}
+
+.settings-panel .checkbox input[type=checkbox] {
+  visibility: hidden;
+}
+
+.settings-panel .checkbox {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  background-color: #fff;
+}
+
+.settings-panel .checkbox.checked {
+  background: #fff url('../img/tick.png') no-repeat 0 0;
+  background-size: 22px 22px;
+}
+
+.settings-panel h6 {
+  margin-top: 0.7em;
 }
 
 #query {
@@ -773,7 +811,7 @@ footer {
 }
 
 /* Hide visually and from screenreaders, but maintain layout */
-.invisible {
+..settings-panel {
 	visibility: hidden;
 }
 
@@ -816,11 +854,20 @@ footer {
 
 /*480px ______________________________*/
 @media only screen and (max-width: 480px) {
+  header h1 {
+    margin-top: 18%;
+  }
   .settings-panel {
-    width: 87%;
+    width: 90%;
   }
   .bottom-overlay {
     width: 90%;
+  }
+  .settings-panel .setting {
+    margin-right: 0;
+  }
+  .settings-panel .setting label {
+    border-bottom-left-radius: 0px;
   }
 }
 

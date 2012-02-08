@@ -56,41 +56,38 @@ define("mylibs/visualization/FilterBar",  [ ],
 		
 		// draw the sort by buttons
 		
-		sortbyDiv = $('<div/>', {"class": "formitem", css: { "display": "table-cell", "vertical-align": "middle", "width": "200px"}}).appendTo(ele) ;
+		var sortbyDiv = $('<div/>', {"class": "formitem", css: { "display": "table-cell", "vertical-align": "middle", "width": "200px"}}).appendTo(ele) ;
 		$('<span/>', { css: { "display": "table-cell", "vertical-align": "middle", "padding-right": "5px"},  text: "Sort by:" } ).appendTo(sortbyDiv) ;
-		sortbyButtons = $('<div/>', { css: { display: "table-cell" } } ).appendTo(sortbyDiv) ;
+		var sortbyButtons = $('<div/>', { css: { display: "table-cell" } } ).appendTo(sortbyDiv) ;
 		
-		var item = $("<input/>", { type: "radio", name:"sortby", id: "sortby-relevance", "checked": "checked"  }).appendTo(sortbyButtons) ;
-		var label = $("<label/>", { "for": "sortby-relevance", text: "Relevance" }).appendTo(sortbyButtons) ;
-			
-		item.button( {text: false,  "icons": {primary:'ui-icon-sortby-relevance'}}) ;
-			
-		item.click(function() {
-			filter() ;
-			rerank() ;
-			
-		});
+		/**
+		 * Triantafillos:
+		 * optimized existing code
+		 */
+		// sort by relevance button
+		$("<label/>", { "for": "sortby-relevance", text: "Relevance" }).appendTo(sortbyButtons);
+		$("<input/>", { type: "radio", name:"sortby", id: "sortby-relevance", "checked": "checked" })
+		.appendTo(sortbyButtons)
+		.button( {text: false,  "icons": {primary:'ui-icon-sortby-relevance'}});
 		
-		item = $("<input/>", { type: "radio", name:"sortby", id: "sortby-location"  }).appendTo(sortbyButtons) ;
-		label = $("<label/>", { "for": "sortby-location", text: "Location" }).appendTo(sortbyButtons) ;
-			
-		item.button( {text: false,  "icons": {primary:'ui-icon-sortby-location'}}) ;
-			
-		item.click(function() {
-			filter() ;
-			rerank() ;
-		});
+		// sort by time button
+		$("<label/>", { "for": "sortby-time", text: "Time" }).appendTo(sortbyButtons) ;
+		$("<input/>", { type: "radio", name:"sortby",  id: "sortby-time"  })
+		.appendTo(sortbyButtons)
+		.button( {text: false,  "icons": {primary:'ui-icon-sortby-time'}});
 		
-		item = $("<input/>", { type: "radio", name:"sortby",  id: "sortby-time"  }).appendTo(sortbyButtons) ;
-		label = $("<label/>", { "for": "sortby-time", text: "Time" }).appendTo(sortbyButtons) ;
-			
-		item.button( {text: false,  "icons": {primary:'ui-icon-sortby-time'}}) ;
-			
-		item.click(function() {
-			filter() ;
-			rerank() ;
-
-		});
+		// sort by location button
+		$("<label/>", { "for": "sortby-location", text: "Location" }).appendTo(sortbyButtons);
+		$("<input/>", { type: "radio", name:"sortby", id: "sortby-location"  })
+		.appendTo(sortbyButtons) 
+		.button( {text: false,  "icons": {primary:'ui-icon-sortby-location'}});
+		
+		$('[name=sortby]').click(function(event) {
+		  event.preventDefault();
+		  filter() ;
+		  rerank() ;
+		  return false;
+	    });
 		
 		sortbyButtons.buttonset() ;
 		
@@ -219,11 +216,8 @@ define("mylibs/visualization/FilterBar",  [ ],
 					
 				}) ;
 			}
-		
 		}
-			
-	
-	} ;
+	}
 	
 	var modalities = function()
 	{

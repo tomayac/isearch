@@ -77,7 +77,7 @@ require(["jquery",
           });
 		  
     		  // adding a global loader animation for long processes
-    		  loader = $('<div class="ui-loader" style="top: 313.5px;"><span class="ui-icon-loading"></span><h1>loading</h1></div>').appendTo('#main') ;
+    		  loader = $('<div class="ui-loader" style="top: 313.5px; background-color: #444;"><span class="ui-icon-loading"></span><h1>loading</h1></div>').appendTo('#main') ;
     		  
     			loader.ajaxStart(function() {
     				$(this).show();
@@ -121,7 +121,6 @@ require(["jquery",
     				$( "#query-submit").click(function (e) {
     		  
     					var resubmit = $(this).hasClass('resubmit') ;
-    					if ( !resubmit ) $(this).addClass('resubmit') ;
     					
     					//prevent the page to reload
     					e.preventDefault() ;
@@ -144,6 +143,13 @@ require(["jquery",
     						{
     							if ( result ) 
     							{
+									/**
+								     * Triantafillos: add the resubmit class only if the results are not empty.
+								     */
+								    if (!resubmit) {
+									  $("#query-submit").addClass('resubmit');
+									}
+									
     								//Collapses the menu
     								menu.collapse();
     		  
