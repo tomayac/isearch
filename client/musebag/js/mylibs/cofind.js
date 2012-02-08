@@ -1,7 +1,7 @@
 /*
  *  CoFind Client
  */
-define("mylibs/cofind", ["libs/modernizr-2.0.min", "order!libs/jquery.hoverIntent.min", "/nowjs/now.js", "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js"], function(){
+define("mylibs/cofind", ["libs/modernizr-2.0.min", "order!libs/jquery.hoverIntent.min", "js/libs/now.js", "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js"], function(){
   
   //Static HTML snippets for CoFind interface
   var buttonSnippet = '<li id="button-cofind-settings"><a href="#"><img src="img/collaborate.png" alt="Collaborate" title="Collaboration panel" style="max-height: 31px;"></a></li>';

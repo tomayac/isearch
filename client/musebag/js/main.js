@@ -19,7 +19,7 @@ require(["jquery",
          "mylibs/results",
          "mylibs/uiiface",
          "mylibs/query",
-         "mylibs/local",
+         // "mylibs/local",
          "libs/jquery.tokeninput",
          "libs/smiley-slider"], 
     function($, menu, config, tags, results, uiiface, query) {
