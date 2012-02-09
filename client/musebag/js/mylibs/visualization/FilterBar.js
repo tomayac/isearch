@@ -207,7 +207,7 @@ define("mylibs/visualization/FilterBar",  [ ],
 						{	
 							var distb = geodist(b.rw.pos.coords.lat, b.rw.pos.coords.lon, lat, lon) ;
 							var dista = geodist(a.rw.pos.coords.lat, a.rw.pos.coords.lon, lat, lon) ;
-							return distb - dista  ; 
+							return dista-distb; 
 						}
 						else return 0 ;
 					}) ;
