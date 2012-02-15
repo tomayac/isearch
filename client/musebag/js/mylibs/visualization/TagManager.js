@@ -39,7 +39,7 @@ function() {
 						
 						if ( !tags ) continue ;
 						
-						docs[i].tags  = tags ;
+						for(var j=0 ; j<tags.length ; j++ ) docs[i].tags.push(tags[j]) ;
 						
 						if ( !tags ) continue ;
 			

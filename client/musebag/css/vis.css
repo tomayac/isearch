@@ -1248,6 +1248,10 @@ div.jqmNotice .jqmClose {
 	background-image: url(../img/camera_icon.svg);
 }
 
+.tooltip-toolbar #VideoType {
+	background-image: url(../img/video_icon.svg);
+}
+
 .gmaps-infobox {
 	position: absolute;
 	padding: 5px;
@@ -1414,6 +1418,9 @@ div.jqmNotice .jqmClose {
 	background-image: url("../img/ui-icon-media-3d.png") !important;
 }
 
+.ui-icon-media-video {
+	background-image: url("../img/ui-icon-media-video.png") !important;
+}
 .ui-icon-media-audio {
 	background-image: url("../img/ui-icon-media-audio.png") !important;
 }

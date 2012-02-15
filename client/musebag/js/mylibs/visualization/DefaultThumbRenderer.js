@@ -48,11 +48,13 @@ p.render = function(item, container, options)
 	if ( options.hover ) this.hover = options.hover ;
 	else this.hover = true ;
 		
+	var docid = ( item.doc.coid ) ? item.doc.coid : item.doc.id ;
 	
 	if ( mediaTypes.count == 1 )
 	{
-		var img = $('<div/>', { css: { position: "absolute", left: tm, top: tm, width: w - tm - tm, height: h - tm - tm }  }).appendTo(container) ;
+		var img = $('<div/>', { "docid": docid, css: {  position: "absolute", left: tm, top: tm, width: w - tm - tm, height: h - tm - tm }  }).appendTo(container) ;
 		img.thumb(ThumbContainer.selectThumbUrl(item.doc, options.modalities)) ;
+		this.img = img ;
 	}
 	else // stack metaphor
 	{
@@ -63,10 +65,19 @@ p.render = function(item, container, options)
 		var div2 = $('<div/>', 
 			{ css: { position: "absolute", left: tm, right: tm, top: tm, bottom: tm, 
 			"border-style": "solid", "border-width": "0px " + tm + "px " + tm + "px 0px", "border-color": "#afafaf" }}).appendTo(container) ;
-		var img = $('<div/>', { css: { position: "absolute", left: 0,  top: 0, width: w - tm - tm, height: h - tm - tm,
+		var img = $('<div/>', { "docid": docid, css: { position: "absolute", left: 0,  top: 0, width: w - tm - tm, height: h - tm - tm,
 "border": "1px solid black"		}  }).appendTo(container) ;
 		img.thumb(ThumbContainer.selectThumbUrl(item.doc, options.modalities)) ;
+		this.img = img ;
 	}
+	
+	$(img).draggable({opacity: '0.7', cursor: 'move', containment: '#container', "z-index": 10, helper: function(e) {
+			
+		var helper = $('<div/>', { css: { width: w , height: h  }  }) ;
+		helper.thumb(ThumbContainer.selectThumbUrl(item.doc, options.modalities)) ;
+		return helper ;
+	
+	}}) ;
 	
 	// setup tooltip mode
 	
@@ -138,7 +149,7 @@ p.renderContents = function(tooltip, thumb, mediaType)
 					current.remove() ;
 					that.renderContents(tooltip, thumb, thisMediaType) ;
 					$(this).toggleClass('selected') ;
-					$('a#' + currentId, tooltip).toggleClass('selected') ;
+				//	$('a#' + currentId, tooltip).toggleClass('selected') ;
 				}
 				
 			}) ;
@@ -157,8 +168,8 @@ p.renderContents = function(tooltip, thumb, mediaType)
 		
 		var slideShow = $('<div/>', { "id": "slides"} ).appendTo(tooltipContents) ;
 		var slideContainer = $('<div/>', { "class": "slides-container", css: { width: tooltip.width() }}).appendTo(slideShow) ;
-					
 		
+				
 		for( var i=0 ; i<thumb.doc.media.length ; i++ )
 		{
 			var media = thumb.doc.media[i] ;
@@ -171,12 +182,22 @@ p.renderContents = function(tooltip, thumb, mediaType)
 				{
 					var preview = media.previews[j] ;
 				
-					if ( ! /^image\//.test(preview.format) ) continue ;
+				/*	if ( ! /^image\//.test(preview.format) ) continue ; */
 				
 					imageUrls.push(preview.url) ;
 					
-					var cntSlide = $('<div/>', { "class": "slide", css: { width: tooltip.width(), height: tooltip.width() }}).appendTo(slideContainer) ;
-					var slide = $("<img/>", { src: preview.url }).appendTo(cntSlide) ;
+					var cntSlide = $('<div/>', { "class": "slide", 
+						css: { width: tooltip.width() + 'px', height: tooltip.width() + 'px', 'line-height': tooltip.width() + 'px', 'text-align': 'center' }
+					}).appendTo(slideContainer) ;
+					
+					var slide = $("<img/>", { load: function() {
+						if ( this.width < this.height )
+							$(this).attr('height', '100%') ;
+						else
+							$(this).attr('width', '100%') ;
+						},
+					src: preview.url,
+					css: { 'vertical-align' : 'middle'}}).appendTo(cntSlide) ;
 					
 				}
 			}
@@ -219,15 +240,17 @@ p.renderContents = function(tooltip, thumb, mediaType)
 				var  preview = media.previews[j] ;
 				
 				if ( preview.format == "image/png" ) urlPng = preview.url ;
-				if ( preview.format == "image/jpg" ) urlJpg = preview.url ;
+				else if ( preview.format == "image/jpg" ||  preview.format == "image/jpeg" ) urlJpg = preview.url ;
 				else if ( preview.format == "image/svg+xml" ) urlSvg = preview.url ;
 				else if ( preview.format == "audio/mpeg" ) urlMp3 = preview.url ;
 				else if ( preview.format == "audio/ogg" ) urlOgg = preview.url ;
+				else if ( preview.format == "" ) urlUnknown = preview.url ;
 			}
 			
 			if ( urlSvg && Modernizr.svg ) urlImg = urlSvg ;
 			else if ( urlPng ) urlImg = urlPng ;
 			else if ( urlJpg ) urlImg = urlJpg ;
+			else if ( urlUnknown ) urlImg = urlUnknown ;
 			
 			var anim = $('<div/>', { css: { width: tooltip.width() } }).appendTo(tooltipContents) ;
 			var audioRdr = new AudioRenderer(anim, urlMp3, urlOgg, urlImg, "flower") ;
@@ -300,11 +323,18 @@ p.doShowTooltip = function(thumb, container, visBox)
 	// see what type of media we have
 		
 	// select default media to show
-	var mediaType = null ;
+	var mediaTypes = this.getMediaTypes(thumb) ;
+	
 	if ( thumb.defaultMedia )
 		mediaType = thumb.defaultMedia ;
-	else if ( thumb.doc.media.length > 0 )
-		mediaType = thumb.doc.media[0].type ;
+	else if ( mediaTypes.count > 0 )
+	{
+		for (var type in mediaTypes.types )
+		{
+			mediaType = type ;
+			break ;
+		}
+	}
 		
 	// now render the contents
 		

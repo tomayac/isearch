@@ -54,7 +54,7 @@
 		</ul>  
 	</div>
 	<div class="settings-panel" id="login-settings">
-    <form method="post" action="#">
+    <form method="post" action="#" class="clearfix">
       <section class="setting">
         <label for="email">Email</label> <input type="text" id="email" name="email" />
       </section>
@@ -65,14 +65,14 @@
     </form>
   </div>  
   <div class="settings-panel" id="global-settings">
-    <form method="post" action="#">
+    <form method="post" action="#" class="clearfix">
       
       <section class="setting">
         <label for="audio-cluster-type">Audio Use Case?</label> 
-        <div class="checkbox"><input type="checkbox" id="audio-cluster-type" /></div>
+        <input type="checkbox" id="audio-cluster-type" />
       </section>
       
-      <section class="setting clearfix">
+      <section class="setting">
         <label for="max-num-results">Size of result</label> 
         <input type="text" id="max-num-results" size="8" />
       </section>
@@ -278,7 +278,7 @@
 	</div>
 
 	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=true&amp;v=3.2"></script>
-	<script type="text/javascript" src="js/local/iaprtc12.js"></script>
+	<script type="text/javascript" src="js/local/uc1.js"></script>
 	<!-- All the script dependancies will be managed with requireJS
        More info? Check http://requirejs.org -->
   <script data-main="js/main" src="js/libs/require-jquery.js"></script>     
