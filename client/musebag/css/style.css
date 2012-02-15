@@ -830,6 +830,25 @@ footer {
 	zoom: 1;
 }
 
+/* Rhythm input start */
+#progress-bar {
+  width: 200px;
+}
+#rhythm-button {
+  width: 200px;
+  height: 50px;
+}
+P.rhythm {
+  width: 220px;
+  padding: 0.2em;
+}
+CANVAS.rhythm {
+  background-color: lightgray;
+  width: 200px;
+  height: 20px;
+}
+/* Rhythm input end */
+
 /**
  * Media queries for responsive design.
  */

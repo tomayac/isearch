@@ -1,6 +1,6 @@
 define("mylibs/menu",
-  ["mylibs/config", "mylibs/uiiface", "mylibs/filehandler"],
-  function(config, uiiface, filehandler) {
+  ["mylibs/config", "mylibs/uiiface", "mylibs/filehandler", "mylibs/location"],
+  function(config, uiiface, filehandler, location) {
     
     var hasNav = false;
     var attachedModes = []; //Stock the attached events 
@@ -185,36 +185,29 @@ define("mylibs/menu",
      * Triantafillos: find real location with HTML5 geo-location API.
      */
     var attachGeolocationEvents = function() {
-      $('.panel.geolocation button').click(function(){
+      $('.panel.geolocation #getCurrentLocation').click(function(){
         console.log('Button geolocation pressed');
 
-        var pictureIcon = $('nav li[data-mode="geolocation"]');
-        pictureIcon.addClass('uploading');
+        var geoIcon = $('nav li[data-mode="geolocation"]');
+        geoIcon.addClass('uploading');
 
-        // default location (Thessaloniki, GR)
-        var location = "40.639350 22.944607";
-        navigator.geolocation.getCurrentPosition(
-        		
-          function(position) {
-        	location =  position.coords.latitude+" "+position.coords.longitude;
-        	$("#query-field").tokenInput('add',{id:"geo",name:'<img src="img/fake/fake-geolocation.jpg" title="' + location + '" class="Location" data-mode="Image" />'});
-        	console.log(location);
-          },
-          
-          function(error) {
-        	alert("Error getting your current location");
-          },
-          
-          {enableHighAccuracy: true}
-        );
-        
-        //Remove the "uploading style" | Note: this won't be visible, hopefully
-        pictureIcon.removeClass('uploading');
-
-        reset();
-        attachedModes.push('geolocation');
+        location.getCurrentLocation(function(position) {
+          $("#query-field").tokenInput('add',{id:"geo",name:'<img src="img/fake/fake-geolocation.jpg" title="'+position.coords.latitude+" "+position.coords.longitude+'" class="Location" data-mode="Image" />'});
+          geoIcon.removeClass('uploading');
+          reset();
+          attachedModes.push('geolocation');
+        });
 
       });
+	  
+	  $('.panel.geolocation #chooseLocation').click(function(){
+    	location.showMap(function(lat, lon){
+    	  $("#query-field").tokenInput('add',{id:"geo",name:'<img src="img/fake/fake-geolocation.jpg" title="'+lat+" "+lon+'" class="Location" data-mode="Image" />'});
+          reset();
+          attachedModes.push('geolocation');
+    	});
+      });
+	  
     };
     
     var attachEmotionEvents = function() {

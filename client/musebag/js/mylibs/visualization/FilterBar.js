@@ -1,5 +1,5 @@
-define("mylibs/visualization/FilterBar",  [ ], 
-    function() {
+define("mylibs/visualization/FilterBar",  ["mylibs/location"], 
+    function(location) {
 
 	var tagManager = null ;
 	var currentTags = [], tagsButtons, filterTags = [], modalFilter = [] ;
@@ -195,9 +195,7 @@ define("mylibs/visualization/FilterBar",  [ ],
 		}
 		else if ( sortby == 'location' )
 		{
-			if ( navigator.geolocation )
-			{
-				navigator.geolocation.getCurrentPosition(function(position) {
+				location.getCurrentLocation(function(position) {
 					var lat = position.coords.latitude ;
 					var lon = position.coords.longitude ;
 				
@@ -207,7 +205,7 @@ define("mylibs/visualization/FilterBar",  [ ],
 						{	
 							var distb = geodist(b.rw.pos.coords.lat, b.rw.pos.coords.lon, lat, lon) ;
 							var dista = geodist(a.rw.pos.coords.lat, a.rw.pos.coords.lon, lat, lon) ;
-							return distb - dista  ; 
+							return dista-distb; 
 						}
 						else return 0 ;
 					}) ;
@@ -215,7 +213,6 @@ define("mylibs/visualization/FilterBar",  [ ],
 					callback() ;
 					
 				}) ;
-			}
 		}
 	}
 	
