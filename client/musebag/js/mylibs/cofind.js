@@ -86,7 +86,7 @@ define("mylibs/cofind", ["libs/modernizr-2.0.min", "libs/jquery.hoverIntent.min"
     $('#chat-input-' + emailId).on('keypress', function(event) {
       if(event.keyCode == 13) {
         var message = $(this).val() || '';
-        if(message.length > 3) {
+        if(message.length > 2) {
           //$('#chat-input-' + emailId).parent().before('<li><p>' + message + '</p></li>');
           callFunction('distributeMessage',[message]);
           message = '';
@@ -95,25 +95,55 @@ define("mylibs/cofind", ["libs/modernizr-2.0.min", "libs/jquery.hoverIntent.min"
       }
     });
     
-    //scroll to end of the messages
-    //window.scrollTo( xValue,yValue) ;
-    $('.chat-container ul li:last-child').each(function(index) {
-      var postion = $(this).position();
-      var offset = $(this).offset();
-      //console.dir($(this));
-      //console.log($(this).parent().parent());
+    $('.chat-container ul li').on('click', function(event) {
       
-      //console.log(offset.left);
-      //console.log(postion.left);
-      //$(this).parent().parent().scrollLeft(300);
-      //$(this).parent().scrollLeft(300);
-      $(this).parent().parent().animate({
-        scrollLeft: postion.left
-      }, 200);
+      if($(this).find('input').length > 0) {
+        return false;
+      }
+      
+      var currentIndex = $(this).index();
+      var containerWidth = $(this).parent().parent().outerWidth();
+      var scrollLeft = $(this).parent().parent().scrollLeft();
+      var itemWidth = $(this).outerWidth(true);
+      var scrollTo = 0;
 
-      //$(this).scrollTo( xValue,yValue) ;
+      $(this).parent().children('li').each(function(index) {
+        if(index >= currentIndex) {
+          if(scrollTo > 15) {
+            scrollTo -= 15;
+          } 
+          return false;
+        }
+        scrollTo += $(this).outerWidth(true);
+      });
+
+      if((containerWidth - itemWidth) < 15) {
+        if(scrollLeft <= scrollTo) {
+          scrollTo += (Math.abs((containerWidth - itemWidth)) + 15);
+        }
+      }
+
+      $(this).parent().parent().animate({
+        scrollLeft: scrollTo
+      }, 200, 'swing');
+      return false;
     });
-    
+  };
+  
+  var scrollChat = function() {
+    //scroll to end of the messages
+    $('.chat-container ul li:last-child').each(function(index) {
+      
+      var position = $(this).position();
+      var itemWidth = $(this).outerWidth(true);
+      var containerWidth = $(this).parent().parent().outerWidth();
+      var scrollEnd = (position.left + itemWidth) - (1.5 * containerWidth); 
+      //console.log(scrollEnd + ' = ('+position.left+' + ' + itemWidth + ') - (1.5 * ' + containerWidth + ')');
+      $(this).parent().parent().animate({
+        scrollLeft: scrollEnd
+      }, 200, 'swing');
+      
+    });
   };
   
   //Registers a logged in user for the use of CoFind
@@ -282,7 +312,7 @@ define("mylibs/cofind", ["libs/modernizr-2.0.min", "libs/jquery.hoverIntent.min"
     
     //if a new message was added to the chat, then force the panel to open
     if(newMsg === true) {
-      $('#cofind-settings').show(200);
+      $('#cofind-settings').show(200,function() { scrollChat(); });
     }
   };
   
@@ -511,7 +541,7 @@ define("mylibs/cofind", ["libs/modernizr-2.0.min", "libs/jquery.hoverIntent.min"
       } else {
         console.log('open invite');
         options.panels.hide(animationTime);
-        $("#cofind-settings").show(animationTime);
+        $("#cofind-settings").show(animationTime,function() { scrollChat(); });
         $("#button-cofind-settings").addClass('active');
       }
       event.stopPropagation();

@@ -281,8 +281,8 @@ var setupLogic = function() {
       everyone.now.updateUserList(users);
     }, true);
     
-    console.log('Registry: ');
-    console.log(users);
+    //console.log('Registry: ');
+    //console.log(users);
   };
   /**
    *  unregisterUser function 
@@ -315,8 +315,8 @@ var setupLogic = function() {
       everyone.now.updateUserList(groupUsers);
     }, true);
     
-    console.log('Registry: ');
-    console.log(users);
+    //console.log('Registry: ');
+    //console.log(users);
   };
   
   /**

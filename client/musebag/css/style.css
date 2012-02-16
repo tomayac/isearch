@@ -509,19 +509,20 @@ nav {
   display: inline-block;
   overflow: hidden;
   cursor: text;
-  z-index: 999;
   
   margin: 0 0 0 0.4em;
   padding: 0 0 0 0.4em;
   border-left: 1px solid #999;
   
+  height: 100%;
   max-width: 70%;
   min-height: 1.8em;
   
   background-color: transparent;
 }
 
-.chat-container ul {  
+.chat-container ul {
+  float: left;  
   display: block;
   width: 10000em;
   height: 100%;
