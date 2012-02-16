@@ -41,19 +41,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/
         hide : function(speed) {
           $('.settings-panel').hide(speed);
           $("#settings ul li").removeClass('active');
-          /*if(this.settings) {
-            this.settings.hide(speed);
-            $("#button-global-settings").removeClass('active');
-          }
-          if(this.login) {
-            this.login.hide(speed);
-            $("#button-login-settings").removeClass('active');
-          }
-          if(this.messages) {
-            this.messages.hide(speed);
-          }*/
         }
-
     };
     
     //Global set function
