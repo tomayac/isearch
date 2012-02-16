@@ -135,26 +135,26 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/
     var initSettings = function() {
       
       // initialize settings from local configuration if any 
-      if(localConfig !== undefined) {
+      if(localConfig) {
         if(typeof(localConfig) === "function") {
           localConfig(constants);
         }
       }
-      
-	// This should be updated. Visualisation options do not need to be in the setup menu. Only serialize/desierialize the constants.visOptions object
-	// to the user profile. The settings menu should contain query specific options such as the number of results, the type of clustering algorithm to 
-	// apply, the transformation algorithm, the number of clusters ...
-	
+        
+    	// This should be updated. Visualisation options do not need to be in the setup menu. Only serialize/desierialize the constants.visOptions object
+    	// to the user profile. The settings menu should contain query specific options such as the number of results, the type of clustering algorithm to 
+    	// apply, the transformation algorithm, the number of clusters ...
+  	
       var setForm = function() {
         //Initialize the form with the default values
         panels.settings.find("#max-num-results")
             .val(constants.queryOptions.maxNumResults);
-/*			
-        panels.settings.find("#icon-size option[value=" + constants.visOptions.thumbOptions.thumbSize + "]")
-            .attr('selected','selected');
-        panels.settings.find("#visualization-method option[value=" + constants.visOptions.method + "]")
-            .attr('selected','selected');
-*/			
+  /*			
+          panels.settings.find("#icon-size option[value=" + constants.visOptions.thumbOptions.thumbSize + "]")
+              .attr('selected','selected');
+          panels.settings.find("#visualization-method option[value=" + constants.visOptions.method + "]")
+              .attr('selected','selected');
+  */			
       };
       
 	  var profileSettingsUrl = constants.userProfileServerUrl || "profile/" ;
