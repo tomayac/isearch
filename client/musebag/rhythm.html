@@ -1,20 +1,23 @@
 <html>
   <head>
+    <meta name="viewport" content="initial-scale=1.0" />
+    <meta name="viewport" content="user-scalable=no" />    
+    
     <style>
-      #progress-bar {
-        width: 200px;
+      #range-slider {
+        width: 300px;
       }
       #rhythm-button {
-        width: 200px;
-        height: 50px;
+        width: 300px;
+        height: 100px;
       }
       P.rhythm {
-        width: 220px;
+        width: 320px;
         padding: 0.2em;
       }
       CANVAS.rhythm {
         background-color: lightgray;
-        width: 200px;
+        width: 300px;
         height: 20px;
       }
       BODY {
@@ -25,10 +28,10 @@
   </head>
   <body>
     <p class="rhythm">
-      <progress id="progress-bar" max="10" value="0"></progress>
+      <input type="range" id="range-slider" max="10" value="0" />
     </p>
     <p class="rhythm">
-      <label for="progress-bar">Elapsed time in seconds:
+      <label for="range-slider">Elapsed time in seconds:
         <span id="elapsed-span"></span>
       </label>          
     </p>      
@@ -44,7 +47,7 @@
     <script type="application/javascript">
     
       // get handlers to UI elements
-      var progressBar = document.getElementById('progress-bar');
+      var rangeSlider = document.getElementById('range-slider');
       var rhythmButton = document.getElementById('rhythm-button');
       var durationSpinner = document.getElementById('duration-spinner');
       var elapsedSpan = document.getElementById('elapsed-span');
@@ -59,7 +62,7 @@
       var start = 0;      
       var timer = false;
       var rhythm = {};
-      var scalingFactor = rhythmCanvas.width / progressBar.max;
+      var scalingFactor = rhythmCanvas.width / rangeSlider.max;
       
       // draw scale
       var drawScale = function() {
@@ -76,6 +79,11 @@
       }
       drawScale();
 
+      // prevent doubleclick events from being noticed
+      rhythmButton.addEventListener('dblclick', function(e) {
+        // no-op
+      }, false);
+
       // on rhythm button click
       rhythmButton.addEventListener('click', function(e) {
         // if state is "not running"
@@ -83,21 +91,21 @@
           // set state to "running"
           rhythmButton.innerHTML = 'Tap';
           running = true;
-          progressBar.value = 0;
+          rangeSlider.value = 0;
           drawScale();
           durationSpinner.disabled = true;
           start = new Date().getTime();          
-          scalingFactor = rhythmCanvas.width / progressBar.max;
+          scalingFactor = rhythmCanvas.width / rangeSlider.max;
           
           // set timer
           timer = setInterval(function() {            
             // calculate the elapsed time since the beginning of the timer
             var elapsed = Math.floor((new Date().getTime() - start) / 1000);
             elapsedSpan.innerHTML = elapsed;
-            progressBar.value = elapsed;
+            rangeSlider.value = elapsed;
             
             // if the timer has ended
-            if (elapsed >= progressBar.max) {
+            if (elapsed >= rangeSlider.max) {
               // set state to "not running"
               clearInterval(timer);
               rhythmButton.disabled = true;
@@ -122,9 +130,9 @@
         }
       }, false);
       
-      durationSpinner.addEventListener('click', function(e) {
-        progressBar.max = durationSpinner.value;
-        progressBar.value = 0;
+      durationSpinner.addEventListener('change', function(e) {
+        rangeSlider.max = durationSpinner.value;
+        rangeSlider.value = 0;
       }, false);
       
     </script>

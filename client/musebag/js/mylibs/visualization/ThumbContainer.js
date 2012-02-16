@@ -141,8 +141,14 @@ p.createCanvas = function()	{
 	}
 	
 	// add thumbnail viewport
-	this.thumbViewport = $('<div/>', { css: { overflow: "auto", width: $(this.containerDiv).width(), height: $(this.containerDiv).height() } }).appendTo(this.containerDiv) ;
+	this.thumbViewport = $('<div/>', { css: { /*overflow: "auto" ,*/ width: $(this.containerDiv).width(), height: $(this.containerDiv).height() } }).appendTo(this.containerDiv) ;
 	
+	$(this.thumbViewport).droppable({
+		drop: function(e, ui) {
+		var draggable = ui.draggable;
+			alert( 'The square with ID "' + draggable.attr('docid') + '" was dropped onto me!' );
+		}
+	} );
 	// add thumbnail view that may be larger than viewport when zoomed
 	this.thumbView = $('<div/>', { css: { position: "relative" }}).appendTo(this.thumbViewport) ; 
 	
@@ -439,7 +445,13 @@ ThumbContainer.selectThumbUrl = function(doc, modalities)
 		if ( mediaType.type == "ImageType" && ( $.inArray("image", modalities) != -1 ) )
 		{
 			if ( mediaType.previews && mediaType.previews.length > 0 )
-				return mediaType.previews[0].url ;
+			{
+				var frmt = mediaType.previews[0].format ;
+				if ( frmt == "image/svg+xml" )
+					return mediaType.previews[0].url ;
+				else if ( frmt == "image/jpeg" || frmt == "image/png" )
+					return mediaType.previews[0].url ;
+			}
 		}
 		else if ( mediaType.type == "Object3D" && ( $.inArray("3d", modalities) != -1 ) )
 		{
@@ -453,7 +465,9 @@ ThumbContainer.selectThumbUrl = function(doc, modalities)
 				for( var j=0 ; j<mediaType.previews.length ; j++ )
 				{
 					var frmt = mediaType.previews[j].format ;
-					if ( frmt == "image/jpeg" || frmt == "image/png" )
+					if ( frmt == "image/svg+xml" )
+						return mediaType.previews[j].url ;
+					else if ( frmt == "image/jpeg" || frmt == "image/png" )
 						return mediaType.previews[j].url ;
 				}
 			}
@@ -502,6 +516,11 @@ ThumbContainer.modalFilter = function(doc, modalities)
 			filtered = false ;
 			break ;
 		}
+		else if ( mediaType.type == "VideoType" && ( $.inArray("video", modalities) != -1 ) )
+		{	
+			filtered = false ;
+			break ;
+		}
 	}
 	
 	return filtered ;
@@ -516,13 +535,14 @@ p.createThumbnail = function(i, x, y)
 	
 	var tm = ThumbContainer.thumbMargin ;
 	
+	
 	// create the main thumbnail box
-	var imgOut = $('<div/>', { "class": "thumbnail", id: "thumb-" + i, css: {  overflow: "hidden", position: "absolute", width: this.thumbSize, height: this.thumbSize, left: x, top: y } }).appendTo(this.thumbView) ;
+	var imgOut = $('<div/>', { "class": "thumbnail", "id": "thumb-" + i, css: {  /*overflow: "hidden",*/ position: "absolute", width: this.thumbSize, height: this.thumbSize, left: x, top: y } }).appendTo(this.thumbView) ;
 	// create a place-holder for the "star" icon.
 	var trans = $('<div/>', { "class": "thumbnail-overlay", css: {  display: (item.doc.relevant) ? "block" : "none" } }).appendTo(imgOut) ;
+		
 	
-	
-	
+		
 	var that = this ;
 	
 	// if shift-click start selection rubber-band.
@@ -642,6 +662,9 @@ p.createThumbnail = function(i, x, y)
 	
 	// use the thumbRenderer to actually render the item in the box
 	this.thumbRenderer.render(item, imgOut, { viewport: this.thumbViewport, modalities: this.ctx.filterBar.modalities(), hover: (this.navMode=='browse')?true:false }) ;
+	
+	
+	
 	
 };
 

@@ -14,7 +14,7 @@ define("mylibs/location",
 	   	  {enableHighAccuracy: true}
 	    );
 	  }
-	}
+	};
 	
 	Map = function(mapDiv) {
 	  this.map = null ;
@@ -58,21 +58,22 @@ define("mylibs/location",
 	    });
 	  }
 	  map.setCenter(location);
-	}
+	};
 	
 	var showMap = function(callback) {
-	  var map=null;
-	  $('<div/>')
+	  
+	  if($('#map-dialog').length == 0) {
+	  
+	    $('<div/>', {id: "map-dialog"})
 		.appendTo('body')
+		.append('<div id="map-canvas" style="width:100%; height:100%"></div>')
 		.dialog({
 		  title: "Choose a location",
 		  width: $(window).width()*2/3,
 		  height: $(window).height()*3/4,
 		  modal: true,
 		  resizable: false,
-		  open: function(e, ui) {
-			map = new Map($(this).get(0));
-		  },
+		  autoOpen: false,
 		  buttons: {
 			OK: function() {
 			  if(map.marker) {
@@ -84,7 +85,12 @@ define("mylibs/location",
 			  }
 			}
 		  }
-		});	
+		});
+		
+		var map = new Map(document.getElementById("map-canvas"));
+	  }
+	  
+	  $('#map-dialog').dialog('open');
 	};
 	
 	return {

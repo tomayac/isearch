@@ -20,7 +20,7 @@
 */
 
 define("mylibs/visualization/visualizer",
-    [	"order!https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js",
+    [	"order!js/libs/jquery-ui-1.8.17.custom.min.js",
 		"order!js/libs/slides.jquery.js",
 		"order!js/libs/jquery.mousewheel.js",
 		"order!js/mylibs/visualization/ContextMenu.js",
