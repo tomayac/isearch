@@ -53,7 +53,7 @@ var getUser = function(email) {
   }
 };
 
-var getUserByClient = function(clientId) {
+var getEmailByClient = function(clientId) {
   for(var email in users) {
     if(users[email].clients.indexOf(clientId) != -1) {
       return email;
@@ -62,17 +62,25 @@ var getUserByClient = function(clientId) {
   return false;
 };
 
-var getGroupEmails = function(group,callback) {
+var getGroupUsers = function(group,callback, onlyEmails) {
+   var onlyEmail = onlyEmails || false;
    if(group) {
      group.getUsers(function(users) { 
-       var userEmails = [];
+       var groupUsers = [];
        for (var i in users) {
-         var email = getUserByClient(users[i]);
-         if(email) {
-           userEmails.push(email);
+         var email = getEmailByClient(users[i]);
+         //Only add the user if the given clientId has an associated email address in the users
+         //array and if this email address doesn't already exists in the groupUsers array
+         if(email && !groupUsers.hasOwnProperty(email)) {
+           if(onlyEmail) {
+             groupUsers.push(email);
+           } else {
+             var tempUser = getUser(email);  
+             groupUsers.push([email,tempUser.messages]);
+           }
          }
        }
-       callback(null,userEmails);
+       callback(null,groupUsers);
      });
    } else {
      callback(false,null);
@@ -102,9 +110,8 @@ var removeGroup = function(group) {
   if(!group || typeof group != 'object') {
     return false;
   }
-  
   //trigger the client to clear its group state
-  group.now.updateGroupState(false,[]);
+  group.now.updateGroupState(false,[],false);
   //and to remove its result basket
   group.now.removeResultBasket();
   //save the result basket in the search histories of the users
@@ -127,7 +134,6 @@ var handleGroupLeave = function(groupName,email,clientId) {
   console.log('handleGroupLeave...');
   
   var group = now.getGroup(groupName);
-  
   //don't care about super group events   
   if(group.isSuperGroup) {
     return;
@@ -142,24 +148,22 @@ var handleGroupLeave = function(groupName,email,clientId) {
     
   } else {
     
-    //unregister user from group
-    group.removeUser(clientId);
-    
     //inform other group users      
     //first check if group contains more than one user
     group.count(function(c) {
-      //This case shouldn't happen at all...just to be sure
-      if(c < 1) {
-        //remove the group if no users left
+      if(c < 2) {       
+        //remove the group if the leaving user is the last user who left in the group
         removeGroup(group);
       } else {
+        //unregister user from group
+        group.removeUser(clientId);
         //remove the group relation from user
         removeGroupFromUser(email,group.groupName);
         //if there is at least one user left, notify them
         group.now.notify(email + ' has left the session.', 'info');
         //update the group user list of all group members in the client
-        getGroupEmails(group, function(error, emails) {
-          group.now.updateGroupState(group.groupName,emails);
+        getGroupUsers(group, function(error, users) {
+          group.now.updateGroupState(group.groupName,users);
         });
         
         //save the result basket in the search history of the leaving user
@@ -218,15 +222,18 @@ var setupLogic = function() {
         //And check if the group is still available
         for(var index in users[email].groups) {
           hasGroup(users[email].groups[index], function(exists) {
+            //check if the group exists
             if(exists) {
-              //add the user to the group if the group exists
               var group = now.getGroup(users[email].groups[index]);
+              //Notify other group members that a member became online again
+              group.now.notify(email + ' is online.', 'info');
+              //add the user to the group 
               group.addUser(clientId);
               //ensure that each user of the group has an result basket upon joining to a group
               group.now.addResultBasket();
               //update the group user list of all group members in the client
-              getGroupEmails(group, function(error, emails) {
-                group.now.updateGroupState(group.groupName,emails);
+              getGroupUsers(group, function(error, groupUsers) {
+                group.now.updateGroupState(group.groupName, groupUsers, false);
               });
               //update result basket view of all group members
               group.now.updateResultBasket(group.now.resultBasket);
@@ -240,7 +247,8 @@ var setupLogic = function() {
       //in case of a connection lose
       users[email] = {
           "clients" : [clientId],
-          "groups"  : []
+          "groups"  : [],
+          "messages": []
       };
       userCount++;
     }
@@ -260,8 +268,8 @@ var setupLogic = function() {
           users[email].groups.push(groupName);
         }
         //update the group user list of all group members in the client
-        getGroupEmails(group, function(error, emails) {
-          group.now.updateGroupState(groupName,emails);
+        getGroupUsers(group, function(error, groupUsers) {
+          group.now.updateGroupState(groupName, groupUsers, false);
         });
         //update result basket view of all group members
         group.now.updateResultBasket({items: []});
@@ -269,9 +277,9 @@ var setupLogic = function() {
     }
     
     //Populate the user list to all clients
-    getGroupEmails(now.getGroup('everyone'), function(error, emails) {   
-      everyone.now.updateUserList(emails);
-    });
+    getGroupUsers(now.getGroup('everyone'), function(error, users) {   
+      everyone.now.updateUserList(users);
+    }, true);
     
     console.log('Registry: ');
     console.log(users);
@@ -303,9 +311,9 @@ var setupLogic = function() {
     }
     
     //Populate the user list to all clients
-    getGroupEmails(now.getGroup('everyone'), function(error, emails) {
-      everyone.now.updateUserList(emails);
-    });
+    getGroupUsers(now.getGroup('everyone'), function(error, groupUsers) {
+      everyone.now.updateUserList(groupUsers);
+    }, true);
     
     console.log('Registry: ');
     console.log(users);
@@ -316,7 +324,7 @@ var setupLogic = function() {
    */
   everyone.now.inviteUser = function(emailTo){
     
-    var emailFrom = getUserByClient(this.user.clientId);
+    var emailFrom = getEmailByClient(this.user.clientId);
     var userTo = getUser(emailTo);
     
     //prevent self-invitations
@@ -367,8 +375,16 @@ var setupLogic = function() {
    */
   everyone.now.acceptInvitation = function(email){
     console.log('acceptInvitation...');
+   
+    var emailFrom = getEmailByClient(this.user.clientId);
     
-    var emailFrom = getUserByClient(this.user.clientId);
+    if(!emailFrom) {
+      console.log(this.user.clientId);
+      console.log(users);
+      callUserFunction(email, 'notify', [emailFrom + ' seems to be temporarily not reachable. Try it again.','error']);
+      return;
+    }
+    
     var groupName = 'group-' + email;
     var group = now.getGroup(groupName);
     
@@ -383,8 +399,8 @@ var setupLogic = function() {
     //Sent a notification for the user who invited
     callUserFunction(email, 'notify', [emailFrom + ' joined your session.','success']);
     //update the group user list of all group members in the client
-    getGroupEmails(group, function(error, emails) {
-      group.now.updateGroupState(groupName,emails);
+    getGroupUsers(group, function(error, groupUsers) {
+      group.now.updateGroupState(groupName,groupUsers, false);
     });
     //update result basket view of joined member
     callUserFunction(emailFrom, 'updateResultBasket', [group.now.resultBasket]);
@@ -396,7 +412,7 @@ var setupLogic = function() {
   everyone.now.declineInvitation = function(email){
     console.log('declineInvitation...');
     
-    var emailFrom = getUserByClient(this.user.clientId);
+    var emailFrom = getEmailByClient(this.user.clientId);
     var groupName = 'group-' + email;
     //remove the group reference from the user group list
     removeGroupFromUser(email,groupName);
@@ -418,7 +434,7 @@ var setupLogic = function() {
       return;
     }
     
-    var email = getUserByClient(this.user.clientId);
+    var email = getEmailByClient(this.user.clientId);
     var clientId = this.user.clientId;
     
     hasGroup(groupName, function(exists) {
@@ -426,6 +442,27 @@ var setupLogic = function() {
         handleGroupLeave(groupName,email,clientId);
       }
     });
+  };
+  
+  /**
+   * distributeMessage function
+   */
+  everyone.now.distributeMessage = function(msg) {
+    console.log('distributeMessage...' + msg);
+    var email = getEmailByClient(this.user.clientId);
+    if(email) {
+      //Add user msg to user message array
+      users[email].messages.push(msg);
+      
+      for(var index in users[email].groups) {
+        var groupName = users[email].groups[index];
+        var group = now.getGroup(groupName);
+        //update the group user list of all group members in the client
+        getGroupUsers(group, function(error, users) {
+          group.now.updateGroupState(groupName,users,true);
+        });
+      }
+    }
   };
   
   /**
@@ -547,8 +584,8 @@ var setupLogic = function() {
             //unregister user from group
             group.removeUser(this.user.clientId);
             //update the group user list of all group members in the client
-            getGroupEmails(group, function(error, emails) {
-              group.now.updateGroupState(group.groupName,emails);
+            getGroupUsers(group, function(error, groupUsers) {
+              group.now.updateGroupState(group.groupName, groupUsers, false);
             });
           }
         }
