@@ -940,6 +940,12 @@ footer {
   -webkit-user-select: none;
   user-select: none;
   text-align: center;
+  margin: 0 auto;
+  background-image: linear-gradient(bottom, rgb(77,76,77) 43%, rgb(150,145,150) 86%);
+  background-image: -o-linear-gradient(bottom, rgb(77,76,77) 43%, rgb(150,145,150) 86%);
+  background-image: -moz-linear-gradient(bottom, rgb(77,76,77) 43%, rgb(150,145,150) 86%);
+  background-image: -webkit-linear-gradient(bottom, rgb(77,76,77) 43%, rgb(150,145,150) 86%);
+  background-image: -ms-linear-gradient(bottom, rgb(77,76,77) 43%, rgb(150,145,150) 86%);
 }
 
 #rhythm-div.tapped {
