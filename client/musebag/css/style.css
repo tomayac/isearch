@@ -932,7 +932,7 @@ footer {
 
 #rhythm-div {
   width: 300px;
-  height: 100px;
+  height: 25px;
   border: solid 2px darkgray;
   border-radius: 5px;
   -moz-user-select: -moz-none;
@@ -941,6 +941,9 @@ footer {
   user-select: none;
   text-align: center;
   margin: 0 auto;
+  padding: 50px 0;
+  color: #fff;
+  font-weight: bold;
   background-image: linear-gradient(bottom, rgb(77,76,77) 43%, rgb(150,145,150) 86%);
   background-image: -o-linear-gradient(bottom, rgb(77,76,77) 43%, rgb(150,145,150) 86%);
   background-image: -moz-linear-gradient(bottom, rgb(77,76,77) 43%, rgb(150,145,150) 86%);
