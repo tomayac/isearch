@@ -926,12 +926,20 @@ footer {
 }
 
 /* Rhythm input start */
-#progress-bar {
-  width: 200px;
+#range-slider {
+  width: 300px;
 }
+
 #rhythm-button {
-  width: 200px;
-  height: 50px;
+  width: 300px;
+  height: 100px;
+  border: solid 2px darkgray;
+  border-radius: 5px;
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  text-align: center;
 }
 
 div.rhythm {
@@ -939,12 +947,17 @@ div.rhythm {
 }
 
 div.rhythm p {
-  width: 220px;
+  width: 320px;
   padding: 0.2em;
 }
+
+#rhythm-div.tapped {
+  background-color: red;
+}
+
 div.rhythm canvas {
   background-color: lightgray;
-  width: 200px;
+  width: 300px;
   height: 20px;
 }
 /* Rhythm input end */
