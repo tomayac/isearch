@@ -117,13 +117,11 @@ div.token-input-dropdown-isearch ul li {
 	list-style-type: none;
 }
 
-div.token-input-dropdown-isearch ul li.token-input-dropdown-item-isearch
-	{
+div.token-input-dropdown-isearch ul li.token-input-dropdown-item-isearch {
 	background-color: #fff;
 }
 
-div.token-input-dropdown-isearch ul li.token-input-dropdown-item2-isearch
-	{
+div.token-input-dropdown-isearch ul li.token-input-dropdown-item2-isearch {
 	background-color: #fff;
 }
 
@@ -132,8 +130,7 @@ div.token-input-dropdown-isearch ul li em {
 	font-style: normal;
 }
 
-div.token-input-dropdown-isearch ul li.token-input-selected-dropdown-item-isearch
-	{
+div.token-input-dropdown-isearch ul li.token-input-selected-dropdown-item-isearch {
 	background-color: #444;
 	color: #fff;
 }

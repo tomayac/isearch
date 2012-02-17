@@ -14,7 +14,7 @@ define("mylibs/location",
 	   	  {enableHighAccuracy: true}
 	    );
 	  }
-	}
+	};
 	
 	Map = function(mapDiv) {
 	  this.map = null ;
@@ -58,7 +58,7 @@ define("mylibs/location",
 	    });
 	  }
 	  map.setCenter(location);
-	}
+	};
 	
 	var showMap = function(callback) {
 	  

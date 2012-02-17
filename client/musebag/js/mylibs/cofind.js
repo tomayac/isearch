@@ -1,7 +1,7 @@
 /*
  *  CoFind Client
  */
-define("mylibs/cofind", ["libs/modernizr-2.0.min", "order!libs/jquery.hoverIntent.min", "js/libs/now.js", "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js"], function(){
+define("mylibs/cofind", ["libs/modernizr-2.0.min", "libs/jquery.hoverIntent.min", "/nowjs/now.js", "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js"], function(){
   
   //Static HTML snippets for CoFind interface
   var buttonSnippet = '<li id="button-cofind-settings"><a href="#"><img src="img/collaborate.png" alt="Collaborate" title="Collaboration panel" style="max-height: 31px;"></a></li>';
@@ -58,6 +58,92 @@ define("mylibs/cofind", ["libs/modernizr-2.0.min", "order!libs/jquery.hoverInten
       }
     }
     return itemExists;
+  };
+  
+  //Helper function to generate css conform ids from an email address
+  var getEmailId = function(email) {
+    return email.replace('@','-').replace('.','-');
+  };
+  
+  //setup chat functionality for each user
+  var setupUserChat = function() {
+    var email = options.user || '';
+    var emailId = getEmailId(email);
+    
+    //add focus and blur handling of chat input box
+    $('#chat-input-' + emailId).on('focus', function(event) {
+      if($(this).val() == $(this).attr('name')) {
+        $(this).val('');
+      }
+    });
+    $('#chat-input-' + emailId).on('blur', function(event) {
+      if($(this).val() == '') {
+        $(this).val($(this).attr('name'));
+      }
+    });
+  
+    //add the enter keypress event to the users chat box
+    $('#chat-input-' + emailId).on('keypress', function(event) {
+      if(event.keyCode == 13) {
+        var message = $(this).val() || '';
+        if(message.length > 2) {
+          //$('#chat-input-' + emailId).parent().before('<li><p>' + message + '</p></li>');
+          callFunction('distributeMessage',[message]);
+          message = '';
+        }
+        return false;
+      }
+    });
+    
+    $('.chat-container ul li').on('click', function(event) {
+      
+      if($(this).find('input').length > 0) {
+        return false;
+      }
+      
+      var currentIndex = $(this).index();
+      var containerWidth = $(this).parent().parent().outerWidth();
+      var scrollLeft = $(this).parent().parent().scrollLeft();
+      var itemWidth = $(this).outerWidth(true);
+      var scrollTo = 0;
+
+      $(this).parent().children('li').each(function(index) {
+        if(index >= currentIndex) {
+          if(scrollTo > 15) {
+            scrollTo -= 15;
+          } 
+          return false;
+        }
+        scrollTo += $(this).outerWidth(true);
+      });
+
+      if((containerWidth - itemWidth) < 15) {
+        if(scrollLeft <= scrollTo) {
+          scrollTo += (Math.abs((containerWidth - itemWidth)) + 15);
+        }
+      }
+
+      $(this).parent().parent().animate({
+        scrollLeft: scrollTo
+      }, 200, 'swing');
+      return false;
+    });
+  };
+  
+  var scrollChat = function() {
+    //scroll to end of the messages
+    $('.chat-container ul li:last-child').each(function(index) {
+      
+      var position = $(this).position();
+      var itemWidth = $(this).outerWidth(true);
+      var containerWidth = $(this).parent().parent().outerWidth();
+      var scrollEnd = (position.left + itemWidth) - (1.5 * containerWidth); 
+      //console.log(scrollEnd + ' = ('+position.left+' + ' + itemWidth + ') - (1.5 * ' + containerWidth + ')');
+      $(this).parent().parent().animate({
+        scrollLeft: scrollEnd
+      }, 200, 'swing');
+      
+    });
   };
   
   //Registers a logged in user for the use of CoFind
@@ -156,8 +242,9 @@ define("mylibs/cofind", ["libs/modernizr-2.0.min", "order!libs/jquery.hoverInten
   };
   
   //Information update function for the members of the current session
-  now.updateGroupState = function(groupName,users) {
+  now.updateGroupState = function(groupName, users, newMessage) {
     console.log('updateGroupState...');
+    var newMsg = newMessage || false;
     
     //if no group is provided remove all group sections
     if(groupName === false) {
@@ -177,13 +264,30 @@ define("mylibs/cofind", ["libs/modernizr-2.0.min", "order!libs/jquery.hoverInten
     
     //generate group status html
     var stateHtml = '';
-    var groupId = groupName.replace('@','-').replace('.','-'); 
+    var groupId = groupName.replace('@','-').replace('.','-');
     if(users) {
-      if(users.length > 0) {
-        stateHtml += '<section id="' + groupId + '" class="groupstatus"><h6>Your team mates in ' + groupName + ' <button class="textbutton" name="' + groupName + '" id="leave-' + groupId + '" title="Leave group">X</button></h6><ul>';
+      if(users.length > 0) {        
+        stateHtml += '<section id="' + groupId + '" class="groupstatus"><h6>Group center for ' + groupName + ' <button class="textbutton" name="' + groupName + '" id="leave-' + groupId + '" title="Leave group">X</button></h6><ul>';
         for(var index in users) {
-          var email = users[index];
-          stateHtml += '<li>' + email + '</li>';
+          var user = users[index];
+          var emailId = getEmailId(user[0]);
+          stateHtml += '<li><p class="chat-name';
+          if(user[0] === options.user) {
+            stateHtml += ' highlight';
+          }
+          stateHtml += '">' + user[0] + '</p><div class="chat-container" id="chat-' + emailId + '"><ul>';
+          //Add stored messages of each user
+          if(user[1].length > 0) {
+            for(var index in user[1]) {
+              var msg = user[1][index];
+              stateHtml += '<li><span>' + msg + '</span></li>';
+            }
+          }
+          //Only add chat text box to own user row
+          if(user[0] === options.user) {
+            stateHtml += '<li><input type="text" class="chatbox" id="chat-input-' + emailId + '" name="Enter message..." value="Enter message..." /></li>';
+          }
+          stateHtml += '</ul></div></li>';
         }
         stateHtml += '</ul></section>';
       }
@@ -202,6 +306,14 @@ define("mylibs/cofind", ["libs/modernizr-2.0.min", "order!libs/jquery.hoverInten
       //unregister user from CoFind group
       callFunction('leaveGroup',[event.data.group]);
     });
+
+    //initiate the chat box for each user
+    setupUserChat();
+    
+    //if a new message was added to the chat, then force the panel to open
+    if(newMsg === true) {
+      $('#cofind-settings').show(200,function() { scrollChat(); });
+    }
   };
   
   //Result basket update function
@@ -429,7 +541,7 @@ define("mylibs/cofind", ["libs/modernizr-2.0.min", "order!libs/jquery.hoverInten
       } else {
         console.log('open invite');
         options.panels.hide(animationTime);
-        $("#cofind-settings").show(animationTime);
+        $("#cofind-settings").show(animationTime,function() { scrollChat(); });
         $("#button-cofind-settings").addClass('active');
       }
       event.stopPropagation();

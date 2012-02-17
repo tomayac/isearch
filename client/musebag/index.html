@@ -170,129 +170,129 @@
 				<p class="instruction">
 					Upload a file with this button: 
 					<button class="upload">Upload</button>
+					<input type="file" id="rhythmUpload" style="visibility: hidden;" />
 				</p>
-				<input type="file" id="rhythmUpload" style="visibility: hidden;" />
 				<p class="instruction">
 					Use your device and start tapping a rhythm:
-            <div>
-              <p class="rhythm">
-                <input type="range" id="range-slider" max="10" value="0" />
-              </p>
-              <p class="rhythm">
-                <label for="range-slider">Elapsed time in seconds:
-                  <span id="elapsed-span"></span>
-                </label>          
-              </p>      
-              <p class="rhythm">  
-                <label for="duration-spinner">Duration in seconds:</label>
-                <input id="duration-spinner" type="number" value="10" max="60" min="5" step="1" />      
-              </p>
-              <p class="rhythm">
-                <div id="rhythm-div">Start</div>      
-              </p>  
-              <canvas id="rhythm-canvas" class="rhythm"></canvas>  
+           <div>
+            <p class="rhythm">
+              <input type="range" id="range-slider" max="10" value="0" />
+            </p>
+            <p class="rhythm">
+              <label for="range-slider">Elapsed time in seconds:
+                <span id="elapsed-span"></span>
+              </label>          
+            </p>      
+            <p class="rhythm">  
+              <label for="duration-spinner">Duration in seconds:</label>
+              <input id="duration-spinner" type="number" value="10" max="60" min="5" step="1" />      
+            </p>
+            <p class="rhythm">
+              <div id="rhythm-div">Start</div>      
+            </p>  
+            <canvas id="rhythm-canvas" class="rhythm"></canvas>  
 
-              <script type="application/javascript">
+            <script type="application/javascript">
 
-                // get handlers to UI elements
-                var rangeSlider = document.getElementById('range-slider');
-                var rhythmDiv = document.getElementById('rhythm-div');
-                var rhythmDivDisabled = false;
-                var durationSpinner = document.getElementById('duration-spinner');
-                var elapsedSpan = document.getElementById('elapsed-span');
-                var rhythmCanvas = document.getElementById('rhythm-canvas');      
-                rhythmCanvas.width = 200;
-                rhythmCanvas.height = 20;
-                var ctx = rhythmCanvas.getContext('2d'); 
-                ctx.fillStyle = 'rgb(200,0,0)';         
+              // get handlers to UI elements
+              var rangeSlider = document.getElementById('range-slider');
+              var rhythmDiv = document.getElementById('rhythm-div');
+              var rhythmDivDisabled = false;
+              var durationSpinner = document.getElementById('duration-spinner');
+              var elapsedSpan = document.getElementById('elapsed-span');
+              var rhythmCanvas = document.getElementById('rhythm-canvas');      
+              rhythmCanvas.width = 200;
+              rhythmCanvas.height = 20;
+              var ctx = rhythmCanvas.getContext('2d'); 
+              ctx.fillStyle = 'rgb(200,0,0)';         
 
-                // initial state
-                var running = false;
-                var start = 0;      
-                var timer = false;
-                var rhythm = {};
-                var scalingFactor = rhythmCanvas.width / rangeSlider.max;
+              // initial state
+              var running = false;
+              var start = 0;      
+              var timer = false;
+              var rhythm = {};
+              var scalingFactor = rhythmCanvas.width / rangeSlider.max;
 
-                // draw scale
-                var drawScale = function() {
-                  ctx.clearRect (0 , 0, rhythmCanvas.width, rhythmCanvas.height);      
-                  var i = 0;
-                  var x = 0;
-                  ctx.fillStyle = 'rgb(0,0,0)';         
-                  while(x <= rhythmCanvas.width) {        
-                    x = scalingFactor * i;
-                    ctx.fillRect (x, 18, 1, 2);
-                    i++;
-                  }
-                  ctx.fillStyle = 'rgb(200,0,0)';         
+              // draw scale
+              var drawScale = function() {
+                ctx.clearRect (0 , 0, rhythmCanvas.width, rhythmCanvas.height);      
+                var i = 0;
+                var x = 0;
+                ctx.fillStyle = 'rgb(0,0,0)';         
+                while(x <= rhythmCanvas.width) {        
+                  x = scalingFactor * i;
+                  ctx.fillRect (x, 18, 1, 2);
+                  i++;
                 }
-                drawScale();
+                ctx.fillStyle = 'rgb(200,0,0)';         
+              }
+              drawScale();
 
-                // prevent doubleclick events from being noticed
-                rhythmDiv.addEventListener('dblclick', function(e) {
-                  // no-op
-                }, false);
+              // prevent doubleclick events from being noticed
+              rhythmDiv.addEventListener('dblclick', function(e) {
+                // no-op
+              }, false);
 
-                // on rhythm div click
-                rhythmDiv.addEventListener('click', function(e) {
-                  if (rhythmDivDisabled) {
-                    return;
-                  }
-                  // if state is "not running"
-                  if (!running) {
-                    // set state to "running"
-                    rhythmDiv.innerHTML = 'Tap';
-                    running = true;
-                    rangeSlider.value = 0;
-                    drawScale();
-                    durationSpinner.disabled = true;
-                    start = new Date().getTime();          
-                    scalingFactor = rhythmCanvas.width / rangeSlider.max;
-
-                    // set timer
-                    timer = setInterval(function() {            
-                      // calculate the elapsed time since the beginning of the timer
-                      var elapsed = Math.floor((new Date().getTime() - start) / 1000);
-                      elapsedSpan.innerHTML = elapsed;
-                      rangeSlider.value = elapsed;
-
-                      // if the timer has ended
-                      if (elapsed >= rangeSlider.max) {
-                        // set state to "not running"
-                        clearInterval(timer);
-                        rhythmDivDisabled = true;
-                        rhythmDiv.innerHTML = 'Finished';
-                        setTimeout(function() {
-                          rhythmDivDisabled = false;
-                          rhythmDiv.innerHTML = 'Start';
-                        }, 5000);              
-                        durationSpinner.disabled = false;              
-                        running = false;
-                        start = 0;
-                        timer = false;
-                      }            
-                    }, 1000);          
-                  // if state is "running"          
-                  } else {
-                    rhythmDiv.classList.toggle('tapped');
-                    setTimeout(function() {
-                      rhythmDiv.classList.toggle('tapped');
-                    }, 5);
-                    var heartBeat = (new Date().getTime() - start) / 1000;
-                    console.log('Tap ' + heartBeat);
-                    var x = Math.floor(scalingFactor * heartBeat);                    
-                    console.log(x+', '+0+', '+1+', '+rhythmCanvas.height)
-                    ctx.fillRect (x, 0, 1, rhythmCanvas.height);
-                  }
-                }, false);
-
-                durationSpinner.addEventListener('change', function(e) {
-                  rangeSlider.max = durationSpinner.value;
+              // on rhythm div click
+              rhythmDiv.addEventListener('click', function(e) {
+                if (rhythmDivDisabled) {
+                  return;
+                }
+                // if state is "not running"
+                if (!running) {
+                  // set state to "running"
+                  rhythmDiv.innerHTML = 'Tap';
+                  running = true;
                   rangeSlider.value = 0;
-                }, false);
+                  drawScale();
+                  durationSpinner.disabled = true;
+                  start = new Date().getTime();          
+                  scalingFactor = rhythmCanvas.width / rangeSlider.max;
 
-              </script>
-            </div>
+                  // set timer
+                  timer = setInterval(function() {            
+                    // calculate the elapsed time since the beginning of the timer
+                    var elapsed = Math.floor((new Date().getTime() - start) / 1000);
+                    elapsedSpan.innerHTML = elapsed;
+                    rangeSlider.value = elapsed;
+
+                    // if the timer has ended
+                    if (elapsed >= rangeSlider.max) {
+                      // set state to "not running"
+                      clearInterval(timer);
+                      rhythmDivDisabled = true;
+                      rhythmDiv.innerHTML = 'Finished';
+                      setTimeout(function() {
+                        rhythmDivDisabled = false;
+                        rhythmDiv.innerHTML = 'Start';
+                      }, 5000);              
+                      durationSpinner.disabled = false;              
+                      running = false;
+                      start = 0;
+                      timer = false;
+                    }            
+                  }, 1000);          
+                // if state is "running"          
+                } else {
+                  rhythmDiv.classList.toggle('tapped');
+                  setTimeout(function() {
+                    rhythmDiv.classList.toggle('tapped');
+                  }, 5);
+                  var heartBeat = (new Date().getTime() - start) / 1000;
+                  console.log('Tap ' + heartBeat);
+                  var x = Math.floor(scalingFactor * heartBeat);                    
+                  console.log(x+', '+0+', '+1+', '+rhythmCanvas.height)
+                  ctx.fillRect (x, 0, 1, rhythmCanvas.height);
+                }
+              }, false);
+
+              durationSpinner.addEventListener('change', function(e) {
+                rangeSlider.max = durationSpinner.value;
+                rangeSlider.value = 0;
+              }, false);
+
+            </script>
+          </div>
 				</p>
 				<footer>
 					<a href="#">close</a>
@@ -400,7 +400,7 @@
 	</div>
 
 	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=true&amp;v=3.2"></script>
-	<!--<script type="text/javascript" src="js/local/iaprtc12.js"></script>-->
+	<script type="text/javascript" src="js/local/basic.js"></script>
 	<!-- All the script dependancies will be managed with requireJS
        More info? Check http://requirejs.org -->
   <script data-main="js/main" src="js/libs/require-jquery.js"></script>     
