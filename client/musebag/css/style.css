@@ -933,12 +933,16 @@ footer {
   width: 200px;
   height: 50px;
 }
-P.rhythm {
+
+div.rhythm {
+  text-align: center;
+}
+
+div.rhythm p {
   width: 220px;
   padding: 0.2em;
-  margin: 0 auto;
 }
-CANVAS.rhythm {
+div.rhythm canvas {
   background-color: lightgray;
   width: 200px;
   height: 20px;

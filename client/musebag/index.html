@@ -174,23 +174,23 @@
 				</p>
 				<p class="instruction">
 					Use your device and start tapping a rhythm:
-          <div>
-            <p class="rhythm">
+          <div class="rhythm">
+            <p>
               <input type="range" id="range-slider" max="10" value="0" />
             </p>
-            <p class="rhythm">
+            <p>
               <label for="range-slider">Elapsed time in seconds:
                 <span id="elapsed-span"></span>
               </label>          
             </p>      
-            <p class="rhythm">  
+            <p>  
               <label for="duration-spinner">Duration in seconds:</label>
               <input id="duration-spinner" type="number" value="10" max="60" min="5" step="1" />      
             </p>
-            <p class="rhythm">
+            <p>
               <button id="rhythm-button">Start</button>      
             </p>  
-            <canvas id="rhythm-canvas" class="rhythm"></canvas>  
+            <canvas id="rhythm-canvas"></canvas>  
             <script type="application/javascript">
               // get handlers to UI elements
               var rangeSlider = document.getElementById('range-slider');
