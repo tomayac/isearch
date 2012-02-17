@@ -930,7 +930,7 @@ footer {
   width: 300px;
 }
 
-#rhythm-button {
+#rhythm-div {
   width: 300px;
   height: 100px;
   border: solid 2px darkgray;
@@ -942,6 +942,10 @@ footer {
   text-align: center;
 }
 
+#rhythm-div.tapped {
+  background-color: red;
+}
+
 div.rhythm {
   text-align: center;
 }
@@ -949,10 +953,7 @@ div.rhythm {
 div.rhythm p {
   width: 320px;
   padding: 0.2em;
-}
-
-#rhythm-div.tapped {
-  background-color: red;
+  margin: 0 auto;
 }
 
 div.rhythm canvas {
