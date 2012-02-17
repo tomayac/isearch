@@ -936,6 +936,7 @@ footer {
 P.rhythm {
   width: 220px;
   padding: 0.2em;
+  margin: 0 auto;
 }
 CANVAS.rhythm {
   background-color: lightgray;
