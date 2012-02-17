@@ -188,7 +188,7 @@
                 <input id="duration-spinner" type="number" value="10" max="60" min="5" step="1" />      
               </p>
               <p class="rhythm">
-                <button id="rhythm-button">Start</button>      
+                <div id="rhythm-div">Start</div>      
               </p>  
               <canvas id="rhythm-canvas" class="rhythm"></canvas>  
 
@@ -196,7 +196,8 @@
 
                 // get handlers to UI elements
                 var rangeSlider = document.getElementById('range-slider');
-                var rhythmButton = document.getElementById('rhythm-button');
+                var rhythmDiv = document.getElementById('rhythm-div');
+                var rhythmDivDisabled = false;
                 var durationSpinner = document.getElementById('duration-spinner');
                 var elapsedSpan = document.getElementById('elapsed-span');
                 var rhythmCanvas = document.getElementById('rhythm-canvas');      
@@ -228,16 +229,19 @@
                 drawScale();
 
                 // prevent doubleclick events from being noticed
-                rhythmButton.addEventListener('dblclick', function(e) {
+                rhythmDiv.addEventListener('dblclick', function(e) {
                   // no-op
                 }, false);
 
-                // on rhythm button click
-                rhythmButton.addEventListener('click', function(e) {
+                // on rhythm div click
+                rhythmDiv.addEventListener('click', function(e) {
+                  if (rhythmDivDisabled) {
+                    return;
+                  }
                   // if state is "not running"
                   if (!running) {
                     // set state to "running"
-                    rhythmButton.innerHTML = 'Tap';
+                    rhythmDiv.innerHTML = 'Tap';
                     running = true;
                     rangeSlider.value = 0;
                     drawScale();
@@ -256,11 +260,11 @@
                       if (elapsed >= rangeSlider.max) {
                         // set state to "not running"
                         clearInterval(timer);
-                        rhythmButton.disabled = true;
-                        rhythmButton.innerHTML = 'Finished';
+                        rhythmDivDisabled = true;
+                        rhythmDiv.innerHTML = 'Finished';
                         setTimeout(function() {
-                          rhythmButton.disabled = false;
-                          rhythmButton.innerHTML = 'Start';
+                          rhythmDivDisabled = false;
+                          rhythmDiv.innerHTML = 'Start';
                         }, 5000);              
                         durationSpinner.disabled = false;              
                         running = false;
@@ -270,6 +274,10 @@
                     }, 1000);          
                   // if state is "running"          
                   } else {
+                    rhythmDiv.classList.toggle('tapped');
+                    setTimeout(function() {
+                      rhythmDiv.classList.toggle('tapped');
+                    }, 5);
                     var heartBeat = (new Date().getTime() - start) / 1000;
                     console.log('Tap ' + heartBeat);
                     var x = Math.floor(scalingFactor * heartBeat);                    
@@ -283,7 +291,7 @@
                   rangeSlider.value = 0;
                 }, false);
 
-              </script>>
+              </script>
             </div>
 				</p>
 				<footer>
