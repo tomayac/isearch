@@ -266,6 +266,21 @@ p.renderContents = function(tooltip, thumb, mediaType)
 		}
 		
 	}
+	
+	/**
+	 * Triantafillos:
+	 * reverse geocode location of object and display it in the tooltip
+	 */
+	if (thumb.doc.rw.pos) {
+	  var location =  new google.maps.LatLng(thumb.doc.rw.pos.coords.lat, thumb.doc.rw.pos.coords.lon);
+	  var geocoder = new google.maps.Geocoder();
+	  geocoder.geocode({'latLng': location}, function(results, status) {
+	    if (status == google.maps.GeocoderStatus.OK) {
+	      tooltipContents.append("<br><p>Location: "+results[0].formatted_address+"</p>");
+		}
+	  });
+	}
+	else tooltipContents.append("<br><p>Location: unavailable</p>");
 }
 
 p.getMediaTypes = function(thumb)
