@@ -9,7 +9,14 @@ $(document).ready(function(){
 	
     cofetchHandler.fetchCategories();
     
+    //Init tabs
     $("#script-tabs").tabs({panelTemplate: '<section></section>'});
+    //Init accordions
+    $('.accordion').accordion({
+      active: 0,
+      autoHeight: false,
+      collapsible: true
+    });
     
     if($("#script-automatic").attr("checked") !== undefined) {
     	$(".datatab").hide();
@@ -49,14 +56,21 @@ $(document).ready(function(){
 	return false;
   });
   
+  $(document).on('click','#text-list li',function(){
+    var index = parseInt($(this).attr('data-index'));
+    cofetchHandler.setText(index);
+    return false;
+  });
+  
   $("#search-text").click(function(){
     cofetchHandler.getText($("#search-text-phrase").val());
     return false;
-  });  
+  });
   
-  $("#change-threed").click(function(){
-	cofetchHandler.set3d(true);
-	return false;
+  $(document).on('click','#threed-list li',function(){
+    var index = parseInt($(this).attr('data-index'));
+    cofetchHandler.set3d(index);
+    return false;
   });
   
   $("#search-threed").click(function(){
@@ -64,8 +78,9 @@ $(document).ready(function(){
 	return false;
   });  
     
-  $("#change-image").click(function(){
-    cofetchHandler.setImage(true);
+  $(document).on('click','#image-list li',function(){
+    var index = parseInt($(this).attr('data-index'));
+    cofetchHandler.setImage(index);
     return false;
   });
   
@@ -74,8 +89,9 @@ $(document).ready(function(){
     return false;
   });
   
-  $("#change-video").click(function(){
-    cofetchHandler.setVideo(true);
+  $(document).on('click','#video-list li',function(){
+    var index = parseInt($(this).attr('data-index'));
+    cofetchHandler.setVideo(index);
     return false;
   });
   
@@ -84,8 +100,9 @@ $(document).ready(function(){
     return false;
   });
   
-  $("#change-sound").click(function(){
-    cofetchHandler.setSound(true);
+  $(document).on('click','#sound-list li',function(){
+    var index = parseInt($(this).attr('data-index'));
+    cofetchHandler.setSound(index);
     return false;
   });
   

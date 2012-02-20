@@ -1,19 +1,22 @@
 /*
  * This script collects and manages all data for a content objects
  */
-var step     = require('./step');
-    sketchup = require('./sketchup');
-    modeldb  = require('./modeldb');
-    dbpedia  = require('./dbpedia');
-    flickr   = require('./flickr');
-    youtube  = require('./youtube'),
-    sound    = require('./freesound'),
-    weather  = require('./wunderground'),
+var step     = require('./lib/step');
+    sketchup = require('./services/sketchup');
+    modeldb  = require('./services/modeldb');
+    dbpedia  = require('./services/dbpedia');
+    flickr   = require('./services/flickr');
+    youtube  = require('./services/youtube'),
+    sound    = require('./services/freesound'),
+    weather  = require('./services/wunderground'),
     rucod    = require('./store');
 
 var Fetch = function() {	
 };
 
+/**
+ *  Helper function for cleaning an unnecessary deep nested result set     
+ **/
 Fetch.prototype.cleanResult = function(result, callback) {
 	var cleanResult = new Array();
 	
@@ -30,6 +33,10 @@ Fetch.prototype.cleanResult = function(result, callback) {
 	}
 };
 
+/**
+ *  Helper function for automatically getting the best matches within a result
+ *  set based on their titles and a improved Levensthein method.     
+ **/
 Fetch.prototype.getBestMatch = function(query, results, callback) {
 	
 	var levenDistance = function(v1, v2){
@@ -153,6 +160,9 @@ Fetch.prototype.getBestMatch = function(query, results, callback) {
 	}
 };
 
+/**
+ *  Fetches results for a specific media type as part of a Content Object      
+ **/
 Fetch.prototype.getPart = function(type, query, callback) {
 	
 	if(callback && (!type || !query)) {
@@ -265,6 +275,13 @@ Fetch.prototype.getPart = function(type, query, callback) {
 	}
 };
 
+/**
+ *  Main fetch function. Collects multimedia data for a specific keyword from
+ *  different public web services to create a content object in RUCoD format.
+ *  This final creation process of a RUCoD file based on the retrieved data
+ *  can be complete automatic or semi-automatic through a revisioning step by the
+ *  user who triggered the content search process.         
+ **/
 Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback) {
 	
 	var context = this;
@@ -295,8 +312,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
   				  "Files": []
   		};
   		
-  		//console.log("FetchData: k=" + keyword + " c=" + categoryPath + " i=" + index +" a=" + automatic);
-  		
+  		//console.log("FetchData: k=" + keyword + " c=" + categoryPath + " i=" + index +" a=" + automatic); 		
   		try {
   			//Step through the content object data collection
   			step(
@@ -336,9 +352,8 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
   								contentObject.Files.push(data[m]);
   							}
   						}
-  					}
-  					
-  					//Even if nothing was found for 3D, go on ant try to find some text
+  					}  					
+  					//Even if nothing was found for 3D, go on and try to find some text
   					var dbpediaQuery = contentObject.Name;
   					
   					//Fetch free text data for the model

@@ -1,6 +1,6 @@
 var restler = require('restler'),
     weather = require('./wunderground'),
-    step    = require('./step');
+    step    = require('../lib/step');
 
 var APIKey = "e642ab56df1f4cfc87f419fbf9ac5088";
 

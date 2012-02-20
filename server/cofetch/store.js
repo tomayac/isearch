@@ -5,13 +5,13 @@
  * 
  * @author Jonas
  */
-var path = require('path'), 
-    fs = require('fs'), 
-    nodeio = require('node.io'),
-    restler = require('restler'),
+var path        = require('path'), 
+    fs          = require('fs'), 
+    nodeio      = require('node.io'),
+    restler     = require('restler'),
     querystring = require('querystring');
 
-var basepath = '/var/www/isearch/client/cofetch/output';
+var basepath = '../../client/cofetch/output';
 var publicOutputUrl = 'http://isearch.ai.fh-erfurt.de/cofetch/output';
 var baseName = '';
 
@@ -124,7 +124,7 @@ var storeMultipleContentObjectData = function(data, onlyJson, callback) {
     timeout : 10, // Timeout after 10 seconds
     max : 1, // Run 1 thread concurrently (when run() is async)
     retries : 3, // Threads can retry 3 times before failing
-    flatten : false
+    flatten : true
   };
 
   var job = new nodeio.Job(
@@ -174,7 +174,6 @@ var storeMultipleContentObjectData = function(data, onlyJson, callback) {
             }
 
             data.message = endData;
-
             context.emit(data);
           });
         }
@@ -188,12 +187,25 @@ var storeMultipleContentObjectData = function(data, onlyJson, callback) {
       callback(error, null);
       return;
     }
-
-    callback(null, data[0]);
+    callback(null, data);
 
   }, true);
 
 };
+
+/**
+ * Initializes the store object and sets important output paths 
+ */
+exports.init = function(serverUrl) {
+  
+  if(!serverUrl) {
+    return;
+  }
+  
+  if(serverUrl.length > 10) {
+    publicOutputUrl = serverUrl + '/cofetch/output';
+  }
+}; 
 
 /**
  * Converts the given Content Object data in JSON format into XML RUCoD format

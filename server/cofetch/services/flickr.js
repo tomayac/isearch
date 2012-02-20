@@ -4,7 +4,7 @@
  */
 var restler = require('restler'),
     weather = require('./wunderground'),
-    step    = require('./step');
+    step    = require('../lib/step');
 
 var licenses = [
     { "name": "All Rights Reserved", "url": "" },

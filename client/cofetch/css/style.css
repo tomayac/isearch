@@ -406,6 +406,10 @@ input.title {
 	font-size: 1.5em;
 }
 
+input.wide {
+  width: 310px;
+}
+
 textarea {
 	width: 390px;
 	height: 250px;
@@ -526,9 +530,11 @@ header nav button[disabled="disabled"] {
 .ui-tabs .ui-tabs-nav li span.delete {
   color: #AA0000;
   cursor: pointer;
+  display: inline-block;
   font-weight: bold;
   padding-right: 0.4em;
-  padding-top: 0.6em;
+  padding-left: 0.2em;
+  padding-top: 0.5em;
   vertical-align: middle;
 }
 
@@ -553,6 +559,61 @@ footer {
 	width: 770px;
 	margin: 200px auto;
 	margin-bottom: 20px;
+}
+
+div.media-search {
+  width: 300px;
+  display: inline-block;
+  vertical-align: top;
+}
+
+div.media-search p {
+  font-weight: bold;
+}
+
+div.media-search ul {
+  margin: 0;
+  padding: 0;
+}
+
+div.media-search ul li {
+  border: 1px solid #ccc;
+  margin-right: 5px;
+  margin-top: 5px;
+  padding: 0;
+  width: 120px;
+  height: 100px;
+  display: inline-block;
+  list-style-type: none;
+  overflow: hidden;
+  vertical-align: middle;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+div.media-search ul li.active {
+  border: 1px solid #ab2011;
+}
+
+div.media-search ul li img {
+  width: 120px;
+}
+
+div.media-search ul li p {
+  margin:0;
+  padding: 5px;
+  font-size: 85%;
+  color: #888;
+}
+
+div.media-details {
+  width: 400px;
+  display: inline-block;
+  vertical-align: top;
+}
+
+div.media-details.accordion {
+
 }
 
 audio,img,iframe {
@@ -596,8 +657,19 @@ section {
 	position: relative;
 	top: 250px;
 	left: 45%;
+	display: inline-block;
+	width: 200px;
+	background-color: #555;
+	border-radius: 5px; 
+	
 	color: #fff;
 	font-weight: bold;
+	text-align: center;
+	
+}
+
+#loading p img {
+  display: inline;
 }
 
 /* =============================================================================

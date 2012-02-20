@@ -15,11 +15,6 @@ var cofetchHandler = (function() {
   var sounds = [];
   var images = [];
   
-  var iTd = 0, tdDir = 1;
-  var iImg = 0, imgDir = 1;
-  var iVid = 0, vidDir = 1;
-  var iSou = 0, souDir = 1;
-  
   //-------------------------------------------------------------  
   var fetchCategories = function() {
 	  var serverURL = "/cofetch/getCat";  
@@ -27,15 +22,14 @@ var cofetchHandler = (function() {
 	  $.ajax({
     	  type: "GET",
     	  url: serverURL,
+    	  dataType: 'JSON',
     	  success: function(data) {
-    		  
       		$.each(data.paths, function(key,val) {
       			//console.log(key + ' - ' + val);
-      		    $('#script-category')
-      		    	.append($('<option>', { value : val })
-      		        .text(val)); 
+      		  $('#script-category')
+      		    .append($('<option>', { value : val })
+      		    .text(val)); 
       		});
-
     	  },
     	  error: function(jqXHR, textStatus, errorThrown) {
     		  console.log("fetchCategories error. " + errorThrown);
@@ -74,36 +68,48 @@ var cofetchHandler = (function() {
         if(automatic === 1) {
         	
         	var dialogHtml = '';
-        	
         	//Store the returned data
-    	    scraperData.push(data.response[0]);
+    	    scraperData = data;
     	    console.log("Scraped data: ",scraperData); 
         	
-	  		if(typeof scraperData[0] === 'object') {
-	  			dialogHtml += '<p><strong>' + scraperData[0].message + '</strong></p>';
-	  			if(scraperData[0].urls) {
-	  				dialogHtml += '<p>Generated files:</p><ul>';
-	  				for(var i=0; i < scraperData[0].urls.length; i++) {
-	  					dialogHtml += '<li><a href="' + scraperData[0].urls[i] + '">' + scraperData[0].urls[i] + '</a></li>';
-	  				}
-	  				dialogHtml += '</ul>';
-	  			}
-	  		}
-	  		$("#dialog").html(dialogHtml);
-	  		$("#dialog").dialog('open');
+  	  		if(scraperData.length > 1) {
+  	  		  dialogHtml += '<p><strong>Content Objects for the keywords "' + query + '" have been successfully created.</strong></p>';
+  	  		  dialogHtml += '<p>Generated files:</p><ul>';
+  	  		  for(index in scraperData) {
+              var co = scraperData[index];
+              if(co.urls) {
+                for(var i=0; i < co.urls.length; i++) {
+                  dialogHtml += '<li><a href="' + co.urls[i] + '" target="_blank">' + co.urls[i] + '</a></li>';
+                }
+              }
+            }
+  	  		  dialogHtml += '</ul>';
+  	  		  
+  	  		} else {
+  	  			dialogHtml += '<p><strong>' + scraperData[0].message + '</strong></p>';
+  	  			if(scraperData[0].urls) {
+  	  				dialogHtml += '<p>Generated files:</p><ul>';
+  	  				for(var i=0; i < scraperData[0].urls.length; i++) {
+  	  					dialogHtml += '<li><a href="' + scraperData[0].urls[i] + '">' + scraperData[0].urls[i] + '</a></li>';
+  	  				}
+  	  				dialogHtml += '</ul>';
+  	  			}
+  	  		}
+  	  		$("#dialog").html(dialogHtml);
+  	  		$("#dialog").dialog('open');
         	
         } else {
         	
         	//Store the returned data
-    	    scraperData.push(data.response);
+    	    scraperData = data;
     	    console.log("Scraped data: ",scraperData); 
         	
         	console.log('Data for keywords "' + query + '" successfully fetched.');
         	
-        	if(scraperData[0].length > 0) {
+        	if(scraperData.length > 0) {
         		$('#save').removeAttr('disabled');
         	}
-        	if(scraperData[0].length > 1) {
+        	if(scraperData.length > 1) {
         		$('#next').removeAttr('disabled');
         	}
         	
@@ -149,71 +155,81 @@ var cofetchHandler = (function() {
                 
 			  console.log("Scraped data: ",data);
         
-			  //Now, let's sort the files according to their type
-			  var files = data.response;
+			  var files = [];
+			  //Check if there was an error
+			  if(data.error) {
+			    console.log(data.error);
+			  } else {
+			    files = data.response;
+			  }
 			  
-	          if (type === "image") {
-	        	  //Reset the old result
-	        	  images = [];
-	        	  iImg = 0;
-	        	  
-	        	  $.each(files, function(index, file){  
-	        		  images.push(file);
-	        	  });
-	        	  
-	        	  if(images.length > 0) {
-	        		  setImage();
-	        	  }
-	        	  
-	          } else if (type === "text") {
-	        	  //Reset the old result
-	        	  text = [];
-	        	  
-	        	  $.each(files, function(index, file){  
-	        		  text.push(file);
-	        	  });
-	        	  
-	        	  if(text.length > 0) {
-	        		  setText();
-	        	  }
-	        	  
-	          } else if (type === "video") {
-	        	  //Reset the old result
-	        	  videos = [];
-	        	  iVid = 0;
-	        	  
-	        	  $.each(files, function(index, file){  
-	        		  videos.push(file);
-	        	  });
-	        	  
-	        	  if(videos.length > 0) {
-	        		  setVideo();
-	        	  }
-	          } else if (type === "sound") {
-	        	  //Reset the old result
-	        	  sounds = [];
-	        	  iSou = 0;
-	        	  
-	        	  $.each(files, function(index, file){  
-	        		  sounds.push(file);
-	        	  });
-	        	  
-	        	  if(sounds.length > 0) {
-	        		  setSound();
-	        	  }
-	          } else if (type === "3d") {
-	        	  //Reset the old result
-	        	  threed = [];
-	        	  iTd = 0;
-	        	  
-	        	  $.each(files, function(index, file){  
-	        		  threed.push(file);
-	        	  });
-	        	  
-	        	  if(threed.length > 0) {
-	        		  set3d();
-	        	  }
-	          }
+			  //Now, let's sort the files according to their type
+        if (type === "image") {
+      	  //Reset the old result
+      	  images = [];
+      	  
+      	  $.each(files, function(index, file){  
+      		  images.push(file);
+      	  });
+      	  
+      	  if(images.length > 0) {
+      		  setImage();
+      	  } else {
+      	    setMediaList('image',images);
+      	  }
+        } else if (type === "text") {
+      	  //Reset the old result
+      	  text = [];
+      	  
+      	  $.each(files, function(index, file){  
+      		  text.push(file);
+      	  });
+      	  
+      	  if(text.length > 0) {
+      		  setText();
+      	  } else {
+      	    setMediaList('text',text);
+      	  }
+        } else if (type === "video") {
+      	  //Reset the old result
+      	  videos = [];
+      	  
+      	  $.each(files, function(index, file){  
+      		  videos.push(file);
+      	  });
+      	  
+      	  if(videos.length > 0) {
+      		  setVideo();
+      	  } else {
+      	    setMediaList('video',videos);
+      	  }
+        } else if (type === "sound") {
+      	  //Reset the old result
+      	  sounds = [];
+      	  
+      	  $.each(files, function(index, file){  
+      		  sounds.push(file);
+      	  });
+      	  
+      	  if(sounds.length > 0) {
+      		  setSound();
+      	  } else {
+      	    setMediaList('sound',sounds);
+      	  }
+        } else if (type === "3d") {
+      	  //Reset the old result
+      	  threed = [];
+      	  
+      	  $.each(files, function(index, file){  
+      		  threed.push(file);
+      	  });
+      	  
+      	  if(threed.length > 0) {
+      		  set3d();
+      	  } else {
+      	    setMediaList('threed',threed);
+      	  }  
+        }
         
       },
       error: function(jqXHR, textStatus, errorThrown) {
@@ -223,19 +239,19 @@ var cofetchHandler = (function() {
     		  errorData = JSON.parse(jqXHR.responseText);
     	  } catch (e) {}
     	  
-    	  alert("An error occured: " + errorData.message || errorThrown + "\n\rPlease try again or contact the administrator under jonas.etzold@fh-erfurt.de .");  
+    	  alert("An error occured: " + errorData.error || errorThrown + "\n\rPlease try again or contact the administrator under jonas.etzold@fh-erfurt.de .");  
       }
     });
   };
   
   //-------------------------------------------------------------
   var hasScraperData = function() {
-	  if(scraperData[0] === undefined) {
+	  if(scraperData === undefined) {
 		  return false;
 	  }
 	  
-	  if(scraperData[0].length > 0) {
-		  return scraperData[0].length;
+	  if(scraperData.length > 0) {
+		  return scraperData.length;
 	  } else {
 		  return false;
 	  }
@@ -245,7 +261,7 @@ var cofetchHandler = (function() {
   var setScraperData = function(index) {
 	  
 	  //Now, let's sort the files according to their type
-	  var files = scraperData[0][index].Files;
+	  var files = scraperData[index].Files;
 	  
 	  images = [];
 	  threed = [];
@@ -256,16 +272,16 @@ var cofetchHandler = (function() {
 	  $.each(files, function(index, file){
 		  
 	    if (file.Type === "ImageType") {
-		  images.push(file);
-		} else if (file.Type === "Object3d") {
-		  threed.push(file);
-		} else if (file.Type === "VideoType") {
-		  videos.push(file);
-		} else if (file.Type === "SoundType") {
-		  sounds.push(file);
-		} else if (file.Type === "Text") {
-		  text.push(file);
-		}
+  		  images.push(file);
+  		} else if (file.Type === "Object3d") {
+  		  threed.push(file);
+  		} else if (file.Type === "VideoType") {
+  		  videos.push(file);
+  		} else if (file.Type === "SoundType") {
+  		  sounds.push(file);
+  		} else if (file.Type === "Text") {
+  		  text.push(file);
+  		}
 	    
 	  });
   
@@ -276,11 +292,11 @@ var cofetchHandler = (function() {
   //-------------------------------------------------------------
   var populateForm = function(index) {
     
-    //console.log(scraperData[0][index]);
+    //console.log(scraperData[index]);
     
     var changes = [
-      {id: "main-name", value: scraperData[0][index].Name},
-      {id: "main-categoryPath", value: scraperData[0][index].CategoryPath},
+      {id: "main-name", value: scraperData[index].Name},
+      {id: "main-categoryPath", value: scraperData[index].CategoryPath},
       {id: "main-screenshot", value: "3d"} //defaut: 3d screenshot
     ];
     set(changes);
@@ -294,7 +310,33 @@ var cofetchHandler = (function() {
     if(images.length > 0) { setImage(); }
     
   };
-
+  
+  //-------------------------------------------------------------
+  var setMediaList = function(type,media,selected) {
+    var selected = selected || 0;
+    var list = '#' + type + '-list';
+    
+    if($(list).length > 0) {
+       var listHtml = '';
+       if(media.length > 0) {
+         for(index in media) {
+           var item = media[index];
+  
+           if(type == 'text') {
+             listHtml += '<li'+ (selected == index ? ' class="active"' : '') + ' data-index="' + index + '"><p>' + item.FreeText.substr(0,80) + '...</p></li>';
+           } else {
+             listHtml += '<li'+ (selected == index ? ' class="active"' : '') + ' data-index="' + index + '"><img src="' + item.Preview + '" alt="' + item.Name + '" /></li>';
+           }
+         } 
+         $(list).next().hide();
+       } else {
+         $(list).next().show();
+         resetPart(type);
+       }
+       $(list).html(listHtml);
+    } 
+  }; 
+  
   //-------------------------------------------------------------
   var getText = function(searchPhrase) {
 	  if (typeof searchPhrase !== "undefined") {
@@ -303,11 +345,25 @@ var cofetchHandler = (function() {
   }; 
 
   //-------------------------------------------------------------  
-  var setText = function() {
+  var setText = function(id) {
+    var index = 0;
+    
+    if (typeof id !== "undefined") {
+      index = id;
+    }
+      
+    //Take desired text
+    if(!text[index]) {
+      return;
+    }
+    
+    setMediaList('text',text,index);
+    
 	  var changes = [
-         {id: "text-content", value: text[0].FreeText}
-       ];
-       set(changes);
+      {id: "text-content", value: text[index].FreeText}
+    ];
+    
+	  set(changes);
   };
   
   //-------------------------------------------------------------  
@@ -318,37 +374,28 @@ var cofetchHandler = (function() {
   }; 
   
   //-------------------------------------------------------------  
-  var set3d = function(shift) {
+  var set3d = function(id) {
     
-    if (typeof shift !== "undefined") {
-    	
-    	if(threed.length <= 1) {
-    		alert("No other 3D models fetched.");
-    		return;
-    	}
-    	
-        if (iTd == (threed.length-1)) {
-        	tdDir = 0;
-        	alert('No other 3D models to see, going back');
-        } else if(iTd == 0){
-        	tdDir = 1; 
-        }
-        
-        if(tdDir == 1) {
-          iTd++;
-        } else {
-      	  iTd--;
-        }
-     }
+    var index = 0;
+    
+    if (typeof id !== "undefined") {
+      index = id;
+    }
       
-    //Take the first video of the Array
-    var model = threed[iTd];  
-	  
+    //Take desired 3d model
+    if(!threed[index]) {
+      return;
+    }
+    
+    setMediaList('threed',threed,index);
+    
+    var model = threed[index];
+    
     //Set the preview image to the right SRC
     $('#threed-visualPreview').attr(
       {'src': model.Preview}
     );
-
+  
     //Let's prepare the array of changes
     var changes = [
       {id: "threed-name", value: model.Name},
@@ -383,31 +430,22 @@ var cofetchHandler = (function() {
   }; 
   
   //-------------------------------------------------------------  
-  var setVideo = function(shift) {
-    if (typeof shift !== "undefined") {
-      //if the "shift" argument is set, we must change the video
-      //We do so by removing the first element of the array "videos"
-      if(videos.length <= 1) {
-    	  alert("No other videos fetched.");
-    	  return;
-      }
-    	
-      if (iVid == (videos.length-1)) {
-    	vidDir = 0;
-        alert('No other videos to see, going back');
-      } else if(iVid == 0){
-    	vidDir = 1; 
-      }
+  var setVideo = function(id) {
+    
+    var index = 0;
+    
+    if (typeof id !== "undefined") {
+      index = id;
+    }
       
-      if(vidDir == 1) {
-    	  iVid++;
-      } else {
-    	  iVid--;
-      }
+    //Take desired video
+    if(!videos[index]) {
+      return;
     }
     
-    //Take the first video of the Array
-    var video = videos[iVid];
+    setMediaList('video',videos,index);
+    
+    var video = videos[index];
     
     //Extract the ID of the YouTube video
     var videoID = video.URL.substring(video.URL.indexOf("=")+1);
@@ -453,31 +491,22 @@ var cofetchHandler = (function() {
   }; 
   
   //-------------------------------------------------------------  
-  var setSound = function(shift) {
-    if (typeof shift !== "undefined") {
-        //if the "shift" argument is set, we must change the video
-        //We do so by removing the first element of the array "sounds"
-    	if(sounds.length <= 1) {
-      	  alert("No other sounds fetched.");
-      	  return;
-        }
-    	
-    	if (iSou == (sounds.length-1)) {
-    		souDir = 0;
-            alert('No other sounds to hear, going back');
-        } else if(iSou == 0){
-        	souDir = 1; 
-        }
-          
-        if(souDir == 1) {
-        	iSou++;
-        } else {
-        	iSou--;
-        }
+  var setSound = function(id) {
+    
+    var index = 0;
+    
+    if (typeof id !== "undefined") {
+      index = id;
+    }
+      
+    //Take desired sounds
+    if(!sounds[index]) {
+      return;
     }
     
-    //Take the first sound of the array
-    var sound = sounds[iSou];
+    setMediaList('sound',sounds,index);
+    
+    var sound = sounds[index];
     
     //Update the preview
     $('#sound-previewOGG').attr(
@@ -518,35 +547,26 @@ var cofetchHandler = (function() {
   }; 
   
   //-------------------------------------------------------------
-  var setImage = function(shift) {
-    if (typeof shift !== "undefined") {
-      //if the "shift" argument is set, we must change the video
-      //We do so by removing the first element of the array "images"
-    	if(images.length <= 1) {
-        	alert("No other images fetched.");
-        	return;
-        }
-    	
-    	if (iImg == (images.length-1)) {
-    		imgDir = 0;
-            alert('No other images to see, going back');
-        } else if(iImg == 0){
-        	imgDir = 1; 
-        }
-          
-        if(imgDir == 1) {
-        	iImg++;
-        } else {
-        	iImg--;
-        }
+  var setImage = function(id) {
+    
+    var index = 0;
+    
+    if (typeof id !== "undefined") {
+      index = id;
+    }
+      
+    //Take desired sounds
+    if(!images[index]) {
+      return;
     }
     
-    //Take the first video of the Array
-    var image = images[iImg];
+    setMediaList('image',images,index);
+
+    var image = images[index];
     
     //Set the Flickr preview to the right URL
     $('#image-previewFlickr').attr(
-      {'src': image.Preview}
+      {'src': image.URL}
     );
     
     //Let's prepare the array of changes
@@ -578,9 +598,9 @@ var cofetchHandler = (function() {
   //-------------------------------------------------------------
   var setNext = function() {
 	  manualIndex++;
-	  if(manualIndex < scraperData[0].length) {
+	  if(manualIndex < scraperData.length) {
 		  setScraperData(manualIndex);
-		  return (scraperData[0].length - 1 - manualIndex);
+		  return (scraperData.length - 1 - manualIndex);
 	  } else {
 		  return false;
 	  }
@@ -600,18 +620,18 @@ var cofetchHandler = (function() {
   //-------------------------------------------------------------  
   var save = function() {
 	  
-	var serverURL = "/cofetch/post/";  
-	
-	if($('#main-name').val().length < 2) {
-		alert("You need at least a valid name for the Content Object in order to save it!");
-		return;
-	}
-	
-	var tags = $('#threed-tags').val().split(",");
-	for(var t=0; t < tags.length; t++) {
-		tags[t] = tags[t].replace(/^\s*|\s*$/g,'');
-		tags[t] = tags[t].charAt(0).toUpperCase() + tags[t].slice(1);
-	}
+  	var serverURL = "/cofetch/post/";  
+  	
+  	if($('#main-name').val().length < 2) {
+  		alert("You need at least a valid name for the Content Object in order to save it!");
+  		return;
+  	}
+  	
+  	var tags = $('#threed-tags').val().split(",");
+  	for(var t=0; t < tags.length; t++) {
+  		tags[t] = tags[t].replace(/^\s*|\s*$/g,'');
+  		tags[t] = tags[t].charAt(0).toUpperCase() + tags[t].slice(1);
+  	}
 	
     //Let's serialize our form:   
     var jsonFile = {
@@ -757,7 +777,7 @@ var cofetchHandler = (function() {
     	  data: JSON.stringify(jsonFile),
     	  success: function(data) {
     		  //Remove the saved CO from the temporary data array
-    		  scraperData[0].splice(manualIndex,1);
+    		  scraperData.splice(manualIndex,1);
     		  manualIndex = -1;
     		  $('#previous').attr('disabled', 'disabled');
     		  resetForm();
@@ -806,7 +826,7 @@ var cofetchHandler = (function() {
         		  errorData = JSON.parse(jqXHR.responseText);
         	  } catch (e) {}
         	  
-        	  alert("An error occured: " + errorData.message || errorThrown + "\n\rPlease try again or contact the administrator under jonas.etzold@fh-erfurt.de .");  
+        	  alert("An error occured: " + errorData.message || errorThrown + "\n\rPlease try again or contact the administrator of this service.");  
           },
     	  traditional: true,
     	  dataType: "text",
@@ -832,6 +852,41 @@ var cofetchHandler = (function() {
 	  });
 	  
 	  $("#script-tabs").tabs( "select" , 0);
+  };
+  
+  //-------------------------------------------------------------  
+  var resetPart = function(type) {
+    
+    if(type == 'text') {
+      var changes = [
+        {id: "text-content", value: ''}
+      ];
+    } else {
+      //Let's prepare the array of changes
+      var changes = [
+        {id: type + "-name", value: ''},
+        {id: type + "-desc", value: ''},
+        {id: type + "-tags", value: ''},
+        {id: type + "-extension", value: ''},
+        {id: type + "-license", value: ''},
+        {id: type + "-licenseURL", value: ''},
+        {id: type + "-author", value: ''},
+        {id: type + "-date", value: ''},
+        {id: type + "-size", value: ''},
+        {id: type + "-url", value: ''},
+        {id: type + "-preview", value: ''},
+        {id: type + "-dimensions", value: ''},
+        {id: type + "-length", value: ''},
+        {id: type + "-emotions", value: ''},
+        {id: type + "-location", value: ''},
+        {id: type + "-weather-condition", value: ''},
+        {id: type + "-weather-wind", value: ''},
+        {id: type + "-weather-temperature", value: ''},
+        {id: type + "-weather-humidity", value: ''},
+      ];
+    }
+    //And apply them
+    set(changes);
   };
   
   //-------------------------------------------------------------  
@@ -892,7 +947,7 @@ var cofetchHandler = (function() {
   
   //-------------------------------------------------------------  
   return {
-	fetchCategories: fetchCategories, 
+    fetchCategories: fetchCategories, 
     fetch: fetch,
     fetchPart: fetchPart,
     hasScraperData: hasScraperData,
