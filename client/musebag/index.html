@@ -197,6 +197,8 @@
 
               // get handlers to UI elements
               var rhythmProgress = document.getElementById('rhythm-progress');
+              rhythmProgress.value = 0;
+              rhythmProgress.max = 10;
               var rhythmDiv = document.getElementById('rhythm-div');
               var rhythmDivDisabled = false;
               var durationSpinner = document.getElementById('duration-spinner');
