@@ -116,7 +116,10 @@ var cofetchHandler = (function() {
         	manualIndex = 0;
         	setScraperData(manualIndex);
         	
-        	$("#dialog").html("<p><strong>All results fetched!</strong><br/>Please verify them with the tabs provided and click the 'Save' button on the top if satisfied.</p>");
+        	$('.search-part').attr('data-last',query);
+        	
+        	//$("#dialog").html("<p><strong>All results fetched!</strong><br/>Please verify them with the tabs provided and click the 'Save' button on the top if satisfied.</p>");
+        	//$("#dialog").dialog("open");
         }
         
         $("#loading").hide();
@@ -137,7 +140,7 @@ var cofetchHandler = (function() {
   };
   
   //-------------------------------------------------------------  
-  var fetchPart = function(type, query) {
+  var fetchPart = function(type, query, page, gps) {
 	  
 	  var serverURL = "/cofetch/getPart/";
 	  //var serverURL = "http://localhost:8082/get/";
@@ -146,7 +149,7 @@ var cofetchHandler = (function() {
 	    
 	  //Request our data
 	  $.ajax({
-		  url: serverURL + type + '/' + query.replace(/\s/g,'+'),
+		  url: serverURL + type + '/' + query.replace(/\s/g,'+') + '/' + page + '/' + gps,
 		  dataType: "jsonp",
 		  jsonpCallback: "_cofetchcb",
 		  timeout: 80000,
@@ -173,10 +176,15 @@ var cofetchHandler = (function() {
       	  });
       	  
       	  if(images.length > 0) {
+      	    $('#search-image-prev,#search-image-next').show();
       		  setImage();
       	  } else {
+      	    $('#search-image-prev,#search-image-next').hide();
       	    setMediaList('image',images);
       	  }
+      	  
+      	  $('#search-image-loader').hide();
+      	  
         } else if (type === "text") {
       	  //Reset the old result
       	  text = [];
@@ -190,6 +198,9 @@ var cofetchHandler = (function() {
       	  } else {
       	    setMediaList('text',text);
       	  }
+      	  
+      	  $('#search-text-loader').hide();
+      	  
         } else if (type === "video") {
       	  //Reset the old result
       	  videos = [];
@@ -199,10 +210,15 @@ var cofetchHandler = (function() {
       	  });
       	  
       	  if(videos.length > 0) {
+      	    $('#search-video-prev,#search-video-next').show();
       		  setVideo();
       	  } else {
+      	    $('#search-video-prev,#search-video-next').hide();
       	    setMediaList('video',videos);
       	  }
+      	  
+      	  $('#search-video-loader').hide();
+      	  
         } else if (type === "sound") {
       	  //Reset the old result
       	  sounds = [];
@@ -212,10 +228,15 @@ var cofetchHandler = (function() {
       	  });
       	  
       	  if(sounds.length > 0) {
+      	    $('#search-sound-prev,#search-sound-next').show();
       		  setSound();
       	  } else {
+      	    $('#search-sound-prev,#search-sound-next').hide();
       	    setMediaList('sound',sounds);
       	  }
+      	  
+      	  $('#search-sound-loader').hide();
+      	  
         } else if (type === "3d") {
       	  //Reset the old result
       	  threed = [];
@@ -225,10 +246,14 @@ var cofetchHandler = (function() {
       	  });
       	  
       	  if(threed.length > 0) {
+      	    $('#search-threed-prev,#search-threed-next').show();
       		  set3d();
       	  } else {
+      	    $('#search-threed-prev,#search-threed-next').hide();
       	    setMediaList('threed',threed);
-      	  }  
+      	  } 
+      	  
+      	  $('#search-threed-loader').hide();
         }
         
       },
@@ -304,10 +329,10 @@ var cofetchHandler = (function() {
     console.log('Will set the individual mode fieldsets');
     
     if(text.length > 0)   { setText(); }
-    if(threed.length > 0) { set3d(); }
-    if(videos.length > 0) { setVideo(); }
-    if(sounds.length > 0) { setSound(); }
-    if(images.length > 0) { setImage(); }
+    if(threed.length > 0) { set3d();    $('#search-threed-prev,#search-threed-next').show();}
+    if(videos.length > 0) { setVideo(); $('#search-video-prev,#search-video-next').show();}
+    if(sounds.length > 0) { setSound(); $('#search-sound-prev,#search-sound-next').show();}
+    if(images.length > 0) { setImage(); $('#search-image-prev,#search-image-next').show();}
     
   };
   
@@ -327,7 +352,7 @@ var cofetchHandler = (function() {
            } else {
              listHtml += '<li'+ (selected == index ? ' class="active"' : '') + ' data-index="' + index + '"><img src="' + item.Preview + '" alt="' + item.Name + '" /></li>';
            }
-         } 
+         }
          $(list).next().hide();
        } else {
          $(list).next().show();
@@ -340,7 +365,7 @@ var cofetchHandler = (function() {
   //-------------------------------------------------------------
   var getText = function(searchPhrase) {
 	  if (typeof searchPhrase !== "undefined") {
-		  fetchPart('text',searchPhrase);
+		  fetchPart('text',searchPhrase,1,0);
 	  }
   }; 
 
@@ -367,9 +392,9 @@ var cofetchHandler = (function() {
   };
   
   //-------------------------------------------------------------  
-  var get3d = function(searchPhrase) {
+  var get3d = function(searchPhrase,page) {
 	  if (typeof searchPhrase !== "undefined") {
-		  fetchPart('3d',searchPhrase);
+		  fetchPart('3d',searchPhrase,page,0);
 	  }
   }; 
   
@@ -423,9 +448,9 @@ var cofetchHandler = (function() {
   };
   
   //-------------------------------------------------------------  
-  var getVideo = function(searchPhrase) {
+  var getVideo = function(searchPhrase,page,gps) {
 	  if (typeof searchPhrase !== "undefined") {
-		  fetchPart('video',searchPhrase);
+		  fetchPart('video',searchPhrase,page,gps);
 	  }
   }; 
   
@@ -484,9 +509,9 @@ var cofetchHandler = (function() {
   };
   
   //-------------------------------------------------------------  
-  var getSound = function(searchPhrase) {
+  var getSound = function(searchPhrase,page,gps) {
 	  if (typeof searchPhrase !== "undefined") {
-		  fetchPart('sound',searchPhrase);
+		  fetchPart('sound',searchPhrase,page,gps);
 	  }
   }; 
   
@@ -540,9 +565,9 @@ var cofetchHandler = (function() {
   };
   
   //-------------------------------------------------------------  
-  var getImage = function(searchPhrase) {
+  var getImage = function(searchPhrase,page,gps) {
 	  if (typeof searchPhrase !== "undefined") {
-		  fetchPart('image',searchPhrase);
+		  fetchPart('image',searchPhrase,page,gps);
 	  }
   }; 
   

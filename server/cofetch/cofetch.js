@@ -132,9 +132,11 @@ exports.getPart = function(req, res) {
   var type  = req.params.type  || '';
   var query = req.params.query || '';
       query = query.replace(/[+]/g,' ');
+  var page  = req.params.page  || 1;     
+  var gps   = req.params.gps   || 0;    
   
   var cofetcher = new fetch.Fetch();
-  cofetcher.getPart(type, query, function(error, data){
+  cofetcher.getPart(type, query, page, gps, function(error, data){
     
     if(error) {
       handleError(error,res);

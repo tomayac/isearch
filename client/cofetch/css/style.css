@@ -607,7 +607,7 @@ div.media-search ul li p {
 }
 
 div.media-details {
-  width: 400px;
+  width: 395px;
   display: inline-block;
   vertical-align: top;
 }
@@ -639,6 +639,17 @@ section {
 	display: inline
 }
 
+.image-checkbox {
+  display: inline;
+  margin: 0 2px; 
+  opacity: 0.5; 
+  cursor: pointer
+}
+
+.search-nav-button {
+  display: none;
+}
+
 #loading {
 	display: none;
 }
@@ -653,6 +664,25 @@ section {
 	background-image: url("../loadingbg.png");
 }
 
+.loader {
+  position: absolute;
+  top: 50px;
+  left: 15px;
+  width: 95%;
+  height: 88%;
+  z-index: 100;
+  background-image: url("../loadingbg.png"); 
+  display: none;
+  text-align: center;
+  border-radius: 5px; 
+}
+
+.loader p {
+  display: inline-block;
+  width: 200px;
+  margin: 30% 0;
+}
+
 #loading p {
 	position: relative;
 	top: 250px;
@@ -661,6 +691,9 @@ section {
 	width: 200px;
 	background-color: #555;
 	border-radius: 5px; 
+	box-shadow: 0px 0px 20px #fff;
+	
+	padding: 5px;
 	
 	color: #fff;
 	font-weight: bold;
@@ -668,6 +701,7 @@ section {
 	
 }
 
+.loader p img,
 #loading p img {
   display: inline;
 }

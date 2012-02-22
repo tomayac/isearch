@@ -163,7 +163,7 @@ Fetch.prototype.getBestMatch = function(query, results, callback) {
 /**
  *  Fetches results for a specific media type as part of a Content Object      
  **/
-Fetch.prototype.getPart = function(type, query, callback) {
+Fetch.prototype.getPart = function(type, query, page, gps, callback) {
 	
 	if(callback && (!type || !query)) {
 		callback('Missing parameter', []);
@@ -176,7 +176,7 @@ Fetch.prototype.getPart = function(type, query, callback) {
 			step(
 				function init() {
 					//Fetch 3d model data
-					sketchup.fetchThreed(query, this);
+					sketchup.fetchThreed(query, page, this);
 				},
 				function getResult(error,data) {
 					//Be sure to have data before going on
@@ -216,7 +216,7 @@ Fetch.prototype.getPart = function(type, query, callback) {
 			step(
 				function init() {
 					//Fetch images for the given query
-					flickr.fetchImage(query,0,this);
+					flickr.fetchImage(query, gps, page, this);
 				},
 				function getResult(error,data) {
 					//Be sure to have data before going on
@@ -236,7 +236,7 @@ Fetch.prototype.getPart = function(type, query, callback) {
 			step(
 				function init() {
 					//Get videos for the given query
-					youtube.fetchVideo(query, 0, this);
+					youtube.fetchVideo(query, gps, page, this);
 				},
 				function getResult(error,data) {
 					//Be sure to have data before going on
@@ -256,7 +256,7 @@ Fetch.prototype.getPart = function(type, query, callback) {
 			step(
 				function init() {
 					//Get audio for the given query
-					sound.fetchSound(query, 0, this);
+					sound.fetchSound(query, gps, page, this);
 				},
 				function getResult(error, data) {
 					//Be sure to have data before going on
@@ -319,7 +319,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
   				function initialize() {	
   					
   					console.log('1. Start fetching Content Object data for 3D models with query "' + keyword + '"');
-  					sketchup.fetchThreed(keyword, this);
+  					sketchup.fetchThreed(keyword, 1, this);
   				},
   				function getModelData(error,data) {
   					
@@ -379,7 +379,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
   						flickrQuery += queryAdjustment[contentObject.Category];
   					}
   					
-  					flickr.fetchImage(flickrQuery, 1, this);
+  					flickr.fetchImage(flickrQuery, 1, 1, this);
   				},
   				function getImageData(error,data) {
   					//Be sure to have data before going on
@@ -418,7 +418,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
             } 
             
             //Get videos for content object
-            youtube.fetchVideo(youtubeQuery, 1, this);
+            youtube.fetchVideo(youtubeQuery, 1, 1, this);
   				},
   				function getVideoData(error,data) {
   				  //Be sure to have data before going on
@@ -450,7 +450,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
             
             var soundQuery = contentObject.Name; 
             //Get audio for content object
-            sound.fetchSound(soundQuery, 1, this);
+            sound.fetchSound(soundQuery, 1, 1, this);
   				},
   				function getSoundData(error,data) {
   					if(error) {

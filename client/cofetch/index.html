@@ -102,7 +102,12 @@
             <button id="search-text">Search new</button>
             <ul id="text-list">
             </ul>
-            <p>No text items available.</p>   
+            <p>No text items available.</p>
+            <div id="search-text-loader" class="loader">
+              <p>
+                <img src="ajax-loader.gif" alt="Fetching items..." />
+              </p>
+            </div>     
           </div>
 					
 					<div class="media-details">
@@ -115,11 +120,17 @@
 					<h3>3D Item</h3>
           
           <div class="media-search">
-            <input type="text" name="search-threed-phrase" value="" id="search-threed-phrase" class="inline" />
-            <button id="search-threed">Search new</button>
+            <input type="text" name="search-threed-phrase" value="" data-last="" id="search-threed-phrase" class="search-part inline" />
+            <button id="search-threed">Find new</button>
+            <button id="search-threed-prev" class="search-nav-button" title="Previous 10 results" data-page="0" disabled="disabled">&lt;</button><button id="search-threed-next" class="search-nav-button" title="Next 10 results" data-page="2">&gt;</button>
             <ul id="threed-list">
             </ul>  
             <p>No 3D models available.</p> 
+            <div id="search-threed-loader" class="loader">
+              <p>
+                <img src="ajax-loader.gif" alt="Fetching items..." />
+              </p>
+            </div>  
           </div>
           
           <div class="media-details accordion">
@@ -196,11 +207,18 @@
 					<h3>Image Item</h3>
           
           <div class="media-search">
-            <input type="text" name="search-image-phrase" value="" id="search-image-phrase" class="inline" />
-            <button id="search-image">Search new</button>
+            <input type="text" name="search-image-phrase" value="" data-last="" id="search-image-phrase" class="search-part inline" />
+            <img src="icon_gps.png" alt="GPS" title="Enable/Disable location based search" id="search-image-gps" data-value="0" class="image-checkbox" />
+            <button id="search-image">Find new</button>
+            <button id="search-image-prev" class="search-nav-button" title="Previous 10 results" data-page="0" disabled="disabled">&lt;</button><button id="search-image-next" class="search-nav-button" title="Next 10 results" data-page="2">&gt;</button>
             <ul id="image-list">
             </ul>
-            <p>No image items available.</p>   
+            <p>No image items available.</p> 
+            <div id="search-image-loader" class="loader">
+              <p>
+                <img src="ajax-loader.gif" alt="Fetching items..." />
+              </p>
+            </div>  
           </div>
           
 					<div class="media-details accordion">
@@ -279,8 +297,15 @@
 					<h3>Audio Item</h3>
           
           <div class="media-search">
-            <input type="text" name="search-sound-phrase" value="" id="search-sound-phrase" class="inline" />
-            <button id="search-sound">Search new</button>
+            <div id="search-sound-loader" class="loader">
+              <p>
+                <img src="ajax-loader.gif" alt="Fetching items..." />
+              </p>
+            </div>  
+            <input type="text" name="search-sound-phrase" value="" data-last="" id="search-sound-phrase" class="search-part inline" />
+            <img src="icon_gps.png" alt="GPS" title="Enable/Disable location based search" id="search-sound-gps" data-value="0" class="image-checkbox" />
+            <button id="search-sound">Find new</button>
+            <button id="search-sound-prev" class="search-nav-button" title="Previous 10 results" data-page="0" disabled="disabled">&lt;</button><button id="search-sound-next" class="search-nav-button" title="Next 10 results" data-page="2">&gt;</button>
             <ul id="sound-list">
             </ul>
             <p>No audio items available.</p>  
@@ -367,11 +392,18 @@
 					<h3>Video Item</h3>
           
           <div class="media-search">
-            <input type="text" name="search-video-phrase" value="" id="search-video-phrase" class="inline" />
-             <button id="search-video">Search new</button>
+            <input type="text" name="search-video-phrase" value="" data-last="" id="search-video-phrase" class="search-part inline" />
+            <img src="icon_gps.png" alt="GPS" title="Enable/Disable location based search" id="search-video-gps" data-value="0" class="image-checkbox" />
+            <button id="search-video">Find new</button>
+            <button id="search-video-prev" class="search-nav-button" title="Previous 10 results" data-page="0" disabled="disabled">&lt;</button><button id="search-video-next" class="search-nav-button" title="Next 10 results" data-page="2">&gt;</button>
             <ul id="video-list">
             </ul>  
             <p>No video items available.</p> 
+            <div id="search-image-loader" class="loader">
+              <p>
+                <img src="ajax-loader.gif" alt="Fetching items..." />
+              </p>
+            </div>  
           </div>
           
 					<div class="media-details accordion">

@@ -45,7 +45,7 @@ console.log("Register CoFetch functions...");
 
 app.get  ('/get/:query/:category/:automatic', cofetch.get);
 app.get  ('/getCat'                         , cofetch.getCat);
-app.get  ('/getPart/:type/:query'           , cofetch.getPart);
+app.get  ('/getPart/:type/:query/:page/:gps', cofetch.getPart);
 app.post ('/post'                           , cofetch.post);
 
 app.listen(port);
