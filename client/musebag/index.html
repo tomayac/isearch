@@ -44,6 +44,7 @@
 <link rel="stylesheet" href="css/vis.css" />
 <link rel="stylesheet" href="css/uiiface.css" />
 <link rel="stylesheet" href="css/jquery-ui-1.8.17.custom.css" />
+<link rel="stylesheet" href="css/progress-polyfill.css" />
 
 <body>
 	<div id="settings">
@@ -176,10 +177,10 @@
 					Use your device and start tapping a rhythm:
           <div class="rhythm">
             <p>
-              <input type="range" id="range-slider" max="10" value="0" />
+              <progress id="rhythm-progress" max="10" value="0" />
             </p>
             <p>
-              <label for="range-slider">Elapsed time in seconds:
+              <label for="rhythm-progress">Elapsed time in seconds:
                 <span id="elapsed-span"></span>
               </label>          
             </p>      
@@ -191,10 +192,13 @@
               <div id="rhythm-div">Start</div>      
             </p>  
             <canvas id="rhythm-canvas"></canvas>  
+            <script type="application/javascript" src="js/progress-polyfill.min.js"></script>
             <script type="application/javascript">
 
               // get handlers to UI elements
-              var rangeSlider = document.getElementById('range-slider');
+              var rhythmProgress = document.getElementById('rhythm-progress');
+              rhythmProgress.value = 0;
+              rhythmProgress.max = 10;
               var rhythmDiv = document.getElementById('rhythm-div');
               var rhythmDivDisabled = false;
               var durationSpinner = document.getElementById('duration-spinner');
@@ -210,7 +214,7 @@
               var start = 0;      
               var timer = false;
               var rhythm = {};
-              var scalingFactor = rhythmCanvas.width / rangeSlider.max;
+              var scalingFactor = rhythmCanvas.width / rhythmProgress.max;
 
               // draw scale
               var drawScale = function() {
@@ -242,21 +246,21 @@
                   // set state to "running"
                   rhythmDiv.innerHTML = 'Tap';
                   running = true;
-                  rangeSlider.value = 0;
+                  rhythmProgress.value = 0;
                   drawScale();
                   durationSpinner.disabled = true;
                   start = new Date().getTime();          
-                  scalingFactor = rhythmCanvas.width / rangeSlider.max;
+                  scalingFactor = rhythmCanvas.width / rhythmProgress.max;
 
                   // set timer
                   timer = setInterval(function() {            
                     // calculate the elapsed time since the beginning of the timer
                     var elapsed = Math.floor((new Date().getTime() - start) / 1000);
                     elapsedSpan.innerHTML = elapsed;
-                    rangeSlider.value = elapsed;
+                    rhythmProgress.value = elapsed;
 
                     // if the timer has ended
-                    if (elapsed >= rangeSlider.max) {
+                    if (elapsed >= rhythmProgress.max) {
                       // set state to "not running"
                       clearInterval(timer);
                       rhythmDivDisabled = true;
@@ -286,8 +290,8 @@
               }, false);
 
               durationSpinner.addEventListener('change', function(e) {
-                rangeSlider.max = durationSpinner.value;
-                rangeSlider.value = 0;
+                rhythmProgress.max = durationSpinner.value;
+                rhythmProgress.value = 0;
               }, false);
 
             </script>
