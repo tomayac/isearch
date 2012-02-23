@@ -1,6 +1,6 @@
 var restler = require('restler'),
     weather = require('./wunderground'),
-    step    = require('./step');
+    step    = require('../lib/step');
 
 var APIKey = "e642ab56df1f4cfc87f419fbf9ac5088";
 
@@ -70,7 +70,7 @@ var getSoundData = function(soundId, callback) {
   
 };
 
-var fetchSound = function(query, isGeo, callback) {
+var fetchSound = function(query, isGeo, page, callback) {
   
   if (!query) {
     callback('No arguments were given to the freesound job', null);
@@ -85,22 +85,26 @@ var fetchSound = function(query, isGeo, callback) {
   //The array for storing the results
   var results = new Array();
   //maximum count of images to retrieve
-  var maxResults = 2;
+  var maxResults = 10;
+  //page stuff
+  var end = page * maxResults;
+  var start = end - maxResults;
+  var soundPage = Math.ceil(end / 30);
   
   var freesoundURL = "http://www.freesound.org/api/sounds/search?"
     + 'q=' + query
-    + '&p=1'
+    + '&p=' + soundPage
     + '&api_key=' + APIKey
     + '&format=json';
    
-  if (isGeo) {
+  if (isGeo === 1) {
     //If we want geotagged sounds
     freesoundURL += '&f=is_geotagged:true';
   }
   
   //DEBUG:
-  //console.log(freesoundURL);
-  
+  console.log(freesoundURL);
+
   restler
   .get(freesoundURL, {
     parser: restler.parsers.json
@@ -121,12 +125,12 @@ var fetchSound = function(query, isGeo, callback) {
       var sounds = data.sounds || new Array();
       
       //Adjust the maxResults parameter if there weren't enough results
-      if(sounds.length < maxResults) {
-        maxResults = sounds.length;
+      if(sounds.length < end) {
+        end = sounds.length;
       }
       
       //Fetch sound info for all sounds below the maximum of sounds to retrieve   
-      for(var i=0; i < maxResults; i++) {         
+      for(var i=start; i < end; i++) {         
         step(
           function initialize() {
             getSoundData(sounds[i].id, this);

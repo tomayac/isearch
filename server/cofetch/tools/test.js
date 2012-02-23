@@ -1,10 +1,24 @@
 //var skp = require('./sketchup');
-var yt = require('./youtube');
+//var yt = require('../services/youtube');
 //var fs = require('./freesound');
 //var mdb = require('./modeldb');
 //var dbpedia = require('./dbpedia');
 //var weather = require('./wunderground');
 //var flickr = require('./flickr');
+var path = require('path');
+
+var basepath = '../../../client/cofetch/output';
+var outputpath = basepath; //path.resolve(basepath);
+console.log('Test exist: ' + outputpath + '/test.json');
+// Check if the folder for this content object already exists
+path.exists(outputpath + '/test.json', function(exists) {
+  if (exists) {
+    console.log('File exists.');
+  }
+  else {
+    console.log('File does not exist.');
+  }
+});
 
 //flickr.fetchImage('red cat',1,function(error, data) {
 //  if(error) {
@@ -25,14 +39,14 @@ var yt = require('./youtube');
 //});
 
 //Uncomment this if you want to test Video
-yt.fetchVideo('cow', 1, function(error, data){
-  if(error) {
-    console.log('Error: '+error);
-    return;
-  }
-  //results is now filled in with the sounds
-  console.log(data);
-});
+//yt.fetchVideo('cow', 1, function(error, data){
+//  if(error) {
+//    console.log('Error: '+error);
+//    return;
+//  }
+//  //results is now filled in with the sounds
+//  console.log(data);
+//});
 
 //Uncomment that if you want to test Audio
 //fs.fetchSound('cow', 1, function(error, data){

@@ -1,6 +1,6 @@
 var restler = require('restler');
 
-var fetchThreed = function(query, callback) {
+var fetchThreed = function(query, page, callback) {
   
   if (!query) {
     callback('No arguments were given to the Google SketchUp job', null);
@@ -16,14 +16,17 @@ var fetchThreed = function(query, callback) {
   var results = new Array();
   //maximum count of 3D Models to retrieve
   var maxResults = 10;
+  //page stuff
+  var end = page * maxResults;
+  var start = end - maxResults;
 
   var searchURL = "http://sketchup.google.com/3dwarehouse/data/entities?"
     + 'q=' + query + '+is%3Amodel+filetype%3Azip'
     + '&scoring=t'
-    + '&max-results=' + maxResults
+    + '&max-results=' + end
     + '&file=zip'
     + '&alt=json';
-  
+  console.log(searchURL);
   restler
   .get(searchURL, {
     parser: restler.parsers.json
@@ -42,14 +45,20 @@ var fetchThreed = function(query, callback) {
         callback(null, results);
         return;
       }
+      
+      //Requested start page does not exist, return empty result
+      if(start > models.length) {
+        callback(null, results);
+        return;
+      }
   
       //Adjust the maxResults parameter if there aren't enough results
-      if(models.length < maxResults) {
-        maxResults = models.length;
+      if(models.length < end) {
+        end = models.length;
       }
       
       //Iterate through every found 3d model
-      for (var i=0; i < maxResults; i++) {
+      for (var i=start; i < end; i++) {
         
         try {
           

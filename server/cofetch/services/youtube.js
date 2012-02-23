@@ -1,6 +1,6 @@
 var restler = require('restler'),
     weather = require('./wunderground'),
-    step    = require('./step');
+    step    = require('../lib/step');
 
 //Function to get tags
 var getTags = function(videoEntry) {
@@ -71,7 +71,7 @@ var getVideoData = function(video, callback) {
   }
 };
 
-var fetchVideo = function(query, geo, callback) {
+var fetchVideo = function(query, geo, page, callback) {
   if (!query) {
     callback('No arguments were given to the YouTube job', null);
     return;
@@ -86,11 +86,13 @@ var fetchVideo = function(query, geo, callback) {
   var results = new Array();
   //maximum count of images to retrieve
   var maxResults = 10;
+  var start = ((page-1) * maxResults) + 1; 
   
   var youtubeURL = "https://gdata.youtube.com/feeds/api/videos?"
     + 'q=' + query
     + '&orderby=relevance'
     + '&max-results=' + maxResults
+    + '&start-index=' + start
     + '&v=2'
     + '&alt=json';
   

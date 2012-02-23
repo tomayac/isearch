@@ -266,6 +266,35 @@ p.renderContents = function(tooltip, thumb, mediaType)
 		}
 		
 	}
+	
+	/**
+	 * Triantafillos:
+	 * reverse geocode location of object and display it in the tooltip
+	 * if location is given as query, compute distance with object and display it in the tooltip
+	 */
+	if (thumb.doc.rw.pos) {
+	  var location =  new google.maps.LatLng(thumb.doc.rw.pos.coords.lat, thumb.doc.rw.pos.coords.lon);
+	  var geocoder = new google.maps.Geocoder();
+	  geocoder.geocode({'latLng': location}, function(results, status) {
+	    if (status == google.maps.GeocoderStatus.OK) {
+	      tooltipContents.append("<br><p>Location: "+results[0].formatted_address+"</p>");
+		}
+		if($("#queryContainer .Location").length) {
+		  var currentLatitude = $("#queryContainer .Location").attr('title').split(" ")[0];
+		  var currentLongitude = $("#queryContainer .Location").attr('title').split(" ")[1];
+		  var R = 6371;
+		  var dLat = (currentLatitude-thumbLatitude) *  Math.PI / 180;
+		  var dLon = (currentLongitude-thumbLongitude) *  Math.PI / 180;
+		  var lat1 = thumbLatitude *  Math.PI / 180;
+		  var lat2 = currentLatitude *  Math.PI / 180;
+		  var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
+		  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+		  var distance = R * c;
+		  tooltipContents.append("<p>Distance: "+distance.toFixed(3)+" km</p>");
+		}
+	  });
+	}
+	else tooltipContents.append("<br><p>Location: unavailable</p>");
 }
 
 p.getMediaTypes = function(thumb)

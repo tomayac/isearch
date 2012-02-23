@@ -1,6 +1,12 @@
-var fs = require('fs'), nodeio = require('node.io'), rucod = require('./store'), step = require('./step');
+var fs     = require('fs'), 
+    nodeio = require('node.io'), 
+    rucod  = require('../store'), 
+    step   = require('../lib/step');
 
-var basepath = '/var/www/isearch/client/cofetch/output';
+var basepath = '../../../client/cofetch/output';
+var weburl = 'http://isearch.ai.fh-erfurt.de';
+
+var search = 'client/'; 
 var errorCount = 0;
 
 var fs = require('fs');
@@ -27,6 +33,12 @@ var walk = function(dir, done) {
     })();
   });
 };
+
+//Check if the a user specific server url was given
+var arguments = process.argv.splice(2);
+if(isNaN(arguments[0]) && arguments[0].length > 5) {
+  weburl = 'http://' + arguments[0];
+} 
 
 walk(basepath, function(err, results) {
   if (err) throw err;
@@ -55,7 +67,7 @@ walk(basepath, function(err, results) {
       try {
         var coJson = JSON.parse(fileContents);
         var outputPath = file.substring(0,(file.lastIndexOf('/')+1));
-        var webOutputUrl = file.replace(/\/var\/www\/isearch\/client\//g, 'http://isearch.ai.fh-erfurt.de/');
+        var webOutputUrl = weburl + file.substring((file.lastIndexOf(search)+search.length),file.length);
         
         rucod.publishRUCoD(coJson, outputPath, webOutputUrl, true, function(error, data) {
           if (error) {
@@ -80,43 +92,3 @@ walk(basepath, function(err, results) {
   });
   
 });
-/*
-var job = new nodeio.Job({
-  recurse : true
-}, {
-  input : basepath,
-  run : function(full_path) {
-
-    var ext = (/[.]/.exec(full_path)) ? /[^.]+$/.exec(full_path) : undefined;
-
-    if (ext == 'json') {
-      
-      var context = this;
-      
-      var fileContents = fs.readFileSync(full_path);
-      try {
-        var coJson = JSON.parse(fileContents);
-        var outputPath = full_path.substring(0,(full_path.lastIndexOf('/')+1));
-        var webOutputUrl = full_path.replace(/\/var\/www\/isearch\/client\//g, 'http://isearch.ai.fh-erfurt.de/');
-        
-        rucod.publishRUCoD(coJson, outputPath, webOutputUrl, true, function(error, data) {
-          if (error) {
-            console.log('Recreate store error     : ' + error);
-          } else {
-            console.log('Recreate store success   : ' + data.message);
-          }
-          context.emit();
-        });
-        context.emit();
-      } catch (e) {
-        errorCount++;
-        console.log('Recreate error ' + errorCount + ': '+ e);
-        this.emit();
-      }
-    } else {
-      this.emit();
-    }
-  }
-});
-
-nodeio.start(job, {});*/

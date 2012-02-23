@@ -52,7 +52,7 @@ var textMethods = {
         		result.URL = 'http://en.wikipedia.org/wiki/' + res.Result.URI.substring((res.Result.URI.lastIndexOf('/')+1),res.Result.URI.length);
         		
         		//Exit the Job returning the results array
-            	context.emit(result);
+            context.emit(result);
         	} else {
         		context.emit({});
         	} 

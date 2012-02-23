@@ -382,7 +382,7 @@ nav {
 	box-shadow: 0px 0px 3px #111;
   border-bottom-left-radius: 4px;
 	
-	padding: 1.5em 1em 1.5em 3em;
+	padding: 1.5em 1.5em 1.5em 2.5em;
 	display: none;
 	
 	text-align: center;
@@ -393,20 +393,20 @@ nav {
   padding: 0.5em 0 0 0;
 }
 
-.settings-panel section ul {
+.settings-panel section > ul {
   display: inline-block;
-  width: 90%;
+  width: 100%;
   text-align: left;
   list-style-type: none;
-  margin-top: 0.2em;
+  margin: 0.2em 0 0 0;
 }
 
-.settings-panel section ul li:first-child {
+.settings-panel section > ul > li:first-child {
   border-top : 1px solid #999;
 }
 
-.settings-panel section ul li {
-  padding : 0.3em 0.5em 0.3em 0.1em;
+.settings-panel section > ul > li {
+  padding : 0.3em 0 0.3em 0.1em;
   border-bottom: 1px solid #999;
 }
 
@@ -493,6 +493,96 @@ nav {
 .settings-panel h6 {
   margin-top: 0.7em;
 }
+
+/*
+ * CoFind chat styles
+ */
+
+.chat-name {
+  display:inline-block;
+  vertical-align: 30%;
+  width: 27%;
+  padding: 0.2em 0;
+}
+
+.chat-container {
+  display: inline-block;
+  overflow: hidden;
+  cursor: text;
+  
+  margin: 0 0 0 0.4em;
+  padding: 0 0 0 0.4em;
+  border-left: 1px solid #999;
+  
+  height: 100%;
+  max-width: 70%;
+  min-height: 1.8em;
+  
+  background-color: transparent;
+}
+
+.chat-container ul {
+  float: left;  
+  display: block;
+  width: 10000em;
+  height: 100%;
+  
+  margin: 0;
+  padding: 0.3em 0 0 0;
+  
+  background-color: transparent;
+  list-style-type: none;
+  clear: left;
+}
+
+.chat-container ul li {
+  float: left;
+
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  
+  padding: 0.2em;
+  margin: 0 0.4em 0 0;
+  
+  background-color: #999;
+  color: #fff;
+  cursor: default;
+  
+  white-space: nowrap;
+  font-size: 0.9em;
+}
+
+.chat-container ul li span {
+  display: inline;
+  margin: 0 2px; 
+  padding: 0;
+  height: 100%;
+  line-height: 1.4em;
+  vertical-align: middle;
+}
+
+.chat-container ul li.active,
+.chat-container ul li:hover {
+  background-color: #aca;
+  background-image: none;
+}
+
+.chat-container ul li input {
+  border: 0;
+  padding: 0.1em;
+  margin: 0;
+  
+  background-color: white;
+  
+  font-size: 1em;
+  line-height: 1.2em;
+  -webkit-appearance: caret;
+}
+ 
+/*
+ * end of CoFind chat styles
+ */ 
 
 #query {
 	position: relative;
@@ -745,6 +835,11 @@ footer {
   max-width: 100px;
 }
 
+.highlight {
+  font-weight: bold;
+  color: #aca;
+}
+
 /**
  * Style for the results page
  */
@@ -811,7 +906,7 @@ footer {
 }
 
 /* Hide visually and from screenreaders, but maintain layout */
-..settings-panel {
+.invisible {
 	visibility: hidden;
 }
 
@@ -831,20 +926,48 @@ footer {
 }
 
 /* Rhythm input start */
-#progress-bar {
-  width: 200px;
+#range-slider {
+  width: 300px;
 }
-#rhythm-button {
-  width: 200px;
-  height: 50px;
+
+#rhythm-div {
+  width: 300px;
+  height: 25px;
+  border: solid 2px darkgray;
+  border-radius: 5px;
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  text-align: center;
+  margin: 0 auto;
+  padding: 50px 0;
+  color: #fff;
+  font-weight: bold;
+  background-image: linear-gradient(bottom, rgb(77,76,77) 43%, rgb(150,145,150) 86%);
+  background-image: -o-linear-gradient(bottom, rgb(77,76,77) 43%, rgb(150,145,150) 86%);
+  background-image: -moz-linear-gradient(bottom, rgb(77,76,77) 43%, rgb(150,145,150) 86%);
+  background-image: -webkit-linear-gradient(bottom, rgb(77,76,77) 43%, rgb(150,145,150) 86%);
+  background-image: -ms-linear-gradient(bottom, rgb(77,76,77) 43%, rgb(150,145,150) 86%);
 }
-P.rhythm {
-  width: 220px;
+
+#rhythm-div.tapped {
+  background-color: red;
+}
+
+div.rhythm {
+  text-align: center;
+}
+
+div.rhythm p {
+  width: 320px;
   padding: 0.2em;
+  margin: 0 auto;
 }
-CANVAS.rhythm {
+
+div.rhythm canvas {
   background-color: lightgray;
-  width: 200px;
+  width: 300px;
   height: 20px;
 }
 /* Rhythm input end */

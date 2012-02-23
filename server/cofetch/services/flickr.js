@@ -4,7 +4,7 @@
  */
 var restler = require('restler'),
     weather = require('./wunderground'),
-    step    = require('./step');
+    step    = require('../lib/step');
 
 var licenses = [
     { "name": "All Rights Reserved", "url": "" },
@@ -151,7 +151,7 @@ var getImageSize = function(imageId, callback) {
   }); 
 };
 
-var fetchImage = function(query, geo, callback) {
+var fetchImage = function(query, geo, page, callback) {
   
   if (!query) {
     callback('No arguments were given to the Flickr job', null);
@@ -178,6 +178,7 @@ var fetchImage = function(query, geo, callback) {
   }
   
   searchURL += '&per_page=' + maxResults
+    + '&page=' + page
     + '&format=json'
     + '&nojsoncallback=1'
     + '&sort=relevance';

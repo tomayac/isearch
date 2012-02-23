@@ -1,19 +1,22 @@
 /*
  * This script collects and manages all data for a content objects
  */
-var step     = require('./step');
-    sketchup = require('./sketchup');
-    modeldb  = require('./modeldb');
-    dbpedia  = require('./dbpedia');
-    flickr   = require('./flickr');
-    youtube  = require('./youtube'),
-    sound    = require('./freesound'),
-    weather  = require('./wunderground'),
+var step     = require('./lib/step');
+    sketchup = require('./services/sketchup');
+    modeldb  = require('./services/modeldb');
+    dbpedia  = require('./services/dbpedia');
+    flickr   = require('./services/flickr');
+    youtube  = require('./services/youtube'),
+    sound    = require('./services/freesound'),
+    weather  = require('./services/wunderground'),
     rucod    = require('./store');
 
 var Fetch = function() {	
 };
 
+/**
+ *  Helper function for cleaning an unnecessary deep nested result set     
+ **/
 Fetch.prototype.cleanResult = function(result, callback) {
 	var cleanResult = new Array();
 	
@@ -30,6 +33,10 @@ Fetch.prototype.cleanResult = function(result, callback) {
 	}
 };
 
+/**
+ *  Helper function for automatically getting the best matches within a result
+ *  set based on their titles and a improved Levensthein method.     
+ **/
 Fetch.prototype.getBestMatch = function(query, results, callback) {
 	
 	var levenDistance = function(v1, v2){
@@ -153,7 +160,10 @@ Fetch.prototype.getBestMatch = function(query, results, callback) {
 	}
 };
 
-Fetch.prototype.getPart = function(type, query, callback) {
+/**
+ *  Fetches results for a specific media type as part of a Content Object      
+ **/
+Fetch.prototype.getPart = function(type, query, page, gps, callback) {
 	
 	if(callback && (!type || !query)) {
 		callback('Missing parameter', []);
@@ -166,7 +176,7 @@ Fetch.prototype.getPart = function(type, query, callback) {
 			step(
 				function init() {
 					//Fetch 3d model data
-					sketchup.fetchThreed(query, this);
+					sketchup.fetchThreed(query, page, this);
 				},
 				function getResult(error,data) {
 					//Be sure to have data before going on
@@ -206,7 +216,7 @@ Fetch.prototype.getPart = function(type, query, callback) {
 			step(
 				function init() {
 					//Fetch images for the given query
-					flickr.fetchImage(query,0,this);
+					flickr.fetchImage(query, gps, page, this);
 				},
 				function getResult(error,data) {
 					//Be sure to have data before going on
@@ -226,7 +236,7 @@ Fetch.prototype.getPart = function(type, query, callback) {
 			step(
 				function init() {
 					//Get videos for the given query
-					youtube.fetchVideo(query, 0, this);
+					youtube.fetchVideo(query, gps, page, this);
 				},
 				function getResult(error,data) {
 					//Be sure to have data before going on
@@ -246,7 +256,7 @@ Fetch.prototype.getPart = function(type, query, callback) {
 			step(
 				function init() {
 					//Get audio for the given query
-					sound.fetchSound(query, 0, this);
+					sound.fetchSound(query, gps, page, this);
 				},
 				function getResult(error, data) {
 					//Be sure to have data before going on
@@ -265,6 +275,13 @@ Fetch.prototype.getPart = function(type, query, callback) {
 	}
 };
 
+/**
+ *  Main fetch function. Collects multimedia data for a specific keyword from
+ *  different public web services to create a content object in RUCoD format.
+ *  This final creation process of a RUCoD file based on the retrieved data
+ *  can be complete automatic or semi-automatic through a revisioning step by the
+ *  user who triggered the content search process.         
+ **/
 Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback) {
 	
 	var context = this;
@@ -295,15 +312,14 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
   				  "Files": []
   		};
   		
-  		//console.log("FetchData: k=" + keyword + " c=" + categoryPath + " i=" + index +" a=" + automatic);
-  		
+  		//console.log("FetchData: k=" + keyword + " c=" + categoryPath + " i=" + index +" a=" + automatic); 		
   		try {
   			//Step through the content object data collection
   			step(
   				function initialize() {	
   					
   					console.log('1. Start fetching Content Object data for 3D models with query "' + keyword + '"');
-  					sketchup.fetchThreed(keyword, this);
+  					sketchup.fetchThreed(keyword, 1, this);
   				},
   				function getModelData(error,data) {
   					
@@ -336,9 +352,8 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
   								contentObject.Files.push(data[m]);
   							}
   						}
-  					}
-  					
-  					//Even if nothing was found for 3D, go on ant try to find some text
+  					}  					
+  					//Even if nothing was found for 3D, go on and try to find some text
   					var dbpediaQuery = contentObject.Name;
   					
   					//Fetch free text data for the model
@@ -364,7 +379,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
   						flickrQuery += queryAdjustment[contentObject.Category];
   					}
   					
-  					flickr.fetchImage(flickrQuery, 1, this);
+  					flickr.fetchImage(flickrQuery, 1, 1, this);
   				},
   				function getImageData(error,data) {
   					//Be sure to have data before going on
@@ -403,7 +418,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
             } 
             
             //Get videos for content object
-            youtube.fetchVideo(youtubeQuery, 1, this);
+            youtube.fetchVideo(youtubeQuery, 1, 1, this);
   				},
   				function getVideoData(error,data) {
   				  //Be sure to have data before going on
@@ -435,7 +450,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
             
             var soundQuery = contentObject.Name; 
             //Get audio for content object
-            sound.fetchSound(soundQuery, 1, this);
+            sound.fetchSound(soundQuery, 1, 1, this);
   				},
   				function getSoundData(error,data) {
   					if(error) {

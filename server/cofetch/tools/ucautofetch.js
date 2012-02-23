@@ -1,4 +1,6 @@
-var fetch = require('./fetch'), rucod = require('./store'), step = require('./step');
+var fetch = require('../fetch'), 
+    rucod = require('../store'), 
+    step  = require('../lib/step');
 
 
 var ucdata = [
@@ -169,4 +171,11 @@ function fetchCluster(index) {
 }
 
 //Starting point for script
+//Check if the a user specific server url was given
+var arguments = process.argv.splice(2);
+if(isNaN(arguments[0]) && arguments[0].length > 5) {
+  //Initialize the rucod store library
+  rucod.init('http://' + arguments[0]);
+}
+//Start fetching
 fetchCluster(0);
