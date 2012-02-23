@@ -392,18 +392,18 @@
 					<h3>Video Item</h3>
           
           <div class="media-search">
-            <input type="text" name="search-video-phrase" value="" data-last="" id="search-video-phrase" class="search-part inline" />
-            <img src="icon_gps.png" alt="GPS" title="Enable/Disable location based search" id="search-video-gps" data-value="0" class="image-checkbox" />
-            <button id="search-video">Find new</button>
-            <button id="search-video-prev" class="search-nav-button" title="Previous 10 results" data-page="0" disabled="disabled">&lt;</button><button id="search-video-next" class="search-nav-button" title="Next 10 results" data-page="2">&gt;</button>
-            <ul id="video-list">
-            </ul>  
-            <p>No video items available.</p> 
-            <div id="search-image-loader" class="loader">
+            <div id="search-video-loader" class="loader">
               <p>
                 <img src="ajax-loader.gif" alt="Fetching items..." />
               </p>
             </div>  
+            <input type="text" name="search-video-phrase" value="" data-last="" id="search-video-phrase" class="search-part inline" />
+            <img src="icon_gps.png" alt="GPS" title="Enable/Disable location based search" id="search-video-gps" data-value="0" class="image-checkbox" />
+            <button id="search-video">Find new</button>
+            <button id="search-video-prev" class="search-nav-button" title="Previous 8 results" data-page="0" disabled="disabled">&lt;</button><button id="search-video-next" class="search-nav-button" title="Next 8 results" data-page="2">&gt;</button>
+            <ul id="video-list">
+            </ul>  
+            <p>No video items available.</p> 
           </div>
           
 					<div class="media-details accordion">
@@ -495,7 +495,7 @@
 
 	<div id="loading">
 		<p>
-			<img src="ajax-loader.gif" alt="loading..." /> Please Wait
+			<img src="ajax-loader.gif" alt="loading..." /> Please wait...
 		</p>
 	</div>
 

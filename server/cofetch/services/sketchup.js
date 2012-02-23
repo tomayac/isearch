@@ -26,7 +26,8 @@ var fetchThreed = function(query, page, callback) {
     + '&max-results=' + end
     + '&file=zip'
     + '&alt=json';
-  console.log(searchURL);
+  //console.log(searchURL);
+  
   restler
   .get(searchURL, {
     parser: restler.parsers.json

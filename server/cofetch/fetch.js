@@ -295,7 +295,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
 	  } else {
   		console.log("LOAD: data for query '" + keyword +"'...");
   	
-  		var queryAdjustment = {};
+  		var queryAdjustment = [];
   		queryAdjustment['Fish'] = ' underwater';
   		
   		var category = categoryPath.split("/");
@@ -318,7 +318,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
   			step(
   				function initialize() {	
   					
-  					console.log('1. Start fetching Content Object data for 3D models with query "' + keyword + '"');
+  					console.log('1. Start fetching Content Object data for query "' + keyword + '"');
   					sketchup.fetchThreed(keyword, 1, this);
   				},
   				function getModelData(error,data) {
@@ -460,12 +460,13 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
   					if(data.length < 1) {
   						var soundQuery = contentObject.Name; 
   						//Get audio for content object
-  						sound.fetchSound(soundQuery, 0, this);
+  						sound.fetchSound(soundQuery, 0, 1, this);
   					} else {
   						return data;
   					}
   				},
   				function finalize(error,data) {
+  				  console.log('freesound last...');
   					//Be sure to have data before going on
   					if(!error && data.length < 1) {
   						error = 'No sound data could be retrieved.';

@@ -85,7 +85,7 @@ var fetchSound = function(query, isGeo, page, callback) {
   //The array for storing the results
   var results = new Array();
   //maximum count of images to retrieve
-  var maxResults = 10;
+  var maxResults = 8;
   //page stuff
   var end = page * maxResults;
   var start = end - maxResults;
@@ -103,14 +103,15 @@ var fetchSound = function(query, isGeo, page, callback) {
   }
   
   //DEBUG:
-  console.log(freesoundURL);
+  //console.log(freesoundURL);
 
   restler
   .get(freesoundURL, {
     parser: restler.parsers.json
   })
   .on('success', function(data) {
-    try {      
+    try { 
+      
       //No sounds found, get back
       if(!data.sounds) {
         callback(null, results);
@@ -142,7 +143,7 @@ var fetchSound = function(query, isGeo, page, callback) {
             } else {
               results.push(sounditem);
             }
-            if (results.length === maxResults) {
+            if (results.length === end) {
               //Exit the job if we're done, i.e Array full
               callback(null, results);
             }

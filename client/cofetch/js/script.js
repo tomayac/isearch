@@ -74,6 +74,7 @@ $(document).ready(function(){
   	  resetSearchNav('image');
   	  resetSearchNav('audio');
   	  resetSearchNav('video');
+  	  $('script-tabs section').show();
   		cofetchHandler.fetch($("#script-keywords").val(),$("#script-category").val(),$("#script-automatic").attr("checked"));
   	}
   	return false;
@@ -97,6 +98,8 @@ $(document).ready(function(){
         
     var newpage = page + dir;
     cofetchHandler[func].apply(this, [$('#search-' + type + '-phrase').attr('data-last'), page, gps]);
+    
+    $('#search-' + type + '-loader').show('fast');
     
     $(this).attr('data-page',newpage);
     $(oppId).attr('data-page', page - dir);

@@ -1,4 +1,4 @@
-/* Author: Arnaud */
+/* Author: Arnaud, Jonas */
 var cofetchHandler = (function() {
   
   var contentObjectID;
@@ -6,7 +6,7 @@ var cofetchHandler = (function() {
   //Variable to hold the scraped data
   var scraperData = []; //I don't know why a simple empty object "{}" does not
                         //work here. It seems the script does have access to the
-                        //variable inly if it's array. W.E.I.R.D ^^
+                        //variable only if it's an array. W.E.I.R.D ^^
   var manualIndex = 0;
   
   var threed = [];
@@ -132,7 +132,7 @@ var cofetchHandler = (function() {
     		  errorData = JSON.parse(jqXHR.responseText);
     	  } catch (e) {}
     	  
-    	  alert("An error occured: " + errorData.message || errorThrown + "\n\rPlease indicate if this error is relevant to your expected result. If yes, please try again or contact the administrator under jonas.etzold@fh-erfurt.de .");
+    	  alert("An error occured: " + errorData.message || errorThrown + "\n\rPlease indicate if this error is relevant to your expected result. If yes, please try again or contact the administrator of this service.");
     	  $("#loading").hide();
       }
     });
@@ -667,7 +667,12 @@ var cofetchHandler = (function() {
       "Files": [{
           "Type": "Text",
           "FreeText": $('#text-content').val()
-      },
+      }]
+    };
+    
+    if($('#threed-name').val().length > 0) {
+      
+      jsonFile.Files.push(
       {
         "Type": "Object3D",
         "Name": $('#threed-name').val(), 
@@ -689,8 +694,8 @@ var cofetchHandler = (function() {
           "temperature": $('#threed-weather-temperature').val(), 
           "humidity": $('#threed-weather-humidity').val()
         }
-      }]
-    };
+      });
+    }
     
     if($('#image-name').val().length > 0) {
     	var tags = $('#image-tags').val().split(",");
@@ -875,6 +880,12 @@ var cofetchHandler = (function() {
 		  $('#script-automatic').attr("checked", aut);
 		  
 	  });
+	  
+	  setMediaList('text',[]);
+	  setMediaList('threed',[]);
+	  setMediaList('image',[]);
+	  setMediaList('audio',[]);
+	  setMediaList('video',[]);
 	  
 	  $("#script-tabs").tabs( "select" , 0);
   };
