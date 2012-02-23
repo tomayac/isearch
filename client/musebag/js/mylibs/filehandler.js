@@ -137,6 +137,15 @@ define("mylibs/filehandler", ["libs/glge-compiled-min"], function(GLGE){
 	            	genericItemType = 'Object3D';
 	            	var modelHandler = new that.ModelHandler(fileInfo.originPath,id);
 	            	modelHandler.initialize();
+					
+					var ele = $('#' + id) ;
+					
+		            //set the appropriate data tags for the html element
+		            ele.attr({'alt'       : fileInfo.name,
+  		                      'class'     : fileInfo.subtype,
+							  'src'		  : fileInfo.path, 
+							  'data-token': fileInfo.token,
+							  'data-mode': "Object3D"})  ;
 	            }
 	            else {
 	            	
@@ -199,7 +208,7 @@ define("mylibs/filehandler", ["libs/glge-compiled-min"], function(GLGE){
 					}
 	            }
 	            
-	            pictureIcon.removeClass('uploading');
+	            if ( pictureIcon.hasOwnProperty('removeClass') ) pictureIcon.removeClass('uploading');
 	            
 	        } //End readystate if  
 	    };

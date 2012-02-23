@@ -84,6 +84,9 @@ define("mylibs/query", ["mylibs/config",], function(config) {
         queryItem.Content  = $(this).find('p:first').text();
         queryJson.fileItems.push(queryItem);
       }
+	  
+	  //
+	  queryJson.bluetooth = 2;
       
     });
     

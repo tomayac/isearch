@@ -50,7 +50,7 @@ define("mylibs/visualization/HyperbolicTree",
 	p.ctx = null ;
 	p.thumbOptions = null ;
 
-	HyperbolicTree.iconSize = 64 ;
+	HyperbolicTree.iconSize = 96 ;
 
 	p.setOptions = function(options) {
 	
@@ -185,6 +185,10 @@ define("mylibs/visualization/HyperbolicTree",
 				lp.y >= node.py - node.thumbSize/2 && lp.y <= node.py + node.thumbSize/2 )
 			{
 				this.onImageClicked(i) ;
+				this.translateTo(new HPoint(lp.x, -lp.y)) ;
+
+				var tween = new Tween(this, 0, 1, 0, Tween.linear) ;
+				
 				return ;
 			}
 		}
@@ -192,13 +196,14 @@ define("mylibs/visualization/HyperbolicTree",
 	
 	p.redrawThumbView = function(ele, idx)
 	{
-		this.icons = new ThumbContainer(ele, this.graph.icons[idx], this.thumbOptions, this.ctx) ;
+		this.icons = new ThumbContainer(ele, this.graph.nodes[idx].icons, this.thumbOptions, this.ctx) ;
 		this.icons.draw() ;
 		
 	};
 
 	p.onImageClicked = function(idx) {
 		var that = this ;
+		this.graph.nodes[idx].selected = 2 ;
 		UI.showPage(this.container, "Cluster View", function(ele) {
 			that.currentIdx = idx ;
 			that.redrawThumbView(ele, idx) ;
@@ -220,7 +225,7 @@ define("mylibs/visualization/HyperbolicTree",
 	};
 
 	p.drawNode = function(node)	{
-		node.show(this.ctxCanvas, node.pos.x(), node.pos.y()) ;
+		node.show(this.ctxCanvas, node.pos.x(), node.pos.y(), node.selected) ;
 	};
 
 	p.draw = function(t, fast) 	{
