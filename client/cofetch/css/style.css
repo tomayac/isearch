@@ -669,7 +669,7 @@ section {
   top: 50px;
   left: 15px;
   width: 95%;
-  height: 88%;
+  height: 90%;
   z-index: 100;
   background-image: url("../loadingbg.png"); 
   display: none;
@@ -691,7 +691,7 @@ section {
 	width: 200px;
 	background-color: #555;
 	border-radius: 5px; 
-	box-shadow: 0px 0px 20px #fff;
+	box-shadow: 0px 0px 10px #fff;
 	
 	padding: 5px;
 	

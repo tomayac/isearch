@@ -79,7 +79,7 @@ define("mylibs/query", ["mylibs/config",], function(config) {
           queryJson.fileItems.push(queryItem);
           
         }
-      } else if($(this).find('p:first').text().length > 3){
+      } else if($(this).find('p:first').text().length > 2){ //Triantafillos: changed to min length 3
         
         queryItem.Content  = $(this).find('p:first').text();
         queryJson.fileItems.push(queryItem);

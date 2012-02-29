@@ -121,94 +121,96 @@ define("mylibs/filehandler", ["libs/glge-compiled-min"], function(GLGE){
 	    xhr.onreadystatechange =  function (event) {
 	        if (xhr.readyState == 4) {
 	        	
-	            var fileInfo = JSON.parse(xhr.responseText);
-	            var pictureIcon = {};
-	            var genericItemType = 'Text';
+            var fileInfo = JSON.parse(xhr.responseText);
+            var pictureIcon = {};
+            var genericItemType = 'Text';
+            
+            if(fileInfo.error) {
+              alert('Woops...somehow your query input got lost through an error in space. You can try it again or report this error to my creators: \n' + fileInfo.error);
+              return;
+            }
+            
+            //3D model display via GLGE
+            if((/dae/i).test(fileInfo.name)) {
+            	console.log("3D uploaded...");
+            	pictureIcon = $('nav li[data-mode="3d"]');
+            	genericItemType = 'Object3D';
+            	
+            	var modelHandler = new that.ModelHandler(fileInfo.originPath,id);
+            	modelHandler.initialize();
+					
+            	var ele = $('#' + id) ;
+					
+	            //set the appropriate data tags for the html element
+	            ele.attr({
+                'alt'       : fileInfo.name,
+                'class'     : fileInfo.subtype,
+				        'src'		    : fileInfo.path, 
+				        'data-token': fileInfo.token,
+				        'data-mode' : "Object3D"
+					    });
 	            
-	            if(fileInfo.error) {
-	              alert('Woops...somehow your query input got lost through an error in space. You can try it again or report this error to my creators: \n' + fileInfo.error);
-	              return;
+            } else {
+              
+            	//Image display in query field
+	            if((/image/i).test(fileInfo.type)) {
+	              if(fileInfo.subtype != '') {
+	                console.log(fileInfo.subtype + " uploaded...");
+                  pictureIcon = $('nav li[data-mode="' + fileInfo.subtype + '"]');
+	              } else {
+	                console.log("Image uploaded...");
+                  pictureIcon = $('nav li[data-mode="picture"]');
+	              }
+	              genericItemType = 'ImageType';
 	            }
 	            
-	            //3D model display via GLGE
-	            if((/dae/i).test(fileInfo.name)) {
-	            	console.log("3D uploaded...");
-	            	pictureIcon = $('nav li[data-mode="3d"]');
-	            	genericItemType = 'Object3D';
-	            	var modelHandler = new that.ModelHandler(fileInfo.originPath,id);
-	            	modelHandler.initialize();
-					
-					var ele = $('#' + id) ;
-					
-		            //set the appropriate data tags for the html element
-		            ele.attr({'alt'       : fileInfo.name,
-  		                      'class'     : fileInfo.subtype,
-							  'src'		  : fileInfo.path, 
-							  'data-token': fileInfo.token,
-							  'data-mode': "Object3D"})  ;
+	            //Sound display in query field
+	            if((/audio/i).test(fileInfo.type)) {
+	            	console.log("Audio uploaded...");
+	            	pictureIcon = $('nav li[data-mode="sound"]');
+	            	genericItemType = 'SoundType';
 	            }
-	            else {
-	            	
-	            	//Image display in query field
-		            if((/image/i).test(fileInfo.type)) {
-		              if(fileInfo.subtype != '') {
-		                console.log(fileInfo.subtype + " uploaded...");
-                    pictureIcon = $('nav li[data-mode="' + fileInfo.subtype + '"]');
-		              } else {
-		                console.log("Image uploaded...");
-                    pictureIcon = $('nav li[data-mode="picture"]');
-		              }
-		              genericItemType = 'ImageType';
-		            }
-		            //Sound display in query field
-		            if((/audio/i).test(fileInfo.type)) {
-		            	console.log("Audio uploaded...");
-		            	pictureIcon = $('nav li[data-mode="sound"]');
-		            	genericItemType = 'SoundType';
-						
-						
-						
-						
-		            }
-		            //Video display in query field
-		            if((/video/i).test(fileInfo.type)) {
-		            	console.log("Video uploaded...");
-		            	pictureIcon = $('nav li[data-mode="video"]');
-		            	genericItemType = 'VideoType';
-		            }
+	            
+	            //Video display in query field
+	            if((/video/i).test(fileInfo.type)) {
+	            	console.log("Video uploaded...");
+	            	pictureIcon = $('nav li[data-mode="video"]');
+	            	genericItemType = 'VideoType';
+	            }
 					
-					var ele = $('#' + id) ;
+	            var ele = $('#' + id) ;
 					
-		            //set the appropriate data tags for the html element
-		            ele.attr({'alt'       : fileInfo.name,
-  		                      'class'     : fileInfo.subtype,
-  		                      'data-mode' : genericItemType});
+	            //set the appropriate data tags for the html element
+	            ele.attr({
+	              'alt'       : fileInfo.name,
+		            'class'     : fileInfo.subtype,
+		            'data-mode' : genericItemType
+		          });
 									
-					// Sotiris: special handling for multiple audio formats
-					// The path element may contain multiple objects pointing to files in different formats
-					// Also a token attribute is returned to allow for reusing temporary files on the server during the query
-						
-						
-					if ( !$.isArray(fileInfo.path) )
-					{
-						ele.attr({'src': fileInfo.path, 'data-token': fileInfo.token}) ;
-					}
-					else 
-					{	
-						ele.empty().removeAttr('src').attr({'preload':'auto', 'data-token':fileInfo.token }) ;
-							
-						for ( var i=0 ; i<fileInfo.path.length ; i++ )
-						{
-							var url = fileInfo.path[i].url ;
-							var mime = fileInfo.path[i].mime ;
-								
-							$('<source/>', { src: url, type: mime }).appendTo(ele) ;
-						}
-												
-					}
-	            }
+      				// Sotiris: special handling for multiple audio formats
+      				// The path element may contain multiple objects pointing to files in different formats
+      				// Also a token attribute is returned to allow for reusing temporary files on the server during the query
+      				if ( !$.isArray(fileInfo.path) )
+      				{
+      					ele.attr({'src': fileInfo.path, 'data-token': fileInfo.token}) ;
+      				}
+      				else 
+      				{	
+      					ele.empty().removeAttr('src').attr({'preload':'auto', 'data-token':fileInfo.token }) ;
+      						
+      					for ( var i=0 ; i<fileInfo.path.length ; i++ )
+      					{
+      						var url = fileInfo.path[i].url ;
+      						var mime = fileInfo.path[i].mime ;
+      							
+      						$('<source/>', { src: url, type: mime }).appendTo(ele) ;
+      					}
+      				}
+	          }
 	            
-	            if ( pictureIcon.hasOwnProperty('removeClass') ) pictureIcon.removeClass('uploading');
+	          if ( pictureIcon.hasOwnProperty('removeClass') ) {
+	            pictureIcon.removeClass('uploading');
+	          }
 	            
 	        } //End readystate if  
 	    };

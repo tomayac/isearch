@@ -519,7 +519,14 @@ var AudioRenderer = function(containerDiv, urlMp3, urlOgg, urlImg, visType)
 			var audioElement = $("<audio/>", {   controls : 'controls', "width": width, height: "32px"}).appendTo(containerDiv);
 			audio = audioElement.get(0) ;
 			
-			if 	(!audio.mozSetup) {
+			/**
+			 * Triantafillos:
+			 * support for audio preview on Android webview
+			 * (Android web browser can support the soundManager in 'if',
+			 * but when running the I-Search app as native from webView, 
+			 * soundmanager is not supported, so we must go to 'else'.
+			 */
+			if 	(!audio.mozSetup && !navigator.userAgent.indexOf('Android')) {
 				
 				audioElement.remove() ;
 				sm2obj = fallbackSM2();

@@ -220,15 +220,6 @@ p.renderContents = function(tooltip, thumb, mediaType)
 				pause: 2500
 				}) ;
 		
-		
-	
-	if ( desc ) {
-		contents = "<br/><p style='max-height: 60px; overflow: hidden; text-overflow: ellipsis'>" + desc + "</p>" ;
-		tooltipContents.append(contents) ;
-		}
-	
-	//	tooltip.html(contents) ;
-		
 	}
 	else if ( mediaType == "SoundType" )
 	{
@@ -262,14 +253,15 @@ p.renderContents = function(tooltip, thumb, mediaType)
 			
 			tooltip.bind('thide', function() { 
 				audioRdr.terminate() ; 
-			}) ; 
-			
-			if ( desc ) 
-				$('<p/>', { css: { "max-height": "60px", "overflow": "hidden", "text-overflow": "ellipsis"}, text: desc}).appendTo(tooltipContents) ;
+			}) ;
 		
 			break ;
 		}
 		
+	}
+	
+	if(desc) {
+	  $('<p/>', { css: { "max-height": "60px", "overflow": "scroll", "text-overflow": "ellipsis"}, text: desc}).appendTo(tooltipContents);
 	}
 	
 	/**
@@ -281,9 +273,14 @@ p.renderContents = function(tooltip, thumb, mediaType)
 	  var location =  new google.maps.LatLng(thumb.doc.rw.pos.coords.lat, thumb.doc.rw.pos.coords.lon);
 	  var geocoder = new google.maps.Geocoder();
 	  geocoder.geocode({'latLng': location}, function(results, status) {
+	  
 	    if (status == google.maps.GeocoderStatus.OK) {
 	      tooltipContents.append("<br><p>Location: "+results[0].formatted_address+"</p>");
 		}
+		else if (status == google.maps.GeocoderStatus.ZERO_RESULTS) {
+	      tooltipContents.append("<br><p>Location: no address for the coordinates: ("+thumbLatitude+","+thumbLongitude+")</p>");
+	    }
+		
 		if($("#queryContainer .Location").length) {
 		  var currentLatitude = $("#queryContainer .Location").attr('title').split(" ")[0];
 		  var currentLongitude = $("#queryContainer .Location").attr('title').split(" ")[1];
