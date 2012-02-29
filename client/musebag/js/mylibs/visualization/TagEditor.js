@@ -68,8 +68,10 @@ p.appendTagBox = function(tag, tagsDiv)
 	$(deleteTag).click(function() {
 		var box = $(this).parent() ;
 		var tag = box.attr("tag") ;
-		if ( that.tags[tag] == 0 ) that.tags[tag] = 1 ;
-		else delete that.tags[tag] ;
+	//	if ( that.tags[tag] == 0 ) that.tags[tag] = 1 ;
+	//	else delete that.tags[tag] ;
+		
+		that.tags[tag] = 1 ;
 		
 		$('.add-tag-input', that.tagsContainer).attr("value", "add a tag") ;
 		

@@ -54,6 +54,7 @@ p.render = function(item, container, options)
 	{
 		var img = $('<div/>', { "docid": docid, css: {  position: "absolute", left: tm, top: tm, width: w - tm - tm, height: h - tm - tm }  }).appendTo(container) ;
 		img.thumb(ThumbContainer.selectThumbUrl(item.doc, options.modalities)) ;
+		
 		this.img = img ;
 	}
 	else // stack metaphor
@@ -71,6 +72,7 @@ p.render = function(item, container, options)
 		this.img = img ;
 	}
 	
+		
 	$(img).draggable({opacity: '0.7', cursor: 'move', containment: '#container', "z-index": 10, helper: function(e) {
 			
 		var helper = $('<div/>', { css: { width: w , height: h  }  }) ;
@@ -155,6 +157,9 @@ p.renderContents = function(tooltip, thumb, mediaType)
 			}) ;
 		}
 	}
+		
+	
+	
 	$('.media-preview', tooltip).remove() ;
 	var tooltipContents = $('<div/>', { "class": "media-preview", "id": mediaType }).appendTo(tooltip) ;
 	

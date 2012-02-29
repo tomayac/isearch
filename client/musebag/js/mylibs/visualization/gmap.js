@@ -19,6 +19,7 @@ function InfoBox(opts) {
   this.width_ = 130;
   this.data = opts.data ;
   this.thumbRenderer = opts.thumbRenderer ;
+  this.modalities = opts.modalities ;
 
   var me = this;
   this.boundsChangedListener_ =
@@ -93,8 +94,7 @@ InfoBox.prototype.createElement = function() {
 	var mediaType = null ;
 	if ( thumb.defaultMedia )
 		mediaType = thumb.defaultMedia ;
-	else if ( thumb.doc.media.length > 0 )
-		mediaType = thumb.doc.media[0].type ;
+	else mediaType = ThumbContainer.selectDefaultMediaType(thumb.doc, this.modalities) ;
 		   
 	tr.renderContents(contentDiv, thumb, mediaType) ;
 
@@ -368,13 +368,14 @@ function ScaleBarControl(controlDiv, map) {
 
 
 /////////////////////////////////////////////////////////////////////////////////
-GoogleMap = function(mapDiv, thumbRenderer, layers_) {
+GoogleMap = function(mapDiv, thumbRenderer, modalities, layers_) {
 
 	this.map = null ;
 	this.layers = [] ;
 	this.bounds = new google.maps.LatLngBounds() ;
 	this.visibleInfoWindow = null ;
 	this.thumbRenderer = thumbRenderer ;
+	this.modalities = modalities ;
 	
 	this.initMap(mapDiv, layers_) ;
 };
@@ -496,7 +497,7 @@ p.addLayers = function(_layers)
 				google.maps.event.addListener(marker, "click", 	(function(data, marker) { 
 					return function(e) {
 						if ( obj.visibleInfoWindow ) obj.visibleInfoWindow.close() ;
-						obj.visibleInfoWindow = new InfoBox({latlng: marker.getPosition(), map: map, data: data.data, thumbRenderer: obj.thumbRenderer});
+						obj.visibleInfoWindow = new InfoBox({latlng: marker.getPosition(), map: map, data: data.data, thumbRenderer: obj.thumbRenderer, modalities: obj.modalities});
 						}
 					})(data, marker));
 				

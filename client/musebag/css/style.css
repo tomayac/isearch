@@ -850,11 +850,12 @@ footer {
 
 #visualization-container {
 	margin: auto;
-	margin-top: 10px;
+	margin-top: 20px;
 	width: 900px;
 	height: 600px;
-	border: 1px solid red; /* For debugging purposes */
+	border: 1px dotted; /* For debugging purposes */
 	position: relative;
+	padding: 10px;
 }
 
 #restart {

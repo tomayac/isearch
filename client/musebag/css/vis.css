@@ -9,14 +9,36 @@
 	overflow: hidden;
 	z-index: 1;
 	position: absolute;
-	width: 32px;
-	height: 32px;
+	left: 0;
+	height: 24px;
 	right: 0;
 	bottom: 0;
+}
+
+
+.thumbnail-overlay #Relevance
+{
+	width: 24px;
+	height: 24px;
 	background-repeat: no-repeat;
-	background-position: 8px 8px;
 	background-image: url(../img/bullet_star_32.png);
 }
+
+.thumbnail-overlay #Relevance.inactive
+{
+	width: 24px;
+	height: 24px;
+	background-repeat: no-repeat;
+	background-image: url(../img/bullet_star_32_inact.png);
+}
+
+.thumbnail-overlay #TagEdit
+{
+	width: 24px;
+	height: 24px;
+	background-image: url(../img/tag-blue-edit-icon.png);
+}
+
 
 .selected {
 	border: #f00 1px solid;
@@ -1251,6 +1273,8 @@ div.jqmNotice .jqmClose {
 .tooltip-toolbar #VideoType {
 	background-image: url(../img/video_icon.svg);
 }
+
+
 
 .gmaps-infobox {
 	position: absolute;

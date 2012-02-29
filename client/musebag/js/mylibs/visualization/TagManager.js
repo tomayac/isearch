@@ -37,12 +37,10 @@ function() {
 					{
 						var tags = data[i].tags ;
 						
-						if ( !tags ) continue ;
+						if ( !tags || tags.length == 0 ) continue ;
 						
-						for(var j=0 ; j<tags.length ; j++ ) docs[i].tags.push(tags[j]) ;
-						
-						if ( !tags ) continue ;
-			
+						for(var j=0 ; j<tags.length ; j++ ) docs[i].tags = tags ;
+															
 						for(var j=0 ; j<tags.length ; j++ )
 						{
 							var tag = tags[j] ;

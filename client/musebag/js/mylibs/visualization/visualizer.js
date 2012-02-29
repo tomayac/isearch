@@ -91,11 +91,12 @@ define("mylibs/visualization/visualizer",
 				{ css: 
 					{ 
 						position: "absolute", 
-						width: "100%", 
 						top: 0,
-						bottom: 50,
+						bottom: "50px",
 						height: 50,
-						display: "table"
+						display: "table",
+						left: "10px",
+						right: "10px", 
 					} 
 				}
 			).appendTo(element) ;
@@ -113,7 +114,8 @@ define("mylibs/visualization/visualizer",
 			{ css: 
 				{ 
 					position: "absolute", 
-					width: "100%", 
+					left: "10px",
+					right: "0px",	
 					top: ( options.showFilterPane ) ? 50 : 0,
 					bottom: 50
 				} 
@@ -126,20 +128,28 @@ define("mylibs/visualization/visualizer",
 			{ css: 
 				{ 
 					position: "absolute", 
-					width: "100%",
-					height: 40,
-					bottom: 0
+					height: "40px",
+					bottom: 0,
+					left: "10px",
+					right: "10px"
+					
 				} 
 			}
 		).appendTo(element) ;
 	
-		menuPane.html('<form id="vis-options" style="padding-top: 5px">'  
-			+	'<div class="formitem"><span style="margin-right: 5px;">Method</span><div id="method-buttons" style="display:inline;">' 
+		var hasHierarchy = ( results.clusters.children.length > 1 );
+		
+		var menuPaneHtml = '<form id="vis-options" style="padding-top: 5px">'  ;
+		
+		if ( hasHierarchy ) menuPaneHtml +=
+				'<div class="formitem"><span style="margin-right: 5px;">Method</span><div id="method-buttons" style="display:inline;">' 
 			+ 	'<input type="radio" name="method" id="vis-classic"/><label for="vis-classic">Classic</label>' 
 			+ 	'<input type="radio" name="method" id="vis-hpanel"/><label for="vis-hpanel">HPanel</label>' 
 			+ 	'<input type="radio" name="method" id="vis-htree"/><label for="vis-htree">Hyperbolic Tree</label>'
-			+	'<input type="radio" name="method" id="vis-tmap"/><label for="vis-tmap">Treemap</label></div></div>'
-			+	'<div class="formitem"><span style="margin-right: 5px;">Icon Size</span><div id="ts-buttons" style="display:inline;">'
+			+	'<input type="radio" name="method" id="vis-tmap"/><label for="vis-tmap">Treemap</label></div></div>' ;
+			
+		menuPaneHtml +=	
+				'<div class="formitem"><span style="margin-right: 5px;">Icon Size</span><div id="ts-buttons" style="display:inline;">'
 			+	'<input type="radio" name="ts" id="ts64"/><label for="ts64">Small</label>'
 			+ 	'<input type="radio" name="ts" id="ts96"/><label for="ts96">Medium</label>'
 			+	'<input type="radio" name="ts" id="ts128"/><label for="ts128">Large</label>'
@@ -153,8 +163,9 @@ define("mylibs/visualization/visualizer",
 			+	'<input type="radio" name="nav" id="nav-browse"/><label for="nav-browse">Browse</label>'
 			+ 	'<input type="radio" name="nav" id="nav-feedback"/><label for="nav-feedback">Feedback</label>'
 			+	'</div></div>'
-			+ 	'</form>');
+			+ 	'</form>';
 			
+		menuPane.html(menuPaneHtml) ;
 		// menu handlers
 		
 		$('#vis-' + config.constants.visOptions.method, menuPane).attr('checked', true);

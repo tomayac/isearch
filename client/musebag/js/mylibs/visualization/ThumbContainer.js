@@ -472,10 +472,35 @@ ThumbContainer.selectThumbUrl = function(doc, modalities)
 				}
 			}
 		}
+		else if ( mediaType.type == "VideoType" && ( $.inArray("video", modalities) != -1 ) )
+		{
+			if ( mediaType.previews && mediaType.previews.length > 0 )
+				return mediaType.previews[0].url ;
+			
+		}
 	}
 	
 	return null ;
 } ;
+
+ThumbContainer.selectDefaultMediaType = function(doc, modalities)
+{
+	for( var i=0 ; i<modalities.length ; i++ )
+	{
+		var mod = modalities[i] ;
+		
+		for( var j=0 ; j<doc.media.length ; j++ )
+		{
+			var mediaType = doc.media[j].type ;
+			if ( mod == "image" && mediaType == "ImageType" ) return mediaType ;
+			else if ( mod == "3d" && mediaType == "Object3D" ) return mediaType ;
+			else if ( mod == "audio" && mediaType == "SoundType" ) return mediaType ;
+			else if ( mod == "video" && mediaType == "VideoType" ) return mediaType ;
+		}
+	}
+
+	return "" ;
+}
 
 ThumbContainer.selectTooltipText = function(doc)
 {
@@ -535,14 +560,77 @@ p.createThumbnail = function(i, x, y)
 	
 	var tm = ThumbContainer.thumbMargin ;
 	
-	
-	// create the main thumbnail box
+		// create the main thumbnail box
 	var imgOut = $('<div/>', { "class": "thumbnail", "id": "thumb-" + i, css: {  /*overflow: "hidden",*/ position: "absolute", width: this.thumbSize, height: this.thumbSize, left: x, top: y } }).appendTo(this.thumbView) ;
-	// create a place-holder for the "star" icon.
-	var trans = $('<div/>', { "class": "thumbnail-overlay", css: {  display: (item.doc.relevant) ? "block" : "none" } }).appendTo(imgOut) ;
-		
 	
+	if ( this.navMode == 'feedback' )
+	{
+		var trans = $('<div/>', { "class": "thumbnail-overlay" }).appendTo(imgOut) ;
 		
+		var tagBtn = $('<a/>', { href: "javascript:void(0)", "id": "TagEdit", "title": "Edit tags", css: { "float": "right" }} ).appendTo(trans) ;
+		var relBtn = $('<a/>', { href: "javascript:void(0)", "id": "Relevance", "title": "Toggle relevance", css: { "float": "right" }} ).appendTo(trans) ;
+	
+		if ( !item.doc.relevant ) relBtn.addClass("inactive") ;
+	
+		relBtn.click(function() {
+			item.doc.relevant = !item.doc.relevant ;
+			$(this).toggleClass("inactive") ;
+			e.stopImmediatePropagation() ;
+		}) ;
+		
+		tagBtn.click( 
+			( 
+				function(item) 	{ 
+					return function() {
+						// open the tag editor
+			
+						var popupDiv = $('<div/>', { id: "tags-popup", "class": "tag-editor", title: "Add/Edit Tags"} ) ;
+			
+						var tags = item.doc.tags ;
+						var allTags = {} ;
+			
+						var count = 1 ;
+			
+						if ( tags ) 
+						{
+							for( var i=0 ; i<tags.length ; i++ )
+							{
+								var tag = tags[i] ;
+								allTags[tag] = 2 ;
+							}
+						}
+									
+						var tagEditor = new TagEditor(popupDiv, allTags, that.ctx.tagManager.tags) ;
+						
+						$(popupDiv).dialog( { 
+							close: 	function(event, ui) {
+								var tags = item.doc.tags ;
+					
+								if ( !tags ) tags = [] ;
+				
+								// get user provided tags ;
+								var _tags = tagEditor.tags ;
+						
+								// update tags of selected items based on the user provided tags
+								for( tag in _tags )
+								{	
+									var idx = $.inArray(tag, tags) ;
+									if ( _tags[tag] == 1 && idx >= 0 ) delete tags.splice(idx,1) ;
+									else if ( _tags[tag] == 2  && idx == -1 ) tags.push(tag) ;
+								}
+					
+								item.doc.tags = tags ;
+								// save tags into permanent storage
+					
+								that.ctx.tagManager.store(item.doc) ;
+							}
+						}) ; 
+					};
+				}
+			)(item)
+		);
+	}
+			
 	var that = this ;
 	
 	// if shift-click start selection rubber-band.
@@ -557,15 +645,7 @@ p.createThumbnail = function(i, x, y)
 			
 		}
 	}) ;
-	
-	// if a click on the star remove relevance marker
-	trans.bind("click", function(e) {
-		var id = $(this).parent().attr('id').substr(6) ;
-		that.thumbs[id].doc.relevant = false ;
-		$(this).hide() ;
-		e.stopImmediatePropagation() ;
-	}) ;
-		
+
 	// setup context menu handler
 	
 	imgOut.contextMenu("vis-context-menu", {
@@ -843,6 +923,7 @@ p.showMap = function()
 				var thumb = ThumbContainer.selectThumbUrl(data.doc, this.ctx.filterBar.modalities()) ;
 				var tooltip = ThumbContainer.selectTooltipText(data.doc) ;
 				
+				
 				markerImages.push({ "lat": lat, "lon": lon, "icon": thumb, "tooltip": tooltip, data: data }) ;	
 				markerImages2.push({ "lat": lat, "lon": lon, "tooltip": tooltip, "score": i/this.thumbs.length, data: data }) ;	
 			}
@@ -861,7 +942,7 @@ p.showMap = function()
 			height: sh*3/4,
 			modal: true,
 			open: function(e, ui) {
-				var mainMap = new GoogleMap($(this).get(0), that.thumbRenderer, [ 	
+				var mainMap = new GoogleMap($(this).get(0), that.thumbRenderer, that.ctx.filterBar.modalities(), [ 	
 				{ type: 'markers', data: markerImages, name: 'Images',	
 						minzoom: 12, maxzoom: 24},
 				{ type: 'markers', data: markerImages2, name: 'Placemarks',	
@@ -945,7 +1026,7 @@ p.showTimeline = function()
 		iconDiv.style.width = iconData.width + "px" ;
 		iconDiv.style.height = iconData.height + "px" ;
 		
-		obj.thumbRenderer.render(iconData.data, $(iconDiv), $(this._eventLayer), { modalities: obj.ctx.filterBar.modalities() }) ;
+		obj.thumbRenderer.render(iconData.data, $(iconDiv), { viewport: $(this._eventLayer), modalities: obj.ctx.filterBar.modalities() }) ;
 		//iconDiv.appendChild(img);
     
 		//if ("tooltip" in commonData && typeof commonData.tooltip == "string") {
@@ -1235,15 +1316,15 @@ p.showTimeline = function()
 				{pixelsPerInterval: 400,  unit: Timeline.DateTime.MONTH},
 				{pixelsPerInterval: 200,  unit: Timeline.DateTime.MONTH},
 				{pixelsPerInterval: 100,  unit: Timeline.DateTime.MONTH}
-			//	,
-			//	{pixelsPerInterval: 400,  unit: Timeline.DateTime.YEAR},
-			//	{pixelsPerInterval: 200,  unit: Timeline.DateTime.YEAR},
-			//	{pixelsPerInterval: 100,  unit: Timeline.DateTime.YEAR}				// DEFAULT zoomIndex
+				,
+				{pixelsPerInterval: 400,  unit: Timeline.DateTime.YEAR},
+				{pixelsPerInterval: 200,  unit: Timeline.DateTime.YEAR},
+				{pixelsPerInterval: 100,  unit: Timeline.DateTime.YEAR}				// DEFAULT zoomIndex
 			)
 		})
 		,
 		Timeline.createBandInfo({
-			date:           "Jun 28 2009 00:00:00 GMT",
+			date:           mindate,
 			width:          "10%", 
 			intervalUnit:   Timeline.DateTime.YEAR, 
 			intervalPixels: 200,
