@@ -20,7 +20,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/
 
       //Visualization parameters  
   	  visOptions: {
-  	    method: "classic", //tmap, htree, hpan or classic
+  	    method: "classic", //tmap, htree, hpan, classic or cubes
   	    thumbOptions: {
   	      thumbSize: 64, //16, 32, 48, 64
   	      iconArrange: "grid",

@@ -30,8 +30,9 @@ define("mylibs/visualization/visualizer",
 		"mylibs/visualization/FilterBar",
 		"mylibs/visualization/TreeMap",
 		"mylibs/visualization/HyperbolicTree", 
-		"mylibs/visualization/HPanel" ], 
-    function(undefined, undefined, undefined, undefined, undefined, config, tagManager, filterBar, treeMap, hyperbolicTree, hPanel) {
+		"mylibs/visualization/HPanel",
+		"mylibs/visualization/Cubes"], 
+    function(undefined, undefined, undefined, undefined, undefined, config, tagManager, filterBar, treeMap, hyperbolicTree, hPanel, cubes) {
   
 	var widget = null;
 	var results = null;
@@ -43,7 +44,7 @@ define("mylibs/visualization/visualizer",
 	var draw = function(res, ele, options) {
 		results = res ;
 		element = ele ;
-	
+		
 		setup(options) ;
 		redraw(options) ;
 	};
@@ -68,7 +69,6 @@ define("mylibs/visualization/visualizer",
 	
 		//Let's empty the DOM element first
 		$(element).empty() ;
-		
 		
 		if ( results.docs.length == 0 )
 		{
@@ -102,13 +102,10 @@ define("mylibs/visualization/visualizer",
 			
 			filterBar.init(filterPane, options.filterBar, tagManager, results.docs, function() {
 				redraw(config.constants.visOptions);
-			}) ;
-			
-			
+			}) ;	
 		}
 		
-		// create main visualisation area
-		
+		// create main visualisation area		
 		visPane = $("<div/>", 
 			{ css: 
 				{ 
@@ -120,8 +117,7 @@ define("mylibs/visualization/visualizer",
 			}
 		).appendTo(element) ;
 		
-		// create menu on the bottom
-		
+		// create menu on the bottom		
 		menuPane = $("<div/>", 
 			{ css: 
 				{ 
@@ -132,7 +128,7 @@ define("mylibs/visualization/visualizer",
 				} 
 			}
 		).appendTo(element) ;
-	
+		
 		menuPane.html('<form id="vis-options" style="padding-top: 5px">'  
 			+	'<div class="formitem"><span style="margin-right: 5px;">Method</span><div id="method-buttons" style="display:inline;">' 
 			+ 	'<input type="radio" name="method" id="vis-classic"/><label for="vis-classic">Classic</label>' 
@@ -155,13 +151,12 @@ define("mylibs/visualization/visualizer",
 			+	'</div></div>'
 			+ 	'</form>');
 			
-		// menu handlers
-		
+		// menu handlers	
 		$('#vis-' + config.constants.visOptions.method, menuPane).attr('checked', true);
 		$('#ts' + config.constants.visOptions.thumbOptions.thumbSize, menuPane).attr('checked', true);
 		$('#ia-' + config.constants.visOptions.thumbOptions.iconArrange, menuPane).attr('checked', true);
 		$('#nav-' + config.constants.visOptions.thumbOptions.navMode, menuPane).attr('checked', true);
-					
+				
 		$("#method-buttons", menuPane).buttonset(
 			$('#vis-classic', menuPane).button( {text: false,  "icons": {primary:'ui-icon-method-classic'}}),
 			$('#vis-hpanel', menuPane).button( {text: false,  "icons": {primary:'ui-icon-method-hpanel'}}),
@@ -209,15 +204,13 @@ define("mylibs/visualization/visualizer",
 			setThumbOptions({navMode: nav}) ;
 		}) ;
 		
-		// context menu
-		
+		// context menu	
 		var cm = $('<div style="display:none" id="vis-context-menu">\
 			<ul>\
 				<li id="relevant">Toggle relevant</li>\
 				<li id="tags">Edit tags</li>\
 				<li id="remove">Remove items</li>\
 			</ul>').appendTo(element) ;
-		
 	} ;
 
 	// redraw visualization area when some option has changed
@@ -225,19 +218,22 @@ define("mylibs/visualization/visualizer",
 	var redraw = function(options) {
 
 		var method = options.method ;
-		
+
 		if (method == "hpanel") {
 		  widget = hPanel.create(results, visPane, options, ctx) ;
 		} else if (method == "tmap") {
 		  widget = treeMap.create(results, visPane, options, ctx) ;  
 		} else if (method == "htree") {
 		  widget = hyperbolicTree.create(results, visPane, options, ctx) ;
+		} else if (method == "cubes") {
+		  widget = cubes.create(results, visPane, options, ctx) ;
 		}
 		else if ( method == "classic" ) {
 			// for the moment just reuse hpanel with group navigation
 			var opt = {} ;
-			for (var i in options) opt[i] = options[i] ;
-        	opt.showGroups = false ;
+			for (var i in options) 
+			  opt[i] = options[i] ;
+      opt.showGroups = false ;
 			widget = hPanel.create(results, visPane, opt, ctx) ;
 		}
 
@@ -247,6 +243,6 @@ define("mylibs/visualization/visualizer",
     draw: draw,
     redraw: redraw, 
     setThumbOptions: setThumbOptions,
-	setMethod: setMethod
+	  setMethod: setMethod
   };
-})
+});

@@ -38,11 +38,8 @@
 <!-- Mobile IE allows us to activate ClearType technology for smoothing fonts for easy reading -->
 <meta http-equiv="cleartype" content="on" />
 <link rel="stylesheet" href="css/style.css?v=2" />
-<!-- <link rel="stylesheet" href="css/token-input.css"/> -->
-<link rel="stylesheet" href="css/token-input.css" />
 
 <link rel="stylesheet" href="css/vis.css" />
-<link rel="stylesheet" href="css/uiiface.css" />
 <link rel="stylesheet" href="css/jquery-ui-1.8.17.custom.css" />
 <link rel="stylesheet" href="css/progress-polyfill.css" />
 
@@ -55,6 +52,8 @@
 		</ul>  
 	</div>
 	<div class="settings-panel" id="login-settings">
+	  <!--<div id="janrainEngageEmbed"></div>-->
+	  
     <form method="post" action="#">
       <section class="setting">
         <label for="email">Email</label> <input type="text" id="email" name="email" />
@@ -64,6 +63,7 @@
         <label for="password">Password</label> <input type="password" id="pw" name="pw" />
       </section>
     </form>
+    
   </div>  
   <div class="settings-panel" id="global-settings">
     <form method="post" action="#">
@@ -314,7 +314,8 @@
 				<input type="file"	id="imageUpload" style="visibility: hidden;" />
 				<p class="instruction">
 					Take a picture with your device:
-					<button class="shoot">Shoot!</button>
+					<video autoplay></video>
+					<button class="shoot">Show camera</button>
 				</p>
 				<footer>
 					<a href="#">close</a>
@@ -404,9 +405,9 @@
 
 	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=true&amp;v=3.2"></script>
 	<script type="text/javascript" src="js/local/basic.js"></script>
-	<!-- All the script dependancies will be managed with requireJS
+	<!-- All the script dependencies will be managed with requireJS
        More info? Check http://requirejs.org -->
-  <script data-main="js/main" src="js/libs/require-jquery.js"></script>     
+  <script data-main="js/main" src="js/libs/require-jquery.min.js"></script>     
 
 	<!--No need for GA right now. But maybe later...who knows?!-->
 	<!-- <script> -->

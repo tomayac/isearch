@@ -6,6 +6,7 @@ define("mylibs/visualization/dataParser", function(){
   //Let's parse the results.
   //They can be JSON or XML
   var parse = function(data) {
+    
     if (typeof data == 'string') {
       parseXML(data);
     } else {	
@@ -19,9 +20,9 @@ define("mylibs/visualization/dataParser", function(){
     };
     
   };
-  /*
+  
   var parseXML = function(xmlStr) {
-
+    /*
   	var xmlDoc = jQuery.parseXML( xmlStr ), xml = $( xmlDoc );
 
   	var totalResults = xml.find("documentList").attr("count") ;
@@ -60,9 +61,9 @@ define("mylibs/visualization/dataParser", function(){
   	}) ;
 
   	parseClustersXML(xml.find("searchResults").children("cluster"), clusters) ;
-
+    */
   };
-  */
+  
 
   var parseJSON = function(data) {
 
