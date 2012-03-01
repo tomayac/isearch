@@ -83,7 +83,6 @@ define("mylibs/query", ["mylibs/config",], function(config) {
           
         }
       } else if($(this).find('p:first').text().length > 2){
-        
         queryItem.Content  = $(this).find('p:first').text();
         queryJson.fileItems.push(queryItem);
       }

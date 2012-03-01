@@ -21,7 +21,7 @@ define("mylibs/visualization/FilterBar",  ["mylibs/location"],
 		
 		$(ele).empty() ;
 			
-		mediaDiv = $('<div/>', {"class": "formitem", css: { "display": "table-cell", "vertical-align": "middle", "width": "150px"}}).appendTo(ele) ;
+		mediaDiv = $('<div/>', {"class": "formitem", css: { "display": "table-cell", "vertical-align": "middle", "width": "200px"}}).appendTo(ele) ;
 		$('<span/>', { css: { "display": "table-cell", "vertical-align": "middle", "padding-right": "5px"},  text: "Media:" } ).appendTo(mediaDiv) ;
 		mediaButtons = $('<div/>', { css: { display: "table-cell" } } ).appendTo(mediaDiv) ;
 			
@@ -183,7 +183,9 @@ define("mylibs/visualization/FilterBar",  ["mylibs/location"],
 		
 		if ( sortby == 'time' ) {
 			docs.sort(function(a, b) { 
-				return new Date(b.rw.time.dateTime) - new Date(a.rw.time.dateTime)  ; 
+				if ( a.rw.time && b.rw.time )
+					return new Date(b.rw.time.dateTime) - new Date(a.rw.time.dateTime)  ; 
+				else return 0 ;
 			}) ;
 			callback() ;
 		}
