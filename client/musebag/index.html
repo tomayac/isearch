@@ -284,7 +284,6 @@
                   var heartBeat = (new Date().getTime() - start) / 1000;
                   console.log('Tap ' + heartBeat);
                   var x = Math.floor(scalingFactor * heartBeat);                    
-                  console.log(x+', '+0+', '+1+', '+rhythmCanvas.height)
                   ctx.fillRect (x, 0, 1, rhythmCanvas.height);
                 }
               }, false);
@@ -314,7 +313,52 @@
 				<input type="file"	id="imageUpload" style="visibility: hidden;" />
 				<p class="instruction">
 					Take a picture with your device:
-					<button class="shoot">Shoot!</button>
+					<button id="takePhotoButton">Shoot!</button>
+					<br/>
+					<video width="352" height="288" id="takePhotoVideo" autoplay="autoplay"></video>
+					<canvas width="352" height="288" id="takePhotoCanvas"></canvas>
+					<script type="application/javascript">
+  					(function() {
+              var button = document.getElementById('takePhotoButton');
+              var video = document.getElementById('takePhotoVideo');
+              video.videoWidth = 352;
+              video.videoHeight = 288;              
+              video.controls = false;
+              var canvas = document.getElementById('takePhotoCanvas');
+              canvas.width = 352;
+              canvas.height = 288;
+              canvas.style.width = '352px';
+              canvas.style.height = '288px';              
+              var ctx = canvas.getContext('2d');
+              var localMediaStream = null;            
+              
+              button.addEventListener('click', getUserMedia, false);
+              
+              video.addEventListener('click', function(e) {
+                if (localMediaStream) {
+                  ctx.drawImage(video, 0, 0, 352, 288);                  
+                }                
+              }, false);
+              
+              function getUserMedia() {
+                // Opera
+                if (navigator.getUserMedia) {
+                  navigator.getUserMedia({audio: false, video: true}, function(stream) {
+                    video.src = stream;
+                    localMediaStream = stream;
+                  }, function() { alert("Photo capture error"); });
+                // Chrome  
+                } else if (navigator.webkitGetUserMedia) {
+                  navigator.webkitGetUserMedia('video', function(stream) {
+                    video.src = window.webkitURL.createObjectURL(stream);
+                    localMediaStream = stream;
+                  }, function() { alert("Photo capture error"); });
+                } else {
+                  alert("Photo capture not supported"); 
+                }
+              }
+            })();					
+          </script>					
 				</p>
 				<footer>
 					<a href="#">close</a>
