@@ -122,7 +122,7 @@ var distributeFile = function(destinationUrl, callParams, fileInfo, callback) {
       callback(null,fileInfo);
     })
    .on('error', function(data,response) {
-      msg.error = response.message;
+      msg.error = data.toString();
       callback(msg,null);
     });
     
@@ -259,6 +259,8 @@ var getExternalSessionId = function(req,renew) {
     var sessionStore = getSessionStore(req);
     if(!req.session.user.extSessionId) {
       var sid = req.sessionID.substring(req.sessionID.length-32,req.sessionID.length) + '-' + sessionStore.QueryCounter;
+      //remove illegal characters
+      sid = sid.replace(/[|&;$%@"<>()+,\/]/g, '0');
       req.session.user.extSessionId = sid;
     } 
     return req.session.user.extSessionId;
@@ -302,7 +304,7 @@ exports.login = function(req, res){
     }
 	})
 	.on('error', function(data,response) {
-		msg.error = response.message;
+		msg.error = data.toString();
 		res.send(JSON.stringify(msg));
 	});
 	
@@ -423,7 +425,7 @@ exports.setProfile = function(req, res) {
         }
       })
       .on('error', function(data,response) {
-        msg.error = response.message;
+        msg.error = data.toString();
         res.send(JSON.stringify(msg));
       });
     } //end if guest
@@ -486,7 +488,7 @@ exports.updateProfileHistory = function(req, res) {
       res.send(JSON.stringify(result));
    })
    .on('error', function(data,response) {
-     result.error = response.message;
+     result.error = data.toString();
      res.send(JSON.stringify(result));
    });
   } else {
@@ -551,15 +553,15 @@ exports.query = function(req, res) {
             console.log(result.error);
           } else {
             result = data.result;
-            console.log(result);
           }
           
-          res.send(JSON.stringify(result));
+          res.send(result);
           //After successful submission of query increase the query counter
           sessionStore.QueryCounter++;
        })
        .on('error', function(data,response) {
-          result.error = response.message;
+          console.log(response.client['_httpMessage']['res']['rawEncoded']);
+          result.error = data.toString();
           res.send(JSON.stringify(result));
        });
         

@@ -12,11 +12,14 @@ define("mylibs/query", ["mylibs/config",], function(config) {
         tags      : false
     };
     
-    //Check if the user has enter something which is not tokenized yet
+    //Check if the user has entered something which is not tokenized yet
     var remainingInput = $(".token-input-list-isearch li input").val();
+    console.log('remaining input: ');
+    console.log(remainingInput);
     //Tokenize remaining input
     if (remainingInput) {
       $("#query-field").tokenInput('add',{id:remainingInput,name:remainingInput});
+      console.log(remainingInput);
     }
     
     //get all elements of the query
@@ -73,14 +76,13 @@ define("mylibs/query", ["mylibs/config",], function(config) {
           queryItem.RealType = queryToken.attr('class');
           queryItem.Name     = queryToken.attr('alt');
           queryItem.Content  = queryToken.attr('src');
-		  queryItem.Token    = queryToken.attr('data-token') ;
+		      queryItem.Token    = queryToken.attr('data-token') ;
 		  
           console.log('found file item with name ' + queryItem.Name);
           queryJson.fileItems.push(queryItem);
           
         }
-      } else if($(this).find('p:first').text().length > 2){ //Triantafillos: changed to min length 3
-        
+      } else if($(this).find('p:first').text().length > 2){
         queryItem.Content  = $(this).find('p:first').text();
         queryJson.fileItems.push(queryItem);
       }
@@ -101,7 +103,7 @@ define("mylibs/query", ["mylibs/config",], function(config) {
       console.log('searching for query data: ');
       console.log(query);
 	
-	  query.relevant = relevant ;
+      query.relevant = relevant ;
 	  
       //Send it to the server
       $.ajax({
@@ -109,29 +111,27 @@ define("mylibs/query", ["mylibs/config",], function(config) {
         crossDomain: true,
         url:  config.constants.queryFormulatorUrl || 'query',
         data: JSON.stringify(query),
+        contentType : "application/json; charset=utf-8",
+        dataType : "json",
         success: function(data) {
           //parse the result
-          //console.log(data);
-          try {
-            data = JSON.parse(data);
-          } catch(e) {
-            data = {error: "The server gave me an invalid result."};  
-          }
-          
-          if(data.error) {
-            console.log("Error during submitting query: " + data.error);
-            callback(false, data) ;
-          } else {
-            console.log("Search query submitted.");
-            callback(true, data) ;
-          }
+          console.log("Search query submitted.");
+          console.dir(data);
+          callback(true, data) ;
         },
-        dataType: "text",
-        contentType : "application/json; charset=utf-8"
+        error: function(jqXHR, error, object) {
+          data = {error: "the server gave me an invalid result."}; 
+          console.log("Error during submitting query: " + data.error);
+          callback(false, data) ;
+        },
+        complete: function() {
+          $.event.trigger( "ajaxStop" );
+        }
       });
-      return true;
+      
     } else {
-      return false;
+      var data = {error: "the query seems to be a bit too short."};
+      callback(false, data) ;
     }
   };
   

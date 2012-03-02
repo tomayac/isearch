@@ -38,11 +38,8 @@
 <!-- Mobile IE allows us to activate ClearType technology for smoothing fonts for easy reading -->
 <meta http-equiv="cleartype" content="on" />
 <link rel="stylesheet" href="css/style.css?v=2" />
-<!-- <link rel="stylesheet" href="css/token-input.css"/> -->
-<link rel="stylesheet" href="css/token-input.css" />
 
 <link rel="stylesheet" href="css/vis.css" />
-<link rel="stylesheet" href="css/uiiface.css" />
 <link rel="stylesheet" href="css/jquery-ui-1.8.17.custom.css" />
 <link rel="stylesheet" href="css/progress-polyfill.css" />
 
@@ -55,6 +52,8 @@
 		</ul>  
 	</div>
 	<div class="settings-panel" id="login-settings">
+	  <!--<div id="janrainEngageEmbed"></div>-->
+	  
     <form method="post" action="#">
       <section class="setting">
         <label for="email">Email</label> <input type="text" id="email" name="email" />
@@ -64,6 +63,7 @@
         <label for="password">Password</label> <input type="password" id="pw" name="pw" />
       </section>
     </form>
+    
   </div>  
   <div class="settings-panel" id="global-settings">
     <form method="post" action="#">
@@ -121,59 +121,46 @@
 
 			<nav class="query-composition">
 				<ul>
-					<li data-mode="sound"><a> <img
-							src="img/icon-isearch-sound.png" alt="Sound" /> </a></li>
-					<li data-mode="rhythm"><a> <img
-							src="img/icon-isearch-rhythm.png" alt="Rhythm" /> </a></li>							
-					<li data-mode="picture"><a> <img
-							src="img/icon-isearch-picture.png" alt="Picture" /> </a></li>
-          <li data-mode="video">
-            <a>
-              <img src="img/icon-isearch-video.png" alt="Video" />
-            </a>
-          </li>							
-					<li data-mode="sketch"><a> <img
-							src="img/icon-isearch-sketch.png" alt="Sketch" /> </a></li>
-					<li data-mode="3d"><a> <img src="img/icon-isearch-3d.png"
-							alt="3D" /> </a></li>
-          <li data-mode="emotion">
-            <a>
-              <img src="img/icon-isearch-emotion.png" alt="Emotion" />
-            </a>
-          </li>
-					<li data-mode="geolocation"><a> <img
-							src="img/icon-isearch-geolocation.png" alt="Geolocation" /> </a></li>
-					<li data-mode="text"><a> <img
-							src="img/icon-isearch-text.png" alt="text" /> </a></li>
+					<li data-mode="sound"><a> <img src="img/icon-isearch-sound.png" alt="Sound" /> </a></li>
+					<li data-mode="rhythm"><a> <img src="img/icon-isearch-rhythm.png" alt="Rhythm" /> </a></li>							
+					<li data-mode="picture"><a> <img src="img/icon-isearch-picture.png" alt="Picture" /> </a></li>
+          <li data-mode="video"><a> <img src="img/icon-isearch-video.png" alt="Video" /> </a></li>							
+					<li data-mode="sketch"><a> <img src="img/icon-isearch-sketch.png" alt="Sketch" /> </a></li>
+					<li data-mode="3d"><a> <img src="img/icon-isearch-3d.png" alt="3D" /> </a></li>
+          <li data-mode="emotion"><a> <img src="img/icon-isearch-emotion.png" alt="Emotion" /> </a></li>
+					<li data-mode="geolocation"><a> <img src="img/icon-isearch-geolocation.png" alt="Geolocation" /> </a></li>
+					<li data-mode="text"><a> <img src="img/icon-isearch-text.png" alt="text" /> </a></li>
 				</ul>
 			</nav>
 
 			<section class="panel sound">
-				<p class="instruction" id="soundDrop">Grab an audio file and
-					drop it here</p>
-				<p class="instruction">
+				<div class="instruction" id="soundDrop">
+				  Grab an audio file and drop it here
+				</div>
+				<div class="instruction">
 					Upload a file with this button: 
 					<button class="upload">Upload</button>
-				</p>
+				</div>
 				<input type="file" id="soundUpload"	style="visibility: hidden;" />
-				<p class="instruction">
+				<div class="instruction">
 					Use your device and start to say/sing something:
 					<button>Start</button>
-				</p>
+				</div>
 				<footer>
 					<a href="#">close</a>
 				</footer>
 			</section>
 
 			<section class="panel rhythm">
-				<p class="instruction" id="rhythmDrop">Grab an audio file with a rhythm and
-					drop it here</p>
-				<p class="instruction">
+				<div class="instruction" id="rhythmDrop">
+				  Grab an audio file with a rhythm and drop it here
+			  </div>
+				<div class="instruction">
 					Upload a file with this button: 
 					<button class="upload">Upload</button>
 					<input type="file" id="rhythmUpload" style="visibility: hidden;" />
-				</p>
-				<p class="instruction">
+				</div>
+				<div class="instruction">
 					Use your device and start tapping a rhythm:
           <div class="rhythm">
             <p>
@@ -284,7 +271,6 @@
                   var heartBeat = (new Date().getTime() - start) / 1000;
                   console.log('Tap ' + heartBeat);
                   var x = Math.floor(scalingFactor * heartBeat);                    
-                  console.log(x+', '+0+', '+1+', '+rhythmCanvas.height)
                   ctx.fillRect (x, 0, 1, rhythmCanvas.height);
                 }
               }, false);
@@ -296,7 +282,7 @@
 
             </script>
           </div>
-				</p>
+				</div>
 				<footer>
 					<a href="#">close</a>
 				</footer>
@@ -304,41 +290,49 @@
 
 
 			<section class="panel picture">
-				<p class="instruction dropContainer" id="imageDrop">
+				<div class="instruction dropContainer" id="imageDrop">
 					<span>Grab a picture and drop it here</span>
-				</p>
-				<p class="instruction">
+				</div>
+				<div class="instruction">
 					Upload a image with this button: 
 					<button class="upload">Upload</button>
-				</p>
-				<input type="file"	id="imageUpload" style="visibility: hidden;" />
-				<p class="instruction">
+					<input type="file" id="imageUpload" style="visibility: hidden;" />
+				</div>
+				<div class="instruction">
 					Take a picture with your device:
-					<button class="shoot">Shoot!</button>
-				</p>
+          
+          <div class="device">
+					  <video width="352" height="288" autoplay></video>
+					  <canvas width="352" height="288" class="overlay" id="imageCapture"></canvas>
+					  <button class="use">Use photo</button>
+					  <button class="new">Capture again</button>
+					</div>
+					<button class="shoot">Show camera</button>
+    
+				</div>
 				<footer>
 					<a href="#">close</a>
 				</footer>
 			</section>
 			
       <section class="panel video">
-        <p class="instruction dropContainer" id="videoDrop">
+        <div class="instruction dropContainer" id="videoDrop">
           <span>Grab a video and drop it here</span>
-        </p>
-        <p class="instruction">
+        </div>
+        <div class="instruction">
           Upload a video with this button: 
           
           <button class="upload">Upload</button>
-        </p>
-		<input type="file" id="videoUpload" style="visibility:hidden;"/>
-        <p class="instruction">
+          <input type="file" id="videoUpload" style="visibility:hidden;"/>
+        </div>
+        <div class="instruction">
           Take a video with your device: <button class="shoot">Shoot!</button>
-        </p>
+        </div>
         <footer><a href="#">close</a></footer>
       </section>			
 
 			<section class="panel sketch">
-				<p class="instruction">
+				<div class="instruction">
 					Draw something directly below
 					<canvas id="sketch">
             Erm...too bad. Your browser doesn't support the canvas element.
@@ -346,51 +340,51 @@
           </canvas>
 					<input type="file" id="sketchUpload" style="display: none;" />
 					<button class="done">Done!</button>
-				</p>
+				</div>
 				<footer>
 					<a href="#">close</a>
 				</footer>
 			</section>
 
 			<section class="panel 3d">
-				<p class="instruction" id="threedDrop">Drag'n'drop one of your
-					3D model here</p>
-				<p class="instruction">
+				<div class="instruction" id="threedDrop">
+				  Drag'n'drop one of your 3D model here
+				</div>
+				<div class="instruction">
 					Upload a 3D file with this button: 
 					<button class="upload">Upload</button>
-				</p>
-				<input type="file"
-						id="threedUpload" style="visibility: hidden;" />
+					<input type="file" id="threedUpload" style="visibility: hidden;" />
+				</div>
 				<footer>
 					<a href="#">close</a>
 				</footer>
 			</section>
       <section class="panel emotion">
-        <p class="instruction">
+        <div class="instruction">
           Drag the slider to include the desired emotion          
-        </p>
+        </div>
         <div class="emotion-slider" id="emotion-slider"></div>
         <footer><a href="#">close</a></footer>
       </section>			
 			<section class="panel geolocation">
-				<p class="instruction">
+				<div class="instruction">
 					Click here to give your current location:
 					<button id="getCurrentLocation">Give my location</button>
-				</p>
-				<p class="instruction">
+				</div>
+				<div class="instruction">
 					Choose a location from the interactive map:
 					<button id="chooseLocation">Open map</button>
-				</p>
+				</div>
 				<footer>
 					<a href="#">close</a>
 				</footer>
 			</section>
 			<section class="panel text">
-				<p class="instruction">
+				<div class="instruction">
 					Enter you request (old style!): <input type="text"
 						value="Type here...slowly :)" />
 					<button>Add to query</button>
-				</p>
+				</div>
 				<footer>
 					<a href="#">close</a>
 				</footer>
@@ -404,9 +398,9 @@
 
 	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=true&amp;v=3.2"></script>
 	<script type="text/javascript" src="js/local/basic.js"></script>
-	<!-- All the script dependancies will be managed with requireJS
+	<!-- All the script dependencies will be managed with requireJS
        More info? Check http://requirejs.org -->
-  <script data-main="js/main" src="js/libs/require-jquery.js"></script>     
+  <script data-main="js/main" src="js/libs/require-jquery.min.js"></script>     
 
 	<!--No need for GA right now. But maybe later...who knows?!-->
 	<!-- <script> -->

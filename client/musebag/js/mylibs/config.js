@@ -1,8 +1,8 @@
-//define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/mylibs/visualization/DefaultThumbRenderer.js"],
-//  function(tags, cofind, profile) {
+define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/mylibs/visualization/DefaultThumbRenderer.js"],
+  function(tags, cofind, profile) {
     
-define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualization/DefaultThumbRenderer.js"],
-  function(tags, profile) {
+//define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualization/DefaultThumbRenderer.js"],
+//  function(tags, profile) {
 
     var constants = {
       //Menu parameters
@@ -20,7 +20,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
 
       //Visualization parameters  
   	  visOptions: {
-  	    method: "classic", //tmap, htree, hpan or classic
+  	    method: "classic", //tmap, htree, hpan, classic or cubes
   	    thumbOptions: {
   	      thumbSize: 64, //16, 32, 48, 64
   	      iconArrange: "grid",

@@ -8,9 +8,16 @@ if(typeof console == "undefined") {
   };
 }
 
- var Timeline_urlPrefix   = "js/libs/timeline_2.3.0/timeline_js/" ;
- var Timeline_parameters  = "bundle=false";
- var SimileAjax_urlPrefix = "js/libs/timeline_2.3.0/timeline_ajax/" ;
+//Initialize the authentication component
+//if (typeof window.janrain !== 'object') window.janrain = {};
+//window.janrain.settings = {};
+//janrain.settings.tokenUrl = 'http://iris.atc.gr/testGoogle/TokenReceiver';
+//janrain.settings.format = 'one row';
+//janrain.ready = true;
+
+var Timeline_urlPrefix   = "js/libs/timeline_2.3.0/timeline_js/" ;
+var Timeline_parameters  = "bundle=false";
+var SimileAjax_urlPrefix = "js/libs/timeline_2.3.0/timeline_ajax/" ;
 
 require(["jquery",
          "mylibs/menu",
@@ -67,7 +74,7 @@ require(["jquery",
             }
           });
           
-          //Get tokens and load them as autosuggestion for the user
+          //Get tokens and load them as auto suggestions for the user
           var tokens = tags.getTokens();
           $("#query-field").tokenInput('init', tokens, {theme: "isearch", preventDuplicates:true});
           
@@ -136,36 +143,34 @@ require(["jquery",
     							relevant.push(docs.docs[i].id) ;
     						}
     					}
-    				  					
+    					
     					// Sotiris: submit takes callback function and a list of document id's that the user has marked as relevant
     					query.submit( relevant, 
     						function(result, data) 
     						{
-    							if ( result ) 
+    							if (result) 
     							{
-									/**
+    							  /**
 								     * Triantafillos: add the resubmit class only if the results are not empty.
 								     */
 								    if (!resubmit) {
-									  $("#query-submit").addClass('resubmit');
-									}
-									
+								      $("#query-submit").addClass('resubmit');
+								    }
+
     								//Collapses the menu
     								menu.collapse();
-    		  
+    							  
     								//Remove the tags
     								$(".tags").hide();
+    								
     								//Remove the autosuggestions
     								$(".token-input-dropdown-isearch").hide();
-    		  
+ 
     								//Displays the results
     								results.display(data) ;
-    							
-    								//Dummy result display
-    								//results.display('chair');
-    							}
-    							else {
-    								alert('woops! No query!');
+
+    							} else {    							  
+    								alert('Woops, ' + data.error);
     							}
     						}
     					);
