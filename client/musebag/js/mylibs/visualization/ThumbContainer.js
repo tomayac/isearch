@@ -572,7 +572,7 @@ p.createThumbnail = function(i, x, y)
 	
 		if ( !item.doc.relevant ) relBtn.addClass("inactive") ;
 	
-		relBtn.click(function() {
+		relBtn.click(function(e) {
 			item.doc.relevant = !item.doc.relevant ;
 			$(this).toggleClass("inactive") ;
 			e.stopImmediatePropagation() ;
