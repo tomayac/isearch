@@ -293,11 +293,13 @@ p.renderContents = function(tooltip, thumb, mediaType)
 			else if ( urlJpg ) urlImg = urlJpg ;
 			else if ( urlUnknown ) urlImg = urlUnknown ;
 			
-			var anim = $('<a/>', { css: { width: tooltip.width() },  "href": "javascript:void(0)"}).appendTo(tooltipContents)
-			.click(function() {
-				that.renderDocument(thumb.doc, mediaType) ;
-				}) ;
+			var anim = $('<div/>', { css: { width: tooltip.width() }}).appendTo(tooltipContents) ;
 			var audioRdr = new AudioRenderer(anim, urlMp3, urlOgg, urlImg, "flower") ;
+			
+			$("#audiovis", anim).click(function() {
+				that.renderDocument(thumb.doc, mediaType) ;
+			}) ;
+			
 			
 			tooltip.bind('thide', function() { 
 				audioRdr.terminate() ; 
