@@ -14,8 +14,6 @@ p.render = function(item, container, options)
 	if ( options.hover ) this.hover = options.hover ;
 	else this.hover = true ;
 	
-
-	
 	var img = $('<div/>', { css: { border: "1px solid black", position: "absolute", left: tm, top: tm, width: w - tm - tm, height: h - tm - tm }  }).appendTo(container) ;
 	
 } ;
@@ -45,7 +43,7 @@ p.render = function(item, container, options)
 	var h = $(container).height() ;
 	
 	if ( options.square ) h = w ;
-	
+		
 	var visBox = options.viewport ;
 	if ( options.hover ) this.hover = options.hover ;
 	else this.hover = true ;
@@ -123,6 +121,41 @@ p.render = function(item, container, options)
 
 } ;
 
+p.renderDocument = function(doc, mediaType)
+{
+	var url = '' ;
+	for( var i=0 ; i<doc.media.length ; i++ )
+	{
+		var media = doc.media[i] ;
+		
+		if ( media.type != mediaType ) continue ;
+		else {
+			url = media.url ;
+			break ;
+		}
+	}
+	var sw = $(window).width() ;	
+	var sh = $(window).height() ;
+	
+	var docPreview = $('<div/>', { title: "Document Preview"}).appendTo('body') ;
+	var contents = $('<iframe/>', { width: "100%", height: "100%", marginWidth: "0",  marginHeight:"0",  frameBorder:"0",  scrolling:"auto", src: url})	
+		.appendTo(docPreview) ;
+	
+	docPreview.dialog({
+			width: sw,
+			height: sh,
+			modal: true,
+			open: function(e, ui) {
+				
+			
+			
+			}
+			
+	});
+	
+	
+}
+
 p.renderContents = function(tooltip, thumb, mediaType)
 {
 	var mediaTypes  = this.getMediaTypes(thumb) ;
@@ -163,7 +196,7 @@ p.renderContents = function(tooltip, thumb, mediaType)
 	
 	
 	$('.media-preview', tooltip).remove() ;
-	var tooltipContents = $('<div/>', { "class": "media-preview", "id": mediaType }).appendTo(tooltip) ;
+	var tooltipContents = $('<div/>', { "class": "media-preview", "id": mediaType  }).appendTo(tooltip) ;
 	
 	var desc = ThumbContainer.selectTooltipText(thumb.doc) ;
 			
@@ -174,7 +207,11 @@ p.renderContents = function(tooltip, thumb, mediaType)
 		var imageUrls = [] ;
 		
 		var slideShow = $('<div/>', { "id": "slides"} ).appendTo(tooltipContents) ;
-		var slideContainer = $('<div/>', { "class": "slides-container", css: { width: tooltip.width() }}).appendTo(slideShow) ;
+		var slideContainer = $('<a/>', { "class": "slides-container", css: { width: tooltip.width() }, "href": "javascript:void(0)"})
+		.appendTo(slideShow)
+		.click(function() {
+				that.renderDocument(thumb.doc, mediaType) ;
+		}) ;		
 		
 				
 		for( var i=0 ; i<thumb.doc.media.length ; i++ )
@@ -250,7 +287,10 @@ p.renderContents = function(tooltip, thumb, mediaType)
 			else if ( urlJpg ) urlImg = urlJpg ;
 			else if ( urlUnknown ) urlImg = urlUnknown ;
 			
-			var anim = $('<div/>', { css: { width: tooltip.width() } }).appendTo(tooltipContents) ;
+			var anim = $('<a/>', { css: { width: tooltip.width() },  "href": "javascript:void(0)"}).appendTo(tooltipContents)
+			.click(function() {
+				that.renderDocument(thumb.doc, mediaType) ;
+				}) ;
 			var audioRdr = new AudioRenderer(anim, urlMp3, urlOgg, urlImg, "flower") ;
 			
 			tooltip.bind('thide', function() { 

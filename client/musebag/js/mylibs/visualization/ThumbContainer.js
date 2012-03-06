@@ -384,7 +384,7 @@ p.redrawNavBar = function(page, maxPage, width)
 		p = page - 1 ;	
 	
 		prev =  '<li class="pager-previous"><a title="Previous page" id="page-' + p + '" href="#">&lt;</a></li>';	
-		first = '<li class="pager-first first"><a title="First page" id="page-' + p + '" href="#">&lt;&lt;</a></li>';	
+		first = '<li class="pager-first first"><a title="First page" id="page-1' + '" href="#">&lt;&lt;</a></li>';	
 	}	
 	else	
 	{	
