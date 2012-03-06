@@ -138,19 +138,25 @@ p.renderDocument = function(doc, mediaType)
 	var sh = $(window).height() ;
 	
 	var docPreview = $('<div/>', { title: "Document Preview"}).appendTo('body') ;
-	var contents = $('<iframe/>', { width: "100%", height: "100%", marginWidth: "0",  marginHeight:"0",  frameBorder:"0",  scrolling:"auto", src: url})	
+	
+	
+	var ytRx = new RegExp("https:\/\/www.youtube.com\/watch\\?v=(.*)") ;
+	var match = ytRx.exec(url) ;
+	
+	var contents ;
+
+	if ( mediaType == "VideoType"  &&	match.length > 1 )
+		contents = $('<iframe/>', { width: "640", height: "385", marginWidth: "0",  marginHeight:"0",  frameBorder:"0",  scrolling:"auto", 
+			src: "http://www.youtube.com/embed/" + match[1]}).appendTo(docPreview) ;
+
+	else
+	 contents = $('<iframe/>', { width: "100%", height: "100%", marginWidth: "0",  marginHeight:"0",  frameBorder:"0",  scrolling:"auto", src: url})	
 		.appendTo(docPreview) ;
 	
 	docPreview.dialog({
 			width: sw,
 			height: sh,
-			modal: true,
-			open: function(e, ui) {
-				
-			
-			
-			}
-			
+			modal: true			
 	});
 	
 	
