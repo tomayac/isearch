@@ -280,6 +280,7 @@ Wami.setUploadCallback = function(cb) {
 	Wami._callbacks['upload'] = cb ;
 }
 
-Wami.setup({"swfUrl": "js/libs/Wami.swf", "id": "wami"}) ;
+Wami.setup({"swfUrl": "js/libs/Wami.swf", "id": "rwami"}) ;
+Wami.setup({"swfUrl": "js/libs/Wami.swf", "id": "swami"}) ;
 window.Wami = Wami ;
 });

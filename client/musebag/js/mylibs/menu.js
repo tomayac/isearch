@@ -575,7 +575,7 @@ define("mylibs/menu",
 			if ( $(this).text() == "Start" )
 			{
 				$(this).text("Stop") ;	    	
-				Wami.startRecording("http://vision.iti.gr/sotiris/isearch/debug/upload.php?audiorec") ;
+				Wami.startRecording(config.constants.fileUploadServer + "?" + "audiorec") ;
 			}
 			else
 			{
@@ -663,6 +663,61 @@ define("mylibs/menu",
 	    	reset();
 	        attachedModes.push('rhythm');
 	    });
+		
+		// sound recording
+		 $('.panel.rhythm button.record').click(function(){
+	    	
+			rhythmIcon.addClass('uploading');
+			
+			if ( $(this).text() == "Start" )
+			{
+				$(this).text("Stop") ;	    	
+				Wami.startRecording(config.constants.fileUploadServer + "?" + "audiorec") ;
+			}
+			else
+			{
+				Wami.setUploadCallback(
+					function(data) 
+					{ 
+						var fileInfo = $.parseJSON(data[0]) ;
+						
+						var id = "fileQueryItem" + getQueryItemCount();
+						var token = '<audio controls="controls" id="' + id + '" ></audio>';
+        		        		
+						$("#query-field").tokenInput('add',{id:id, name:token});
+						
+						//set the appropriate data tags for the html element
+						var ele = $('#' + id) ;
+						ele.attr({
+							'alt'       : fileInfo.name,
+							'class'     : fileInfo.subtype,
+							'data-mode' : "SoundType",
+							'preload': 'auto',
+							'data-token':fileInfo.token
+						});
+						
+						
+      					for ( var i=0 ; i<fileInfo.path.length ; i++ )
+      					{
+      						var url = fileInfo.path[i].url ;
+      						var mime = fileInfo.path[i].mime ;
+      							
+      						$('<source/>', { src: url, type: mime }).appendTo(ele) ;
+      					}
+						
+        		
+						reset();
+						attachedModes.push('rhythm');
+					}
+				) ;
+				
+				Wami.stopRecording() ;
+				$(this).text("Start") ;	 
+				
+			}
+				
+	    
+	    });
     	
     };
 
@@ -686,7 +741,7 @@ define("mylibs/menu",
         $("#query").append('<a href="#" id="restart">Start from scratch</a>');
         
         $("#restart").button();
-        $("#restart").click(function(){ window.location = "index.html"; });
+        $("#restart").click(function(){ window.location = ""; });
       }
     };
 	

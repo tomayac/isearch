@@ -3,7 +3,7 @@ define("mylibs/visualization/FilterBar",  ["mylibs/location"],
 
 	var tagManager = null ;
 	var currentTags = [], tagsButtons, filterTags = [], modalFilter = [] ;
-	var callback, ele, docs, modalities  ;
+	var callback, ele, docs, modalities, modaloptions  ;
 	
 	var init = function(ele_, options, tagManager_, docs_, callback_)
 	{

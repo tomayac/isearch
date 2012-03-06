@@ -44,6 +44,8 @@ p.render = function(item, container, options)
 	var w = $(container).width() ;
 	var h = $(container).height() ;
 	
+	if ( options.square ) h = w ;
+	
 	var visBox = options.viewport ;
 	if ( options.hover ) this.hover = options.hover ;
 	else this.hover = true ;
@@ -261,7 +263,7 @@ p.renderContents = function(tooltip, thumb, mediaType)
 	}
 	
 	if(desc) {
-	  $('<p/>', { css: { "max-height": "60px", "overflow": "scroll", "text-overflow": "ellipsis"}, text: desc}).appendTo(tooltipContents);
+	  $('<p/>', { css: { "max-height": "60px", "overflow": "hidden", "text-overflow": "ellipsis"}, text: desc}).appendTo(tooltipContents);
 	}
 	
 	/**
