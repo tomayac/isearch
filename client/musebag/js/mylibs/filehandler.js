@@ -131,7 +131,7 @@ define("mylibs/filehandler", ["libs/glge-compiled-min"], function(GLGE){
             }
             
             //3D model display via GLGE
-            if((/dae/i).test(fileInfo.name)) {
+            if((/dae/i).test(fileInfo.name) && !fileInfo.preview) {
             	console.log("3D uploaded...");
             	pictureIcon = $('nav li[data-mode="3d"]');
             	genericItemType = 'Object3D';
@@ -152,61 +152,117 @@ define("mylibs/filehandler", ["libs/glge-compiled-min"], function(GLGE){
 	            
             } else {
               
-            	//Image display in query field
-	            if((/image/i).test(fileInfo.type)) {
-	              if(fileInfo.subtype != '') {
-	                console.log(fileInfo.subtype + " uploaded...");
-                  pictureIcon = $('nav li[data-mode="' + fileInfo.subtype + '"]');
-	              } else {
-	                console.log("Image uploaded...");
-                  pictureIcon = $('nav li[data-mode="picture"]');
-	              }
-	              genericItemType = 'ImageType';
-	            }
-	            
-	            //Sound display in query field
-	            if((/audio/i).test(fileInfo.type)) {
-	            	console.log("Audio uploaded...");
-	            	pictureIcon = $('nav li[data-mode="sound"]');
-	            	genericItemType = 'SoundType';
-	            }
-	            
-	            //Video display in query field
-	            if((/video/i).test(fileInfo.type)) {
-	            	console.log("Video uploaded...");
-	            	pictureIcon = $('nav li[data-mode="video"]');
-	            	genericItemType = 'VideoType';
-	            }
-					
-	            var ele = $('#' + id) ;
-					
-	            //set the appropriate data tags for the html element
-	            ele.attr({
-	              'alt'       : fileInfo.name,
-		            'class'     : fileInfo.subtype,
-		            'data-mode' : genericItemType
-		          });
-									
-      				// Sotiris: special handling for multiple audio formats
-      				// The path element may contain multiple objects pointing to files in different formats
-      				// Also a token attribute is returned to allow for reusing temporary files on the server during the query
-      				if ( !$.isArray(fileInfo.path) )
-      				{
-      					ele.attr({'src': fileInfo.path, 'data-token': fileInfo.token}) ;
-      				}
+              if ( fileInfo.preview ) {
+  					  
+                if (fileInfo.subtype != '') {
+    						  console.log(fileInfo.subtype + " uploaded...");
+    						  pictureIcon = $('nav li[data-mode="' + fileInfo.subtype + '"]');
+    						  genericItemType = 'ImageType';
+    						
+    						  var ele = $('#' + id) ;
+    					
+    						  //set the appropriate data tags for the html element
+    						  ele.attr({
+    							  'alt'       : fileInfo.name,
+    							  'class'     : fileInfo.subtype,
+    							  'data-mode' : genericItemType
+    						  });
+    						
+    						  var canvas = ele.get(0) ;
+    						  var context = canvas.getContext('2d');
+    						
+    						  if (context) {
+    							  var img = new Image ;
+    							  img.onload = function() {
+    								  var dstw2 = canvas.width ;
+    								  var dsth2 = canvas.height;	
+    										
+    								  var origw = img.width ;	
+    								  var origh = img.height ;	
+    								
+    								  var ratioW = origw/dstw2 ;
+    								  var ratioH = origh/dsth2 ;
+    					
+    								  var thumbw, thumbh, offx, offy ;	
+    		
+    								  if ( ratioW > ratioH )	
+    								  {	
+    									  thumbw = dstw2 ;  	
+    									  thumbh = dstw2*(origh/origw);  	
+    								  }  	
+    								  else    	
+    								  {  	
+    									  thumbh = dsth2 ;  	
+    									  thumbw = dsth2*(origw/origh);  	
+    								  }  	
+    				
+    								  offx = (dstw2 - thumbw)/2 ;
+    								  offy = (dsth2 - thumbh)/2 ;
+    								
+    								  context.drawImage(img, offx, offy, thumbw, thumbh) ;	
+    							  };
+    							  img.src = fileInfo.preview ;
+  					      }
+  				      }
+              }
       				else 
-      				{	
-      					ele.empty().removeAttr('src').attr({'preload':'auto', 'data-token':fileInfo.token }) ;
-      						
-      					for ( var i=0 ; i<fileInfo.path.length ; i++ )
-      					{
-      						var url = fileInfo.path[i].url ;
-      						var mime = fileInfo.path[i].mime ;
-      							
-      						$('<source/>', { src: url, type: mime }).appendTo(ele) ;
+      				{
+      				  //Image display in query field
+      					if((/image/i).test(fileInfo.type)) {
+      						if(fileInfo.subtype != '') {
+      							console.log(fileInfo.subtype + " uploaded...");
+      							pictureIcon = $('nav li[data-mode="' + fileInfo.subtype + '"]');
+      						} else {
+      							console.log("Image uploaded...");
+      							pictureIcon = $('nav li[data-mode="picture"]');
+      						}
+      						genericItemType = 'ImageType';
       					}
-      				}
-	          }
+      	            
+      					//Sound display in query field
+      					if((/audio/i).test(fileInfo.type)) {
+      						console.log("Audio uploaded...");
+      						pictureIcon = $('nav li[data-mode="sound"]');
+      						genericItemType = 'SoundType';
+      					}
+      	            
+      					//Video display in query field
+      					if((/video/i).test(fileInfo.type)) {
+      						console.log("Video uploaded...");
+      						pictureIcon = $('nav li[data-mode="video"]');
+      						genericItemType = 'VideoType';
+      					}
+      				
+      					var ele = $('#' + id) ;
+      					
+      					//set the appropriate data tags for the html element
+      					ele.attr({
+      						'alt'       : fileInfo.name,
+      						'class'     : fileInfo.subtype,
+      						'data-mode' : genericItemType
+      					});
+      									
+        				// Sotiris: special handling for multiple audio formats
+        				// The path element may contain multiple objects pointing to files in different formats
+        				// Also a token attribute is returned to allow for reusing temporary files on the server during the query
+        				if ( !$.isArray(fileInfo.path) )
+        				{
+        					ele.attr({'src': fileInfo.path, 'data-token': fileInfo.token}) ;
+        				}
+        				else 
+        				{	
+        					ele.empty().removeAttr('src').attr({'preload':'auto', 'data-token':fileInfo.token }) ;
+        						
+        					for ( var i=0 ; i<fileInfo.path.length ; i++ )
+        					{
+        						var url = fileInfo.path[i].url ;
+        						var mime = fileInfo.path[i].mime ;
+        							
+        						$('<source/>', { src: url, type: mime }).appendTo(ele) ;
+        					}
+        				}
+              } // end if fileInfo.preview
+	          } // end if 3D model dae
 	            
 	          if ( pictureIcon.hasOwnProperty('removeClass') ) {
 	            pictureIcon.removeClass('uploading');
@@ -258,6 +314,7 @@ define("mylibs/filehandler", ["libs/glge-compiled-min"], function(GLGE){
         		var supportDirectData = true;
         		
         		//Create token content dependend from the media input
+								
         		if((/image/i).test(files[i].type)) {
         			token = '<img id="' + id + '" alt="" src="" />';
         			
