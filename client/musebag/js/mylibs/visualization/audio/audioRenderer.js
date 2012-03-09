@@ -508,9 +508,12 @@ var AudioRenderer = function(containerDiv, urlMp3, urlOgg, urlImg, visType)
 	
 		var width = $(containerDiv).width() ;
 			
+		var extLink = $('<a/>', { id: "audiovis", href: "javascript:void(0)" }).appendTo(containerDiv) ;
+		
 		if ( Modernizr.audio )
 		{
-			canvas = $("<canvas/>").appendTo(containerDiv).get(0);
+			
+			canvas = $("<canvas/>").appendTo(extLink).get(0);
 			
 			canvas.width = canvas.height = width ;
 				
@@ -583,7 +586,7 @@ var AudioRenderer = function(containerDiv, urlMp3, urlOgg, urlImg, visType)
 		}
 		else
 		{
-			img = $('<img/>').attr('src', urlImg).appendTo(containerDiv) ;
+			img = $('<img/>').attr('src', urlImg).appendTo(extLink) ;
 		}
 	}
 	

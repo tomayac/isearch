@@ -1,5 +1,12 @@
 define("mylibs/menu",
-  ["mylibs/config", "mylibs/uiiface", "mylibs/filehandler", "mylibs/location"],
+  [
+    "mylibs/config", 
+    "mylibs/uiiface", 
+    "mylibs/filehandler", 
+    "mylibs/location", 
+    "mylibs/recorder",
+    "libs/progress-polyfill.min"
+  ],
   function(config, uiiface, filehandler, location) {
     
     var hasGetUserMedia = function hasGetUserMedia() {
@@ -456,6 +463,55 @@ define("mylibs/menu",
 	    	reset();
 	      attachedModes.push('sound');
 	    });
+		
+  		// sound recording
+  		$('.panel.sound button.record').click(function(){
+  	    	
+  			pictureIcon.addClass('uploading');
+  			if ( $(this).text() == "Start" )
+  			{
+  				$(this).text("Stop") ;	    	
+  				Wami.startRecording(config.constants.fileUploadServer + "?" + "audiorec") ;
+  			}
+  			else
+  			{
+  				Wami.setUploadCallback(
+  					function(data) 
+  					{ 
+  						var fileInfo = $.parseJSON(data[0]) ;
+  						
+  						var id = "fileQueryItem" + getQueryItemCount();
+  						var token = '<audio controls="controls" id="' + id + '" ></audio>';
+          		        		
+  						$("#query-field").tokenInput('add',{id:id, name:token});
+  						
+  						//set the appropriate data tags for the html element
+  						var ele = $('#' + id) ;
+  						ele.attr({
+  							'alt'       : fileInfo.name,
+  							'class'     : fileInfo.subtype,
+  							'data-mode' : "SoundType",
+  							'preload': 'auto',
+  							'data-token':fileInfo.token
+  						});
+		
+    					for ( var i=0 ; i<fileInfo.path.length ; i++ )
+    					{
+    						var url = fileInfo.path[i].url ;
+    						var mime = fileInfo.path[i].mime ;
+    							
+    						$('<source/>', { src: url, type: mime }).appendTo(ele) ;
+    					}
+
+  						reset();
+  						attachedModes.push('sound');
+  					}
+  				) ;
+  				
+  				Wami.stopRecording() ;
+  				$(this).text("Start") ;	 				
+  			} 
+  	  });
     	
     };
 
@@ -495,7 +551,182 @@ define("mylibs/menu",
 	    	reset();
 	      attachedModes.push('rhythm');
 	    });
-    	
+		 
+	   //Rhythm tapping initialization 
+	   $('#rhythm-progress').attr({
+	     'value' : 0,
+	     'max'   : 10
+	   });
+	   $('#rhythm-canvas').attr({
+       'width'  : 200,
+       'height' : 20
+     });
+	   
+	   // initial state
+	   var tapRhythm = {
+	     disabled : false,  
+	     running  : false,
+	     start    : 0,
+	     timer    : false,
+	     scalef   : parseInt($('#rhythm-canvas').attr('width')) / parseInt($('#rhythm-progress').attr('max')),
+	     context  : $('#rhythm-canvas')[0].getContext('2d'),
+	     data     : {
+	       duration : 0,
+	       taps : [],
+	       intervals : []
+	     }
+	   };
+	   
+	   // draw scale function
+     var drawScale = function() {
+       tapRhythm.context.fillStyle = 'rgb(200,0,0)';  
+       tapRhythm.context.clearRect (0 , 0, parseInt($('#rhythm-canvas').attr('width')), parseInt($('#rhythm-canvas').attr('height')));      
+       var i = 0;
+       var x = 0;
+       tapRhythm.context.fillStyle = 'rgb(0,0,0)';         
+       while(x <= $('#rhythm-canvas').attr('width')) {        
+         x = tapRhythm.scalef * i;
+         tapRhythm.context.fillRect (x, 18, 1, 2);
+         i++;
+       }
+       tapRhythm.context.fillStyle = 'rgb(200,0,0)';         
+     };
+     
+     //initially draw the scale
+     drawScale();
+	   
+     $('.panel.rhythm #rhythm-div').dblclick(function() {
+       return false; // no-op
+     });
+     
+     $('.panel.rhythm #duration-spinner').on('change', function(e) {
+       $('#rhythm-progress').attr('max', $(this).val());
+       $('#rhythm-progress').attr('value', 0);
+     });
+     
+	   $('.panel.rhythm #rhythm-div').click(function() {
+       // on rhythm div click
+       if (tapRhythm.disabled) {
+         return;
+       }
+       // if state is "not running"
+       if (!tapRhythm.running) {
+         // set state to "running"
+         $(this).text('Tap');
+         //Reset rhythm elements
+         tapRhythm.running = true;
+         $('#rhythm-progress').attr('value', 0);
+         drawScale();
+         $('#duration-spinner').attr('disabled','disabled');
+         tapRhythm.start = new Date().getTime();          
+         tapRhythm.scalef = parseInt($('#rhythm-canvas').attr('width')) / parseInt($('#rhythm-progress').attr('max'));
+         
+         //set data duration
+         tapRhythm.data.duration = parseInt($('#rhythm-progress').attr('max'));
+         
+         // set timer
+         tapRhythm.timer = setInterval(function() {            
+           // calculate the elapsed time since the beginning of the timer
+           var elapsed = Math.floor((new Date().getTime() - tapRhythm.start) / 1000);
+           $('#elapsed-span').text(elapsed);
+           $('#rhythm-progress').attr('value',elapsed);
+
+           // if the timer has ended
+           if (elapsed >= tapRhythm.data.duration) {
+             // set state to "not running"
+             clearInterval(tapRhythm.timer);
+             tapRhythm.disabled = true;
+             $(this).text('Finished');
+             
+             setTimeout(function() {
+               tapRhythm.disabled = false;
+               $('#rhythm-div').text('Start');
+             }, 5000);
+             
+             $('#duration-spinner').attr('disabled','');
+             tapRhythm.running = false;
+             tapRhythm.start = 0;
+             tapRhythm.timer = false;
+             
+             //Calculate relative intervals from taps
+             var oldInterval = false;
+             
+             for(var i=1; i < tapRhythm.data.taps.length; i++) {
+               var interval = tapRhythm.data.taps[i] - tapRhythm.data.taps[i-1]; 
+               if(oldInterval) {
+                 tapRhythm.data.intervals.push(interval / oldInterval);
+               }
+               oldInterval = interval;
+             }
+             
+             console.log(tapRhythm.data);
+             //Append rhythm to search bar
+             $("#query-field").tokenInput('add',{id:"rhythm",name:'<img src="' +
+               $('#rhythm-canvas')[0].toDataURL("image/png") + '" title="' + tapRhythm.data.intervals.join(',') + '" class="Rhythm" data-mode="text" data-duration="' + tapRhythm.data.duration + '" />'});
+           }            
+         }, 1000);          
+       // if state is "running"          
+       } else {
+         $(this).toggleClass('tapped');
+         setTimeout(function() {
+           $('#rhythm-div').toggleClass('tapped');
+         }, 100);
+         var heartBeat = (new Date().getTime() - tapRhythm.start) / 1000;
+         tapRhythm.data.taps.push(heartBeat);
+         var x = Math.floor(tapRhythm.scalef * heartBeat);
+         tapRhythm.context.fillRect(x, 0, 1, parseInt($('#rhythm-canvas').attr('height')));
+       }
+	   }); 
+	    
+		 // rhythm recording
+     $('.panel.rhythm button.record').click(function(){
+	    	
+      rhythmIcon.addClass('uploading');
+      
+      if ( $(this).text() == "Start" )
+      {
+      	$(this).text("Stop") ;	    	
+      	Wami.startRecording(config.constants.fileUploadServer + "?" + "audiorec") ;
+      }
+      else
+      {
+      	Wami.setUploadCallback(
+      		function(data) 
+      		{ 
+      			var fileInfo = $.parseJSON(data[0]) ;
+      			
+      			var id = "fileQueryItem" + getQueryItemCount();
+      			var token = '<audio controls="controls" id="' + id + '" ></audio>';
+        		        		
+      			$("#query-field").tokenInput('add',{id:id, name:token});
+      			
+      			//set the appropriate data tags for the html element
+      			var ele = $('#' + id) ;
+      			ele.attr({
+      				'alt'       : fileInfo.name,
+      				'class'     : fileInfo.subtype,
+      				'data-mode' : "SoundType",
+      				'preload': 'auto',
+      				'data-token':fileInfo.token
+      			});
+      			
+      			for ( var i=0 ; i<fileInfo.path.length ; i++ )
+      			{
+      				var url = fileInfo.path[i].url ;
+      				var mime = fileInfo.path[i].mime ;
+      					
+      				$('<source/>', { src: url, type: mime }).appendTo(ele) ;
+      			}
+      
+      			reset();
+      			attachedModes.push('rhythm');
+      		}
+      	);
+      	
+      	Wami.stopRecording() ;
+      	$(this).text("Start") ;	 
+      }
+     });   	
     };
     
     /*
@@ -644,9 +875,11 @@ define("mylibs/menu",
         $("#query").append('<a href="#" id="restart">Start from scratch</a>');
         
         $("#restart").button();
-        $("#restart").click(function(){ window.location = "index.html"; });
+        $("#restart").click(function(){ window.location = ""; });
       }
     };
+	
+	
     
     return {
       attachEvents: attachEvents,

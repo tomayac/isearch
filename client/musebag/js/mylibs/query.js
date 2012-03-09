@@ -9,6 +9,7 @@ define("mylibs/query", ["mylibs/config",], function(config) {
         emotion   : false,
         datetime  : now.getUTCFullYear() + '-' + ((now.getUTCMonth()+1) < 10 ? '0' + (now.getUTCMonth()+1) : (now.getUTCMonth()+1)) + '-' + (now.getUTCDate() < 10 ? '0' + now.getUTCDate() : now.getUTCDate()) + 'T' + (now.getUTCHours() < 10 ? '0' + now.getUTCHours() : now.getUTCHours()) + ':' + (now.getUTCMinutes() < 10 ? '0' + now.getUTCMinutes() : now.getMinutes()) + ':' + (now.getUTCSeconds() < 10 ? '0' + now.getUTCSeconds() : now.getUTCSeconds()) + '.000Z',
         location  : false,
+        rhythm    : false,
         tags      : false
     };
     
@@ -40,19 +41,20 @@ define("mylibs/query", ["mylibs/config",], function(config) {
           
           var intensity = parseFloat(queryToken.attr('title'));
           var localIntensity = 0;
+		      var valence = 2*(intensity - 0.5) ;
           console.log('found emotion with intensity ' + intensity);
           if(intensity >= 0.8) {
             localIntensity = (1 / 0.19) * (intensity - 0.8); 
-            queryJson.emotion = {name : 'Happy', intensity : localIntensity};
+            queryJson.emotion = {name : 'Happy', intensity : localIntensity, "valence": valence };
           } else if(intensity >= 0.5 && intensity < 0.8) {
             localIntensity = (1 / 0.29) * (intensity - 0.5);
-            queryJson.emotion = {name : 'Content', intensity : localIntensity};
+            queryJson.emotion = {name : 'Content', intensity : localIntensity, "valence": valence};
           } else if(intensity >= 0.3 && intensity < 0.5) {
             localIntensity = 1 - (1 / 0.19) * (intensity - 0.3);
-            queryJson.emotion = {name : 'Disappointed', intensity : localIntensity};
+            queryJson.emotion = {name : 'Disappointed', intensity : localIntensity, "valence": valence};
           } else {
             localIntensity = 1 - (1 / 0.29) * (intensity - 0.0);
-            queryJson.emotion = {name : 'Sad', intensity : localIntensity};
+            queryJson.emotion = {name : 'Sad', intensity : localIntensity, "valence": valence};
           }
           
         } else if(queryToken.attr('class') == 'Location') {
@@ -60,6 +62,13 @@ define("mylibs/query", ["mylibs/config",], function(config) {
           var location = queryToken.attr('title');
           queryJson.location = location || false;
           console.log('found location with pos ' + location);
+          
+        } else if(queryToken.attr('class') == 'Rhythm') {
+          
+          queryJson.rhythm = {
+              'duration'  :  parseInt(queryToken.attr('title')),
+              'intervals' :  queryToken.attr('title').split(',')
+          };
           
         } else if(queryToken.attr('class') == 'Tag') {
           

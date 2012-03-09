@@ -1198,6 +1198,7 @@ footer {
 }
 
 #rhythm-div.tapped {
+  background-image: none;
   background-color: red;
 }
 

@@ -14,8 +14,6 @@ p.render = function(item, container, options)
 	if ( options.hover ) this.hover = options.hover ;
 	else this.hover = true ;
 	
-
-	
 	var img = $('<div/>', { css: { border: "1px solid black", position: "absolute", left: tm, top: tm, width: w - tm - tm, height: h - tm - tm }  }).appendTo(container) ;
 	
 } ;
@@ -44,6 +42,8 @@ p.render = function(item, container, options)
 	var w = $(container).width() ;
 	var h = $(container).height() ;
 	
+	if ( options.square ) h = w ;
+		
 	var visBox = options.viewport ;
 	if ( options.hover ) this.hover = options.hover ;
 	else this.hover = true ;
@@ -121,6 +121,47 @@ p.render = function(item, container, options)
 
 } ;
 
+p.renderDocument = function(doc, mediaType)
+{
+	var url = '' ;
+	for( var i=0 ; i<doc.media.length ; i++ )
+	{
+		var media = doc.media[i] ;
+		
+		if ( media.type != mediaType ) continue ;
+		else {
+			url = media.url ;
+			break ;
+		}
+	}
+	var sw = $(window).width() ;	
+	var sh = $(window).height() ;
+	
+	var docPreview = $('<div/>', { title: "Document Preview"}).appendTo('body') ;
+	
+	
+	var ytRx = new RegExp("https:\/\/www.youtube.com\/watch\\?v=(.*)") ;
+	var match = ytRx.exec(url) ;
+	
+	var contents ;
+
+	if ( mediaType == "VideoType"  &&	match.length > 1 )
+		contents = $('<iframe/>', { width: "640", height: "385", marginWidth: "0",  marginHeight:"0",  frameBorder:"0",  scrolling:"auto", 
+			src: "http://www.youtube.com/embed/" + match[1]}).appendTo(docPreview) ;
+
+	else
+	 contents = $('<iframe/>', { width: "100%", height: "100%", marginWidth: "0",  marginHeight:"0",  frameBorder:"0",  scrolling:"auto", src: url})	
+		.appendTo(docPreview) ;
+	
+	docPreview.dialog({
+			width: sw,
+			height: sh,
+			modal: true			
+	});
+	
+	
+}
+
 p.renderContents = function(tooltip, thumb, mediaType)
 {
 	var mediaTypes  = this.getMediaTypes(thumb) ;
@@ -161,7 +202,7 @@ p.renderContents = function(tooltip, thumb, mediaType)
 	
 	
 	$('.media-preview', tooltip).remove() ;
-	var tooltipContents = $('<div/>', { "class": "media-preview", "id": mediaType }).appendTo(tooltip) ;
+	var tooltipContents = $('<div/>', { "class": "media-preview", "id": mediaType  }).appendTo(tooltip) ;
 	
 	var desc = ThumbContainer.selectTooltipText(thumb.doc) ;
 			
@@ -172,7 +213,11 @@ p.renderContents = function(tooltip, thumb, mediaType)
 		var imageUrls = [] ;
 		
 		var slideShow = $('<div/>', { "id": "slides"} ).appendTo(tooltipContents) ;
-		var slideContainer = $('<div/>', { "class": "slides-container", css: { width: tooltip.width() }}).appendTo(slideShow) ;
+		var slideContainer = $('<a/>', { "class": "slides-container", css: { width: tooltip.width() }, "href": "javascript:void(0)"})
+		.appendTo(slideShow)
+		.click(function() {
+				that.renderDocument(thumb.doc, mediaType) ;
+		}) ;		
 		
 				
 		for( var i=0 ; i<thumb.doc.media.length ; i++ )
@@ -248,8 +293,13 @@ p.renderContents = function(tooltip, thumb, mediaType)
 			else if ( urlJpg ) urlImg = urlJpg ;
 			else if ( urlUnknown ) urlImg = urlUnknown ;
 			
-			var anim = $('<div/>', { css: { width: tooltip.width() } }).appendTo(tooltipContents) ;
+			var anim = $('<div/>', { css: { width: tooltip.width() }}).appendTo(tooltipContents) ;
 			var audioRdr = new AudioRenderer(anim, urlMp3, urlOgg, urlImg, "flower") ;
+			
+			$("#audiovis", anim).click(function() {
+				that.renderDocument(thumb.doc, mediaType) ;
+			}) ;
+			
 			
 			tooltip.bind('thide', function() { 
 				audioRdr.terminate() ; 
@@ -261,7 +311,7 @@ p.renderContents = function(tooltip, thumb, mediaType)
 	}
 	
 	if(desc) {
-	  $('<p/>', { css: { "max-height": "60px", "overflow": "scroll", "text-overflow": "ellipsis"}, text: desc}).appendTo(tooltipContents);
+	  $('<p/>', { css: { "max-height": "60px", "overflow": "hidden", "text-overflow": "ellipsis"}, text: desc}).appendTo(tooltipContents);
 	}
 	
 	/**

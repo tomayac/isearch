@@ -842,7 +842,7 @@ div.jqmNotice .jqmClose {
 
 .tooltip {
 	position: absolute;
-	z-index: 9999;
+	z-index: 1000;
 	color: #fff;
 	font-size: 10px;
 	text-align: center;

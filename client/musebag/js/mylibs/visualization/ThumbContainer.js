@@ -384,7 +384,7 @@ p.redrawNavBar = function(page, maxPage, width)
 		p = page - 1 ;	
 	
 		prev =  '<li class="pager-previous"><a title="Previous page" id="page-' + p + '" href="#">&lt;</a></li>';	
-		first = '<li class="pager-first first"><a title="First page" id="page-' + p + '" href="#">&lt;&lt;</a></li>';	
+		first = '<li class="pager-first first"><a title="First page" id="page-1' + '" href="#">&lt;&lt;</a></li>';	
 	}	
 	else	
 	{	
@@ -439,47 +439,52 @@ p.draw = function() {
 
 ThumbContainer.selectThumbUrl = function(doc, modalities)
 {
-	for( var i=0 ; i<doc.media.length ; i++ )
+	//var modOptions = this.ctx.modalities ;
+	
+	for(var m=0 ; m<modalities.length ; m++ )
 	{
-		var mediaType = doc.media[i] ;
-		if ( mediaType.type == "ImageType" && ( $.inArray("image", modalities) != -1 ) )
+		var mod = modalities[m] ;
+		for(var i=0 ; i<doc.media.length ; i++ )
 		{
-			if ( mediaType.previews && mediaType.previews.length > 0 )
+			var mediaType = doc.media[i] ;
+			if ( mod == "image" && mediaType.type == "ImageType" )
 			{
-				var frmt = mediaType.previews[0].format ;
-				if ( frmt == "image/svg+xml" )
-					return mediaType.previews[0].url ;
-				else if ( frmt == "image/jpeg" || frmt == "image/png" )
-					return mediaType.previews[0].url ;
-			}
-		}
-		else if ( mediaType.type == "Object3D" && ( $.inArray("3d", modalities) != -1 ) )
-		{
-			if ( mediaType.previews && mediaType.previews.length > 0 )
-				return mediaType.previews[0].url ;
-		}
-		else if ( mediaType.type == "SoundType" && ( $.inArray("audio", modalities) != -1 ) )
-		{
-			if ( mediaType.previews && mediaType.previews.length > 0 )
-			{
-				for( var j=0 ; j<mediaType.previews.length ; j++ )
+				if ( mediaType.previews && mediaType.previews.length > 0 )
 				{
-					var frmt = mediaType.previews[j].format ;
+					var frmt = mediaType.previews[0].format ;
 					if ( frmt == "image/svg+xml" )
-						return mediaType.previews[j].url ;
+						return mediaType.previews[0].url ;
 					else if ( frmt == "image/jpeg" || frmt == "image/png" )
-						return mediaType.previews[j].url ;
+						return mediaType.previews[0].url ;
 				}
 			}
-		}
-		else if ( mediaType.type == "VideoType" && ( $.inArray("video", modalities) != -1 ) )
-		{
-			if ( mediaType.previews && mediaType.previews.length > 0 )
-				return mediaType.previews[0].url ;
+			else if ( mod == "3d" && mediaType.type == "Object3D" )
+			{
+				if ( mediaType.previews && mediaType.previews.length > 0 )
+					return mediaType.previews[0].url ;
+			}
+			else if ( mod == "audio" && mediaType.type == "SoundType"  )
+			{
+				if ( mediaType.previews && mediaType.previews.length > 0 )
+				{
+					for( var j=0 ; j<mediaType.previews.length ; j++ )
+					{
+						var frmt = mediaType.previews[j].format ;
+						if ( frmt == "image/svg+xml" )
+							return mediaType.previews[j].url ;
+						else if ( frmt == "image/jpeg" || frmt == "image/png" )
+							return mediaType.previews[j].url ;
+					}
+				}
+			}
+			else if ( mod == "video" && mediaType.type == "VideoType" )
+			{
+				if ( mediaType.previews && mediaType.previews.length > 0 )
+					return mediaType.previews[0].url ;
 			
+			}
 		}
 	}
-	
 	return null ;
 } ;
 
@@ -572,7 +577,7 @@ p.createThumbnail = function(i, x, y)
 	
 		if ( !item.doc.relevant ) relBtn.addClass("inactive") ;
 	
-		relBtn.click(function() {
+		relBtn.click(function(e) {
 			item.doc.relevant = !item.doc.relevant ;
 			$(this).toggleClass("inactive") ;
 			e.stopImmediatePropagation() ;
@@ -1012,8 +1017,8 @@ p.showTimeline = function()
 		
 	}
 	
-	theme.timeline_start = mindate ;
-	theme.timeline_stop = maxdate ;
+	//theme.timeline_start = mindate ;
+	//theme.timeline_stop = maxdate ;
 	
 	var obj = this ;
 	
@@ -1187,7 +1192,7 @@ p.showTimeline = function()
 	//iconDiv.style.width = iconData.width + "px" ;
 	//	iconDiv.style.height = iconData.height + "px" ;
 		
-	obj.thumbRenderer.render(iconData.data, $(iconStackDiv), $(this._eventLayer), { moadlities: obj.ctx.filterBar.modalities() }) ;
+	obj.thumbRenderer.render(iconData.data, $(iconStackDiv), { viewport: $(this._eventLayer), modalities: obj.ctx.filterBar.modalities(), square: true }) ;
 		
    // iconStackDiv.innerHTML = "<div style='position: relative'></div>";
     this._eventLayer.appendChild(iconStackDiv);
@@ -1237,7 +1242,8 @@ p.showTimeline = function()
 	  
        // iconDiv.setAttribute("index", index);
      //   iconDiv.onmouseover = onMouseOver;
-		obj.thumbRenderer.render(iconData.data, $(imgDiv), $(self._eventLayer), { modalities: obj.ctx.filterBar.modalities() }) ;
+		obj.thumbRenderer.render(iconData.data, $(imgDiv), { viewport: $(self._eventLayer), modalities: obj.ctx.filterBar.modalities() }) ;
+		//obj.thumbRenderer.render(iconData.data, $(imgDiv), $(self._eventLayer), { modalities: obj.ctx.filterBar.modalities() }) ;
         
         iconStackDiv.firstChild.appendChild(iconDiv);
         
@@ -1278,10 +1284,11 @@ p.showTimeline = function()
     //this._createHighlightDiv(highlightIndex, iconElmtData, theme);
 };
 
+var cDate = new Date(parseInt((mindate.getTime() + maxdate.getTime())/2)) ;
   
 	var bandInfos = [
 		Timeline.createBandInfo({
-			date:           "Jun 28 2009 00:00:00 GMT",
+			date:           mindate,
 			width:          "90%", 
 			intervalUnit:   Timeline.DateTime.MONTH, 
 			intervalPixels: 100,
@@ -1303,16 +1310,16 @@ p.showTimeline = function()
 			
             },
 	
-			zoomIndex:      6,
+			zoomIndex:      0,
 			zoomSteps:      new Array(
 			//	{pixelsPerInterval: 280,  unit: Timeline.DateTime.HOUR},
 			//	{pixelsPerInterval: 140,  unit: Timeline.DateTime.HOUR},
 			//	{pixelsPerInterval:  70,  unit: Timeline.DateTime.HOUR},
 			//	{pixelsPerInterval:  35,  unit: Timeline.DateTime.HOUR},
-				{pixelsPerInterval: 400,  unit: Timeline.DateTime.DAY},
-				{pixelsPerInterval: 200,  unit: Timeline.DateTime.DAY},
-				{pixelsPerInterval: 100,  unit: Timeline.DateTime.DAY},
-				{pixelsPerInterval:  50,  unit: Timeline.DateTime.DAY},
+			//	{pixelsPerInterval: 400,  unit: Timeline.DateTime.DAY},
+			//	{pixelsPerInterval: 200,  unit: Timeline.DateTime.DAY},
+			//	{pixelsPerInterval: 100,  unit: Timeline.DateTime.DAY},
+			//	{pixelsPerInterval:  50,  unit: Timeline.DateTime.DAY},
 				{pixelsPerInterval: 400,  unit: Timeline.DateTime.MONTH},
 				{pixelsPerInterval: 200,  unit: Timeline.DateTime.MONTH},
 				{pixelsPerInterval: 100,  unit: Timeline.DateTime.MONTH}
