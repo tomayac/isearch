@@ -9,11 +9,12 @@ if(typeof console == "undefined") {
 }
 
 //Initialize the authentication component
-//if (typeof window.janrain !== 'object') window.janrain = {};
-//window.janrain.settings = {};
-//janrain.settings.tokenUrl = 'http://iris.atc.gr/testGoogle/TokenReceiver';
-//janrain.settings.format = 'one row';
-//janrain.ready = true;
+//----------------------------------------------------------
+if (typeof window.janrain !== 'object') window.janrain = {};
+window.janrain.settings = {};
+janrain.settings.tokenUrl = 'http://localhost';
+janrain.settings.tokenAction='event';
+//----------------------------------------------------------
 
 var Timeline_urlPrefix   = "js/libs/timeline_2.3.0/timeline_js/" ;
 var Timeline_parameters  = "bundle=false";
@@ -27,7 +28,8 @@ require(["jquery",
          "mylibs/uiiface",
          "mylibs/query",
          "libs/jquery.tokeninput",
-         "libs/smiley-slider"], 
+         "libs/smiley-slider",
+         "http://widget-cdn.rpxnow.com/js/lib/isearch/engage.js"], 
     function($, menu, config, tags, results, uiiface, query) {
       
       $(function() {
@@ -54,6 +56,8 @@ require(["jquery",
           //Initializes the tagging system
           tags.init();
 
+          //$('nav > ul > li').uiiface('select');
+          
           //Initializes the UIIFace // GestureHint display on every screen element with enabled gestures
           uiiface.initialize({gestureHint:true});
           //test actions on logo

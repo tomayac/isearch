@@ -57,7 +57,7 @@ define("mylibs/visualization/Cubes",
       + '<section class="cube-canvas">'
       + '<div class="cube" id="[[ID]]">'
       + '<figure class="front disabled">[[IMAGE]]</figure>'
-      + '<figure class="back disabled">[[OPTIONS]]</figure>'
+      + '<figure class="back">[[OPTIONS]]</figure>'
       + '<figure class="right disabled">[[3D]]</figure>'
       + '<figure class="left disabled">[[VIDEO]]</figure>'
       + '<figure class="top disabled">[[AUDIO]]</figure>'
@@ -103,7 +103,7 @@ define("mylibs/visualization/Cubes",
      */
     Cubes.prototype.createCube = function(resultItem) {
       
-      //Check if the resultItem is not empty
+      //Check if the resultItem is empty
       if(resultItem.media.length < 1) {
         return;
       }
@@ -138,26 +138,37 @@ define("mylibs/visualization/Cubes",
       
       //Fill cube template
       tmpCube = tmpCube.replace("[[ID]]", resultItem.id);
+      tmpCube = tmpCube.replace("[[OPTIONS]]" , '<p><input type="text" name="addTag" value="add a tag" /><button name="Download">Download</button></p>');
       
       if(itemMedia.image.count > 0) {
         tmpCube = tmpCube.replace("[[IMAGE]]" , itemMedia.image.html);
         tmpCube = tmpCube.replace("front disabled" , "front");
+      } else {
+        tmpCube = tmpCube.replace("[[IMAGE]]" , '<p>Sorry, no images</p>');
       } 
       if(itemMedia.threed.count > 0) {
         tmpCube = tmpCube.replace("[[3D]]" , itemMedia.threed.html);
         tmpCube = tmpCube.replace("right disabled" , "right");
-      }
+      } else {
+        tmpCube = tmpCube.replace("[[3D]]" , '<p>Sorry, no 3D models</p>');
+      } 
       if(itemMedia.video.count > 0) {
         tmpCube = tmpCube.replace("[[VIDEO]]" , itemMedia.video.html);
         tmpCube = tmpCube.replace("left disabled" , "left");
-      }
+      } else {
+        tmpCube = tmpCube.replace("[[VIDEO]]" , '<p>Sorry, no videos</p>');
+      } 
       if(itemMedia.audio.count > 0) {
         tmpCube = tmpCube.replace("[[AUDIO]]" , itemMedia.audio.html);
         tmpCube = tmpCube.replace("top disabled" , "top");
-      }
+      } else {
+        tmpCube = tmpCube.replace("[[AUDIO]]" , '<p>Sorry, no audio</p>');
+      } 
       if(itemMedia.text.count > 0) {
         tmpCube = tmpCube.replace("[[TEXT]]"  , itemMedia.text.html);
         tmpCube = tmpCube.replace("bottom disabled" , "bottom");
+      } else {
+        tmpCube = tmpCube.replace("[[TEXT]]" , '<p>Sorry, no text</p>');
       }      
       
       //Set initial navigation buttons
@@ -167,6 +178,7 @@ define("mylibs/visualization/Cubes",
       
       //Add initial visual cube data
       resultItem.face = "show-front";
+      resultItem.big  = false; 
       
       this.cubes[resultItem.id] = resultItem;
     };
@@ -213,14 +225,32 @@ define("mylibs/visualization/Cubes",
         
         var cubeRef = $(this).parent().prev().find('.cube');
         var cube = that.cubes[cubeRef.attr('id')];
+        var face = cube.face;
         var toFace = $(this).attr('name');
         
-        cubeRef.removeClass(cube.face);
+        if(cube.big === true) {
+          var tmpface = cube.face.split('-');
+          face = tmpface[0] + '-big' + tmpface[1];
+          var toBigFace = toFace.split('-');
+          toBigFace = toBigFace[0] + '-big' + toBigFace[1];
+        }
+
+        cubeRef.removeClass(face);
         cube.face = toFace;
-        cubeRef.addClass(cube.face);
+        if(cube.big === true) {
+          cubeRef.addClass(toBigFace);
+        } else {
+          cubeRef.addClass(toFace);
+        }
         
-        console.log(cubeRef.parents('.cube-container').children('nav'));
-        cubeRef.parents('.cube-container').children('nav').replaceWith(that.getCubeNavigation(cube.face));
+        var nav = that.getCubeNavigation(cube.face);
+        if(cube.big === true) {
+          nav = nav.replace('btop','bigbtop')
+                   .replace('bbottom','bigbbottom')
+                   .replace('bright','bigbright')
+                   .replace('bleft','bigbleft');
+        }
+        cubeRef.parents('.cube-container').children('nav').replaceWith(nav);
         
         setTimeout(function() {      
           $('.cube-container nav button').on('click', navClick);
@@ -236,7 +266,7 @@ define("mylibs/visualization/Cubes",
       $('.cube-container nav button').on('click', navClick);
       
       //Make big event
-      $('.cube').on('dblclick', this.setCubeSize);
+      $('.cube').on('dblclick', {context: this}, this.setCubeSize);
       
       return false;
     };
@@ -349,42 +379,68 @@ define("mylibs/visualization/Cubes",
      */
     Cubes.prototype.setCubeSize = function(event) {
       var cubeContainer = $(this).parents('.cube-container');
+      var cube = event.data.context.cubes[$(this).attr('id')];
       
-      cubeContainer.css({
-        'width' : '+=100',
-        'height': '+=100'
-      });
+      if(cube.big === false) { 
+        cube.big = true;
+        
+        cubeContainer.css({
+          'width' : '+=100',
+          'height': '+=100'
+        });
+        
+        cubeContainer.find('.cube-canvas').css({
+          'width' : '+=100',
+          'height': '+=100'
+        });
+        
+        cubeContainer.find('.cube figure').css({
+          'width' : '+=100',
+          'height': '+=100'
+        });
+        
+        cubeContainer.find('.cube .back').removeClass('back').addClass('bigback');
+        cubeContainer.find('.cube .left').removeClass('left').addClass('bigleft');
+        cubeContainer.find('.cube .right').removeClass('right').addClass('bigright');
+        cubeContainer.find('.cube .top').removeClass('top').addClass('bigtop');
+        cubeContainer.find('.cube .bottom').removeClass('bottom').addClass('bigbottom');
+        
+        cubeContainer.find('.btop').removeClass('btop').addClass('bigbtop');
+        cubeContainer.find('.bbottom').removeClass('bbottom').addClass('bigbbottom');
+        cubeContainer.find('.bright').removeClass('bright').addClass('bigbright');
+        cubeContainer.find('.bleft').removeClass('bleft').addClass('bigbleft');
+        
+      } else {
+        cube.big = false;
+        
+        cubeContainer.css({
+          'width' : '-=100',
+          'height': '-=100'
+        });
+        
+        cubeContainer.find('.cube-canvas').css({
+          'width' : '-=100',
+          'height': '-=100'
+        });
+        
+        cubeContainer.find('.cube figure').css({
+          'width' : '-=100',
+          'height': '-=100'
+        });
+        
+        cubeContainer.find('.cube .bigback').removeClass('bigback').addClass('back');
+        cubeContainer.find('.cube .bigleft').removeClass('bigleft').addClass('left');
+        cubeContainer.find('.cube .bigright').removeClass('bigright').addClass('left');
+        cubeContainer.find('.cube .bigtop').removeClass('bigtop').addClass('top');
+        cubeContainer.find('.cube .bigbottom').removeClass('bigbottom').addClass('bottom');
+        
+        cubeContainer.find('.bigbtop').removeClass('bigbtop').addClass('btop');
+        cubeContainer.find('.bigbbottom').removeClass('bigbbottom').addClass('bbottom');
+        cubeContainer.find('.bigbright').removeClass('bigbright').addClass('bright');
+        cubeContainer.find('.bigbleft').removeClass('bigbleft').addClass('bleft');
+      }
       
-      cubeContainer.find('.cube-canvas').css({
-        'width' : '+=100',
-        'height': '+=100'
-      });
       
-      cubeContainer.find('.cube figure').css({
-        'width' : '+=100',
-        'height': '+=100'
-      });
-      
-      cubeContainer.find('.cube .back').removeClass('.back').addClass('.bigback');
-      cubeContainer.find('.cube .left').removeClass('.left').addClass('.bigleft');
-      cubeContainer.find('.cube .right').removeClass('.right').addClass('.bigright');
-      cubeContainer.find('.cube .top').removeClass('.top').addClass('.bigtop');
-      cubeContainer.find('.cube .bottom').removeClass('.bottom').addClass('.bigbottom');
-      
-      cubeContainer.find('.btop').css({
-        'width' : '+=100'
-      });
-      cubeContainer.find('.bbottom').css({
-        'width' : '+=100',
-        'top'   : '+=100'
-      });
-      cubeContainer.find('.bright').css({
-        'height' : '+=100',
-        'left'   : '+=100'
-      });
-      cubeContainer.find('.bleft').css({
-        'height' : '+=100'
-      });
     };
     
     //Public interface for Cubes

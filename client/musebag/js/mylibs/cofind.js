@@ -3,9 +3,9 @@
  */
 define("mylibs/cofind", 
   [
-    "libs/modernizr-2.0.min", 
+    "libs/modernizr.min", 
     "libs/jquery.hoverIntent.min", 
-    "/nowjs/now.js", 
+    "/nowjs/now.js",
     "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js"
   ], 
   function(){

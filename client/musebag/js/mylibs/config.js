@@ -192,7 +192,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/
         profile.set(arguments[0]);
       } 
       
-      $("#login-status").html("Hello " + profile.get('Email'));
+      $("#login-status").html("Hello " + profile.get('Name'));
       $("#button-login-settings").find('a:first').text('Logout');
       var cofindOptions = {
          user            : profile.get('Email'), 
@@ -281,12 +281,15 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/
       panels.hide(constants.slideDownAnimationTime);
     };
     
-    var handleLogin = function() {
+    var handleLogin = function(token) {
       
       var serverURL = constants.userLoginServerUrl || "login";        
-	  
+	    
+      /*
       var postData = {email: panels.login.find("#email").val() || '',
                          pw: panels.login.find("#pw").val()    || ''};
+      */
+      var postData = {token: token};
       
       //Send it to the server
       $.ajax({
@@ -324,6 +327,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/
       $.ajax({
         type: "DELETE",
         url: serverURL,
+        data: '{}',
         success: function(data) {
             if(!data.error) { 
               console.log("User logged out");
@@ -375,24 +379,60 @@ define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/
         event.stopPropagation();
       });
       panels.settings.click(function(event) {
-    	/**
-    	 * Triantafillos: event.preventDefault() breaks checkbox 
-    	 * functionality on global settings.
-    	 */ 
-//        event.preventDefault();
         event.stopPropagation();
       });
+      
+      //Initialize the authentication widget
+      //----------------------------------------------------------
+      // WARNING - very ugly code - janrain is baaad!
+      window.janrainWidgetOnload = function() {
+        //Force to format the stupid authentication widget
+        $('#janrainEngageEmbed .janrainContent').attr('style','min-height: 40px');
+        $('#janrainEngageEmbed #janrainView').attr('style','position: absolute; top: 15px; left: 0px; width: 100%; z-index: 103; text-align: center; padding: 5px; background-color: #666; min-height: 50px;');
+        $('#janrainEngageEmbed #janrainView .janrainHeader').text('Use your account with:');
+        $('#janrainEngageEmbed #janrainView .janrainHeader').attr('style','display: inline-block; height: 15px; margin: 0 0.5em 0 0; padding: 1.0em 0.8em; vertical-align: top; background-color: #999; border-top-left-radius: 4px; border-bottom-left-radius: 4px;');
+        $('#janrainEngageEmbed #janrainView #janrainProviderPages').attr('style','display:inline-block; vertical-align: middle');
+        $('#janrainEngageEmbed #janrainView #janrainProviderPages ul').attr('style','margin: 0; padding: 0;');
+        $('#janrainEngageEmbed #janrainView #janrainProviderPages ul li').attr('style','list-style-type: none;position: relative; height: 34px; padding-top: 0.5em; margin-bottom: 4px; left: 0px; border: 1px solid rgb(204, 204, 204); color: rgb(28, 105, 245); border-top-right-radius: 5px; border-bottom-right-radius: 5px; cursor: pointer; display: inline-block; width: 200px; vertical-align: top; background-color: rgb(227, 227, 227); background-image: -webkit-linear-gradient(bottom, rgb(238, 238, 238), rgb(255, 255, 255));');
+        $('#janrainEngageEmbed #janrainView div:nth-child(3)').remove();
+        $('#janrainEngageEmbed #janrainView div:nth-child(4)').remove();
+        
+        if($('#janrainEngageEmbed .janrainContent > div:last').attr('id') !== 'janrainView' ) {
+          $('#janrainEngageEmbed .janrainContent > div:last').attr('style','position: absolute; top: 15px; left: 0px; width: 100%; z-index: 102; text-align: center; padding: 5px; background-color: transparent; min-height: 40px;');
+          $('#janrainEngageEmbed .janrainContent > div:last img').attr('style','width:100px; height:35px; margin: 0 0.5em 0 0; padding: 0.3em 0.5em; background-color: #999; border-top-left-radius: 4px; border-bottom-left-radius: 4px;');
+          $('#janrainEngageEmbed .janrainContent > div:last').children('div:first').attr('style','position: relative; height: 39px; margin-bottom: 4px; left: 0px; border: 1px solid rgb(204, 204, 204); color: rgb(28, 105, 245); border-top-right-radius: 5px; border-bottom-right-radius: 5px; cursor: pointer; display: inline-block; width: 200px; vertical-align: top; background-color: rgb(227, 227, 227); background-image: -webkit-linear-gradient(bottom, rgb(238, 238, 238), rgb(255, 255, 255));');
+          $('#janrainEngageEmbed .janrainContent > div:last').children('div:first').children(':first').attr('style','position: relative; top: 12px; font-size: 110%; float: none;');
+          $('#janrainEngageEmbed .janrainContent > div:last a').attr('style','font-size: 12px; color: #fff; display: inline-block; margin-left: 15px; vertical-align: 100%');
+        }
+        
+        $(document).on('DOMNodeInserted','#janrainEngageEmbed .janrainContent',function() {
+          sendNotifyMessage($('#janrainEngageEmbed .janrainContent > div:last').text(),'info',false);
+          $('#janrainEngageEmbed .janrainContent > div:last').remove();
+        });
+        
+        $('#janrainEngageEmbed #janrain-google,#janrainEngageEmbed .providers').on('click', function(event) {
+          panels.login.hide(constants.slideDownAnimationTime);
+        });
+        
+        janrain.events.onProviderLoginToken.addHandler(function(tokenResponse) {
+          console.log(tokenResponse);
+          handleLogin(tokenResponse.token);
+        });
+      };
+      //----------------------------------------------------------
+      
       
       panels.login = $("#login-settings");
       panels.login.hide();
       $("#button-login-settings").click(function(event){
         if($("#button-login-settings").find('a:first').text() == 'Login') {
           if($("#button-login-settings").hasClass('active')) {
-            if(panels.login.find("#email").val().length > 0 || panels.login.find("#pw").val().length > 0) {
+            /*if(panels.login.find("#email").val().length > 0 || panels.login.find("#pw").val().length > 0) {
               handleLogin();
             } else {
               panels.login.hide(constants.slideDownAnimationTime);
-            }
+            }*/
+            panels.login.hide(constants.slideDownAnimationTime);
             $("#button-login-settings").removeClass('active');
           } else {
             panels.hide(constants.slideDownAnimationTime);

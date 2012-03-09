@@ -14,6 +14,8 @@ this.name = "pTag";
 this.version = "0.1.0";
 this.endpoint = "http://isearch.ai.fh-erfurt.de/ptag";
 
+var user = ['kojomisch','julia.ziemens','stratos','petros','tomac','familie.etzold'];
+
 var tags = [[['flight',1.0],['travel',1.5],['airplane',2.8],['sky',0.8],['rocket',1.0],['USA',0.9],['NASA',1.3],['space',1.8],['Apollo Program',1.2],['Saturn V',0.8],['Viking',1.0],['Space probes',1.8],['ISS',1.2]],
             [['trees',2.0],['nature',1.8],['enviromental landscaping',1.0],['green energy',1.5],['electric cars',0.6],['Renault',0.5],['tulip',0.7],['garden',1.0],['pine tree',1.2],['forest',0.9],['Kanada',2.0]],
             [['bike',0.9],['biker',1.5],['bicycle',0.6],['Harley Davidson',2.0],['Motorcycle',2.8],['speed',1.0],['sexyness',0.5],['A beast',0.9],['Vendors',2.0],['black',1.2],['round fuel tank',0.8],['Rocker',1.6]],
@@ -27,9 +29,9 @@ var tags = [[['flight',1.0],['travel',1.5],['airplane',2.8],['sky',0.8],['rocket
  */
 exports.tagRecommendations = function(options, callback){
 	
-	var id = 1;
-	if(options.userId > 0 && options.userId <= 6) {
-		id = (options.userId-1);
+	var id = 0;
+	if(options.userId.length > 3) {
+	  id = user[options.userId] || 0;
 	} 
 	var userTags = tags[id];
 	
@@ -110,8 +112,8 @@ exports.tag = function(options, callback){
 	var stored = false;
 	//storeUserTags(RUCoDID,Tags) options.tags
 	var rucodMangerUrl = "http://www.isearch-project.eu/rmn/storeUserTags?" 
-		               + "rucodid=" + options.resultItemId + "&" 
-		               + "tags=" + options.tags;
+		                 + "rucodid=" + options.resultItemId 
+		                 + "&tags=" + options.tags;
 	
 	//Use restler to post the data to external RUCoD manager
 	

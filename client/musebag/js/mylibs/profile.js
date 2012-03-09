@@ -1,7 +1,7 @@
 /*
  *  User profile data manager
  */
-define("mylibs/profile", ["libs/modernizr-2.0.min"], function(){
+define("mylibs/profile", ["libs/modernizr.min"], function(){
 
   var profile = {};
   var profileServerUrl = 'profile/' ;
@@ -18,7 +18,7 @@ define("mylibs/profile", ["libs/modernizr-2.0.min"], function(){
     if(profile[key]) {
       return profile[key];
     } else {
-      console.log('Profile key does not exist...get it');
+      console.log('Profile key "' + key + '" does not exist...get it');
       //Get the user data if available		  
       $.ajax({
         type: "GET",

@@ -592,7 +592,8 @@ var setupLogic = function() {
       } 
       userIndex++;  
     }
-    console.log(users);
+    
+    //console.log(users);
   });
   
 };
@@ -602,7 +603,20 @@ var setupLogic = function() {
  */
 exports.initialize = function(server,sessionStore) {
   //Initialize now.js which is the base for CoFind
-  everyone = now.initialize(server, {socketio: { 'transports': ['websocket', 'flashsocket', 'htmlfile', 'xhr-polling', 'jsonp-polling'], 'try multiple transports' : true}});
+  everyone = now.initialize(
+      server, 
+      {
+        'socketio': { 
+          'transports': ['websocket', 'flashsocket'], //, 'htmlfile', 'xhr-polling', 'jsonp-polling' 
+          'try multiple transports' : true
+        },
+        'client': {
+          'socketio' : {
+            'force new connection' : true
+          }
+        }
+      }
+  );
   //Set a reference to the sessionStore of the web server
   store = sessionStore;
   

@@ -18,6 +18,7 @@ var fs         = require('fs'),
 /**
  * Global variables
  */
+var authApi = '3cab95115953b1b1b31f35c48eaa36a746b479af';
 var msg     = {error: 'Something went wrong.'};
 var tmpPath = '../../client/musebag/tmp';
 var tmpUrl  = '/tmp';
@@ -283,24 +284,42 @@ exports.login = function(req, res){
 	
 	console.log("Login function called...");
 	
+	/*
 	var verifyURL = "http://gdv.fh-erfurt.de/i-search/apc-dummy/index.php?"
         + 'f=validateUser'
         + '&email=' + req.body.email
         + '&pw=' + req.body.pw;
-
+  */
+	var verifyURL = "https://rpxnow.com/api/v2/auth_info?"
+    + 'apiKey=' + authApi
+    + '&token=' + req.body.token;
+	
 	restler
-	.get(verifyURL)
+	.get(verifyURL, { parser: restler.parsers.json })
 	.on('complete', function(data) {		
 		
 		//Check if return data is ok
-    if(!data.user) {
-    	msg.error = data.error;
+    if(!data.profile) {
+    	msg.error = data.err.msg;
     	res.send(JSON.stringify(msg));
     } else {
+      //Get initial user data
+      var user = getSessionStore(req);
+      //Set real user data
+      user.ID = data.profile.verifiedEmail;
+      user.Name = data.profile.name.givenName || '';
+      user.FamilyName = data.profile.name.familyName || '';
+      user.Email = data.profile.verifiedEmail;
+      user.Username = data.profile.displayName || '';
+      
       //Store user data in session
-			req.session.user = data.user;
+			req.session.user = user; 
+			
+			//Test if the user is known by the personalisation component
+			//var checkUrl = 'http://[serverhost]:[port]/IPersonalisation/resources/users/profileFor/1/withRole/admin';
+			
 			//Return user data to client
-      res.send(JSON.stringify(data.user));
+      res.send(JSON.stringify(user));
     }
 	})
 	.on('error', function(data,response) {
@@ -651,3 +670,9 @@ exports.queryItem = function(req, res) {
 	}
 	
 }; //end function queryItem
+
+exports.queryStream = function(req, res) {
+  
+  console.log("QueryStrem function called...");
+  
+}; //end function queryStream

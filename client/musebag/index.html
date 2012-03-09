@@ -52,8 +52,8 @@
 		</ul>  
 	</div>
 	<div class="settings-panel" id="login-settings">
-	  <!--<div id="janrainEngageEmbed"></div>-->
-	  
+	  <div class="setting" id="janrainEngageEmbed"></div>
+	  <!--
     <form method="post" action="#">
       <section class="setting">
         <label for="email">Email</label> <input type="text" id="email" name="email" />
@@ -63,7 +63,7 @@
         <label for="password">Password</label> <input type="password" id="pw" name="pw" />
       </section>
     </form>
-    
+    -->
   </div>  
   <div class="settings-panel" id="global-settings">
     <form method="post" action="#">
@@ -326,7 +326,15 @@
           <input type="file" id="videoUpload" style="visibility:hidden;"/>
         </div>
         <div class="instruction">
-          Take a video with your device: <button class="shoot">Shoot!</button>
+          Take a video with your device: 
+          
+          <div class="device">
+            <video width="352" height="288" autoplay></video>
+            <canvas width="352" height="288" class="overlay" id="videoCapture"></canvas>
+            <button class="use">Stop recording</button>
+            <button class="new">Capture again</button>
+          </div>
+          <button class="shoot">Show camera</button>
         </div>
         <footer><a href="#">close</a></footer>
       </section>			
@@ -359,13 +367,15 @@
 					<a href="#">close</a>
 				</footer>
 			</section>
+			
       <section class="panel emotion">
         <div class="instruction">
-          Drag the slider to include the desired emotion          
+          Drag the slider to include the desired emotion
+          <div class="emotion-slider" id="emotion-slider"></div>          
         </div>
-        <div class="emotion-slider" id="emotion-slider"></div>
         <footer><a href="#">close</a></footer>
-      </section>			
+      </section>		
+      	
 			<section class="panel geolocation">
 				<div class="instruction">
 					Click here to give your current location:
@@ -374,11 +384,12 @@
 				<div class="instruction">
 					Choose a location from the interactive map:
 					<button id="chooseLocation">Open map</button>
-				</div>
+				</div>	
 				<footer>
 					<a href="#">close</a>
 				</footer>
 			</section>
+			
 			<section class="panel text">
 				<div class="instruction">
 					Enter you request (old style!): <input type="text"
@@ -389,7 +400,7 @@
 					<a href="#">close</a>
 				</footer>
 			</section>
-
+			
 			<section class="tags"></section>
 		</div>
 

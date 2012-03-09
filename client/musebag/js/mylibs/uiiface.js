@@ -1,7 +1,6 @@
 /**
 UIIFace - Unified Interaction Interface
-Copyright (c) 2011, Jonas Etzold and Erfurt University of Applied Sciences (FHE)
-                    and Fulda University of Applied Sciences (HSF)
+Copyright (c) 2011, Jonas Etzold, Fulda University of Applied Sciences (HSF)
 
 Interaction Component of I-SEARCH (http://www.isearch-project.eu)
 All rights reserved.
@@ -18,7 +17,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-define("mylibs/uiiface", ["libs/modernizr-2.0.min","libs/wami-2.0"], function(){
+define("mylibs/uiiface", ["libs/modernizr.min","libs/wami-2.0"], function(){
 
   var UIIFace = {};
 

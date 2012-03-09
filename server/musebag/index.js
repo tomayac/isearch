@@ -47,6 +47,7 @@ app.get ('/profile/:attrib' , musebag.profile);
 app.post('/profile/history' , musebag.updateProfileHistory);
 app.post('/profile/:attrib' , musebag.setProfile);
 
+app.post('/query/stream'    , musebag.queryStream);
 app.post('/query/item'      , musebag.queryItem);
 app.post('/query'           , musebag.query);
 
