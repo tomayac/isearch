@@ -156,7 +156,10 @@ p.renderDocument = function(doc, mediaType)
 	docPreview.dialog({
 			width: sw,
 			height: sh,
-			modal: true			
+			modal: true,
+			close: function() {
+				docPreview.empty() ;
+			}
 	});
 	
 	
