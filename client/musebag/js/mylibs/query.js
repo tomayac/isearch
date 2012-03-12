@@ -66,7 +66,7 @@ define("mylibs/query", ["mylibs/config",], function(config) {
         } else if(queryToken.attr('class') == 'Rhythm') {
           
           queryJson.rhythm = {
-              'duration'  :  parseInt(queryToken.attr('title')),
+              'duration'  :  parseInt(queryToken.attr('data-duration')),
               'intervals' :  queryToken.attr('title').split(',')
           };
           
