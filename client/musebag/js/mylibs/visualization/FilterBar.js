@@ -21,7 +21,7 @@ define("mylibs/visualization/FilterBar",  ["mylibs/location"],
 		
 		$(ele).empty() ;
 			
-		mediaDiv = $('<div/>', {"class": "formitem", css: { "display": "table-cell", "vertical-align": "middle", "width": "200px"}}).appendTo(ele) ;
+		mediaDiv = $('<div/>', {"class": "formitem", css: { "display": "table-cell", "vertical-align": "middle", "width": "230px"}}).appendTo(ele) ;
 		$('<span/>', { css: { "display": "table-cell", "vertical-align": "middle", "padding-right": "5px"},  text: "Media:" } ).appendTo(mediaDiv) ;
 		mediaButtons = $('<div/>', { css: { display: "table-cell" } } ).appendTo(mediaDiv) ;
 			
@@ -29,15 +29,26 @@ define("mylibs/visualization/FilterBar",  ["mylibs/location"],
 		
 		var btns = [] ;
 		
+		
+		var item = $("<input/>", { type: "radio", name: "modal-radio", id: "modal-item-all", "checked": "checked"  }).appendTo(mediaButtons) ;
+		var label = $("<label/>", { "for": "modal-item-all", text: "all" }).appendTo(mediaButtons) ;
+		item.button() ;
+		item.click(function() {
+						
+				filter() ;
+				rerank() ;
+					
+			});
+			
 		for ( var mod in modaloptions )
 		{
 			var modality = modaloptions[mod] ;
 			
-			var item = $("<input/>", { type: "checkbox", id: "modal-item-" + mod, "checked": "checked"  }).appendTo(mediaButtons) ;
+			var item = $("<input/>", { type: "radio", name: "modal-radio", id: "modal-item-" + mod  }).appendTo(mediaButtons) ;
 			var label = $("<label/>", { "for": "modal-item-" + mod, text: modality.label }).appendTo(mediaButtons) ;
 			
 			/*if ( $.inArray(mod, modalFilter) != -1 ) */
-			item.attr("checked", "checked") ;
+		//	item.attr("checked", "checked") ;
 			modalFilter.push(mod) ;
 			
 			item.button( {text: false,  "icons": {primary:'ui-icon-media-' + mod}}) ;
@@ -223,15 +234,25 @@ define("mylibs/visualization/FilterBar",  ["mylibs/location"],
 
 		var modalFilter = [] ;
 		
-		for ( var mod in modaloptions )
+		if ( $('#modal-item-all').attr('checked') == 'checked' )
 		{
-			
-			var btn = $('#modal-item-' + mod) ;
-			var id = btn.attr('id').substr(11) ; 
-			var checked = ( btn.attr('checked') == 'checked') ;
-					
-			if ( checked ) modalFilter.push(id) ;
+			for ( var mod in modaloptions )
+				modalFilter.push(mod) ;
 		}
+		else
+		{		
+			for ( var mod in modaloptions )
+			{
+			
+				var btn = $('#modal-item-' + mod) ;
+				var id = btn.attr('id').substr(11) ; 
+				var checked = ( btn.attr('checked') == 'checked') ;
+					
+				if ( checked ) modalFilter.push(id) ;
+			
+			}
+		}
+		
 		
 		return modalFilter ;
 	};

@@ -746,7 +746,7 @@ p.createThumbnail = function(i, x, y)
     });
 	
 	// use the thumbRenderer to actually render the item in the box
-	this.thumbRenderer.render(item, imgOut, { viewport: this.thumbViewport, modalities: this.ctx.filterBar.modalities(), hover: (this.navMode=='browse')?true:false }) ;
+	this.thumbRenderer.render(item, imgOut, { viewport: this.thumbViewport, selected: this.ctx.filterBar.modalities(), modalities: this.ctx.modalities, hover: (this.navMode=='browse')?true:false }) ;
 	
 	
 	
@@ -1031,7 +1031,7 @@ p.showTimeline = function()
 		iconDiv.style.width = iconData.width + "px" ;
 		iconDiv.style.height = iconData.height + "px" ;
 		
-		obj.thumbRenderer.render(iconData.data, $(iconDiv), { viewport: $(this._eventLayer), modalities: obj.ctx.filterBar.modalities() }) ;
+		obj.thumbRenderer.render(iconData.data, $(iconDiv), { viewport: $(this._eventLayer), selected: this.ctx.filterBar.modalities(), modalities: obj.ctx.modalities }) ;
 		//iconDiv.appendChild(img);
     
 		//if ("tooltip" in commonData && typeof commonData.tooltip == "string") {
@@ -1192,7 +1192,7 @@ p.showTimeline = function()
 	//iconDiv.style.width = iconData.width + "px" ;
 	//	iconDiv.style.height = iconData.height + "px" ;
 		
-	obj.thumbRenderer.render(iconData.data, $(iconStackDiv), { viewport: $(this._eventLayer), modalities: obj.ctx.filterBar.modalities(), square: true }) ;
+	obj.thumbRenderer.render(iconData.data, $(iconStackDiv), { viewport: $(this._eventLayer), selected: this.ctx.filterBar.modalities(), modalities: obj.ctx.modalities, square: true }) ;
 		
    // iconStackDiv.innerHTML = "<div style='position: relative'></div>";
     this._eventLayer.appendChild(iconStackDiv);
@@ -1242,7 +1242,7 @@ p.showTimeline = function()
 	  
        // iconDiv.setAttribute("index", index);
      //   iconDiv.onmouseover = onMouseOver;
-		obj.thumbRenderer.render(iconData.data, $(imgDiv), { viewport: $(self._eventLayer), modalities: obj.ctx.filterBar.modalities() }) ;
+		obj.thumbRenderer.render(iconData.data, $(imgDiv), { viewport: $(self._eventLayer), selected: this.ctx.filterBar.modalities(), modalities: obj.ctx.modalities }) ;
 		//obj.thumbRenderer.render(iconData.data, $(imgDiv), $(self._eventLayer), { modalities: obj.ctx.filterBar.modalities() }) ;
         
         iconStackDiv.firstChild.appendChild(iconDiv);

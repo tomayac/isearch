@@ -80,7 +80,12 @@ define("mylibs/visualization/visualizer",
 		
 		ctx.tagManager = tagManager ;
 		ctx.filterBar = filterBar ;
-		ctx.modalities = config.constants.visOptions.filterBar.modalities ;
+		ctx.modalities = [] ;
+		
+		for(var mod in config.constants.visOptions.filterBar.modalities )
+		{
+			ctx.modalities.push(mod) ;
+		}
 					
 		// create a filter pane on the top if requested
 		var filterPane = null ;

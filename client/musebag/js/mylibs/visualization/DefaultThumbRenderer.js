@@ -35,6 +35,8 @@ DefaultThumbRenderer.thumbMargin = 4 ;
 
 p.render = function(item, container, options)
 {
+	this.modalities = options.modalities ;
+	this.selected = options.selected ;
 
 	var mediaTypes  = this.getMediaTypes(item) ;
 	
@@ -47,13 +49,15 @@ p.render = function(item, container, options)
 	var visBox = options.viewport ;
 	if ( options.hover ) this.hover = options.hover ;
 	else this.hover = true ;
+	
+	
 		
 	var docid = ( item.doc.coid ) ? item.doc.coid : item.doc.id ;
 	
 	if ( mediaTypes.count == 1 )
 	{
 		var img = $('<div/>', { "docid": docid, css: {  position: "absolute", left: tm, top: tm, width: w - tm - tm, height: h - tm - tm }  }).appendTo(container) ;
-		img.thumb(ThumbContainer.selectThumbUrl(item.doc, options.modalities)) ;
+		img.thumb(ThumbContainer.selectThumbUrl(item.doc, options.selected)) ;
 		
 		this.img = img ;
 	}
@@ -68,7 +72,7 @@ p.render = function(item, container, options)
 			"border-style": "solid", "border-width": "0px " + tm + "px " + tm + "px 0px", "border-color": "#afafaf" }}).appendTo(container) ;
 		var img = $('<div/>', { "docid": docid, css: { position: "absolute", left: 0,  top: 0, width: w - tm - tm, height: h - tm - tm,
 "border": "1px solid black"		}  }).appendTo(container) ;
-		img.thumb(ThumbContainer.selectThumbUrl(item.doc, options.modalities)) ;
+		img.thumb(ThumbContainer.selectThumbUrl(item.doc, options.selected)) ;
 		this.img = img ;
 	}
 	
@@ -169,8 +173,6 @@ p.renderContents = function(tooltip, thumb, mediaType)
 {
 	var mediaTypes  = this.getMediaTypes(thumb) ;
 		
-	
-			
 	// if multi-media display toolbar
 		
 	var that = this;
@@ -179,8 +181,10 @@ p.renderContents = function(tooltip, thumb, mediaType)
 		$('.tooltip-toolbar', tooltip).remove() ;
 		var tb = $('<div/>', { "class": "tooltip-toolbar" }).appendTo(tooltip) ;
 			
-		for ( mtype in mediaTypes.types )
+		for ( var i=0 ; i<mediaTypes.types.length ; i++ )
 		{
+			mtype = mediaTypes.types[i] ;
+			
 			var btn = $('<a/>', { href: "javascript:void(0)", "id": mtype, "class": (( mtype == mediaType ) ? ' selected': '') }).appendTo(tb) ;
 			
 			btn.click(function() {
@@ -314,7 +318,7 @@ p.renderContents = function(tooltip, thumb, mediaType)
 	}
 	
 	if(desc) {
-	  $('<p/>', { css: { "max-height": "60px", "overflow": "hidden", "text-overflow": "ellipsis"}, text: desc}).appendTo(tooltipContents);
+	  $('<p/>', { css: { "float": "left", "max-height": "60px", "overflow": "hidden", "text-overflow": "ellipsis"}, text: desc}).appendTo(tooltipContents);
 	}
 	
 	/**
@@ -354,17 +358,32 @@ p.renderContents = function(tooltip, thumb, mediaType)
 
 p.getMediaTypes = function(thumb)
 {
-	var mediaTypes  = {} ;
+	var mediaTypes  = [] ;
 	var mcount = 0 ;
-	for( var i=0 ; i  < thumb.doc.media.length ; i++ )
+	
+	for(var i=0 ; i<this.modalities.length ; i++ )
 	{
-		var media = thumb.doc.media[i] ;
+		var mod = this.modalities[i] ;
+		for( var j=0 ; j < thumb.doc.media.length ; j++ )
+		{
+			var media = thumb.doc.media[j] ;
 			
-		if ( media.type == "Text" ) continue ;
-		if ( !mediaTypes.hasOwnProperty(media.type) ) { mediaTypes[media.type] = 1 ; mcount ++ ; }
-		else {
-			mediaTypes[media.type] ++ ;
+			if ( media.type == "Text" ) continue ;
+		
+	
+			if ( ( mod == "image" && media.type == "ImageType" ) ||
+				 ( mod == "3d" && media.type == "Object3D" ) ||
+				 ( mod == "audio" && media.type == "SoundType" ) ||
+				 ( mod == "video" && media.type == "VideoType" ) )
+			{
+				if ( $.inArray(media.type, mediaTypes) == -1 ) { 
+					mcount ++ ;
+					mediaTypes.push(media.type) ;
+				}
+				
+			}
 		}
+		
 	}
 	
 	return { 'count': mcount, 'types': mediaTypes } ;
@@ -413,11 +432,12 @@ p.doShowTooltip = function(thumb, container, visBox)
 		mediaType = thumb.defaultMedia ;
 	else if ( mediaTypes.count > 0 )
 	{
-		for (var type in mediaTypes.types )
-		{
-			mediaType = type ;
-			break ;
-		}
+		var sel = this.selected[0] ;
+		
+		if ( sel == "image" && $.inArray("ImageType", mediaTypes.types) != -1 ) mediaType = "ImageType" ; 
+		else if ( sel == "3d" && $.inArray("Object3D", mediaTypes.types) != -1 ) mediaType = "Object3D" ; 
+		else if ( sel == "audio" && $.inArray("SoundType", mediaTypes.types) != -1 ) mediaType = "SoundType" ; 
+		else if ( sel == "video" && $.inArray("VideoType", mediaTypes.types) != -1 ) mediaType = "VideoType" ; 
 	}
 		
 	// now render the contents
