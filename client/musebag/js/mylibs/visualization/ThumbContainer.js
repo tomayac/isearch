@@ -456,6 +456,9 @@ ThumbContainer.selectThumbUrl = function(doc, modalities)
 						return mediaType.previews[0].url ;
 					else if ( frmt == "image/jpeg" || frmt == "image/png" )
 						return mediaType.previews[0].url ;
+					else
+						return mediaType.previews[0].url ;
+						
 				}
 			}
 			else if ( mod == "3d" && mediaType.type == "Object3D" )
