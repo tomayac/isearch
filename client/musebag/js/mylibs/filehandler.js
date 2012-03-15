@@ -157,15 +157,15 @@ define("mylibs/filehandler", ["libs/glge-compiled-min"], function(GLGE){
                 if (fileInfo.subtype != '') {
     						  console.log(fileInfo.subtype + " uploaded...");
     						  pictureIcon = $('nav li[data-mode="' + fileInfo.subtype + '"]');
-    						  genericItemType = 'ImageType';
-    						
+    						  genericItemType = fileInfo.type ;
     						  var ele = $('#' + id) ;
     					
     						  //set the appropriate data tags for the html element
     						  ele.attr({
     							  'alt'       : fileInfo.name,
     							  'class'     : fileInfo.subtype,
-    							  'data-mode' : genericItemType
+    							  'data-mode' : genericItemType,
+								  'data-token': fileInfo.token
     						  });
     						
     						  var canvas = ele.get(0) ;

@@ -156,8 +156,7 @@ define("mylibs/visualization/FilterBar",  ["mylibs/location"],
 					var found = false ;
 					for( var k=0 ; k<doc.tags.length ; k++ )
 					{
-						var docTag = doc.tags[k].toLowerCase() ;
-						if ( tag.toLowerCase() == docTag ) {
+						if ( tag.toLowerCase() == doc.tags[k].toLowerCase() ) {
 							found = true ;
 							break ;
 						}

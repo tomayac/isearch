@@ -5,5 +5,5 @@ function localConfig(data)
 	data.queryFormulatorUrl = "http://vision.iti.gr/sotiris/isearch/debug/mqf.php?index=iaprtc12" ;
 	data.userProfileServerUrl = "http://vision.iti.gr/sotiris/isearch/debug/user.php?mode=Profile&key=" ;
 	data.userLoginServerUrl = "http://vision.iti.gr/sotiris/isearch/debug/user.php?mode=login" ;
-	data.tagServerUrl = "http://vision.iti.gr/sotiris/isearch/debug/user.php?mode=tags&index=iaprtc12" ;
+	data.tagServerUrl = "http://vision.iti.gr/sotiris/isearch/debug/user.php?index=iaprtc12&mode=tags" ;
 }

@@ -7,7 +7,8 @@ function() {
 	var init = function(results_, options) {
 		
 		docs = results_.docs ;
-		tagServerUrl = options.tagServerUrl ;
+		tagServerUrl = options.tagServerUrl  ;
+		
 		
 		load() ;
 	};
