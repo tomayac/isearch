@@ -1,8 +1,8 @@
-  define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/mylibs/visualization/DefaultThumbRenderer.js"],
-  function(tags, cofind, profile) {
+//  define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/mylibs/visualization/DefaultThumbRenderer.js"],
+//  function(tags, cofind, profile) {
     
-//define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualization/DefaultThumbRenderer.js"],
-//  function(tags, profile) {
+define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualization/DefaultThumbRenderer.js"],
+  function(tags, profile) {
 
     var constants = {
       //Menu parameters
@@ -137,13 +137,15 @@
         //Initialize the form with the default values
         panels.settings.find("#max-num-results")
             .val(constants.queryOptions.maxNumResults);
-  /*			
-          panels.settings.find("#icon-size option[value=" + constants.visOptions.thumbOptions.thumbSize + "]")
+		panels.settings.find("#num-clusters")
+            .val(constants.queryOptions.clusters0);
+		panels.settings.find("#trans-method option[value=" + constants.queryOptions.trans + "]")
               .attr('selected','selected');
-          panels.settings.find("#visualization-method option[value=" + constants.visOptions.method + "]")
-              .attr('selected','selected');
-  */			
+  		
       };
+	  
+	  setForm() ;
+	  
       
 	  var profileSettingsUrl = constants.userProfileServerUrl || "profile/" ;
 	  profileSettingsUrl += "Settings" ;
@@ -154,23 +156,23 @@
         success: function(data) {
           data = JSON.parse(data);
           if(data.Settings) {
-            data = JSON.parse(data.Settings);
+            data = data.Settings ;
   
-            if(data.maxResults) {
-              set('maxNumResults', data.maxResults);
+            if ( data.maxResults ) {
+              set('queryOptions.maxNumResults', data.maxResults);
               panels.settings.find("#max-num-results").val(data.maxResults);
             }
 			
-			/*
-            if(data.thumbSize) {
-              set('visOptions.thumbOptions.thumbSize', data.thumbSize);
-              panels.settings.find("#icon-size option[value=" + data.thumbSize + "]").attr('selected','selected');
-            }
-            if(data.method) {
-              set('visOptions.method', data.method);
-              panels.settings.find("#visualization-method option[value=" + data.method + "]").attr('selected','selected');
-            }
-			*/
+			if ( data.numClusters ) {
+				set('queryOptions.clusters0', data.numClusters);
+				panels.settings.find("#num-clusters").val(data.numClusters);
+			}
+			
+			if ( data.transMethod ) {
+				set('queryOptions.trans', data.transMethod);
+				panels.settings.find("#trans-method option[value=" + data.transMethod + "]").attr('selected','selected');
+			}
+
           } else {
             //store the basic settings in the session initially if there is no setting data
             handleSettingsSave(true);
@@ -224,30 +226,23 @@
       var ow = overwrite || false;
       
       var mr = parseInt(panels.settings.find("#max-num-results").val());
-    
-      /*
-	    var ts = parseInt(panels.settings.find("#icon-size option:selected").val());
-      var vm = panels.settings.find("#visualization-method option:selected").val();
-      var ct = panels.settings.find("#audio-cluster-type").val() !== undefined ? 'audio' : '3D';
-
-      if(constants.maxNumResults == mr &&
-         constants.visOptions.thumbOptions.thumbSize == ts &&
-         constants.visOptions.method === vm &&
-         constants.clusterType === ct &&
+	  var nc = parseInt(panels.settings.find("#num-clusters").val()) ;
+	  var tm = panels.settings.find("#trans-method option:selected").val() ;
+	  	  
+      if ( 	constants.queryOptions.maxNumResults == mr &&
+			constants.queryOptions.clusters0 == nc &&
+			constants.queryOptions.trans == tm &&
          !ow) 
       {
         return;
       }  
-	    */
-      if ( constants.queryOptions.maxNumResults == mr ) return ;
-	  
+	          
       set('queryOptions.maxNumResults', mr);
-      //set('visOptions.thumbOptions.thumbSize', ts);
-      //set('visOptions.method', vm);
-      //set('clusterType', ct);
-      
+	  set('queryOptions.clusters0', nc);
+	  set('queryOptions.trans', tm);
+	  
       var postData = {
-          data : {"maxResults" :  mr /*, "clusterType" : ct , "thumbSize" : ts , "method" : vm */ }
+          data : {"maxResults" :  mr , "numClusters" : nc ,  "transMethod" : tm  }
       };
       
   	  var profileSettingsUrl = constants.userProfileServerUrl || "profile/" ;
@@ -345,6 +340,9 @@
 
     var initPanel = function() {
       
+	  panels.settings = $("#global-settings");
+      panels.settings.hide();
+	  
   	  initSettings(); 
   	  
   	  // basically pass the url of the profile server 
@@ -361,8 +359,7 @@
   	  
       panels.messages = $("#messages");
       
-      panels.settings = $("#global-settings");
-      panels.settings.hide();
+      
       $("#button-global-settings").click(function(event){
         if($("#button-global-settings").hasClass('active')) {
           handleSettingsSave();

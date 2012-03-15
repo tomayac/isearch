@@ -152,12 +152,20 @@ define("mylibs/visualization/FilterBar",  ["mylibs/location"],
 				for(var j=0 ; j<filterTags.length ; j++ )
 				{
 					var tag = filterTags[j] ;
-									
-					if (  $.inArray(tag, doc.tags) == -1 ) { 
+						
+					var found = false ;
+					for( var k=0 ; k<doc.tags.length ; k++ )
+					{
+						var docTag = doc.tags[k].toLowerCase() ;
+						if ( tag.toLowerCase() == docTag ) {
+							found = true ;
+							break ;
+						}
+					}
+						
+					if (  !found ) { 
 						filtered = true ;
 						break ;
-						
-						
 					}
 				}
 				

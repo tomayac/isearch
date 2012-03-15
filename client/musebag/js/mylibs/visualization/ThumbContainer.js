@@ -1034,7 +1034,7 @@ p.showTimeline = function()
 		iconDiv.style.width = iconData.width + "px" ;
 		iconDiv.style.height = iconData.height + "px" ;
 		
-		obj.thumbRenderer.render(iconData.data, $(iconDiv), { viewport: $(this._eventLayer), selected: this.ctx.filterBar.modalities(), modalities: obj.ctx.modalities }) ;
+		obj.thumbRenderer.render(iconData.data, $(iconDiv), { viewport: $(this._eventLayer), selected: obj.ctx.filterBar.modalities(), modalities: obj.ctx.modalities }) ;
 		//iconDiv.appendChild(img);
     
 		//if ("tooltip" in commonData && typeof commonData.tooltip == "string") {
@@ -1195,7 +1195,7 @@ p.showTimeline = function()
 	//iconDiv.style.width = iconData.width + "px" ;
 	//	iconDiv.style.height = iconData.height + "px" ;
 		
-	obj.thumbRenderer.render(iconData.data, $(iconStackDiv), { viewport: $(this._eventLayer), selected: this.ctx.filterBar.modalities(), modalities: obj.ctx.modalities, square: true }) ;
+	obj.thumbRenderer.render(iconData.data, $(iconStackDiv), { viewport: $(this._eventLayer), selected: obj.ctx.filterBar.modalities(), modalities: obj.ctx.modalities, square: true }) ;
 		
    // iconStackDiv.innerHTML = "<div style='position: relative'></div>";
     this._eventLayer.appendChild(iconStackDiv);
@@ -1245,7 +1245,7 @@ p.showTimeline = function()
 	  
        // iconDiv.setAttribute("index", index);
      //   iconDiv.onmouseover = onMouseOver;
-		obj.thumbRenderer.render(iconData.data, $(imgDiv), { viewport: $(self._eventLayer), selected: this.ctx.filterBar.modalities(), modalities: obj.ctx.modalities }) ;
+		obj.thumbRenderer.render(iconData.data, $(imgDiv), { viewport: $(self._eventLayer), selected: obj.ctx.filterBar.modalities(), modalities: obj.ctx.modalities }) ;
 		//obj.thumbRenderer.render(iconData.data, $(imgDiv), $(self._eventLayer), { modalities: obj.ctx.filterBar.modalities() }) ;
         
         iconStackDiv.firstChild.appendChild(iconDiv);
@@ -1360,7 +1360,8 @@ var cDate = new Date(parseInt((mindate.getTime() + maxdate.getTime())/2)) ;
 		width: sw*2/3,
 		height: sh*3/4,
 		modal: true,
-		resizable: false 
+		resizable: false,
+		zIndex: 500
 	}) ;	
 
 };

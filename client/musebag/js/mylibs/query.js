@@ -115,10 +115,17 @@ define("mylibs/query", ["mylibs/config",], function(config) {
       query.relevant = relevant ;
 	  
       //Send it to the server
+	  
+	  var mqfUrl = config.constants.queryFormulatorUrl || 'query' ;
+	  
+	  if ( config.constants.queryOptions.maxNumResults ) mqfUrl += '&total=' + config.constants.queryOptions.maxNumResults ;
+	  if ( config.constants.queryOptions.clusters0 ) mqfUrl += '&cls=' + config.constants.queryOptions.clusters0 ;
+	  if ( config.constants.queryOptions.trans ) mqfUrl += '&trans=' + config.constants.queryOptions.trans ;
+	  
       $.ajax({
         type: "POST",
         crossDomain: true,
-        url:  config.constants.queryFormulatorUrl || 'query',
+        url:  mqfUrl,
         data: JSON.stringify(query),
         contentType : "application/json; charset=utf-8",
         dataType : "json",

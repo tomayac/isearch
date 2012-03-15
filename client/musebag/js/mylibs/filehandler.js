@@ -143,12 +143,12 @@ define("mylibs/filehandler", ["libs/glge-compiled-min"], function(GLGE){
 					
 	            //set the appropriate data tags for the html element
 	            ele.attr({
-                'alt'       : fileInfo.name,
-                'class'     : fileInfo.subtype,
-				        'src'		    : fileInfo.path, 
-				        'data-token': fileInfo.token,
-				        'data-mode' : "Object3D"
-					    });
+					'alt'       : fileInfo.name,
+					'class'     : fileInfo.subtype,
+					'src'		: fileInfo.path, 
+					'data-token': fileInfo.token,
+					'data-mode' : "Object3D"
+				});
 	            
             } else {
               
@@ -223,6 +223,8 @@ define("mylibs/filehandler", ["libs/glge-compiled-min"], function(GLGE){
       					if((/audio/i).test(fileInfo.type)) {
       						console.log("Audio uploaded...");
       						pictureIcon = $('nav li[data-mode="sound"]');
+							if ( !pictureIcon.hasClass("uploading") )
+								pictureIcon = $('nav li[data-mode="rhythm"]');
       						genericItemType = 'SoundType';
       					}
       	            
@@ -264,9 +266,8 @@ define("mylibs/filehandler", ["libs/glge-compiled-min"], function(GLGE){
               } // end if fileInfo.preview
 	          } // end if 3D model dae
 	            
-	          if ( pictureIcon.hasOwnProperty('removeClass') ) {
-	            pictureIcon.removeClass('uploading');
-	          }
+	          $(pictureIcon).removeClass('uploading');
+	         
 	            
 	        } //End readystate if  
 	    };
