@@ -108,7 +108,8 @@ define("mylibs/query", ["mylibs/config",], function(config) {
     
     var query = getQueryItems();
     
-    if (query.fileItems.length > 0 || query.emotion != false || query.location != false || query.rhythm != false || query.tags != false) { 
+    if (query.fileItems.length > 0 || query.emotion != false || query.location != false || query.rhythm != false || query.tags != false ||
+	relevant.length > 0 ) { 
       console.log('searching for query data: ');
       console.log(query);
 	
