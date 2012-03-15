@@ -360,7 +360,7 @@
       panels.messages = $("#messages");
       
       
-      $("#button-global-settings").click(function(event){
+      $("#button-global-settings").on('click touchstart',function(event){
         if($("#button-global-settings").hasClass('active')) {
           handleSettingsSave();
           panels.settings.hide(constants.slideDownAnimationTime);
@@ -421,7 +421,7 @@
       
       panels.login = $("#login-settings");
       panels.login.hide();
-      $("#button-login-settings").click(function(event){
+      $("#button-login-settings").on('click touchstart',function(event){
         if($("#button-login-settings").find('a:first').text() == 'Login') {
           if($("#button-login-settings").hasClass('active')) {
             /*if(panels.login.find("#email").val().length > 0 || panels.login.find("#pw").val().length > 0) {
