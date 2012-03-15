@@ -55,8 +55,6 @@ require(["jquery",
           
           //Initializes the tagging system
           tags.init();
-
-          //$('nav > ul > li').uiiface('select');
           
           //Initializes the UIIFace // GestureHint display on every screen element with enabled gestures
           uiiface.initialize({gestureHint:true});

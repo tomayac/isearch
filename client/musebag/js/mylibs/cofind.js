@@ -282,7 +282,7 @@ define("mylibs/cofind",
           if(user[0] === options.user) {
             stateHtml += ' highlight';
           }
-          stateHtml += '">' + user[0] + '</p><div class="chat-container" id="chat-' + emailId + '"><ul>';
+          stateHtml += '">' + user[0].substring(0,user[0].indexOf('@')) + '</p><div class="chat-container" id="chat-' + emailId + '"><ul>';
           //Add stored messages of each user
           if(user[1].length > 0) {
             for(var index in user[1]) {
