@@ -96,10 +96,10 @@ exports.get = function(req, res) {
           } else {
             console.log('Fetched result stored in JSON files.');
           }
+          //Do it with verification of user
+          //data = '_cofetchcb({"response":' + JSON.stringify(result) + '})';
+          res.send(result);
         });
-        //Do it with verification of user
-        //data = '_cofetchcb({"response":' + JSON.stringify(result) + '})';
-        res.send(result);
       } //End error if
     }); //End handleFetch
   }
