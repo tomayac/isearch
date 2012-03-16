@@ -618,7 +618,7 @@ div.media-details.accordion {
 
 audio,img,iframe {
 	display: block;
-	margin: 5px 5px 10px 5px;
+	margin: 5px auto 10px auto;
 	max-width: 300px;
 }
 
