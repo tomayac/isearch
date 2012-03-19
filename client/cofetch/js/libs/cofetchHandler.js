@@ -348,7 +348,10 @@ var cofetchHandler = (function() {
            var item = media[index];
   
            if(type == 'text') {
-             listHtml += '<li'+ (selected == index ? ' class="active"' : '') + ' data-index="' + index + '"><p>' + item.FreeText.substr(0,80) + '...</p></li>';
+             if(!item.FreeText || typeof item.FreeText === 'object') {
+               item.FreeText = '';
+             }
+             listHtml += '<li'+ (selected == index ? ' class="active"' : '') + ' data-index="' + index + '"><p>' +  item.FreeText.substr(0,80) + '...</p></li>';
            } else {
              listHtml += '<li'+ (selected == index ? ' class="active"' : '') + ' data-index="' + index + '"><img src="' + item.Preview + '" alt="' + item.Name + '" /></li>';
            }

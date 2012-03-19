@@ -99,7 +99,7 @@ exports.get = function(req, res) {
         });
         //Do it with verification of user
         //data = '_cofetchcb({"response":' + JSON.stringify(result) + '})';
-        res.send(result);
+        res.json(result);
       } //End error if
     }); //End handleFetch
   }

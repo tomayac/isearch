@@ -1,8 +1,8 @@
-//  define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/mylibs/visualization/DefaultThumbRenderer.js"],
-//  function(tags, cofind, profile) {
+  define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/mylibs/visualization/DefaultThumbRenderer.js"],
+  function(tags, cofind, profile) {
     
-define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualization/DefaultThumbRenderer.js"],
-  function(tags, profile) {
+//define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualization/DefaultThumbRenderer.js"],
+//  function(tags, profile) {
 
     var constants = {
       //Menu parameters
@@ -360,7 +360,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
       panels.messages = $("#messages");
       
       
-      $("#button-global-settings").click(function(event){
+      $("#button-global-settings").on('click touchstart',function(event){
         if($("#button-global-settings").hasClass('active')) {
           handleSettingsSave();
           panels.settings.hide(constants.slideDownAnimationTime);
@@ -421,7 +421,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
       
       panels.login = $("#login-settings");
       panels.login.hide();
-      $("#button-login-settings").click(function(event){
+      $("#button-login-settings").on('click touchstart',function(event){
         if($("#button-login-settings").find('a:first').text() == 'Login') {
           if($("#button-login-settings").hasClass('active')) {
             /*if(panels.login.find("#email").val().length > 0 || panels.login.find("#pw").val().length > 0) {

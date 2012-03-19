@@ -16,14 +16,15 @@ var textMethods = {
       
       var query = this.options.args[0].replace(/\s/g,'+');
       var qclass = this.options.args[1];
-      
       var maxResults = 1;
+
       var dbpediaURL = "http://lookup.dbpedia.org/api/search.asmx/KeywordSearch?"
           + 'QueryClass=' + qclass
           + '&QueryString=' + query
           + '&MaxHits=' + maxResults;
-      
+
       var context = this;
+
       
       //Let's go and request our content
       this.get(dbpediaURL, function(error, data, headers) {
@@ -39,7 +40,6 @@ var textMethods = {
         parser.on('end', function(res) {    	
         	
         	if(res.Result) {
-        		
         		var result = {
             			"Type":"Text",
             			"Name":"",
