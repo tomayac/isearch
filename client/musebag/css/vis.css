@@ -1498,12 +1498,12 @@ div.jqmNotice .jqmClose {
 
 .ui-icon-loading {
     background-image: url("../img/ajax-loader.png");
-    background-size: 35px 35px;
+    background-size: 32px 32px;
     border-radius: 20px 20px 20px 20px;
-    height: 35px;
-    width: 35px;
+    height: 32px;
+    width: 32px;
 	 margin: 0 auto;
-    opacity: 0.9;
+   /* opacity: 0.9;*/
     position: static;
 	display: block;
 }

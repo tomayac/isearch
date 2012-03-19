@@ -1,7 +1,7 @@
 /**
  * 
  */
-define("mylibs/filehandler", ["libs/glge-compiled-min"], function(GLGE){
+define("mylibs/filehandler", ["mylibs/loader", "libs/glge-compiled-min"], function(loader, GLGE){
 	
 	FileHandler = function(dataElementID,accept,serverURL,startCount) {
 		this.dataContainer = document.getElementById(dataElementID) || false;
@@ -267,6 +267,8 @@ define("mylibs/filehandler", ["libs/glge-compiled-min"], function(GLGE){
 	          } // end if 3D model dae
 	            
 	          $(pictureIcon).removeClass('uploading');
+			  
+			  loader.stop() ;
 	         
 	            
 	        } //End readystate if  
@@ -286,6 +288,9 @@ define("mylibs/filehandler", ["libs/glge-compiled-min"], function(GLGE){
         formData.append('subtype', file.subtype || '');
       }
 	    xhr.open("POST", this.serverURL, true);
+		
+		loader.start("Uploading") ;
+		
 	    xhr.send(formData);
 	    
 	};

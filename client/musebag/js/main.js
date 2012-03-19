@@ -27,10 +27,11 @@ require(["jquery",
          "mylibs/results",
          "mylibs/uiiface",
          "mylibs/query",
+		 "mylibs/loader",
          "libs/jquery.tokeninput",
          "libs/smiley-slider",
          "http://widget-cdn.rpxnow.com/js/lib/isearch/engage.js"], 
-    function($, menu, config, tags, results, uiiface, query) {
+    function($, menu, config, tags, results, uiiface, query, loader) {
       
       $(function() {
         
@@ -87,14 +88,8 @@ require(["jquery",
             $('.panel').slideUp(200);
           });
 		  
-    		  // adding a global loader animation for long processes
-    		  loader = $('<div class="ui-loader" style="top: 313.5px; background-color: #444;"><span class="ui-icon-loading"></span><h1>loading</h1></div>').appendTo('#main') ;
-    		  
-    			loader.ajaxStart(function() {
-    				$(this).show();
-    			}).ajaxStop(function() {
-    				$(this).hide();
-    			}); 
+    	
+		loader.create() ;
     
           //hack to hardcode query parameters
       		if ( typeof (__queryParams) != 'undefined'  )
