@@ -1,4 +1,4 @@
-require(["jquery","libs/timeline_2.3.0/timeline_js/timeline-api"],
+require(["jquery","libs/timeline_2.3.0/timeline_js/timeline-api", "!js/libs/jquery.mousewheel.min.js"],
     function($) {
 ThumbContainer = function(containerDiv, data, options, ctx) {	
   
@@ -141,7 +141,7 @@ p.createCanvas = function()	{
 	}
 	
 	// add thumbnail viewport
-	this.thumbViewport = $('<div/>', { css: { /*overflow: "auto" ,*/ width: $(this.containerDiv).width(), height: $(this.containerDiv).height() } }).appendTo(this.containerDiv) ;
+	this.thumbViewport = $('<div/>', { css: { overflow: "auto" , width: $(this.containerDiv).width(), height: $(this.containerDiv).height() } }).appendTo(this.containerDiv) ;
 	
 	$(this.thumbViewport).droppable({
 		drop: function(e, ui) {
@@ -174,6 +174,9 @@ p.createCanvas = function()	{
 			{
 				if ( delta > 0 ) obj.zoomIn() ;
 				else if ( delta < 0 ) obj.zoomOut() ;
+				
+				event.preventDefault();
+				return false; 
 			}
 	    });
 	}

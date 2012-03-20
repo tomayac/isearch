@@ -519,7 +519,7 @@ var AudioRenderer = function(containerDiv, urlMp3, urlOgg, urlImg, visType)
 				
 			ctx = canvas.getContext('2d') ;
 				
-			var audioElement = $("<audio/>", {   controls : 'controls', "width": width, height: "32px"}).appendTo(containerDiv);
+			var audioElement = $("<audio/>", {   preload: "none", controls : 'controls', "width": width, height: "32px"}).appendTo(containerDiv);
 			audio = audioElement.get(0) ;
 			
 			/**

@@ -121,7 +121,7 @@ define("mylibs/query", ["mylibs/config",], function(config) {
 	  
 	  if ( config.constants.queryOptions.maxNumResults ) mqfUrl += '&total=' + config.constants.queryOptions.maxNumResults ;
 	  if ( config.constants.queryOptions.clusters0 ) mqfUrl += '&cls=' + config.constants.queryOptions.clusters0 ;
-	  if ( config.constants.queryOptions.trans ) mqfUrl += '&trans=' + config.constants.queryOptions.trans ;
+	  if ( config.constants.queryOptions.trans ) mqfUrl += '&tr=' + config.constants.queryOptions.trans ;
 	  
       $.ajax({
         type: "POST",
