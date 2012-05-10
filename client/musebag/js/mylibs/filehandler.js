@@ -121,10 +121,15 @@ define("mylibs/filehandler", ["libs/glge-compiled-min"], function(GLGE){
 	    xhr.onreadystatechange =  function (event) {
 	        if (xhr.readyState == 4) {
 	        	
-            var fileInfo = JSON.parse(xhr.responseText);
+            var fileInfo = {};
             var pictureIcon = {};
             var genericItemType = 'Text';
             
+            try {
+              fileInfo = JSON.parse(xhr.responseText);
+            } catch(e) {
+              fileInfo.error = 'Error while parsing result JSON for file upload.';
+            }
             if(fileInfo.error) {
               alert('Woops...somehow your query input got lost through an error in space. You can try it again or report this error to my creators: \n' + fileInfo.error);
               return;
@@ -143,12 +148,12 @@ define("mylibs/filehandler", ["libs/glge-compiled-min"], function(GLGE){
 					
 	            //set the appropriate data tags for the html element
 	            ele.attr({
-					'alt'       : fileInfo.name,
-					'class'     : fileInfo.subtype,
-					'src'		: fileInfo.path, 
-					'data-token': fileInfo.token,
-					'data-mode' : "Object3D"
-				});
+      					'alt'       : fileInfo.name,
+      					'class'     : fileInfo.subtype,
+      					'src'		: fileInfo.path, 
+      					'data-token': fileInfo.token,
+      					'data-mode' : "Object3D"
+      				});
 	            
             } else {
               
@@ -315,7 +320,7 @@ define("mylibs/filehandler", ["libs/glge-compiled-min"], function(GLGE){
         		var supportDirectData = true;
         		
         		//Create token content dependend from the media input
-								
+						console.log(files[i].type);		
         		if((/image/i).test(files[i].type)) {
         			token = '<img id="' + id + '" alt="" src="" />';
         			

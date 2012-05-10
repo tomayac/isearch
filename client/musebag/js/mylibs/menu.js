@@ -5,6 +5,7 @@ define("mylibs/menu",
     "mylibs/filehandler", 
     "mylibs/location", 
     "mylibs/recorder",
+    "mylibs/uiiface-v1",
     "libs/progress-polyfill.min"
   ],
   function(config, uiiface, filehandler, location) {
@@ -273,7 +274,7 @@ define("mylibs/menu",
 	    	$('#threedDrop').removeClass("over");
 	    	
 	    	reset();
-	        attachedModes.push('3d');
+	      attachedModes.push('3d');
 	    });
 	    
 	    //Invisible file input
@@ -380,19 +381,7 @@ define("mylibs/menu",
     
     var attachSketchEvents = function() {
     	
-    	uiiface.registerEvent('sketch','sketch', function(event, pen) {
-	    	//console.dir(pen);
-	    	var canvas = $('#sketch')[0];
-	      var context = canvas.getContext('2d');   
-	
-	    	context.strokeStyle ='rgba('+pen.color+',.3)';
-	      context.lineWidth = pen.size; 
-	      context.beginPath();
-	      context.moveTo(pen.oldX, pen.oldY);
-	      context.lineTo(pen.x, pen.y);
-	      context.closePath();
-	      context.stroke(); 
-    	});
+      $('#sketch').uiiface('sketch');
     	
     	uiiface.registerEvent('sketch','delete',function(error) {
 	    	
@@ -868,7 +857,7 @@ define("mylibs/menu",
       /** Triantafillos: added top property so that the query form 
   	   *  on top of visualization is not cropped by the settings bar.
   	   */
-      $("#query").css("top", "0.85em");
+      $("#query").css("top", "2.8em");
        /** Triantafillos: restart button.
   	   */
       if($('#restart').length == 0) {

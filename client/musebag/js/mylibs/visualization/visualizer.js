@@ -21,6 +21,7 @@
 
 define("mylibs/visualization/visualizer",
     [	"order!js/libs/jquery-ui-1.8.17.custom.min.js",
+     	"order!libs/jquery.ui.touch-punch.min",
 		"order!js/libs/slides.jquery.js",
 		"order!js/libs/jquery.mousewheel.js",
 		"order!js/mylibs/visualization/ContextMenu.js",
@@ -32,7 +33,7 @@ define("mylibs/visualization/visualizer",
 		"mylibs/visualization/HyperbolicTree", 
 		"mylibs/visualization/HPanel",
 		"mylibs/visualization/Cubes"], 
-    function(undefined, undefined, undefined, undefined, undefined, config, tagManager, filterBar, treeMap, hyperbolicTree, hPanel, cubes) {
+    function(undefined, undefined, undefined, undefined, undefined, undefined, config, tagManager, filterBar, treeMap, hyperbolicTree, hPanel, cubes) {
   
 	var widget = null;
 	var results = null;
@@ -44,6 +45,12 @@ define("mylibs/visualization/visualizer",
 	var draw = function(res, ele, options) {
 		results = res ;
 		element = ele ;
+		
+		if (!results || results.docs.length == 0 )
+    {
+      $('<span>No results found</span>').appendTo(element) ;
+      return;
+    }
 		
 		setup(options) ;
 		redraw(options) ;
@@ -69,12 +76,6 @@ define("mylibs/visualization/visualizer",
 	
 		//Let's empty the DOM element first
 		$(element).empty() ;
-		
-		if ( results.docs.length == 0 )
-		{
-			$('<span>No results found</span>').appendTo(element) ;
-			return ;
-		}
 		
 		tagManager.init(results, config.constants) ;
 		

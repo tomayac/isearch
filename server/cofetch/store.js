@@ -507,6 +507,7 @@ exports.exists = function(name, categoryPath, callback) {
   var fileOutputPath = basepath + '/' + categoryPath + '/';
   var coName = name.replace(/\s/g, '_').replace(/[|&;$%@"<>()+,]/g, '').replace(/\//g,'-');
   console.log('Test exist: ' + fileOutputPath + coName + '.json');
+  
   // Check if the folder for this content object already exists
   path.exists(fileOutputPath + coName + '.json', function(exists) {
     if (exists) {

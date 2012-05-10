@@ -1,9 +1,9 @@
 function localConfig(data)
 {
-	data.visOptions.method = 'classic';
-	data.fileUploadServer = "query/item"; 
-	data.queryFormulatorUrl = "query";  
+	data.visOptions.method = 'cubes';
+	data.fileUploadServer =  "http://vision.iti.gr/sotiris/isearch/upload.php"; //"query/item"; 
+	data.queryFormulatorUrl = "http://vision.iti.gr/sotiris/isearch/mqf.php?index=uc6"; //"query";  
 	data.userProfileServerUrl = "profile/"; 
 	data.userLoginServerUrl = "login" ;
-	data.tagServerUrl = "pTag/tag" ;
+	data.tagServerUrl = "http://vision.iti.gr/sotiris/isearch/user.php?mode=tags&index=uc6"; //"pTag/tag" ;
 };

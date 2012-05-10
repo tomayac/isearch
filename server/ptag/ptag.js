@@ -30,11 +30,15 @@ var tags = [[['flight',1.0],['travel',1.5],['airplane',2.8],['sky',0.8],['rocket
 exports.tagRecommendations = function(options, callback){
 	
 	var id = 0;
+	/*
 	if(options.userId.length > 3) {
 	  id = user[options.userId] || 0;
-	} 
+	} */
+	if(options.userId) {
+    id = options.userId || 0;
+  }
+
 	var userTags = tags[id];
-	
 	callback(null, userTags);
 };
 //Documentation for tagRecommendations function

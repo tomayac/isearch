@@ -27,9 +27,11 @@ require(["jquery",
          "mylibs/results",
          "mylibs/uiiface",
          "mylibs/query",
+         "mylibs/uiiface-v1",
          "libs/jquery.tokeninput",
          "libs/smiley-slider",
-         "http://widget-cdn.rpxnow.com/js/lib/isearch/engage.js"], 
+         "http://widget-cdn.rpxnow.com/js/lib/isearch/engage.js"
+        ], 
     function($, menu, config, tags, results, uiiface, query) {
       
       $(function() {
@@ -55,6 +57,9 @@ require(["jquery",
           
           //Initializes the tagging system
           tags.init();
+
+          //$('nav > ul > li').uiiface('select');
+          $('#logo').uiiface('pan');
           
           //Initializes the UIIFace // GestureHint display on every screen element with enabled gestures
           uiiface.initialize({gestureHint:true});
@@ -64,15 +69,18 @@ require(["jquery",
           //});
           
           //Behaviour of the menu (panels, etc)
-          $('nav li').click(function(){
-            var clickedListItem = $(this);
-            var isActive = clickedListItem.hasClass('active'); 
-            menu.reset();
-            if (!isActive) {
-              var requestedMode = menu.getRequestedMode(clickedListItem);
-              menu.hidePanels();
-              menu.showPanel(requestedMode);
-              clickedListItem.addClass('active');
+          $('nav li').uiiface({ 
+            events : 'select',  
+            callback : function(){
+              var clickedListItem = $(this);
+              var isActive = clickedListItem.hasClass('active'); 
+              menu.reset();
+              if (!isActive) {
+                var requestedMode = menu.getRequestedMode(clickedListItem);
+                menu.hidePanels();
+                menu.showPanel(requestedMode);
+                clickedListItem.addClass('active');
+              }
             }
           });
           
