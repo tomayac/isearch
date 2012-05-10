@@ -195,6 +195,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
       
       $("#login-status").html("Hello " + profile.get('Email'));
       $("#button-login-settings").find('a:first').text('Logout');
+      /*
       var cofindOptions = {
          user            : profile.get('Email'), 
          addButtonTo     : '#settings ul li',
@@ -204,7 +205,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
          messageCallback : sendNotifyMessage  
       };      
       cofind.setup(cofindOptions);
-      
+      */
       getUserTags();
     };
     
