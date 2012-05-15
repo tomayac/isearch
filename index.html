@@ -1,0 +1,271 @@
+<!doctype html>
+<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
+<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on http://github.com/jonrohan -->
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen"/>
+  <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="javascripts/script.js"></script>
+
+  <title>I-SEARCH GUI</title>
+  <meta name="description" content="I-SEARCH GUI">
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+</head>
+
+<body>
+
+  <div class="wrapper">
+    <header>
+      <h1 class="title">I-SEARCH GUI</h1>
+    </header>
+    <div id="container">
+      <p class="tagline">I-SEARCH GUI</p>
+      <div id="main" role="main">
+        <div class="download-bar">
+        <div class="inner">
+          <a href="https://github.com/tomayac/isearch/tarball/master" class="download-button tar"><span>Download</span></a>
+          <a href="https://github.com/tomayac/isearch/zipball/master" class="download-button zip"><span>Download</span></a>
+          <a href="https://github.com/tomayac/isearch" class="code">View I-SEARCH GUI on GitHub</a>
+        </div>
+        <span class="blc"></span><span class="trc"></span>
+        </div>
+        <article class="markdown-body">
+          <h1>I-SEARCH</h1>
+
+<p>Welcome, this is an I-SEARCH (strange apple-like acronym meaning <em>A unIfied framework for multimodal SEARCH</em>) repo.
+This space is used to build the GUI part of I-SEARCH.</p>
+
+<h2>Some info:</h2>
+
+<ul>
+<li>this is the GUI project for I-SEARCH. It consists of several components which are here
+splitted in a client and server folder for a better project structure </li>
+<li>the main interface component is named MuSeBag which stands for Multimodal Search Bag. The
+prototype is built on top of the amazing HTML5BoilerPlate</li>
+<li>the build/ test/ crossdomain.xml robots.txt and plugin stub within the client/musebag folder are there for the near future.
+We'll probably need it very soon. But if you ask: yes, they're unuseful right
+now.</li>
+<li>further components are: 
+
+<ul>
+<li>CoFetch: a script for semi-automatic RUCoD creation, which is the exchange format
+on which the I-SEARCH search engine is based on.</li>
+<li>CoFind: a component which enables collaborative search</li>
+<li>pTag: a component which provides personal tag recommendation for I-SEARCH</li>
+</ul>
+</li>
+<li>all server parts are javascript and will only run on a nodeJS server<br>
+</li>
+</ul><h2>Try to be compliant with the Google JS Style guide:</h2>
+
+<p>It can be found <a href="http://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml">here</a>
+(e.g, indentation = 2 spaces, no tabs, or opening bracket on the same line, etc)</p>
+
+<h2>Use of requireJS for dependancy management</h2>
+
+<p>RequireJS (check the <a href="http://requirejs.org">official website</a>) is a dependancy management system, which will need at some point (loading all the scripts at the beginning is just not an option when there will be heavy visualization scripting)</p>
+
+<p>Let’s also embrace the use of <strong>module pattern</strong>. Example: </p>
+
+<pre><code>define(“the/path/to/my/module”, [“dependency1”, “dependency2”],   function(dependency1, dependency2){
+  //This will execute when the dependancies are loaded
+  var privateVariable = “secret”;
+  var privateStuff = function(){
+    dependency1.aUsefulFunction();
+    dependency2.util(privateVariable);
+    //do stuff
+  };
+
+ var publicThing = “hooray”;
+  var iAmPublic = function(){
+    //do stuff
+  };
+
+  //This is where you decide which method/variable is public or
+  //private. It defines the module API.
+  return {
+    moduleVar: publicThing, 
+    moduleFunction: iAmPublic, 
+  };
+})
+</code></pre>
+
+<h2>Install guide</h2>
+
+<h3>Linux</h3>
+
+<p>The GUI framework for I-SEARCH is based on client and server side Javascript. Which means, that
+a NodeJS server is needed with several module dependencies in order to run all components of the
+I-SEARCH GUI Framework. Here is a little step-by-step setup guide in order to run this code on
+your Linux server:</p>
+
+<ol>
+<li>Download/Install NodeJS on your server
+
+<ul>
+<li>find NodeJS here: <a href="http://nodejs.org">http://nodejs.org</a> </li>
+<li>detailed instructions: <a href="https://github.com/joyent/node/wiki/Installation">https://github.com/joyent/node/wiki/Installation</a>
+</li>
+<li>for installation via package manager: <a href="https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager">https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager</a>)</li>
+</ul>
+</li>
+<li>Make sure you install <strong>npm</strong> as it is the main module manager for NodeJS which will be used to
+install all dependencies for the I-SEARCH GUI Framework</li>
+<li>Install the following requirements and NodeJS modules globally, usually npm makes sure that all dependencies
+will be intalled along with the modules: 
+
+<ul>
+<li>Install Git on your server with the help of this guide: <a href="http://book.git-scm.com/2_installing_git.html">http://book.git-scm.com/2_installing_git.html</a>
+</li>
+<li>Install Redis as document based database used for session management:
+
+<ul>
+<li>follow this guide for full install and config: <a href="http://library.linode.com/databases/redis">http://library.linode.com/databases/redis</a> (select the article for your server OS) </li>
+<li>follow this instructions for fast install, without setup: <a href="http://rediscookbook.org/install_with_installer.html">http://rediscookbook.org/install_with_installer.html</a>
+</li>
+<li>Make sure the redis-cli binary is running on the server</li>
+</ul>
+</li>
+<li>Intall connect module via 
+<code>npm install connect -g</code>
+</li>
+<li>Install connect-redis module via
+<code>npm install connect-redis -g</code>
+</li>
+<li>Install express module via
+<code>npm install express -g</code>
+</li>
+<li>Install jsdom module via
+<code>npm install jsdom -g</code><br>
+</li>
+<li>Install now module via
+<code>npm install now -g</code>
+</li>
+<li>Install restler module via
+<code>npm install restler -g</code>
+</li>
+<li>Install webservice module via
+<code>npm install webservice -g</code>
+</li>
+<li>Install step module via
+<code>npm install step -g</code>
+</li>
+<li>Install forever module via
+<code>npm install forever -g</code><br>
+</li>
+<li>Install http-proxy module via
+<code>npm install http-proxy -g</code><br>
+</li>
+</ul>
+</li>
+<li>Create a folder for the I-SEARCH GUI framework on your server under “/var/www/isearch”</li>
+<li>Pull this github repository into this folder by changing into the directory “/var/www/isearch” and typing
+<code>git clone git://github.com/tomayac/isearch.git</code>
+</li>
+<li>Make sure you reserve 1 public port (default: 80) for the GUI Framework as well as 5 local ports for GUI services (default: 8081,8082,8083,8084,8085)</li>
+<li>Start the server scripts for the GUI framework:
+
+<ul>
+<li>change directory to /var/www/isearch/server/pTag</li>
+<li>enter: <code>forever start index-ptag.js</code>
+</li>
+<li>change directory to /var/www/isearch/server/musebag</li>
+<li>enter: <code>forever start index.js</code>
+</li>
+<li>change directory to /var/www/isearch/server</li>
+<li>enter: <code>forever start isearch-proxy.js</code>
+</li>
+<li>if any errors occur during this procedure please check the error
+messages for missing modules and try to install them with <code>npm install &lt;module_name&gt;</code> in the folder
+where the error occured</li>
+</ul>
+</li>
+<li>You're done! Try your server URL and port in your browser.
+If any unexpected issues occur please feel free to list them as <strong>issue</strong> here on <strong>github</strong>.</li>
+</ol><h3>Windows</h3>
+
+<p>NodeJS can also run on Windows, but it’s not as nice as Linux. There is quite a lot going on right now.
+You can find the newest Windows binary here: <a href="http://nodejs.org/">http://nodejs.org/</a> and click the <strong>Download“</strong> button.</p>
+
+<p>Some guidiance in how to set up nodeJS on Windows 7 can be found here. After you installed the binary
+for Windows from nodejs.org do the following steps:</p>
+
+<ol>
+<li>nodejs is basically installed into ”C:\Program Files (x86)\nodejs“, add this path to your <strong>PATH</strong> 
+enviroment variable via System Settings &gt; System &gt; Enhanced System Settings.</li>
+<li>Set up a new enviroment variavle called ”NODE_PATH“ with the value of your node directory - basically 
+it’s ”C:\Program Files (x86)\nodejs“</li>
+<li>your global node modules will be installed under in the <strong>npm</strong> data directory which is mostly found 
+under ”C:\Users\USERNAME\AppData\Roaming\npm\node_modules“</li>
+<li>Install the modules listed in the Linux instructions within the <code>cmd.exe</code> in admin mode by just 
+entering <code>npm install MODULENAME -g</code> - so the same procedure like under Linux.</li>
+<li>
+<p><strong>Problems</strong>: some modules want install now, since they need to be compiled. A trick can be to go 
+directly to the GitHub pages of the module creators and download the sources as ZIP file. Some modules
+creators provide already compiled versions of there modules for Windows builds of nodeJS.
+The process is as follows:</p>
+
+<ol>
+<li>Download the module package as ZIP file from the GitHub page of the module (i.e. <a href="https://github.com/visionmedia/express">https://github.com/visionmedia/express</a>)</li>
+<li>Extract the ZIP folder into yout npm data directory (e.g. ”C:\Users\USERNAME\AppData\Roaming\npm\node_modules“)</li>
+<li>Rename the folder into the original module name (e.g. if you download ”express“ rename the folder to ”express")
+That’s it.</li>
+</ol>
+<p>The jsdom module is an example of the problems currently seen with Windows installations of nodeJS.
+Here is an example: <a href="https://github.com/tmpvar/jsdom/issues/378">https://github.com/tmpvar/jsdom/issues/378</a> for reference. </p>
+</li>
+</ol><h2>Other matters:</h2>
+
+<ul>
+<li>The project URL of the interface is: <a href="http://isearch.ai.fh-erfurt.de/">http://isearch.ai.fh-erfurt.de/</a> </li>
+<li>pTag is a RESTful Webservice, the service description can be found here:
+<a href="http://isearch.ai.fh-erfurt.de/ptag/">http://isearch.ai.fh-erfurt.de/ptag/</a>
+</li>
+</ul><p>Have fun!</p>
+
+<h2>License:</h2>
+
+<p>This software is released under the DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE, version 2 (<a href="http://sam.zoy.org/wtfpl/COPYING):">http://sam.zoy.org/wtfpl/COPYING):</a></p>
+
+<p>DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+Version 2, December 2004</p>
+
+<p>Copyright (C) 2004 Sam Hocevar <a href="mailto:sam@hocevar.net">sam@hocevar.net</a></p>
+
+<p>Everyone is permitted to copy and distribute verbatim or modified
+copies of this license document, and changing it is allowed as long
+as the name is changed.</p>
+
+<p>DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION, AND MODIFICATION</p>
+
+<ol>
+<li>You just DO WHAT THE FUCK YOU WANT TO.</li>
+</ol>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class="owner">
+      <p><a href="https://github.com/tomayac" class="avatar"><img src="https://secure.gravatar.com/avatar/85c93f20dc66e536aee362232d1993f4?s=30&amp;d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-140.png" width="48" height="48"/></a> <a href="https://github.com/tomayac">tomayac</a> maintains <a href="https://github.com/tomayac/isearch">I-SEARCH GUI</a></p>
+      </div>
+      <div class="creds">
+        <small>This page generated using <a href="https://pages.github.com/">GitHub Pages</a><br/>theme by <a href="http://twitter.com/jonrohan/">Jon Rohan</a></small>
+      </div>
+    </footer>
+  </div>
+  <div class="current-section">
+    <a href="#top">Scroll to top</a>
+    <a href="https://github.com/tomayac/isearch/tarball/master" class="tar">tar</a><a href="https://github.com/tomayac/isearch/zipball/master" class="zip">zip</a><a href="" class="code">source code</a>
+    <p class="name"></p>
+  </div>
+
+  
+</body>
+</html>
