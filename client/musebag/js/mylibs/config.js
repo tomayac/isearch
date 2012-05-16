@@ -15,7 +15,8 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
     		maxNumResults: 100,
     		clusters0: 5,
     		clusters1: 3, 
-    		trans: "rand" //Can be "lle" or "rand" 
+    		trans: "rand",
+			smatrix: true//Can be "lle" or "rand" 
       },
 
       //Visualization parameters  
