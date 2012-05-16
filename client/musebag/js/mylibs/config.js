@@ -138,15 +138,14 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
         //Initialize the form with the default values
         panels.settings.find("#max-num-results")
             .val(constants.queryOptions.maxNumResults);
-		panels.settings.find("#num-clusters")
+    		panels.settings.find("#num-clusters")
             .val(constants.queryOptions.clusters0);
-		panels.settings.find("#trans-method option[value=" + constants.queryOptions.trans + "]")
-              .attr('selected','selected');
+    		panels.settings.find("#trans-method option[value=" + constants.queryOptions.trans + "]")
+            .attr('selected','selected');
   		
       };
 	  
-	  setForm() ;
-	  
+	  setForm() ;  
       
 	  var profileSettingsUrl = constants.userProfileServerUrl || "profile/" ;
 	  profileSettingsUrl += "Settings" ;
@@ -163,16 +162,16 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
               set('queryOptions.maxNumResults', data.maxResults);
               panels.settings.find("#max-num-results").val(data.maxResults);
             }
-			
-			if ( data.numClusters ) {
-				set('queryOptions.clusters0', data.numClusters);
-				panels.settings.find("#num-clusters").val(data.numClusters);
-			}
-			
-			if ( data.transMethod ) {
-				set('queryOptions.trans', data.transMethod);
-				panels.settings.find("#trans-method option[value=" + data.transMethod + "]").attr('selected','selected');
-			}
+      			
+      			if ( data.numClusters ) {
+      				set('queryOptions.clusters0', data.numClusters);
+      				panels.settings.find("#num-clusters").val(data.numClusters);
+      			}
+      			
+      			if ( data.transMethod ) {
+      				set('queryOptions.trans', data.transMethod);
+      				panels.settings.find("#trans-method option[value=" + data.transMethod + "]").attr('selected','selected');
+      			}
 
           } else {
             //store the basic settings in the session initially if there is no setting data
@@ -195,8 +194,10 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
         profile.set(arguments[0]);
       } 
       
-      $("#login-status").html("Hello " + profile.get('Name'));
+      $("#login-status").html("Hello " + profile.get('Email'));
       $("#button-login-settings").find('a:first').text('Logout');
+      /*
+      
       var cofindOptions = {
          user            : profile.get('Email'), 
          addButtonTo     : '#settings ul li',
@@ -207,6 +208,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
       };      
       cofind.setup(cofindOptions);
       
+      */
       getUserTags();
     };
     
@@ -227,8 +229,8 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
       var ow = overwrite || false;
       
       var mr = parseInt(panels.settings.find("#max-num-results").val());
-	  var nc = parseInt(panels.settings.find("#num-clusters").val()) ;
-	  var tm = panels.settings.find("#trans-method option:selected").val() ;
+  	  var nc = parseInt(panels.settings.find("#num-clusters").val()) ;
+  	  var tm = panels.settings.find("#trans-method option:selected").val() ;
 	  	  
       if ( 	constants.queryOptions.maxNumResults == mr &&
 			constants.queryOptions.clusters0 == nc &&
@@ -239,8 +241,8 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
       }  
 	          
       set('queryOptions.maxNumResults', mr);
-	  set('queryOptions.clusters0', nc);
-	  set('queryOptions.trans', tm);
+  	  set('queryOptions.clusters0', nc);
+  	  set('queryOptions.trans', tm);
 	  
       var postData = {
           data : {"maxResults" :  mr , "numClusters" : nc ,  "transMethod" : tm  }
@@ -281,8 +283,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
       
       var serverURL = constants.userLoginServerUrl || "login";        
 	    
-      /*
-      var postData = {email: panels.login.find("#email").val() || '',
+      /*var postData = {email: panels.login.find("#email").val() || '',
                          pw: panels.login.find("#pw").val()    || ''};
       */
       var postData = {token: token};
@@ -383,6 +384,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
       //Initialize the authentication widget
       //----------------------------------------------------------
       // WARNING - very ugly code - janrain is baaad!
+      
       window.janrainWidgetOnload = function() {
         //Force to format the stupid authentication widget
         $('#janrainEngageEmbed .janrainContent').attr('style','min-height: 40px');
@@ -417,19 +419,20 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
           handleLogin(tokenResponse.token);
         });
       };
-      //----------------------------------------------------------
-      
+      //----------------------------------------------------------      
       
       panels.login = $("#login-settings");
       panels.login.hide();
       $("#button-login-settings").on('click touchstart',function(event){
         if($("#button-login-settings").find('a:first').text() == 'Login') {
           if($("#button-login-settings").hasClass('active')) {
-            /*if(panels.login.find("#email").val().length > 0 || panels.login.find("#pw").val().length > 0) {
+            /* 
+            if(panels.login.find("#email").val().length > 0 || panels.login.find("#pw").val().length > 0) {
               handleLogin();
-            } else {
+            } else { 
               panels.login.hide(constants.slideDownAnimationTime);
-            }*/
+            } 
+            */
             panels.login.hide(constants.slideDownAnimationTime);
             $("#button-login-settings").removeClass('active');
           } else {

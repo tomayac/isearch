@@ -66,18 +66,22 @@ define("mylibs/visualization/dataParser", function(){
   
 
   var parseJSON = function(data) {
-
-	docs = [] ;
+    
+    if (data == undefined || data == null) {
+      return;
+    }
+    
+    docs = [] ;
 		
   	for (var i=0 ; i<data.documentList.length ; i++ ) {
   		var doc = data.documentList[i] ;
   		docs.push(doc) ;
   	}
 
-	if ( data.clusters )
-		parseClustersJSON(data.clusters[0], clusters) ;
-
-  };
+  	if ( data.clusters )
+  		parseClustersJSON(data.clusters[0], clusters) ;
+  
+    };
 /*
   var parseClustersXML = function(data, cluster) {
     
@@ -113,7 +117,7 @@ define("mylibs/visualization/dataParser", function(){
 */
   var parseClustersJSON = function(data, cluster) {
     
-    if (data == undefined) {
+    if (data == undefined || data == null) {
       return;
     }
 

@@ -116,7 +116,11 @@ var distributeFile = function(destinationUrl, callParams, fileInfo, callback) {
         return;
       }
       //Add the public path, move the original local file system path
+      if(fileInfo.path.lastIndexOf('/') > -1) {
       fileInfo.originPath = tmpUrl + '/' + fileInfo.path.substring(fileInfo.path.lastIndexOf('/'),fileInfo.path.length);
+      } else { 
+        fileInfo.originPath = tmpUrl + '/' + fileInfo.path.substring(fileInfo.path.lastIndexOf('\\')+1,fileInfo.path.length);
+      }
       fileInfo.path = data.file;
       fileInfo.subtype = fileInfo.subtype || '';
       
@@ -289,7 +293,7 @@ exports.login = function(req, res){
         + 'f=validateUser'
         + '&email=' + req.body.email
         + '&pw=' + req.body.pw;
-  */
+	*/
 	var verifyURL = "https://rpxnow.com/api/v2/auth_info?"
     + 'apiKey=' + authApi
     + '&token=' + req.body.token;
@@ -321,6 +325,18 @@ exports.login = function(req, res){
 			//Return user data to client
       res.send(JSON.stringify(user));
     }
+	  /*
+	  //Check if return data is ok
+    if(!data.user) {
+      msg.error = data.error;
+      res.send(JSON.stringify(msg));
+    } else {
+      //Store user data in session
+      req.session.user = data.user;
+      //Return user data to client
+      res.send(JSON.stringify(data.user));
+    }
+    */
 	})
 	.on('error', function(data,response) {
 		msg.error = data.toString();
@@ -610,7 +626,6 @@ exports.queryItem = function(req, res) {
     }   
     //Store query item data in session
     req.session.query.items.push(data);
-
     //Return query item path to client
     res.send(JSON.stringify(data));
   };

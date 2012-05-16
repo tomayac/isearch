@@ -126,13 +126,15 @@ define("mylibs/visualization/Cubes",
           itemMedia.image.html += '<img src="' + media.previews[0].url + '" alt="Image" />';
         } else if (media.type === 'Object3D') {
           itemMedia.threed.count += 1;
+          itemMedia.threed.html += '<img src="' + media.previews[0].url + '" alt="3D" />';
         } else if (media.type === 'VideoType') {
           itemMedia.video.count += 1;
+          itemMedia.video.html += '<img src="' + media.previews[0].url + '" alt="Video" />';
         } else if (media.type === 'AudioType') {
           itemMedia.audio.count += 1;
         } else if (media.type === 'Text') {
           itemMedia.text.count += 1;
-          itemMedia.text.html += '<p>' + media.text.substring(0,50) + '...</p>';
+          itemMedia.text.html += '<p>' + (media.text ? media.text.substring(0,50) + '...' : 'No text') + '</p>';
         }
       }
       

@@ -14,8 +14,7 @@ p.render = function(item, container, options)
 	if ( options.hover ) this.hover = options.hover ;
 	else this.hover = true ;
 	
-	var img = $('<div/>', { css: { border: "1px solid black", position: "absolute", left: tm, top: tm, width: w - tm - tm, height: h - tm - tm }  }).appendTo(container) ;
-	
+	var img = $('<div/>', { css: { border: "1px solid black", position: "absolute", left: tm, top: tm, width: w - tm - tm, height: h - tm - tm }  }).appendTo(container);	
 } ;
 
 
@@ -77,9 +76,9 @@ p.render = function(item, container, options)
 	}
 	
 		
-	$(img).draggable({opacity: '0.7', cursor: 'move', containment: '#container', "z-index": 10, helper: function(e) {
+	$(img).draggable({opacity: '0.7', cursor: 'move', containment: 'body', helper: function(e) {
 			
-		var helper = $('<div/>', { css: { width: w , height: h  }  }) ;
+		var helper = $('<div/>', { css: { width: w , height: h, "z-index": 150  }  }) ;
 		helper.thumb(ThumbContainer.selectThumbUrl(item.doc, options.modalities)) ;
 		return helper ;
 	

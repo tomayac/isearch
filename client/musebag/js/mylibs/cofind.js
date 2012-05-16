@@ -6,7 +6,8 @@ define("mylibs/cofind",
     "libs/modernizr.min", 
     "libs/jquery.hoverIntent.min", 
     "/nowjs/now.js",
-    "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js"
+    "order!js/libs/jquery-ui-1.8.17.custom.min.js",
+    "libs/jquery.ui.touch-punch.min"
   ], 
   function(){
   
@@ -355,7 +356,7 @@ define("mylibs/cofind",
       // determine how close the items should be to each other
       console.log('new: '+newItems);
       if(newItems > 4) {
-        distance = distance - ((newItems - 3) * 10);
+        distance = distance - ((newItems - 3) * 15);
         console.log(distance + ' = ' + distance + ' - ((' + newItems + ' - 3) * 10');
       }
       
@@ -402,8 +403,8 @@ define("mylibs/cofind",
         containment : 'document',
         stop: function(event, ui) {
            
-           //callFunction('deleteItem',[$(this).attr('id')]);
-           //$(this).hide('slow');
+           callFunction('deleteItem',[$(this).attr('id')]);
+           $(this).hide('slow');
         }
       });
       
@@ -484,6 +485,8 @@ define("mylibs/cofind",
   };
   
   var attachBasketEvents = function() {
+    var self = this;
+    
     //register hover event and touch events for result basket
     $('#cofind-resultbasket').hoverIntent({    
       over: function() { $(this).animate({bottom: '-30px'}, 500); },    
@@ -499,6 +502,46 @@ define("mylibs/cofind",
         $(this).animate({bottom: '-110px'}, 500);
       }
     });
+    
+    $('#cofind-resultbasket').droppable ({
+      accept: ".ui-draggable",
+      greedy: true,
+      tolerance: "pointer",
+      hoverClass: "ui-state-hover",
+      activeClass: "ui-state-highlight",
+      over: function(e, ui) {
+        $(this).animate({bottom: '-30px'}, 500);
+      },
+      out: function(e, ui) {
+        $(this).animate({bottom: '-110px'}, 500);
+      },
+      drop: function(e, ui) { 
+        var resultSet = require('mylibs/results').get() || {};
+        var item = {};
+        if(resultSet.docs) {
+          for(var r=0; r < resultSet.docs.length; r++) {
+            if(resultSet.docs[r].coid == ui.draggable.attr('docid')) {
+              
+              item.id = resultSet.docs[r].coid;
+              
+              var src = '', text = '';
+              for(var i in resultSet.docs[r].media) {
+                if(resultSet.docs[r].media[i].type == 'ImageType') {
+                  src = resultSet.docs[r].media[i].previews[0].url;
+                }
+                if(resultSet.docs[r].media[i].type == 'Text') {
+                  text = resultSet.docs[r].media[i].text;
+                }
+              }
+              item.html = '<img src="' + src + '" alt="' + text + '" />';
+              item.tags = resultSet.docs[r].tags;
+              
+              callFunction('addItem', [item]);
+            }
+          } 
+        }
+      }
+  });
   };
   
   var setup = function(opt) {
@@ -585,38 +628,6 @@ define("mylibs/cofind",
       if($(this).val() == '') {
         $(this).val($(this).attr('name'));
       }
-    });
-    
-    //register dummy test function for adding result items
-    $('#dummyHistorySave').click(function(event){ 
-      var itemsData = { 
-        items: [{
-            "id": 'r8uw0ieYq7d0N8HcDXblBq1jKHGVjQR0',
-            "html": '<img src="http://sketchup.google.com/3dwarehouse/download?mid=56f098c1e82c670fae6199c1fc70ff97&rtyp=lt&ctyp=other&ts=1233886689000&ct=gd" alt="" />',
-            "tags": ["Sword","Blade","Legend of Zelda"]
-          },{
-            "id": 'r8uw0ieYq7d0N8HcPIblBq1jKHGVjQR0',
-            "html": '<img src="http://gdv.fh-erfurt.de/modeldb/media/model/Bld_25.jpg" alt="" />',
-            "tags": ["House","California","Beach"]
-          },{
-            "id": 'r0010ieYq7d0N8HcDXblBq1jKHGVjQX0',
-            "html": '<img src="http://sketchup.google.com/3dwarehouse/download?mid=82a0e998b86ba6935cc68572e7c311ae&rtyp=lt&ctyp=other&ts=1211358160000&ct=gd" alt="" />',
-            "tags": ["Pick-Up","Truck","Ford"]
-          },{
-            "id": 'ee5daf6ec184e9cd8814af42a81e8b78',
-            "html": '<img src="http://sketchup.google.com/3dwarehouse/download?mid=ee5daf6ec184e9cd8814af42a81e8b78&rtyp=lt&ctyp=other&ts=1243527875000&ct=gd" alt="" />',
-            "tags": ["CABALLERO","Aviles","Human"]
-          },{
-            "id": '5aa5fbd6cc0cad538e307882acdd83d0',
-            "html": '<img src="http://sketchup.google.com/3dwarehouse/download?mid=5aa5fbd6cc0cad538e307882acdd83d0&rtyp=lt&ctyp=other&ts=1218023433000&ct=gd" alt="" />',
-            "tags": ["Elf","Fantasy","World of Warcraft"]
-          }]
-      };
-
-      callFunction('addItem',[itemsData.items[dummyCounter]]);
-      
-      dummyCounter++;
-      return false;
     });
   };
   
