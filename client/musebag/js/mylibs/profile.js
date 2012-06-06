@@ -48,7 +48,7 @@ define("mylibs/profile", ["libs/modernizr.min"], function(){
   
   var set = function() {
     
-    if(arguments.length == 1 && arguments[0] && typeof(arguments[0]) == 'object') {
+    if(arguments.length === 1 && arguments[0] && typeof(arguments[0]) === 'object') {
       profile = arguments[0];
       return true;
     } else {

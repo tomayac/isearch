@@ -17,6 +17,13 @@ var fs         = require('fs'),
 
 /**
  * Global variables
+ * 
+ * if we should use the passport module for authentication these are the credentials 
+ * for loging in with facebook:
+ * 
+ * var FACEBOOK_APP_ID = "404342262940021"
+ * var FACEBOOK_APP_SECRET = "c307f87f6814efac143b1e1c7bb65ff2";
+ * 
  */
 var authApi = '3cab95115953b1b1b31f35c48eaa36a746b479af';
 var msg     = {error: 'Something went wrong.'};
@@ -320,10 +327,53 @@ exports.login = function(req, res){
 			req.session.user = user; 
 			
 			//Test if the user is known by the personalisation component
-			//var checkUrl = 'http://[serverhost]:[port]/IPersonalisation/resources/users/profileFor/1/withRole/admin';
+			var checkUrl = 'http://89.97.237.248:8089/IPersonalisation/resources/users/profileFor/' + user.ID + '/withRole/Consumer';
+			
+			restler
+		  .get(checkUrl)
+		  .on('complete', function(data) { 
+		    console.log(data);
+		    if(data) {
+		      console.log('User data received:');
+		      console.log(data);
+		    } else {
+		      console.log('User does not exist, request additional user information...');
+		      user.State = 'new';
+		      console.log(user);
+		    }
+		    
+		    //Return user data to client
+        res.send(JSON.stringify(user));
+		  })
+		  .on('error', function(data, response) {
+		    msg.error = data.toString();
+		    res.send(JSON.stringify(msg));
+		  });
+			
+			/*
+			var setUrl = 'http://89.97.237.248:8089/IPersonalisation/resources/users/setProfileDataFor/' + user.ID + '/data';
+      var callData = {
+        "name"        : user.Name + ' ' + user.FamilyName,
+        "openId"      : user.ID,
+        "role"        : "Consumer",
+        "userId"      : user.ID
+      };
+      
+      restler
+      .post(setUrl, { 
+        data : callData
+      })
+      .on('complete', function(data) { 
+         console.log(data); 
+      })
+      .on('error', function(data,response) {
+        msg.error = data.toString();
+        callback(msg,null);
+      }); 
 			
 			//Return user data to client
       res.send(JSON.stringify(user));
+      */
     }
 	  /*
 	  //Check if return data is ok

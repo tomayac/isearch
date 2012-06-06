@@ -209,6 +209,24 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
       
       */
       getUserTags();
+      
+      //Inform the user if he is new to I-SEARCH
+      if(profile.get('State') === 'new') {
+        console.log("User is new and logged in, ask him/her to provide additional information.");
+        var actionHtml = '<button id="profile-new-add">Ok</button>' + 
+                         '<button id="profile-new-decline">Not now</button>';
+        sendNotifyMessage("Hi " + profile.get('Name') + "! You're new here, would you like to complete your profile? ",'info', actionHtml);
+        
+        $(document).one('click', '#profile-new-add', function(event) {
+          $("#messages").stop().hide(200);
+          panels.settings.show(200);
+          event.stopPropagation();
+        });
+        $(document).one('click', '#profile-new-decline', function(event) {
+          $("#messages").hide(200);
+          event.stopPropagation();
+        });
+      }
     };
     
     var performLoggedOutSetup = function() {
@@ -218,7 +236,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
       //Clearing query (quite silly to do that - turned off)
       //$("#query-field").tokenInput("clear");
       $(".tags").html('');
-      cofind.remove(profile.get('Email'));
+      //cofind.remove(profile.get('Email'));
       
       profile.reset();
     };
@@ -304,6 +322,8 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
             console.log("Error during login: " + data.error); 
             sendNotifyMessage("Sorry: " + data.error,'error',false);
           } else {
+            console.log(data);
+            
             sendNotifyMessage("You're logged in.",'success',false);
             performLoggedInSetup(data);
           }
@@ -341,7 +361,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
 
     var initPanel = function() {
       
-	  panels.settings = $("#global-settings");
+	    panels.settings = $("#global-settings");
       panels.settings.hide();
 	  
   	  initSettings(); 
@@ -358,8 +378,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
   	    $(this).find(':checkbox').attr('checked', false);
   	  });
   	  
-      panels.messages = $("#messages");
-      
+      panels.messages = $("#messages");      
       
       $("#button-global-settings").on('click touchstart',function(event){
         if($("#button-global-settings").hasClass('active')) {
@@ -386,6 +405,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
       
       window.janrainWidgetOnload = function() {
         //Force to format the stupid authentication widget
+        /*
         $('#janrainEngageEmbed .janrainContent').attr('style','min-height: 40px');
         $('#janrainEngageEmbed #janrainView').attr('style','position: absolute; top: 15px; left: 0px; width: 100%; z-index: 103; text-align: center; padding: 5px; background-color: #666; min-height: 50px;');
         $('#janrainEngageEmbed #janrainView .janrainHeader').text('Use your account with:');
@@ -411,7 +431,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
         
         $('#janrainEngageEmbed #janrain-google,#janrainEngageEmbed .providers').on('click', function(event) {
           panels.login.hide(constants.slideDownAnimationTime);
-        });
+        });*/
         
         janrain.events.onProviderLoginToken.addHandler(function(tokenResponse) {
           console.log(tokenResponse);
