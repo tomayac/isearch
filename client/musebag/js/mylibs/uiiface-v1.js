@@ -440,7 +440,7 @@ define("mylibs/uiiface-v1",
           UIIFace.config.modalities['speech'] = true;
            
           //Kinect test
-          UIIFace.websocketConnector.kinect();
+          //UIIFace.websocketConnector.kinect();
           
         },
         hasModality : function(modality) {

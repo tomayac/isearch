@@ -28,7 +28,7 @@ require(["jquery",
          "mylibs/uiiface",
          "mylibs/query",
 		     "mylibs/loader",
-		     //"mylibs/uiiface-v1",
+		     "mylibs/uiiface-v1",
          "libs/jquery.tokeninput",
          "libs/smiley-slider",
          "http://widget-cdn.rpxnow.com/js/lib/isearch/engage.js"
@@ -70,19 +70,6 @@ require(["jquery",
           //});
           
           //Behaviour of the menu (panels, etc)
-          $('nav li').click( function(e){
-            var clickedListItem = $(this);
-            var isActive = clickedListItem.hasClass('active'); 
-            menu.reset();
-            if (!isActive) {
-              var requestedMode = menu.getRequestedMode(clickedListItem);
-              menu.hidePanels();
-              menu.showPanel(requestedMode);
-              clickedListItem.addClass('active');
-            }
-          });
-          
-          /*
           $('nav li').uiiface({ 
             events : 'select',  
             callback : function(){
@@ -97,7 +84,7 @@ require(["jquery",
               }
             }
           });
-          */
+          
           //Get tokens and load them as auto suggestions for the user
           var tokens = tags.getTokens();
           $("#query-field").tokenInput('init', tokens, {theme: "isearch", preventDuplicates:true});
