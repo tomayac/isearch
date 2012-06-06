@@ -66,7 +66,7 @@ define("mylibs/uiiface-v1",
           },
           'select'    : {
             'keyboard' : { 'keys' : '16+13', 'context' : 'cursor' },
-            'trigger'  : { 'events': 'click', 'context' : 'this' },
+            'trigger'  : { 'events': 'up', 'context' : 'this' },
             'handler'  : function(event) { console.log('select handler'); console.log(event); console.log(this); }
           }, 
           'selection' : {
