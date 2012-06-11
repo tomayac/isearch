@@ -4,9 +4,10 @@ define("mylibs/results",
   [
     "mylibs/config",
     "mylibs/visualization/dataParser", 
-    "mylibs/visualization/visualizer"
+    "mylibs/visualization/visualizer",
+	"mylibs/visualization/mstVisualizer/mstVisualizer"
   ],
-  function(config, dataParser, visualizer){
+  function(config, dataParser, visualizer, mstVisualizer){
   
 	//Private variable to hold the results
 	var jsonData = null;
@@ -25,7 +26,15 @@ define("mylibs/results",
     
 		//Create the container for visualization
 		var visualizationContainer = $('<div />').attr('id', 'visualization-container').appendTo('#main');
-    visualizer.draw(results, "#visualization-container", config.constants.visOptions) ;
+		
+		console.log("Config visOptions: ", config.constants.visOptions);
+    		
+		if (config.constants.visOptions.method == "mst") {
+			mstVisualizer.draw(results, "#visualization-container", config.constants.visOptions);
+		}
+		else {
+			visualizer.draw(results, "#visualization-container", config.constants.visOptions) ;
+		}
 	};
   
 	var store = function(data) {

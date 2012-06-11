@@ -21,7 +21,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
 
       //Visualization parameters  
   	  visOptions: {
-  	    method: "classic", //tmap, htree, hpan, classic or cubes
+  	    method: "classic", //tmap, htree, hpan, classic or cubes (or mst)
   	    thumbOptions: {
   	      thumbSize: 64, //16, 32, 48, 64
   	      iconArrange: "grid",
