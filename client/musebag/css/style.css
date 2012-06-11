@@ -1076,6 +1076,64 @@ footer {
 	padding: 10px;
 }
 
+
+/* mstVisualizer */
+
+#visualization-container
+{
+	width: 90%;
+	height: 565px;
+	margin-top: 35px;
+}
+
+#visualization-container #drawing
+{
+	float: left;
+	width: 70%;
+	height: 100%;
+	border: 1px solid lightgrey;
+	margin: 2px;
+}
+
+#visualization-container #description
+{
+	float: left;
+	width: 25%;
+	height: 100%;
+	border: 1px solid lightgrey;
+	margin: 2px;
+	/*background-color: lightyellow;*/
+	background-color: #FAFAFA;
+	overflow: auto;
+}
+
+#visualization-container #description #descImage
+{
+	margin: 7px;
+}
+
+#visualization-container #description #descImage img
+{
+	border: 1px solid #C0C0C0;
+	padding: 3%;
+	background-color: #DDDDDD;
+	width: 94%;
+}
+
+#visualization-container #description #descText
+{
+	margin: 7px;
+}
+
+#visualization-container #drawing canvas
+{
+	width: 100%;
+	height: 100%;
+}
+
+/* --------------- */
+
+
 #restart {
 	float: right;
 	margin-right:4.75em;
