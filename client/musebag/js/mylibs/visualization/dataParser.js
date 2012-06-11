@@ -122,6 +122,10 @@ define("mylibs/visualization/dataParser", function(){
     }
 
     var level = data.level ;
+	
+	if (data.S) {
+		cluster.S = data.S;
+	}
 
   	cluster.level = level ;
   	cluster.nodes = [] ;
