@@ -1,8 +1,15 @@
 //  define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/mylibs/visualization/DefaultThumbRenderer.js"],
 //  function(tags, cofind, profile) {
     
-define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualization/DefaultThumbRenderer.js"],
-  function(tags, profile) {
+define("mylibs/config", 
+  [
+    "mylibs/tags", 
+    "mylibs/cofind",
+    "mylibs/profile", 
+    "!js/mylibs/visualization/DefaultThumbRenderer.js",
+    "libs/jquery.select-to-autocomplete"
+  ],
+  function(tags, cofind, profile) {
 
     var constants = {
       //Menu parameters
@@ -13,16 +20,17 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
       //Query parameters
   	  queryOptions: {
     		maxNumResults: 100,
+    		clusterType: '3D',
     		clusters0: 5,
     		clusters1: 3, 
     		trans: "rand",
-			smatrix: true//Can be "lle" or "rand" 
+			  smatrix: true //Can be "lle" or "rand" 
       },
 
       //Visualization parameters  
   	  visOptions: {
-  	    method: "classic", //tmap, htree, hpan, classic or cubes (or mst)
-  	    thumbOptions: {
+  	      method: "classic", //tmap, htree, hpan, classic or cubes (or mst)
+  	      thumbOptions: {
   	      thumbSize: 64, //16, 32, 48, 64
   	      iconArrange: "grid",
   	      navMode: "browse",
@@ -38,6 +46,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
     var panels = {
         messages : null,
         settings : null,
+        profile : null,
         login : null,
         hide : function(speed) {
           $('.settings-panel').hide(speed);
@@ -51,7 +60,8 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
       
       if(constants.hasOwnProperty(keys[0])) {
         if(keys.length > 1) {
-          eval('constants.' + key + '=\'' + value + '\'');
+          constants[keys[0]][keys[1]] = value;
+          //eval('constants.' + key + '=\'' + value + '\'');
         } else {
           constants[keys[0]] = value;
         }
@@ -88,7 +98,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
     //Get tag recommendations for the user which is logged in
     var getUserTags = function() {
       
-      var userId = profile.get('ID');
+      var userId = profile.get('userId');
       
       if(userId) {
         //Ask for tag recommendations
@@ -129,62 +139,29 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
           localConfig(constants);
         }
       }
-        
-    	// This should be updated. Visualisation options do not need to be in the setup menu. Only serialize/desierialize the constants.visOptions object
-    	// to the user profile. The settings menu should contain query specific options such as the number of results, the type of clustering algorithm to 
-    	// apply, the transformation algorithm, the number of clusters ...
-  	
-      var setForm = function() {
-        //Initialize the form with the default values
-        panels.settings.find("#max-num-results")
-            .val(constants.queryOptions.maxNumResults);
-    		panels.settings.find("#num-clusters")
-            .val(constants.queryOptions.clusters0);
-    		panels.settings.find("#trans-method option[value=" + constants.queryOptions.trans + "]")
-            .attr('selected','selected');
-  		
-      };
-	  
-	  setForm() ;  
       
-	  var profileSettingsUrl = constants.userProfileServerUrl || "profile/" ;
-	  profileSettingsUrl += "Settings" ;
-	  
-      $.ajax({
-        type: "GET",
-        url: profileSettingsUrl,
-        success: function(data) {
-          data = JSON.parse(data);
-          if(data.Settings) {
-            data = data.Settings ;
-  
-            if ( data.maxResults ) {
-              set('queryOptions.maxNumResults', data.maxResults);
-              panels.settings.find("#max-num-results").val(data.maxResults);
-            }
-      			
-      			if ( data.numClusters ) {
-      				set('queryOptions.clusters0', data.numClusters);
-      				panels.settings.find("#num-clusters").val(data.numClusters);
-      			}
-      			
-      			if ( data.transMethod ) {
-      				set('queryOptions.trans', data.transMethod);
-      				panels.settings.find("#trans-method option[value=" + data.transMethod + "]").attr('selected','selected');
-      			}
+  	  //Apply settings stored in current profile to general settings form
+  	  var settings = profile.get('settings');
 
-          } else {
-            //store the basic settings in the session initially if there is no setting data
-            handleSettingsSave(true);
-          }
-        },
-        error: function(error) {
-          console.log('Setting connect error: ' + error);
-          setForm();
-        },
-        dataType: "text",
-        contentType : "application/json; charset=utf-8"
-      });
+  	  if(settings) {
+  	    var data = JSON.parse(settings);
+  	    if(data.maxResults) {
+          set('queryOptions.maxNumResults', data.maxResults);
+        }
+        if(data.clusterType) {
+          set('queryOptions.clusterType', data.clusterType);
+        }
+  	  }
+     
+  	  //Initialize the form with the default values
+      $("#max-num-results").val(constants.queryOptions.maxNumResults);
+      if(constants.queryOptions.clusterType === '3D') {
+        $("#audio-cluster-type").parent().removeClass('checked');
+        $("#audio-cluster-type").attr('checked', false);
+      } else {
+        $("#audio-cluster-type").parent().addClass('checked');
+        $("#audio-cluster-type").attr('checked', true);
+      }
     };
     
     var performLoggedInSetup = function() {
@@ -194,12 +171,12 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
         profile.set(arguments[0]);
       } 
       
-      $("#login-status").html("Hello " + profile.get('Email'));
-      $("#button-login-settings").find('a:first').text('Logout');
-      /*
+      $("#login-status").html("Hello " + profile.get('email'));
+      $("#button-login-settings").find('a:first').text('Profile');
       
+      //Embed CoFind to GUI
       var cofindOptions = {
-         user            : profile.get('Email'), 
+         user            : profile.get('email'), 
          addButtonTo     : '#settings ul li',
          addSettingsTo   : '.settings-panel',
          addWorkspaceTo  : '#container',
@@ -207,20 +184,23 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
          messageCallback : sendNotifyMessage  
       };      
       cofind.setup(cofindOptions);
-      
-      */
+
+      //get user tags from pTag component
       getUserTags();
+      //init settings form based on user profile data
+      initSettings();
       
       //Inform the user if he is new to I-SEARCH
-      if(profile.get('State') === 'new') {
+      if(profile.get('state') === 'new') {
         console.log("User is new and logged in, ask him/her to provide additional information.");
         var actionHtml = '<button id="profile-new-add">Ok</button>' + 
                          '<button id="profile-new-decline">Not now</button>';
-        sendNotifyMessage("Hi " + profile.get('Name') + "! You're new here, would you like to complete your profile? ",'info', actionHtml);
+        sendNotifyMessage("Hi " + profile.get('name') + "! You're new here, would you like to complete your profile? ",'info', actionHtml);
         
         $(document).one('click', '#profile-new-add', function(event) {
           $("#messages").stop().hide(200);
-          panels.settings.show(200);
+          panels.profile.show(200);
+          $("#button-login-settings").addClass('active');
           event.stopPropagation();
         });
         $(document).one('click', '#profile-new-decline', function(event) {
@@ -237,62 +217,29 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
       //Clearing query (quite silly to do that - turned off)
       //$("#query-field").tokenInput("clear");
       $(".tags").html('');
-      //cofind.remove(profile.get('Email'));
+      //Remove CoFind from GUI
+      cofind.remove(profile.get('email'));
       
       profile.reset();
     };
     
-    var handleSettingsSave = function(overwrite) {
-      
-      var ow = overwrite || false;
+    var handleSettingsSave = function() {
+      console.log('handleSettingSave...');
       
       var mr = parseInt(panels.settings.find("#max-num-results").val());
-  	  var nc = parseInt(panels.settings.find("#num-clusters").val()) ;
-  	  var tm = panels.settings.find("#trans-method option:selected").val() ;
-	  	  
-      if ( 	constants.queryOptions.maxNumResults == mr &&
-			constants.queryOptions.clusters0 == nc &&
-			constants.queryOptions.trans == tm &&
-         !ow) 
-      {
+  	  var ct = $("#audio-cluster-type").attr('checked') ? 'Audio' : '3D';
+      
+      if(constants.queryOptions.maxNumResults === mr &&
+			   constants.queryOptions.clusterType   === ct){
         return;
       }  
 	          
       set('queryOptions.maxNumResults', mr);
-  	  set('queryOptions.clusters0', nc);
-  	  set('queryOptions.trans', tm);
-	  
-      var postData = {
-          data : {"maxResults" :  mr , "numClusters" : nc ,  "transMethod" : tm  }
-      };
+  	  set('queryOptions.clusterType', ct);
       
-  	  var profileSettingsUrl = constants.userProfileServerUrl || "profile/" ;
-  	  profileSettingsUrl += "Settings" ;
-	  
-      //Send it to the server
-      $.ajax({
-        type: "POST",
-        url: profileSettingsUrl,
-        data: JSON.stringify(postData),
-        success: function(data) {
-          //parse the result
-          try {
-            data = JSON.parse(data);
-          } catch(e) {
-            data = {error: "The server gave me an invalid result."};  
-          }
-          
-          if(data.error) {
-            console.log("Error during save settings: " + data.error);
-          } else {
-            console.log("User settings saved: " + (data.success ? data.success : data.info));
-            sendNotifyMessage('Settings saved!', (data.success ? 'success' : 'info'), false);
-          }
-        },
-        dataType: "text",
-        contentType : "application/json; charset=utf-8"
-      });
-
+      var settings = {"maxResults" :  mr , "clusterType" : ct};
+      profile.set('settings',settings,sendNotifyMessage);
+  	  
       //Notify the user that their action has been successful -- close the panel
       panels.hide(constants.slideDownAnimationTime);
     };
@@ -323,8 +270,7 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
             console.log("Error during login: " + data.error); 
             sendNotifyMessage("Sorry: " + data.error,'error',false);
           } else {
-            console.log(data);
-            
+            //console.log(data);
             sendNotifyMessage("You're logged in.",'success',false);
             performLoggedInSetup(data);
           }
@@ -362,14 +308,29 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
 
     var initPanel = function() {
       
-	    panels.settings = $("#global-settings");
+      panels.settings = $("#global-settings");
       panels.settings.hide();
-	  
-  	  initSettings(); 
   	  
-  	  // basically pass the url of the profile server 
-  	  profile.init(constants) ;
+  	  panels.profile = $("#profile-settings");
+  	  panels.profile.hide();
   	  
+  	  panels.messages = $("#messages");
+  	  panels.messages.hide();
+  	  
+  	  //init profile stuff
+  	  $('#profile-accordion').accordion({ autoHeight: false });
+  	  $('#dateOfBirth').datepicker({ dateFormat: "yy-mm-dd" });
+  	  $('#country').selectToAutocomplete();
+  	  
+  	  //Setup profile basically pass the url of the profile server 
+  	  profile.setServerUrl(constants.userProfileServerUrl) ;
+  	  //Init the user profile to identify if user is logged in
+      if(profile.init()) {
+        performLoggedInSetup();
+      } else {
+        initSettings();
+      }
+      
   	  //init custom checkbox events
   	  $('.checkbox').toggle(function() {
   	    $(this).addClass('checked');
@@ -378,17 +339,15 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
   	    $(this).removeClass('checked');
   	    $(this).find(':checkbox').attr('checked', false);
   	  });
-  	  
-      panels.messages = $("#messages");      
       
       $("#button-global-settings").on('click touchstart',function(event){
         if($("#button-global-settings").hasClass('active')) {
           handleSettingsSave();
-          panels.settings.hide(constants.slideDownAnimationTime);
+          panels.settings.hide(constants.slideUpAnimationTime);
           $("#button-global-settings").removeClass('active');
         } else {
           panels.hide(constants.slideDownAnimationTime);
-          panels.settings.show(constants.slideUpAnimationTime);
+          panels.settings.show(constants.slideDownAnimationTime);
           $("#button-global-settings").addClass('active');
           $("body").one("click", function() {
             panels.hide(constants.slideDownAnimationTime);
@@ -406,36 +365,25 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
       
       window.janrainWidgetOnload = function() {
         //Force to format the stupid authentication widget
-        /*
         $('#janrainEngageEmbed .janrainContent').attr('style','min-height: 40px');
-        $('#janrainEngageEmbed #janrainView').attr('style','position: absolute; top: 15px; left: 0px; width: 100%; z-index: 103; text-align: center; padding: 5px; background-color: #666; min-height: 50px;');
-        $('#janrainEngageEmbed #janrainView .janrainHeader').text('Use your account with:');
-        $('#janrainEngageEmbed #janrainView .janrainHeader').attr('style','display: inline-block; height: 15px; margin: 0 0.5em 0 0; padding: 1.0em 0.8em; vertical-align: top; background-color: #999; border-top-left-radius: 4px; border-bottom-left-radius: 4px;');
-        $('#janrainEngageEmbed #janrainView #janrainProviderPages').attr('style','display:inline-block; vertical-align: middle');
-        $('#janrainEngageEmbed #janrainView #janrainProviderPages ul').attr('style','margin: 0; padding: 0;');
-        $('#janrainEngageEmbed #janrainView #janrainProviderPages ul li').attr('style','list-style-type: none;position: relative; height: 34px; padding-top: 0.5em; margin-bottom: 4px; left: 0px; border: 1px solid rgb(204, 204, 204); color: rgb(28, 105, 245); border-top-right-radius: 5px; border-bottom-right-radius: 5px; cursor: pointer; display: inline-block; width: 200px; vertical-align: top; background-color: rgb(227, 227, 227); background-image: -webkit-linear-gradient(bottom, rgb(238, 238, 238), rgb(255, 255, 255));');
-        $('#janrainEngageEmbed #janrainView div:nth-child(3)').remove();
-        $('#janrainEngageEmbed #janrainView div:nth-child(4)').remove();
-        
-        if($('#janrainEngageEmbed .janrainContent > div:last').attr('id') !== 'janrainView' ) {
-          $('#janrainEngageEmbed .janrainContent > div:last').attr('style','position: absolute; top: 15px; left: 0px; width: 100%; z-index: 102; text-align: center; padding: 5px; background-color: transparent; min-height: 40px;');
-          $('#janrainEngageEmbed .janrainContent > div:last img').attr('style','width:100px; height:35px; margin: 0 0.5em 0 0; padding: 0.3em 0.5em; background-color: #999; border-top-left-radius: 4px; border-bottom-left-radius: 4px;');
-          $('#janrainEngageEmbed .janrainContent > div:last').children('div:first').attr('style','position: relative; height: 39px; margin-bottom: 4px; left: 0px; border: 1px solid rgb(204, 204, 204); color: rgb(28, 105, 245); border-top-right-radius: 5px; border-bottom-right-radius: 5px; cursor: pointer; display: inline-block; width: 200px; vertical-align: top; background-color: rgb(227, 227, 227); background-image: -webkit-linear-gradient(bottom, rgb(238, 238, 238), rgb(255, 255, 255));');
-          $('#janrainEngageEmbed .janrainContent > div:last').children('div:first').children(':first').attr('style','position: relative; top: 12px; font-size: 110%; float: none;');
-          $('#janrainEngageEmbed .janrainContent > div:last a').attr('style','font-size: 12px; color: #fff; display: inline-block; margin-left: 15px; vertical-align: 100%');
-        }
+        $('#janrainEngageEmbed #janrainView').attr('style','');
+        $('#janrainEngageEmbed #janrainView .janrainHeader').attr('style','display: none;');
+        $('#janrainEngageEmbed #janrainView #janrain-blank').remove();
+        $('#janrainEngageEmbed #janrainView #janrainProviderPages').attr('style','margin: 0; padding: 0;');
+        $('#janrainEngageEmbed #janrainView #attribution_footer').remove();
+        $('#janrainEngageEmbed .janrainContent > div:last:not(#janrainView)').remove();
         
         $(document).on('DOMNodeInserted','#janrainEngageEmbed .janrainContent',function() {
-          sendNotifyMessage($('#janrainEngageEmbed .janrainContent > div:last').text(),'info',false);
+          //sendNotifyMessage($('#janrainEngageEmbed .janrainContent > div:last').text(),'info',false);
           $('#janrainEngageEmbed .janrainContent > div:last').remove();
         });
         
         $('#janrainEngageEmbed #janrain-google,#janrainEngageEmbed .providers').on('click', function(event) {
           panels.login.hide(constants.slideDownAnimationTime);
-        });*/
+        });
         
         janrain.events.onProviderLoginToken.addHandler(function(tokenResponse) {
-          console.log(tokenResponse);
+          //console.log(tokenResponse);
           handleLogin(tokenResponse.token);
         });
       };
@@ -443,8 +391,11 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
       
       panels.login = $("#login-settings");
       panels.login.hide();
+      
       $("#button-login-settings").on('click touchstart',function(event){
+
         if($("#button-login-settings").find('a:first').text() == 'Login') {
+          
           if($("#button-login-settings").hasClass('active')) {
             /* 
             if(panels.login.find("#email").val().length > 0 || panels.login.find("#pw").val().length > 0) {
@@ -453,22 +404,42 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
               panels.login.hide(constants.slideDownAnimationTime);
             } 
             */
-            panels.login.hide(constants.slideDownAnimationTime);
+            panels.login.hide(constants.slideUpAnimationTime);
             $("#button-login-settings").removeClass('active');
           } else {
             panels.hide(constants.slideDownAnimationTime);
-            panels.login.show(constants.slideUpAnimationTime);
+            panels.login.show(constants.slideDownAnimationTime);
             $("#button-login-settings").addClass('active');
             $("body").one("click", function() {
               panels.hide(constants.slideDownAnimationTime);
             });
           }
         } else {
-          handleLogout();
-          $("#button-login-settings").removeClass('active');
+          
+          if($("#button-login-settings").hasClass('active')) {
+            profile.setFromForm(sendNotifyMessage);
+            panels.profile.hide(constants.slideDownAnimationTime);
+            $("#button-login-settings").removeClass('active');
+          } else {
+            panels.hide(constants.slideDownAnimationTime);
+            panels.profile.show(constants.slideUpAnimationTime);
+            $("#button-login-settings").addClass('active');
+            /*$("body").one("click", function() {
+              panels.hide(constants.slideDownAnimationTime);
+            });*/
+          }
         }
         event.stopPropagation();
       });
+      
+      //Logout button
+      $("#logout").click(function(event) {
+        panels.hide(constants.slideDownAnimationTime);
+        handleLogout();
+        event.preventDefault();
+        event.stopPropagation();
+      });
+      
       panels.login.click(function(event) {
         event.preventDefault();
         event.stopPropagation();
@@ -487,21 +458,28 @@ define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualizat
         if ( event.which == 13 ) {
           event.preventDefault();
           if($("#button-login-settings").hasClass('active')) {
-            if(panels.login.find("#email").val().length > 0 || panels.login.find("#pw").val().length > 0) {
-              handleLogin();
-            } else {
+            //if(panels.login.find("#email").val().length > 0 || panels.login.find("#pw").val().length > 0) {
+            //  handleLogin();
+            //} else {
               panels.login.hide(constants.slideDownAnimationTime);
-            }
+            //}
             $("#button-login-settings").removeClass('active');
           }
           return false;
         }
       });
       
-      //Get the user email to identify if user is logged in
-      if(profile.get('Email')) {
-        performLoggedInSetup();
-      };
+      $("#profile-settings form").keypress(function(event) {
+        if ( event.which == 13 ) {
+          event.preventDefault();
+          if($("#button-login-settings").hasClass('active')) {
+            profile.setFromForm(sendNotifyMessage);
+            panels.profile.hide(constants.slideDownAnimationTime);
+            $("#button-login-settings").removeClass('active');
+          }
+          return false;
+        }
+      });
 
     }; //End of initPanel()   
     

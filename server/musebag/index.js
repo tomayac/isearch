@@ -43,6 +43,7 @@ console.log("Register MuseBag functions...");
 app.post('/login'           , musebag.login);
 app.del ('/login'           , musebag.logout);
 
+app.get ('/profile'         , musebag.profile);
 app.get ('/profile/:attrib' , musebag.profile);
 app.post('/profile/history' , musebag.updateProfileHistory);
 app.post('/profile/:attrib' , musebag.setProfile);
@@ -54,6 +55,6 @@ app.post('/query'           , musebag.query);
 app.listen(8081);
 
 //Start CoFind for collaborative search
-//cofind.initialize(app,sess);
+cofind.initialize(app,sess);
 
 console.log("MuseBag Express server listening on port %d in %s mode", app.address().port, app.settings.env);
