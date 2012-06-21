@@ -27,7 +27,7 @@ define("mylibs/results",
 		//Create the container for visualization
 		var visualizationContainer = $('<div />').attr('id', 'visualization-container').appendTo('#main');
 		
-		console.log("Config visOptions: ", config.constants.visOptions);
+		//console.log("Config visOptions: ", config.constants.visOptions);
     		
 		if (config.constants.visOptions.method == "mst") {
 			mstVisualizer.draw(results, "#visualization-container", config.constants.visOptions);

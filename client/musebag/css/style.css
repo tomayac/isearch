@@ -1125,6 +1125,11 @@ footer {
 	margin: 7px;
 }
 
+#visualization-container #weights
+{
+	
+}
+
 #visualization-container #drawing canvas
 {
 	width: 100%;

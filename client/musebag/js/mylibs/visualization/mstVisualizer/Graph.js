@@ -113,7 +113,7 @@ define(
 					var dx = T.vertices[j].dynamics.x - T.vertices[i].dynamics.x;
 					var dy = T.vertices[j].dynamics.y - T.vertices[i].dynamics.y;
 					var d = Math.sqrt(dx*dx + dy*dy);
-					if (d < 1) d = 1;
+					if (d < 0.1) d = 0.1;
 					
 					// repulsive forces			
 					T.vertices[i].dynamics.fx -= charge * dx / (d*d*d);
@@ -165,8 +165,8 @@ define(
 				T.vertices[i].dynamics.fy -= friction * T.vertices[i].dynamics.vy;
 			
 				// calculate velocities
-				T.vertices[i].dynamics.vx += T.vertices[i].dynamics.fx * timeStep;
-				T.vertices[i].dynamics.vy += T.vertices[i].dynamics.fy * timeStep;
+				T.vertices[i].dynamics.vx += T.vertices[i].dynamics.fx / T.vertices[i].dynamics.m * timeStep;
+				T.vertices[i].dynamics.vy += T.vertices[i].dynamics.fy / T.vertices[i].dynamics.m * timeStep;
 				
 				// limit velocities
 				var v_squared =

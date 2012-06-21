@@ -184,95 +184,6 @@ define(
 		};
 		
 		
-		// event handlers --------------------------------------------------------------
-		
-		// variables
-		var mouseX = 0;
-		var mouseY = 0;		
-		var canvasLeft = 0;
-		var canvasTop = 0;		
-		var clickPoint = {x: 0, y: 0};
-		var prevOrigin = {x: 0, y: 0};
-		
-		
-		// stores the mouse position (relative to canvas position) 
-		// to the mouseX and mouseY variables
-		var storeMouse = function(e)
-		{
-			mouseX = e.pageX - canvasLeft;
-			mouseY = e.pageY - canvasTop;
-		}
-		
-		
-		// returns the mouse position
-		var getMouse = function(e)
-		{
-			return {x: e.pageX - canvasLeft, y: e.pageY - canvasTop};
-		}
-		
-		
-		// mouse down event handler
-		var mouseDown = function(e)
-		{
-			storeMouse(e);
-			
-			clickPoint.x = mouseX;
-			clickPoint.y = mouseY;
-			prevOrigin.x = this.view.x;
-			prevOrigin.y = this.view.y;
-			
-			this.style.cursor = "-moz-grabbing";
-			
-			this.prevMouseMove = this.onmousemove;
-			this.onmousemove = mouseDrag;
-		};
-		
-		
-		// mouse up event handler
-		var mouseUp = function(e)
-		{
-			this.style.cursor = "-moz-grab";
-			
-			this.onmousemove = this.prevMouseMove;
-		}
-		
-		
-		// left mouse button dragging handler (see mouseDown)
-		var mouseDrag = function(e)
-		{
-			storeMouse(e);
-		
-			this.view.x = prevOrigin.x + this.view.w / this.width * (clickPoint.x - mouseX);
-			this.view.y = prevOrigin.y - this.view.h / this.height * (clickPoint.y - mouseY);
-		}
-		
-		
-		// mouse wheel event handler
-		function mouseWheel(e)
-		{
-			storeMouse(e);
-		
-			var p = this.unproject(mouseX, mouseY);
-			
-			var ratio = 1;
-			if (e.detail < 0)	// scroll up
-			{
-				ratio = 0.8;
-				this.zoomLevel++;
-			}
-			else				// scroll down
-			{
-				ratio = 1.25;
-				this.zoomLevel--;
-			}
-									
-			this.view.x = p.x - ratio * (p.x - this.view.x);
-			this.view.y = p.y - ratio * (p.y - this.view.y);
-			this.view.w *= ratio;
-			this.view.h *= ratio;
-		}
-		
-		
 		// extend function ----------------------------------------------------------------------
 		
 		// extends a given canvas by adding all the above functionality
@@ -321,21 +232,6 @@ define(
 			canvas.drawText = drawText;
 			canvas.drawMask = drawMask;
 			canvas.drawSquarePack = drawSquarePack;
-			
-			// setup event handling data
-			canvasLeft = $(canvas).offset().left;
-			canvasTop = $(canvas).offset().top;
-			
-			canvas.getMouse = getMouse;
-			canvas.prevMouseMove = null;
-			
-			// add event handlers
-			canvas.onmousedown = mouseDown;
-			canvas.onmouseup = mouseUp;
-			canvas.onmouseout = mouseUp;
-			canvas.onmousemove = null;
-			canvas.onmousewheel = mouseWheel;							// Chrome
-			canvas.addEventListener("DOMMouseScroll", mouseWheel);		// Firefox
 		};
 		
 		

@@ -123,8 +123,12 @@ define("mylibs/visualization/dataParser", function(){
 
     var level = data.level ;
 	
-	if (data.S) {
-		cluster.S = data.S;
+	if (data.Si) {
+		cluster.Si = data.Si;
+	}
+	
+	if (data.St) {
+		cluster.St = data.St;
 	}
 
   	cluster.level = level ;
