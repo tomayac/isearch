@@ -435,10 +435,15 @@ nav {
 .settings-panel .setting {
   margin-right: 1em;
   vertical-align: top;
+  color: #fff;
+}
+
+.settings-panel .ui-accordion .setting {
+  padding-left: 18%; 
 }
 
 .settings-panel .setting:last-child {
-  margin-right: 0;
+  /*margin-right: 0;*/
 }
 
 .settings-panel .setting label {

@@ -244,7 +244,7 @@ var getQueryRucod = function(query,sessionId,sessionStore,callback) {
 
 var isGuest = function(req) {
   //Does a user is logged in?
-  if(req.session.user.ID == 'guest') {
+  if(req.session.user.userId == 'guest') {
     return true;
   } else {
     return false;
@@ -256,9 +256,9 @@ var getSessionStore = function(req) {
   if(!req.session.user) {
     //If not create an guest session store
     req.session.user = { 
-      ID : 'guest',
-      Settings : '{"maxResults" : 100, "clusterType" : "3D"}',
-      QueryCounter: 0
+      userId : 'guest',
+      settings : '{"maxResults" : 100, "clusterType" : "3D"}',
+      querycounter: 0
     };
   };
     
@@ -270,7 +270,7 @@ var getExternalSessionId = function(req,renew) {
   if(req) {
     var sessionStore = getSessionStore(req);
     if(!req.session.user.extSessionId) {
-      var sid = req.sessionID.substring(req.sessionID.length-32,req.sessionID.length) + '-' + sessionStore.QueryCounter;
+      var sid = req.sessionID.substring(req.sessionID.length-32,req.sessionID.length) + '-' + sessionStore.querycounter;
       //remove illegal characters
       sid = sid.replace(/[|&;$%@"<>()+,\/]/g, '0');
       req.session.user.extSessionId = sid;
@@ -317,29 +317,61 @@ exports.login = function(req, res){
       //Get initial user data
       var user = getSessionStore(req);
       //Set real user data
-      user.ID = data.profile.verifiedEmail;
-      user.Name = data.profile.name.givenName || '';
-      user.FamilyName = data.profile.name.familyName || '';
-      user.Email = data.profile.verifiedEmail;
-      user.Username = data.profile.displayName || '';
+      user.userId = data.profile.verifiedEmail;
+      user.name = data.profile.name.givenName || '';
+      user.familyname = data.profile.name.familyName || '';
+      user.email = data.profile.verifiedEmail;
+      user.username = data.profile.displayName || '';
       
       //Store user data in session
 			req.session.user = user; 
 			
 			//Test if the user is known by the personalisation component
-			var checkUrl = 'http://89.97.237.248:8089/IPersonalisation/resources/users/profileFor/' + user.ID + '/withRole/Consumer';
+			var checkUrl = 'http://89.97.237.248:8089/IPersonalisation/resources/users/profileFor/' + user.userId + '/withRole/Consumer';
 			
 			restler
 		  .get(checkUrl)
 		  .on('complete', function(data) { 
-		    console.log(data);
 		    if(data) {
 		      console.log('User data received:');
-		      console.log(data);
+		      console.log(data.user);
+		      //assign retrieved data to local user profile
+		      var name = data.user.name.split(' ');
+		      user.name = name[0];
+          user.familyname = name[1];
+		      for(var key in data.user) {
+		        if(key === 'name') {
+		          continue;
+		        }
+		        user[key] = data.user[key];
+		      }
+		      
 		    } else {
 		      console.log('User does not exist, request additional user information...');
-		      user.State = 'new';
-		      console.log(user);
+		      user.state = 'new';
+		      
+		      //Lets create the user in the personalisation service
+		      var setUrl = 'http://89.97.237.248:8089/IPersonalisation/resources/users/setProfileDataFor/' + user.userId;
+	        var callData = {
+	          "name"   : user.name+' '+user.familyname,
+	          "settings" : user.settings,
+	          "role"   : "Consumer",
+	          "userId" : user.userId
+	        };
+	        
+	        restler
+	        .postJson(setUrl, callData)
+	        .on('complete', function(data,response) {
+	           if (response.statusCode == 201) {
+	             console.log("User " + user.userId + " has been successfully created in personalisation component.");
+	           } else {
+	             console.log("Error during user creation of " + user.userId + " in personalisation component.");
+	           }
+	        })
+	        .on('error', function(data,response) {
+	          console.log("Personalisation component query error: " + data.toString());
+	        }); 
+		      
 		    }
 		    
 		    //Return user data to client
@@ -348,45 +380,8 @@ exports.login = function(req, res){
 		  .on('error', function(data, response) {
 		    msg.error = data.toString();
 		    res.send(JSON.stringify(msg));
-		  });
-			
-			/*
-			var setUrl = 'http://89.97.237.248:8089/IPersonalisation/resources/users/setProfileDataFor/' + user.ID + '/data';
-      var callData = {
-        "name"        : user.Name + ' ' + user.FamilyName,
-        "openId"      : user.ID,
-        "role"        : "Consumer",
-        "userId"      : user.ID
-      };
-      
-      restler
-      .post(setUrl, { 
-        data : callData
-      })
-      .on('complete', function(data) { 
-         console.log(data); 
-      })
-      .on('error', function(data,response) {
-        msg.error = data.toString();
-        callback(msg,null);
-      }); 
-			
-			//Return user data to client
-      res.send(JSON.stringify(user));
-      */
+		  });    
     }
-	  /*
-	  //Check if return data is ok
-    if(!data.user) {
-      msg.error = data.error;
-      res.send(JSON.stringify(msg));
-    } else {
-      //Store user data in session
-      req.session.user = data.user;
-      //Return user data to client
-      res.send(JSON.stringify(data.user));
-    }
-    */
 	})
 	.on('error', function(data,response) {
 		msg.error = data.toString();
@@ -418,14 +413,24 @@ exports.profile = function(req, res) {
 	var attrib = req.params.attrib;
 	//Get the right session storage (depending on log in status - guest if not, user if yes)
 	var sessionStore = getSessionStore(req);
-
-	//Does the requested profile attribute is available
-	if(sessionStore[attrib]) {
-		var data = {};
-		data[attrib] = sessionStore[attrib];
-		res.send(JSON.stringify(data));
+	
+	if(sessionStore['userId'] === 'guest') {
+	  res.send(JSON.stringify({error : 'User is not logged in!'}));
+	  return;
+	}
+	
+	//If no key attribute is supplied, we simply return the whole profile
+	if(!attrib) {
+	  res.send(JSON.stringify(sessionStore));
 	} else {
-		res.send(JSON.stringify({error : 'The requested user profile attribute is not available!'}));
+  	//Does the requested profile attribute is available
+  	if(sessionStore[attrib]) {
+  		var data = {};
+  		data[attrib] = sessionStore[attrib];
+  		res.send(JSON.stringify(data));
+  	} else {
+  		res.send(JSON.stringify({error : 'The requested user profile attribute is not available!'}));
+  	}
 	}
 };
 
@@ -438,17 +443,17 @@ exports.setProfile = function(req, res) {
   var data   = req.body.data;
   //Get the right session storage (depending on log in status - guest if not, user if yes)
   var sessionStore = getSessionStore(req);
-  
+  console.log(attrib + ': ' +data);
   //Does the requested profile attribute is available
-  if(sessionStore[attrib] && data.length > 0) {
+  if(data) {
     
     var changed = false;
     
-    if(attrib === 'Settings') {
+    if(attrib === 'settings') {
       //threat user settings in JSON format
       try {
         //check if new settings are already in the session storage
-        var newSettings = JSON.parse(data);
+        var newSettings = data;
         var settings = JSON.parse(sessionStore[attrib]);
         
         for (var key in newSettings) {
@@ -467,6 +472,9 @@ exports.setProfile = function(req, res) {
         return;
       }
     } else {
+      if(attrib === 'dateOfBirth') {
+        data += 'T00:00:00+02:00';
+      }
       //Set the profile attribute to the new value as long as it is a logged in user
       if(sessionStore[attrib] !== data && !isGuest(req)) {
         sessionStore[attrib] = data;
@@ -476,7 +484,7 @@ exports.setProfile = function(req, res) {
 
     //If nothing changed we don't need to go on
     if(!changed) {
-      res.send(JSON.stringify({error : 'nochange'}));
+      res.send(JSON.stringify({info : 'nochange'}));
       return;
     }
     
@@ -484,29 +492,26 @@ exports.setProfile = function(req, res) {
       //if it's a guest user we don't store the information in the profile (it is stored already in the session)
       res.send(JSON.stringify({info : 'guest'}));
       return;
+      
     } else { 
   
       //if we have a logged in user, we store everything in the profile
-      var storeURL = "http://gdv.fh-erfurt.de/i-search/apc-dummy/index.php?"
-        + 'f=profileData';
-      
-      var callData = {
-          "userid" : sessionStore['ID'],
-          "data"   : sessionStore[attrib]
-      };
+      var storeURL = 'http://89.97.237.248:8089/IPersonalisation/resources/users/setProfileDataFor/' + sessionStore['userId'];
+      var callData = sessionStore;
+      callData.name = sessionStore['name']+' '+sessionStore['familyname'],
+      console.log(callData);
       //save the user data in the user profile
       restler
-      .post(storeURL, { 
-        data     : callData
-      })
-      .on('complete', function(data) {         
+      .postJson(storeURL, sessionStore)
+      .on('complete', function(data,response) {         
         //Check if return data is ok
-        if(!data.success) {
-          msg.error = data.error;
-          res.send(JSON.stringify(msg));
-        } else {
+        if (response.statusCode == 201) {
+          data = {success : attrib};
           //Notify client about success full save
           res.send(JSON.stringify(data));
+        } else {
+          msg.error = 'Error ' + response.statusCode;
+          res.send(JSON.stringify(msg));
         }
       })
       .on('error', function(data,response) {
@@ -538,13 +543,13 @@ exports.updateProfileHistory = function(req, res) {
   var result = {};
   
   //Check if history update data is complete 
-  if(isNumber(sessionStore.ID) && sessionStore.query && sessionStore.items) {
+  if(isNumber(sessionStore.userId) && sessionStore.query && sessionStore.items) {
     //Submit the query to authentication/personalisation component
     var storeURL = "http://gdv.fh-erfurt.de/i-search/apc-dummy/index.php";
     
     var callData = {
         "f"      : "updateSearchHistory",
-        "userid" : sessionStore.ID,
+        "userid" : sessionStore.userId,
         "query"  : JSON.stringify(sessionStore.query),
         "items"  : JSON.stringify(sessionStore.items)
     };
@@ -642,7 +647,7 @@ exports.query = function(req, res) {
           
           res.send(result);
           //After successful submission of query increase the query counter
-          sessionStore.QueryCounter++;
+          sessionStore.querycounter++;
        })
        .on('error', function(data,response) {
           console.log(response.client['_httpMessage']['res']['rawEncoded']);
