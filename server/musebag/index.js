@@ -25,7 +25,7 @@ app.configure(function(){
   app.use(express.cookieParser());
   app.use(express.session({ secret: "isearchsession", store: sess }));
   app.use(app.router);
-  app.use(express.static('../../client/musebag'));
+  app.use(express.static(__dirname+'/../../client/musebag'));
   app.use(express.logger({ format: ':method :url' }));
 });
 
