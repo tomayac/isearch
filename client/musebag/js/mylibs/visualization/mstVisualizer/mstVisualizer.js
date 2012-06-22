@@ -16,8 +16,8 @@ define(
 		var results = null;
 		var N = 0;
 		var vertices = null;
-		var imageWeight = 0;
-		var textWeight = 1;
+		var imageWeight = 1;
+		var textWeight = 0;
 		var imageSimilarities = null;
 		var textSimilarities = null;
 		var similarities = null;
@@ -30,6 +30,10 @@ define(
 		var initializing = true;
 		var L = [];
 		var levelIndex = 0;
+		
+		var zoomLevel = 0;
+		
+		var zoom = 0;
 		
 		// event-specific variables
 		var mouseX = 0;
@@ -49,10 +53,9 @@ define(
 		
 		// draw function
 		var draw = function(res, ele, options)
-		{
-		
+		{		
 			// store results
-			results = res;
+			results = res;			
 			N = results.docs.length;
 			
 			// create vertices
@@ -62,18 +65,34 @@ define(
 				vertices[i] = new Vertex(results.docs[i]);
 				
 				vertices[i].info.id = i;
-				var B = 0.01;	// this is the score of the last item
-				var A = 1/(N-1) * Math.log(1/B);	// exponential's constant
-				vertices[i].info.score = Math.exp(-A*i);
+				// var B = 0.01;	// this is the score of the last item
+				// var A = 1/(N-1) * Math.log(1/B);	// exponential's constant
+				// vertices[i].info.score = Math.exp(-A*i);
+				
+				vertices[i].info.score = scoreTransform(i, N);
 				
 				// set vertices' sizes relative to their scores
-				// vertices[i].appearance.initialSize = vertices[i].info.score * 40 + 30;
-				// vertices[i].appearance.size = vertices[i].appearance.initialSize;
-				// vertices[i].appearance.targetSize = vertices[i].appearance.initialSize;
+				vertices[i].appearance.initialSize = vertices[i].info.score * 40 + 30;
+				vertices[i].appearance.size = vertices[i].appearance.initialSize;
+				vertices[i].appearance.targetSize = vertices[i].appearance.initialSize;
+				// // set vertices' opacities relative to their score
+				// vertices[i].appearance.baseOpacity = vertices[i].info.score * 0.99 + 0.01;
+				// vertices[i].appearance.opacity = vertices[i].appearance.baseOpacity;
 			}
 							
 			// create image similarites
 			var Si = results.clusters.Si;
+			// find max Si (for normalization)
+			var maxSi = 0;
+			for (var i=0; i<Si.length; i++)
+				if (Si[i] > maxSi) maxSi = Si[i];
+			// divide by maxSi
+			for (var i=0; i<Si.length; i++)
+			{
+				//Si[i] = Si[i] / maxSi;
+				//Si[i] = Math.exp(-Si[i]);
+				Si[i] = 1 - Si[i];
+			}
 			imageSimilarities = new Array(N);
 			for (var i=0; i<N; i++)
 				imageSimilarities[i] = new Array(N);
@@ -120,6 +139,9 @@ define(
 			GT = initialTree;
 			
 			
+			//setOpacities();
+			
+			
 			// create canvas
 			$(ele).append("\
 				<div id='drawing'>\
@@ -153,6 +175,41 @@ define(
 			// start main loop
 			setInterval(loop, 20);
 			//loop();
+		};
+		
+		
+		var scoreTransform = function(x, n) {
+			
+			// var temp = Math.exp(2 - 5/n*x);
+			// return 1 - 0.9 / (1 + 0.5 * temp * temp);
+			
+			var temp = Math.exp(1.5 - 5/n*x);
+			return 1 - 0.9 / (1 + 0.5 * temp * temp);
+		};
+		
+		var setOpacities = function() {
+			
+			// set vertices' opacities relative to their degrees
+			// calculate degrees
+			var degrees = new Array(GT.groups.length);
+			for (var i=0; i<degrees.length; i++) degrees[i] = 0;
+			for (var i=0; i<GT.edges.length; i++)
+			{
+				degrees[GT.edges[i].g1]++;
+				degrees[GT.edges[i].g2]++;
+			}
+			// find max degree
+			var maxDegree = 0;
+			for (var i=0; i<degrees.length; i++)
+				if (degrees[i] > maxDegree) maxDegree = degrees[i];
+			// set opacity
+			for (var i=0; i<GT.groups.length; i++)
+			{
+				var repr = GT.groups[i].representative();
+			
+				repr.appearance.baseOpacity = degrees[i] / maxDegree;
+				repr.appearance.opacity = repr.appearance.baseOpacity;
+			}
 		};
 		
 		
@@ -278,6 +335,8 @@ define(
 				T = Graph.mst(vertices, similarities);
 				GT = new Graph.GTree(T);
 				
+				//setOpacities();
+				
 				clickedIndex = -1;
 				nearestIndex = -1;
 				
@@ -288,6 +347,8 @@ define(
 				draggedObject = null;
 				nearestObject = null;
 			}
+			
+			clickedIndex = -1;
 		};
 		
 		var mouseDragCanvas = function(e) {
@@ -358,17 +419,32 @@ define(
 			{
 				ratio = 0.8;
 				this.zoomLevel++;
+				zoom++;
 			}
 			else				// scroll down
 			{
 				ratio = 1.25;
 				this.zoomLevel--;
+				zoom--;
 			}
 									
 			this.view.x = p.x - ratio * (p.x - this.view.x);
 			this.view.y = p.y - ratio * (p.y - this.view.y);
 			this.view.w *= ratio;
 			this.view.h *= ratio;
+			
+			
+			// set vertices' opacities
+			for (var i=0; i<GT.groups.length; i++)
+			{
+				var repr = GT.groups[i].representative();
+				
+				var steps = Math.ceil(0.06*GT.groups.length);
+				if (zoom >= 0 && zoom <= steps)
+					repr.appearance.opacity = 
+								repr.appearance.baseOpacity + 
+								(1 - repr.appearance.baseOpacity)*zoom/steps;
+			}
 			
 			
 			// // handle clutter
@@ -617,9 +693,9 @@ define(
 			if (clickedIndex < 0)
 			//if (temperature > 0.001)
 			{
-				//for (var i=0; i<20; i++)
+				for (var i=0; i<5; i++)
 					temperature = Graph.applyForcesStep(T);
-					if (temperature < 0.1)
+				if (temperature < 0.1)
 						initializing = false;
 			}
 			
@@ -677,7 +753,9 @@ define(
 				}
 				
 				// draw grouped tree's vertices
-				for (var i=0; i<GT.groups.length; i++)
+				// for (var i=0; i<GT.groups.length; i++)
+				// invert so that most relevant are drawn last (on top of others)
+				for (i=GT.groups.length-1; i>=0; i--)
 				{
 					var reprVertex = GT.groups[i].representative();
 					if (i != hoveredIndex)
@@ -712,6 +790,12 @@ define(
 			context.font ="10pt Arial";
 			context.fillText("Image: " + imageWeight.toFixed(2), canvas.width - 80, canvas.height - 30);
 			context.fillText("Text: " + textWeight.toFixed(2), canvas.width - 80, canvas.height - 10);
+			
+			// print initializing message
+			if (initializing)			
+			{
+				context.fillText("Initializing . . .", 10, canvas.height - 10);
+			}
 		};
 		
 		
@@ -741,8 +825,8 @@ define(
 				}
 			}			
 			this.data = {};
-			//this.data.imageUrl = imageUrl;
-			this.data.imageUrl = previewImageUrl;
+			this.data.imageUrl = imageUrl;
+			//this.data.imageUrl = previewImageUrl;
 			this.data.text = text;
 			
 			// setup preview
@@ -766,7 +850,8 @@ define(
 				size: 70,
 				targetSize: 70,
 				sizeVel: 0,
-				opacity: 1,				
+				opacity: 1,
+				baseOpacity: 1,
 				status: "normal"
 			};
 		}
