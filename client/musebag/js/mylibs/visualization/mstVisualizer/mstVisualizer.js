@@ -26,6 +26,7 @@ define(
 		var GT = null;
 		var canvas = null;
 		var desc = null;
+		var weightsElement = null;
 		var temperature = 1000;
 		var initializing = true;
 		var L = [];
@@ -49,6 +50,16 @@ define(
 		var draggedObject = null;
 		var nearestIndex = -1;
 		var nearestObject = null;
+		
+		
+		// slider-specific
+		var sliderCanvas = null;
+		var sliderContext = null;
+		var sliderWidth = 12;
+		var sliderHeight = 12;
+		var sliderX = 0;
+		var sliderY = 0;
+		var sliderClickX = 0;
 
 		
 		// draw function
@@ -151,7 +162,14 @@ define(
 					<div id='descImage'>Click an image on the left.</div>\
 					<div id='descText'></div>\
 				</div>\
+				<div id='weights'>\
+					<div style='float: left;'>Image: <span id='imageWeight'></span></div>\
+					<div style='float: right;'>Text: <span id='textWeight'></span></div>\
+					<br/>\
+					<canvas id='slider' width='150' height='30'></canvas>\
+				</div>\
 			");
+			
 			canvas = $(ele + " #mainCanvas")[0];
 			canvas.width = $(canvas).width();
 			canvas.height = $(canvas).height();
@@ -168,6 +186,18 @@ define(
 			canvas.onmouseout = mouseUp;
 			canvas.ondblclick = mouseDoubleClick;
 			
+			weightsElement = ele + " #weights";
+			$(weightsElement + " #imageWeight").html(imageWeight.toFixed(2));
+			$(weightsElement + " #textWeight").html(textWeight.toFixed(2));
+			
+			// setup slider
+			sliderCanvas = $(weightsElement + " canvas")[0];
+			sliderContext = sliderCanvas.getContext("2d");
+			
+			sliderCanvas.onmousedown = sliderClick;
+			sliderCanvas.onmouseup = sliderMouseUp;
+			sliderCanvas.onmouseout = sliderMouseUp;
+			
 			
 			// create description element
 			desc = $(ele + " #description")[0];
@@ -175,6 +205,92 @@ define(
 			// start main loop
 			setInterval(loop, 20);
 			//loop();
+		};
+		
+		
+		var updateSlider = function() {
+			
+			sliderContext.clearRect(0, 0, sliderCanvas.width, sliderCanvas.height);
+			
+			sliderX = sliderWidth/2 + textWeight * (sliderCanvas.width - sliderWidth);
+			sliderY = sliderCanvas.height / 2;			
+			
+			// draw line
+			sliderContext.beginPath();
+			sliderContext.moveTo(sliderWidth/2, sliderY);
+			sliderContext.lineTo(sliderCanvas.width - sliderWidth/2, sliderY);
+			sliderContext.strokeStyle = "grey";
+			sliderContext.stroke();
+			
+			// draw slider
+			sliderContext.beginPath();
+			sliderContext.rect(
+				sliderX - sliderWidth/2,
+				sliderY - sliderHeight/2,
+				sliderWidth,
+				sliderHeight
+			);
+			sliderContext.fillStyle = "grey";
+			sliderContext.strokeStyle = "black";
+			//sliderContext.stroke();
+			sliderContext.fill();
+		};
+		
+		var sliderClick = function(e) {
+		
+			var mouse = {
+				x: e.pageX - $(sliderCanvas).offset().left,
+				y: e.pageY - $(sliderCanvas).offset().top
+			};
+			
+			if (
+				Math.abs(mouse.x - sliderX) < sliderWidth/2 &&
+				Math.abs(mouse.y - sliderY) < sliderHeight/2
+			)
+			{
+				sliderClickX = mouse.x;
+				sliderCanvas.onmousemove = sliderDrag;
+			}
+			else
+			{
+				sliderCanvas.onmousemove = null;
+			}
+		};
+		
+		var sliderDrag = function(e) {
+			
+			var mouse = {
+				x: e.pageX - $(sliderCanvas).offset().left,
+				y: e.pageY - $(sliderCanvas).offset().top
+			};
+			
+			var newTextWeight = (mouse.x - sliderWidth/2) / (sliderCanvas.width - sliderWidth);
+			if (newTextWeight < 0) newTextWeight = 0;
+			if (newTextWeight > 1) newTextWeight = 1;
+			newImageWeight = 1 - newTextWeight;
+			
+			imageWeight = newImageWeight;
+			textWeight = newTextWeight;
+			
+			weightsChanged();
+		};
+		
+		var sliderMouseUp = function(e) {
+		
+			sliderCanvas.onmousemove = null;
+		};
+		
+		
+		var weightsChanged = function() {
+		
+			$(weightsElement + " #imageWeight").html(imageWeight.toFixed(2));
+			$(weightsElement + " #textWeight").html(textWeight.toFixed(2));
+			
+			multimodalSimilarities();
+			T = Graph.mst(vertices, similarities);
+			GT = new Graph.GTree(T);
+				
+			//setOpacities();
 		};
 		
 		
@@ -331,11 +447,7 @@ define(
 					textWeight = textWeight + c * (1 - textWeight);
 				}
 				
-				multimodalSimilarities();
-				T = Graph.mst(vertices, similarities);
-				GT = new Graph.GTree(T);
-				
-				//setOpacities();
+				weightsChanged();
 				
 				clickedIndex = -1;
 				nearestIndex = -1;
@@ -753,49 +865,40 @@ define(
 				}
 				
 				// draw grouped tree's vertices
-				// for (var i=0; i<GT.groups.length; i++)
 				// invert so that most relevant are drawn last (on top of others)
 				for (i=GT.groups.length-1; i>=0; i--)
 				{
-					var reprVertex = GT.groups[i].representative();
-					if (i != hoveredIndex)
-					{
-						if (i == doubleClickedIndex)
-							//reprVertex.draw("doubleClicked");
-							GT.groups[i].draw();
-						else
-							//reprVertex.draw("normal");
-							GT.groups[i].draw();
-					}
+					if (i == clickedIndex) continue;
+				
+					GT.groups[i].draw();
 				}
-				if (hoveredIndex >= 0)
-				{
-					var reprVertex = GT.groups[hoveredIndex].representative();
-					if (hoveredIndex == doubleClickedIndex)
-						//reprVertex.draw("doubleClicked");
-						GT.groups[hoveredIndex].draw();
-					else
-						//reprVertex.draw("normal");
-						GT.groups[hoveredIndex].draw();
-				}
+				if (clickedIndex >= 0)
+					GT.groups[clickedIndex].draw();
 			}
 			
 			
 			// draw mask
 			canvas.drawMask(50, {r: 255, g: 255, b: 255});
 			
-			// print weights
-			var context = canvas.getContext("2d");
-			context.fillStyle = "black";
-			context.font ="10pt Arial";
-			context.fillText("Image: " + imageWeight.toFixed(2), canvas.width - 80, canvas.height - 30);
-			context.fillText("Text: " + textWeight.toFixed(2), canvas.width - 80, canvas.height - 10);
+			// // print weights
+			// var context = canvas.getContext("2d");
+			// context.fillStyle = "black";
+			// context.font ="10pt Arial";
+			// context.fillText("Image: " + imageWeight.toFixed(2), canvas.width - 80, canvas.height - 30);
+			// context.fillText("Text: " + textWeight.toFixed(2), canvas.width - 80, canvas.height - 10);
 			
 			// print initializing message
 			if (initializing)			
 			{
-				context.fillText("Initializing . . .", 10, canvas.height - 10);
+				var context = canvas.getContext("2d");
+				context.fillStyle = "black";
+				context.font ="10pt Arial";
+			
+				context.fillText("Initializing . . .", 10, 25);
 			}
+			
+			// update slider
+			updateSlider();
 		};
 		
 		
