@@ -74,7 +74,7 @@ $(document).ready(function(){
   	  resetSearchNav('image');
   	  resetSearchNav('audio');
   	  resetSearchNav('video');
-  	  $('script-tabs section').show();
+  	  $('#script-tabs section').show();
   		cofetchHandler.fetch($("#script-keywords").val(),$("#script-category").val(),$("#script-automatic").attr("checked"));
   	}
   	return false;
