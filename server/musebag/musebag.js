@@ -29,6 +29,7 @@ var authApi = '3cab95115953b1b1b31f35c48eaa36a746b479af';
 var msg     = {error: 'Something went wrong.'};
 var tmpPath = '../../client/musebag/tmp';
 var tmpUrl  = '/tmp';
+var apcPath = 'http://89.97.237.248:8089/IPersonalisation/';
 
 var queryRucodTpl   = '<?xml version="1.0" encoding="UTF-8"?>'
                     + '<RUCoD xmlns="http://www.isearch-project.eu/isearch/RUCoD" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'
@@ -260,13 +261,11 @@ var getSessionStore = function(req) {
       settings : '{"maxResults" : 100, "clusterType" : "3D"}',
       querycounter: 0
     };
-  };
-    
+  };    
   return req.session.user;
 };
 
-var getExternalSessionId = function(req,renew) {
-  
+var getExternalSessionId = function(req,renew) {  
   if(req) {
     var sessionStore = getSessionStore(req);
     if(!req.session.user.extSessionId) {
@@ -276,8 +275,7 @@ var getExternalSessionId = function(req,renew) {
       req.session.user.extSessionId = sid;
     } 
     return req.session.user.extSessionId;
-  }
-  
+  } 
 };
 
 /**
@@ -327,7 +325,7 @@ exports.login = function(req, res){
 			req.session.user = user; 
 			
 			//Test if the user is known by the personalisation component
-			var checkUrl = 'http://89.97.237.248:8089/IPersonalisation/resources/users/profileFor/' + user.userId + '/withRole/Consumer';
+			var checkUrl = apcPath + 'resources/users/profileFor/' + user.userId + '/withRole/Consumer';
 			
 			restler
 		  .get(checkUrl)
@@ -351,7 +349,7 @@ exports.login = function(req, res){
 		      user.state = 'new';
 		      
 		      //Lets create the user in the personalisation service
-		      var setUrl = 'http://89.97.237.248:8089/IPersonalisation/resources/users/setProfileDataFor/' + user.userId;
+		      var setUrl = apcPath + 'resources/users/setProfileDataFor/' + user.userId;
 	        var callData = {
 	          "name"   : user.name+' '+user.familyname,
 	          "settings" : user.settings,
@@ -390,8 +388,7 @@ exports.login = function(req, res){
 	
 };
 
-exports.logout = function(req, res) {
-	
+exports.logout = function(req, res) {	
 	console.log("Logout function called...");
 	
 	//Destroy the session
@@ -405,7 +402,6 @@ exports.logout = function(req, res) {
 			res.send(JSON.stringify({msg: true}));
 		}
 	});
-	
 };
 
 exports.profile = function(req, res) {
@@ -496,7 +492,7 @@ exports.setProfile = function(req, res) {
     } else { 
   
       //if we have a logged in user, we store everything in the profile
-      var storeURL = 'http://89.97.237.248:8089/IPersonalisation/resources/users/setProfileDataFor/' + sessionStore['userId'];
+      var storeURL = apcPath + 'resources/users/setProfileDataFor/' + sessionStore['userId'];
       var callData = sessionStore;
       callData.name = sessionStore['name']+' '+sessionStore['familyname'],
       console.log(callData);
@@ -525,6 +521,43 @@ exports.setProfile = function(req, res) {
   }//end if requested profile attribute is available
 };
 
+exports.getProfileHistory = function(req, res) {
+  
+  console.log("get profile history function called...");
+  
+  //Get the right session storage (depending on log in status - guest if not, user if yes)
+  var sessionStore = getSessionStore(req);
+  
+  var result = {};
+  
+  //Check if history update data is complete 
+  if(!isGuest(req)) {
+    //Submit the query to authentication/personalisation component
+    var getURL = apcPath + 'resources/historydatas/getSearchHistoryFor/'  + sessionStore.userId + '/limit/5';
+    
+    restler
+    .get(getURL)
+    .on('complete', function(data, response) { 
+      console.log(data);
+      //Check if result is ok
+      if (response.statusCode === 200) {
+        //Notify client about successful save
+        res.send(JSON.stringify(data));
+      } else {
+        result.error = 'Error ' + response.statusCode;
+        res.send(JSON.stringify(result));
+      }
+   })
+   .on('error', function(data,response) {
+     result.error = data.toString();
+     res.send(JSON.stringify(result));
+   });
+  } else {
+    result.error = 'No history data available for guest users.';
+    res.send(JSON.stringify(result));
+  }//end if
+};
+
 exports.updateProfileHistory = function(req, res) {
   
   console.log("Update profile history function called...");
@@ -545,10 +578,9 @@ exports.updateProfileHistory = function(req, res) {
   //Check if history update data is complete 
   if(isNumber(sessionStore.userId) && sessionStore.query && sessionStore.items) {
     //Submit the query to authentication/personalisation component
-    var storeURL = "http://gdv.fh-erfurt.de/i-search/apc-dummy/index.php";
+    var storeURL = apcPath + 'resources/historydatas/updateSearchHistoryFor/'  + sessionStore.userId;
     
     var callData = {
-        "f"      : "updateSearchHistory",
         "userid" : sessionStore.userId,
         "query"  : JSON.stringify(sessionStore.query),
         "items"  : JSON.stringify(sessionStore.items)
@@ -558,11 +590,8 @@ exports.updateProfileHistory = function(req, res) {
     console.log(callData);
     
     restler
-    .post(storeURL, { 
-      data : callData
-    })
-    .on('complete', function(data) { 
-
+    .postJson(storeURL, callData)
+    .on('complete', function(data,repsonse) { 
       //Check if result is ok
       if(data.error) {
         result.error = data.error;
@@ -573,6 +602,7 @@ exports.updateProfileHistory = function(req, res) {
         //After successful storing of search history entry reset session data
         sessionStore.query = undefined;
         sessionStore.items = undefined;
+        sessionStore.tags  = undefined;
       }
       
       res.send(JSON.stringify(result));
@@ -603,6 +633,8 @@ exports.query = function(req, res) {
   var result = {};
   
   try {
+    //store the used query tags in the session
+    sessionStore.tags = data.tags ? data.tags.join() : '';
     
     //Compose the query
     getQueryRucod(data, extSessionId, sessionStore, function(error,queryData) {
@@ -743,6 +775,6 @@ exports.queryItem = function(req, res) {
 
 exports.queryStream = function(req, res) {
   
-  console.log("QueryStrem function called...");
+  console.log("QueryStream function called...");
   
 }; //end function queryStream

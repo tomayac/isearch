@@ -44,6 +44,7 @@ app.post('/login'           , musebag.login);
 app.del ('/login'           , musebag.logout);
 
 app.get ('/profile'         , musebag.profile);
+app.get ('/profile/history' , musebag.getProfileHistory);
 app.get ('/profile/:attrib' , musebag.profile);
 app.post('/profile/history' , musebag.updateProfileHistory);
 app.post('/profile/:attrib' , musebag.setProfile);

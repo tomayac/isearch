@@ -95,6 +95,38 @@ define("mylibs/config",
       }
     }; 
     
+    //Get user specific search history
+    var getUserHistory = function() {
+      
+      var userId = profile.get('userId');
+     
+      
+      if(userId) {
+        //Ask for user search history
+        $.ajax({
+          type: "GET",
+          url: "profile/history",
+          success: function(data) {
+            
+            console.log(data);
+            try {
+              data = JSON.parse(data);
+              
+              //Create history table
+              var historyTable = '<table><tr><th>Query</th><th>Tags</th>Items<th></th></tr>';
+              
+              historyTable += '</table>';
+              
+            } catch(e) {
+              console.error(e);
+            }  
+          },
+          dataType: "text",
+          contentType : "application/json; charset=utf-8"
+        });
+      }     
+    };
+    
     //Get tag recommendations for the user which is logged in
     var getUserTags = function() {
       
@@ -187,6 +219,8 @@ define("mylibs/config",
 
       //get user tags from pTag component
       getUserTags();
+      //get user search history
+      getUserHistory();
       //init settings form based on user profile data
       initSettings();
       
