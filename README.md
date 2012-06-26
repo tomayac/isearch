@@ -1,4 +1,4 @@
-#I-SEARCH
+#-SEARCH
 
 Welcome, this is an I-SEARCH (strange apple-like acronym meaning *A unIfied framework for multimodal SEARCH*) repo.
 This space is used to build the GUI part of I-SEARCH.
@@ -74,7 +74,7 @@ your Linux server:
    will be intalled along with the modules: 
    - Install Git on your server with the help of this guide: http://book.git-scm.com/2_installing_git.html
    - Install Redis as document based database used for session management:
-     - follow this guide for full install and config: http://library.linode.com/databases/redis (select the article for your server OS) 
+     - follow this guide for full install and config: http://redis.io/download
      - follow this instructions for fast install, without setup: http://rediscookbook.org/install_with_installer.html
      - Make sure the redis-cli binary is running on the server
    - Intall connect module via 

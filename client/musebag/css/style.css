@@ -1086,6 +1086,7 @@ footer {
 
 #visualization-container
 {
+	position: relative;
 	width: 90%;
 	height: 565px;
 	margin-top: 35px;
@@ -1107,7 +1108,6 @@ footer {
 	height: 100%;
 	border: 1px solid lightgrey;
 	margin: 2px;
-	/*background-color: lightyellow;*/
 	background-color: #FAFAFA;
 	overflow: auto;
 }
@@ -1128,6 +1128,17 @@ footer {
 #visualization-container #description #descText
 {
 	margin: 7px;
+}
+
+#visualization-container #weights
+{
+	position: absolute;
+	left: 25px;
+	bottom: 20px;
+	
+	background-color: #FAFAFA;
+	padding: 10px;
+	border: 1px solid #C0C0C0;
 }
 
 #visualization-container #drawing canvas

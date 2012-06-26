@@ -1,15 +1,15 @@
-//  define("mylibs/config", ["mylibs/tags", "mylibs/cofind", "mylibs/profile", "!js/mylibs/visualization/DefaultThumbRenderer.js"],
-//  function(tags, cofind, profile) {
+  define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualization/DefaultThumbRenderer.js", "libs/jquery.select-to-autocomplete"],
+  function(tags, profile, cofind) {
     
-define("mylibs/config", 
-  [
-    "mylibs/tags", 
-    "mylibs/cofind",
-    "mylibs/profile", 
-    "!js/mylibs/visualization/DefaultThumbRenderer.js",
-    "libs/jquery.select-to-autocomplete"
-  ],
-  function(tags, cofind, profile) {
+//define("mylibs/config", 
+//  [
+//    "mylibs/tags", 
+//    "mylibs/cofind",
+//    "mylibs/profile", 
+ //   "!js/mylibs/visualization/DefaultThumbRenderer.js",
+//    "libs/jquery.select-to-autocomplete"
+//  ],
+//  function(tags, cofind, profile) {
 
     var constants = {
       //Menu parameters
@@ -165,12 +165,7 @@ define("mylibs/config",
     
     var initSettings = function() {
       
-      // initialize settings from local configuration if any 
-      if(localConfig) {
-        if(typeof(localConfig) === "function") {
-          localConfig(constants);
-        }
-      }
+     
       
   	  //Apply settings stored in current profile to general settings form
   	  var settings = profile.get('settings');
@@ -215,7 +210,7 @@ define("mylibs/config",
          panels          : panels,
          messageCallback : sendNotifyMessage  
       };      
-      cofind.setup(cofindOptions);
+      if ( cofind ) cofind.setup(cofindOptions);
 
       //get user tags from pTag component
       getUserTags();
@@ -252,7 +247,7 @@ define("mylibs/config",
       //$("#query-field").tokenInput("clear");
       $(".tags").html('');
       //Remove CoFind from GUI
-      cofind.remove(profile.get('email'));
+      if ( cofind ) cofind.remove(profile.get('email'));
       
       profile.reset();
     };
@@ -355,7 +350,13 @@ define("mylibs/config",
   	  $('#profile-accordion').accordion({ autoHeight: false });
   	  $('#dateOfBirth').datepicker({ dateFormat: "yy-mm-dd" });
   	  $('#country').selectToAutocomplete();
-  	  
+  	 
+		// initialize settings from local configuration if any 
+      if(localConfig) {
+        if(typeof(localConfig) === "function") {
+          localConfig(constants);
+        }
+      }	 
   	  //Setup profile basically pass the url of the profile server 
   	  profile.setServerUrl(constants.userProfileServerUrl) ;
   	  //Init the user profile to identify if user is logged in

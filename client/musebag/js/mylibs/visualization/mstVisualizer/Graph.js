@@ -85,11 +85,13 @@ define(
 		var applyForcesStep = function(T)
 		{
 			// time
-			var timeStep = 0.3;		// time step for the simulation (in ms)
+			//var timeStep = 0.3;		// time step for the simulation (in ms)
+			var timeStep = 0.1;
 
 			// simulation parameters
 			var charge = 0.5;		// repulsive charge
 			var spring = 0.5;				// attractive spring constant
+			//var friction = 0.8;
 			var friction = 0.8;
 			var gravity = 0.1;
 			
@@ -113,7 +115,7 @@ define(
 					var dx = T.vertices[j].dynamics.x - T.vertices[i].dynamics.x;
 					var dy = T.vertices[j].dynamics.y - T.vertices[i].dynamics.y;
 					var d = Math.sqrt(dx*dx + dy*dy);
-					if (d < 1) d = 1;
+					if (d < 0.1) d = 0.1;
 					
 					// repulsive forces			
 					T.vertices[i].dynamics.fx -= charge * dx / (d*d*d);
@@ -151,6 +153,7 @@ define(
 			
 			// calculate general forces, velocities and positions
 			var temperature = 0;
+			var maxF = 0;
 			for (var i=0; i<N; i++)
 			{
 				// add gravity
@@ -163,10 +166,15 @@ define(
 				// add friction
 				T.vertices[i].dynamics.fx -= friction * T.vertices[i].dynamics.vx;
 				T.vertices[i].dynamics.fy -= friction * T.vertices[i].dynamics.vy;
+				
+				
+				if (Math.abs(T.vertices[i].dynamics.fx) > maxF) maxF = T.vertices[i].dynamics.fx;
+				if (Math.abs(T.vertices[i].dynamics.fy) > maxF) maxF = T.vertices[i].dynamics.fy;
+				
 			
 				// calculate velocities
-				T.vertices[i].dynamics.vx += T.vertices[i].dynamics.fx * timeStep;
-				T.vertices[i].dynamics.vy += T.vertices[i].dynamics.fy * timeStep;
+				T.vertices[i].dynamics.vx += T.vertices[i].dynamics.fx / T.vertices[i].dynamics.m * timeStep;
+				T.vertices[i].dynamics.vy += T.vertices[i].dynamics.fy / T.vertices[i].dynamics.m * timeStep;
 				
 				// limit velocities
 				var v_squared =
@@ -189,6 +197,7 @@ define(
 			}
 			
 			//console.log(T.vertices);
+			//console.log(maxF);
 			
 			return temperature;
 		};
