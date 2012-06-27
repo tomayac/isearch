@@ -329,10 +329,9 @@ exports.login = function(req, res){
 			
 			restler
 		  .get(checkUrl)
-		  .on('complete', function(data) { 
-		    if(data) {
-		      console.log('User data received:');
-		      console.log(data.user);
+		  .on('complete', function(data, response) { 
+
+		    if(data) {		      
 		      //assign retrieved data to local user profile
 		      var name = data.user.name.split(' ');
 		      user.name = name[0];
@@ -341,8 +340,15 @@ exports.login = function(req, res){
 		        if(key === 'name') {
 		          continue;
 		        }
+		        //Special treatment for date of birth key
+	          if(key === 'dateOfBirth') {
+	            user[key] = data.user[key].substring(0,data.user[key].indexOf('T'));
+	            continue;
+	          }
 		        user[key] = data.user[key];
 		      }
+		      console.log('User data received:');
+          console.log(data.user);
 		      
 		    } else {
 		      console.log('User does not exist, request additional user information...');
@@ -368,8 +374,7 @@ exports.login = function(req, res){
 	        })
 	        .on('error', function(data,response) {
 	          console.log("Personalisation component query error: " + data.toString());
-	        }); 
-		      
+	        });	      
 		    }
 		    
 		    //Return user data to client
@@ -409,7 +414,7 @@ exports.profile = function(req, res) {
 	var attrib = req.params.attrib;
 	//Get the right session storage (depending on log in status - guest if not, user if yes)
 	var sessionStore = getSessionStore(req);
-	
+	console.dir(sessionStore);
 	if(sessionStore['userId'] === 'guest') {
 	  res.send(JSON.stringify({error : 'User is not logged in!'}));
 	  return;
@@ -457,23 +462,23 @@ exports.setProfile = function(req, res) {
             settings[key] = newSettings[key];
             changed = true;
           }
-        } 
-        
+        }        
         //ok, the settings object is updated, so transform it back to a JSON string
         //and store it in the session
-        sessionStore[attrib] = JSON.stringify(settings);
+        req.session.user[attrib] = JSON.stringify(settings);
         
       } catch(e) {
         res.send(JSON.stringify({error : 'malformed'}));
         return;
       }
     } else {
+      
       if(attrib === 'dateOfBirth') {
         data += 'T00:00:00+02:00';
       }
       //Set the profile attribute to the new value as long as it is a logged in user
       if(sessionStore[attrib] !== data && !isGuest(req)) {
-        sessionStore[attrib] = data;
+        req.session.user[attrib] = data;
         changed = true;
       }
     }
@@ -493,8 +498,15 @@ exports.setProfile = function(req, res) {
   
       //if we have a logged in user, we store everything in the profile
       var storeURL = apcPath + 'resources/users/setProfileDataFor/' + sessionStore['userId'];
-      var callData = sessionStore;
-      callData.name = sessionStore['name']+' '+sessionStore['familyname'],
+      var callData = {};
+      
+      for( var key in sessionStore ) {
+        if(key === 'name') {
+          callData['name'] = sessionStore['name']+' '+sessionStore['familyname']; 
+        } else {
+          callData[key] = sessionStore[key];
+        }
+      }
       console.log(callData);
       //save the user data in the user profile
       restler
@@ -503,6 +515,9 @@ exports.setProfile = function(req, res) {
         //Check if return data is ok
         if (response.statusCode == 201) {
           data = {success : attrib};
+          req.session.user['state'] = 'member';
+          
+          console.log(sessionStore);
           //Notify client about success full save
           res.send(JSON.stringify(data));
         } else {
@@ -539,8 +554,10 @@ exports.getProfileHistory = function(req, res) {
     .get(getURL)
     .on('complete', function(data, response) { 
       console.log(data);
+      console.log(response.statusCode);
+      
       //Check if result is ok
-      if (response.statusCode === 200) {
+      if (response.statusCode == 200) {
         //Notify client about successful save
         res.send(JSON.stringify(data));
       } else {

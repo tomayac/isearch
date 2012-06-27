@@ -85,11 +85,9 @@ define("mylibs/profile", ["libs/modernizr.min"], function(){
   
   var setProfileForm = function() {
     $.each(profile, function(index, value) {
-      if(index === 'dateOfBirth') {
-        value = value.substring(0,value.indexOf('T'));
-      }
       $('#' + index).val(value);
     });
+    
   };
   
   var setFromForm = function(callback) {

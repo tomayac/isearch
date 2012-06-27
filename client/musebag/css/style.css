@@ -446,6 +446,11 @@ nav {
   /*margin-right: 0;*/
 }
 
+.settings-panel #searchHistory p {
+  color: #fff;
+  margin: 1em;
+}
+
 .settings-panel .setting label {
   margin: 0 0.5em 0 0;
   padding: 0.3em 0.5em;

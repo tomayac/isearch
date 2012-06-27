@@ -1,15 +1,15 @@
-  define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualization/DefaultThumbRenderer.js", "libs/jquery.select-to-autocomplete"],
-  function(tags, profile, cofind) {
+//  define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualization/DefaultThumbRenderer.js", "libs/jquery.select-to-autocomplete"],
+//  function(tags, profile, cofind) {
     
-//define("mylibs/config", 
-//  [
-//    "mylibs/tags", 
-//    "mylibs/cofind",
-//    "mylibs/profile", 
- //   "!js/mylibs/visualization/DefaultThumbRenderer.js",
-//    "libs/jquery.select-to-autocomplete"
-//  ],
-//  function(tags, cofind, profile) {
+define("mylibs/config", 
+  [
+    "mylibs/tags", 
+    "mylibs/cofind",
+    "mylibs/profile", 
+    "!js/mylibs/visualization/DefaultThumbRenderer.js",
+    "libs/jquery.select-to-autocomplete"
+  ],
+  function(tags, cofind, profile) {
 
     var constants = {
       //Menu parameters
@@ -97,9 +97,7 @@
     
     //Get user specific search history
     var getUserHistory = function() {
-      
-      var userId = profile.get('userId');
-     
+      var userId = profile.get('userId');     
       
       if(userId) {
         //Ask for user search history
@@ -313,7 +311,7 @@
     };
     
     var handleLogout = function() {
-       var serverURL = constants.userLoginServerUrl || "login";       
+      var serverURL = constants.userLoginServerUrl || "login";       
 	   
       //Send it to the server
       $.ajax({
@@ -345,13 +343,8 @@
   	  
   	  panels.messages = $("#messages");
   	  panels.messages.hide();
-  	  
-  	  //init profile stuff
-  	  $('#profile-accordion').accordion({ autoHeight: false });
-  	  $('#dateOfBirth').datepicker({ dateFormat: "yy-mm-dd" });
-  	  $('#country').selectToAutocomplete();
   	 
-		// initialize settings from local configuration if any 
+		  //initialize settings from local configuration if any 
       if(localConfig) {
         if(typeof(localConfig) === "function") {
           localConfig(constants);
@@ -365,6 +358,11 @@
       } else {
         initSettings();
       }
+      
+      //init profile form modification stuff
+      $('#profile-accordion').accordion({ autoHeight: false });
+      $('#dateOfBirth').datepicker({ dateFormat: "yy-mm-dd" });
+      $('#country').selectToAutocomplete();
       
   	  //init custom checkbox events
   	  $('.checkbox').toggle(function() {
@@ -400,6 +398,7 @@
       
       window.janrainWidgetOnload = function() {
         //Force to format the stupid authentication widget
+        /*
         $('#janrainEngageEmbed .janrainContent').attr('style','min-height: 40px');
         $('#janrainEngageEmbed #janrainView').attr('style','');
         $('#janrainEngageEmbed #janrainView .janrainHeader').attr('style','display: none;');
@@ -407,7 +406,7 @@
         $('#janrainEngageEmbed #janrainView #janrainProviderPages').attr('style','margin: 0; padding: 0;');
         $('#janrainEngageEmbed #janrainView #attribution_footer').remove();
         $('#janrainEngageEmbed .janrainContent > div:last:not(#janrainView)').remove();
-        
+        */
         $(document).on('DOMNodeInserted','#janrainEngageEmbed .janrainContent',function() {
           //sendNotifyMessage($('#janrainEngageEmbed .janrainContent > div:last').text(),'info',false);
           $('#janrainEngageEmbed .janrainContent > div:last').remove();
