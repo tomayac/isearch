@@ -13,7 +13,10 @@ define(['jquery', '!js/libs/jquery.mousewheel.js'], function($) {
         if set to a DOM/jQuery element, that will be used instead
     */
     container: null,
-    // for which children to apply the events.
+    /* for which children to apply the events
+      if options.container is not null, then this option will have no effect
+      and all options.container.children() will be used
+    */
     children: '> *',
     // how much to shift when scrolling once with the mousewheel
     scrollSize: 10,
@@ -35,12 +38,17 @@ define(['jquery', '!js/libs/jquery.mousewheel.js'], function($) {
     remove: function(index, Element) {
       var data = $(this).data('swipePanel');
       if (data) {
-        data.components.root
+        $(this)
           .unbind('.startSlide')
           .unbind('.slide')
-          .unbind('.stopSlide')
-          .append(data.components.container.children());
-        data.components.container.remove();
+          .unbind('.stopSlide');
+        if (data.options.container) {
+          data.options.container.css(data.options.container.data('origCSS'));
+        } else {
+          // if a custom container is not used, reset the structure back to normal
+          data.components.root.append(data.components.container.children());
+          data.components.container.remove();
+        }
         $(this).data('swipePanel', null);
       }
     }
@@ -78,8 +86,6 @@ define(['jquery', '!js/libs/jquery.mousewheel.js'], function($) {
         components.container.find(options.disableDrag)
           .live('dragstart', function(event) { event.preventDefault(); });
       }
-
-      updateRealInnerWidth(components, options);
 
       // add mouse events
       var stopSlideMouse = function(event) {
@@ -122,14 +128,19 @@ define(['jquery', '!js/libs/jquery.mousewheel.js'], function($) {
           .bind('touchcancel.stopSlide', stopSlide)
           .bind('touchend.stopSlide', stopSlide);
 
-      // update container
-      if (options.container !== null) {
-        // remove any custom container from the DOM to prevent exceptions
-        components.container.remove();
+      // update container if it is not a custom one
+      if (!options.container){
+        components.container
+          .append(components.root.find(options.children))
+          .appendTo(components.root);
       }
-      components.container
-        .append(components.root.find(options.children))
-        .appendTo(components.root);
+
+      // remember the initial CSS of the container and update its Size
+      components.container.data('origCSS', {
+        left: components.container.css('left'),
+        width: components.container.css('width')
+      });
+      updateRealInnerWidth(components, options);
     });
   }
 
@@ -137,16 +148,17 @@ define(['jquery', '!js/libs/jquery.mousewheel.js'], function($) {
     // find out the real inner width of the root
     //    (real inner width = total width of all children put on the same row)
     components.containerWidth = 0;
-    components.root
-      .find(options.children)
+    components.container
+      .children()
       .each(function() {
         components.containerWidth += $(this).outerWidth(true);
+        console.log( $(this).outerWidth(), $(this).outerWidth(true) );
       });
-      components.container.css({
-        position: 'relative',
-        left: 0,
-        width: components.containerWidth
-      });
+    components.container.css({
+      position: 'relative',
+      left: 0,
+      width: components.containerWidth
+    });
   }
 
   function pointerDown(components, event) {
