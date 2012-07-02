@@ -6,10 +6,10 @@ define("mylibs/menu",
     "mylibs/location", 
     "mylibs/recorder",
     "mylibs/uiiface-v1",
+    "mylibs/jquery.scrollPanel",
     "libs/progress-polyfill.min"
   ],
   function(config, uiiface, filehandler, location) {
-    
     var hasGetUserMedia = function hasGetUserMedia() {
       // Note: Opera builds are unprefixed.
       return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
@@ -20,10 +20,12 @@ define("mylibs/menu",
     var attachedModes = []; //Stock the attached events 
                             //(we don't want to attach them each time a panel is displayed)
     var slider = null;
+ 
+    var menu = $('nav.query-composition');
     
     var reset = function() {
-        $('.panel').slideUp(config.constants.slideUpAnimationTime);
-        $('nav li').removeClass('active');
+      $('.panel').slideUp(config.constants.slideUpAnimationTime);
+      $('nav li').removeClass('active');
     };
 
     var adjust = function() {
@@ -41,17 +43,39 @@ define("mylibs/menu",
       var menuWidth = config.constants.menuWidth;
       var overflow = menuWidth - document.width;
       //console.log('document.width: ' + document.width + '| menuWidth: ' + menuWidth);
+
       if (document.width < menuWidth) {
-        addControls();
+        // addControls();
+        updateSlider( menu );
       } else {
-        removeControls();
+        //removeControls();
+        removeSlider( menu );
       }
     };
     
     var getQueryItemCount = function() {
     	return $(".token-input-list-isearch li").size()-1;
     };
-
+    
+    var updateSlider = function( menu ){
+      if( menu.data('scrollPanel') ){
+        console.log('---- update', menu.data('scrollPanel'));
+        menu.scrollPanel('updateContainerWidth');
+      } else {
+        console.log('---- add');
+        menu.scrollPanel({
+          children  : '> ul > li'
+        });
+      }
+    };
+    
+    var removeSlider = function( menu ){
+      if( menu.data('scrollPanel') ){
+        console.log('---- remove');
+        menu.scrollPanel('remove');
+      }
+    };
+    
     var addControls = function() {
      //Add control buttons if they're not here
      if (hasNav === false) {
@@ -70,7 +94,7 @@ define("mylibs/menu",
           hasNav = true;
       } 
     };
-
+    
     var removeControls = function() {
       if (hasNav === true) {
         $('nav>a').remove();
