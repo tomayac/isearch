@@ -29,10 +29,10 @@ define(['jquery', '!js/libs/jquery.mousewheel.js'], function($) {
   };
 
   var methods = {
-    updateContainerWidth: function(index, Element) {
+    updateContainerSize: function(index, Element) {
       var data = $(this).data('swipePanel');
       if (data) {
-        data.components.rootWidth = $(this).width();
+        data.components.rootSize = $(this)[data.options._dimension]();
       }
     },
     remove: function(index, Element) {
@@ -67,13 +67,23 @@ define(['jquery', '!js/libs/jquery.mousewheel.js'], function($) {
     }
 
     var options = $.extend({}, $.swipePanel, userOptions);
+    if (options.vertical) {
+      options._dimension = 'height';
+      options._direction = 'top';
+      options._axis = 'Y';
+    } else {
+      options._dimension = 'width';
+      options._direction = 'left';
+      options._axis = 'X';
+    }
+
     return this.each(function() {
       var components = {
         root: $(this),
-        rootWidth: $(this).width(),
+        rootSize: $(this)[options._dimension](),
         // wrapper for all the children in the root - used to scroll
         container: options.container || $(document.createElement('div')),
-        containerWidth: null,
+        containerSize: null,
         pivot: 0
       };
 
@@ -96,12 +106,12 @@ define(['jquery', '!js/libs/jquery.mousewheel.js'], function($) {
         .bind('mouseleave.stopSlide', stopSlideMouse)
         .bind('mouseup.stopSlide', stopSlideMouse)
         .bind('mousedown.startSlide', function(event) {
-          pointerDown(components, event);
+          pointerDown(components, options, event);
         })
         .bind('mousewheel.startSlide', function(event, delta) {
           event.preventDefault();
           event.stopPropagation();
-          changePosition(components, delta * options.scrollSize);
+          changePosition(components, options, delta * options.scrollSize);
         });
 
         // add touch events
@@ -114,14 +124,14 @@ define(['jquery', '!js/libs/jquery.mousewheel.js'], function($) {
           .bind('touchstart.startSlide', function(event) {
             event.stopPropagation();
             var e = event.originalEvent;
-            components.pivot = e.touches[0].pageX;
+            components.pivot = e.touches[0]['page'+options._axis];
           })
           .bind('touchmove.slide', function(event) {
             event.preventDefault();
             event.stopPropagation();
             var e = event.originalEvent;
-            var pivot = e.touches[0].pageX;
-            changePosition(components, pivot - components.pivot);
+            var pivot = e.touches[0]['page'+options._axis];
+            changePosition(components, options, pivot - components.pivot);
             components.pivot = pivot;
           })
           .bind('touchleave.stopSlide', stopSlide)
@@ -136,38 +146,45 @@ define(['jquery', '!js/libs/jquery.mousewheel.js'], function($) {
       }
 
       // remember the initial CSS of the container and update its Size
-      components.container.data('origCSS', {
-        left: components.container.css('left'),
-        width: components.container.css('width')
-      });
-      updateRealInnerWidth(components, options);
+      var oldAttributes = {};
+      var cssAttr = ['width', 'height', 'position', 'left', 'top'];
+      for (var i=0; i<cssAttr.length; ++i) {
+        oldAttributes[cssAttr[i]] = components.container.css(cssAttr[i]);
+      }
+      components.container
+        .data('origCSS', oldAttributes)
+        .css({
+          position: 'relative'
+        })
+      updateRealInnerSize(components, options);
     });
   }
 
-  function updateRealInnerWidth(components, options) {
-    // find out the real inner width of the root
-    //    (real inner width = total width of all children put on the same row)
-    components.containerWidth = 0;
+  /* find out the real inner size of the root
+      (real inner size = size of all children put on the same axis)
+  */
+  function updateRealInnerSize(components, options) {
+    // find out which size function to use (outerWidth or outerHeight)
+    var getSizeMethod = 'outer'
+                        + options._dimension.charAt(0).toUpperCase()
+                        + options._dimension.slice(1);
+    components.containerSize = 0;
     components.container
       .children()
       .each(function() {
-        components.containerWidth += $(this).outerWidth(true);
-        console.log( $(this).outerWidth(), $(this).outerWidth(true) );
+        components.containerSize += $(this)[getSizeMethod](true);
       });
-    components.container.css({
-      position: 'relative',
-      left: 0,
-      width: components.containerWidth
-    });
+    components.container.css(options._direction, 0);
+    components.container.css(options._dimension, components.containerSize);
   }
 
-  function pointerDown(components, event) {
+  function pointerDown(components, options, event) {
     event.stopPropagation();
-    components.pivot = event.originalEvent.pageX;
+    components.pivot = event.originalEvent['page'+options._axis];
     components.root
       .unbind('.slide')
       .bind('mousemove.slide', function(event) {
-        pointerMove(components, event);
+        pointerMove(components, options, event);
       });
   }
 
@@ -175,23 +192,24 @@ define(['jquery', '!js/libs/jquery.mousewheel.js'], function($) {
     components.root.unbind('mousemove.slide');
   }
 
-  function pointerMove(components, event) {
+  function pointerMove(components, options, event) {
     event.preventDefault();
     event.stopPropagation();
-    var pivot = event.pageX;
-    changePosition(components, pivot - components.pivot);
+    var pivot = event['page'+options._axis];
+    changePosition(components, options, pivot - components.pivot);
     components.pivot = pivot;
   }
 
-  function changePosition(components, value) {
-    var newPosition = parseInt(components.container.css('left'), 10) + value;
+  function changePosition(components, options, value) {
+    var newPosition = parseInt(components.container.css(options._direction), 10)
+                      + value;
     if (newPosition > 0) {
       newPosition = 0;
     }
-    if (newPosition < components.rootWidth - components.containerWidth) {
-      newPosition = components.rootWidth - components.containerWidth;
+    if (newPosition < components.rootSize - components.containerSize) {
+      newPosition = components.rootSize - components.containerSize;
     }
-    components.container.css('left', newPosition+'px');
+    components.container.css(options._direction, newPosition+'px');
   }
 
 });
