@@ -75,7 +75,6 @@ define(['jquery', '!js/libs/jquery.mousewheel.js'], function($) {
       });
 
       if (options.disableDrag) {
-        console.log( components.container.find(options.disableDrag) );
         components.container.find(options.disableDrag)
           .live('dragstart', function(event) { event.preventDefault(); });
       }

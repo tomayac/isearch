@@ -61,12 +61,10 @@ define("mylibs/menu",
       if( menu.data('swipePanel') ){
         menu.swipePanel('updateContainerWidth');
       } else {
-				setTimeout( function(){
-					menu.swipePanel({
-						container: menu.find('ul'),
-						children: '> ul > li'
-					});
-				}, 1000);
+				menu.swipePanel({
+					container: menu.find('ul'),
+					children: '> ul > li'
+				});
       }
     };
 
