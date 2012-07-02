@@ -8,20 +8,21 @@ define(['jquery', '!js/libs/jquery.mousewheel.js'], function($) {
 
   // global options
   $.swipePanel = {
-    /* for which children to apply the events.
-        NOTE: this is due to a bug that makes touchmove events fire very slowly
-                at the beginning of the drag. Once that is fixed, this option
-                can be removed and the binding can only be done on the root
+    /* will innerWrapp the root
+        if set to null, a default one will be created
+        if set to a DOM/jQuery element, that will be used instead
     */
-    children: '> *',
-    // will innerWrapp the root
-    // if set to null, a default one will be created
-    // if set to a DOM/jQuery element, that will be used instead
     container: null,
+    // for which children to apply the events.
+    children: '> *',
     // how much to shift when scrolling once with the mousewheel
     scrollSize: 10,
     // whether the slider is horizontal or vertical
-    vertical: false
+    vertical: false,
+    /* on which elements to disable native browser dragging
+        (cause scroll to malfunction on images and links)
+    */
+    disableDrag: 'img, a'
   };
 
   var methods = {
@@ -73,6 +74,12 @@ define(['jquery', '!js/libs/jquery.mousewheel.js'], function($) {
         options: options
       });
 
+      if (options.disableDrag) {
+        console.log( components.container.find(options.disableDrag) );
+        components.container.find(options.disableDrag)
+          .live('dragstart', function(event) { event.preventDefault(); });
+      }
+
       updateRealInnerWidth(components, options);
 
       // add mouse events
@@ -100,7 +107,6 @@ define(['jquery', '!js/libs/jquery.mousewheel.js'], function($) {
 
         components.root
           .bind('touchstart.startSlide', function(event) {
-            event.preventDefault();
             event.stopPropagation();
             var e = event.originalEvent;
             components.pivot = e.touches[0].pageX;
