@@ -35,12 +35,10 @@ define(['jquery', '!js/libs/jquery.mousewheel.js'], function($) {
       var data = $(this).data('swipePanel');
       if (data) {
         data.components.root
-          .add(data.components.root.find(data.options.children))
           .unbind('.startSlide')
           .unbind('.slide')
           .unbind('.stopSlide')
           .append(data.components.container.children());
-
         data.components.container.remove();
         $(this).data('swipePanel', null);
       }
@@ -65,7 +63,7 @@ define(['jquery', '!js/libs/jquery.mousewheel.js'], function($) {
         root: $(this),
         rootWidth: $(this).width(),
         // wrapper for all the children in the root - used to scroll
-        container: /*options.container || */$(document.createElement('div')),
+        container: options.container || $(document.createElement('div')),
         containerWidth: null,
         pivot: 0
       };
@@ -85,8 +83,6 @@ define(['jquery', '!js/libs/jquery.mousewheel.js'], function($) {
       components.root
         .bind('mouseleave.stopSlide', stopSlideMouse)
         .bind('mouseup.stopSlide', stopSlideMouse)
-//        .find(options.children)
-//        .add(components.container)
         .bind('mousedown.startSlide', function(event) {
           pointerDown(components, event);
         })
@@ -121,9 +117,13 @@ define(['jquery', '!js/libs/jquery.mousewheel.js'], function($) {
           .bind('touchcancel.stopSlide', stopSlide)
           .bind('touchend.stopSlide', stopSlide);
 
-      // update wrapper
+      // update container
+      if (options.container !== null) {
+        // remove any custom container from the DOM to prevent exceptions
+        components.container.remove();
+      }
       components.container
-        .append(components.root.children())
+        .append(components.root.find(options.children))
         .appendTo(components.root);
     });
   }
@@ -135,7 +135,7 @@ define(['jquery', '!js/libs/jquery.mousewheel.js'], function($) {
     components.root
       .find(options.children)
       .each(function() {
-        components.containerWidth += $(this).outerWidth();
+        components.containerWidth += $(this).outerWidth(true);
       });
       components.container.css({
         position: 'relative',

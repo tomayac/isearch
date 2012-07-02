@@ -63,7 +63,8 @@ define("mylibs/menu",
       } else {
 				setTimeout( function(){
 					menu.swipePanel({
-						container: menu.find('ul')
+						container: menu.find('ul'),
+						children: '> ul > li'
 					});
 				}, 1000);
       }
