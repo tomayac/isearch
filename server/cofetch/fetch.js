@@ -416,7 +416,6 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
             if(queryAdjustment[contentObject.Category]) {
               youtubeQuery += queryAdjustment[contentObject.Category];
             } 
-            
             //Get videos for content object
             youtube.fetchVideo(youtubeQuery, 1, 1, this);
   				},
@@ -429,7 +428,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
               console.log('YouTube error: '+error);
             } else {
               console.log('5. YouTube data fetched!');
-              
+
               //If automatic mode is on, than just store the first retrieved video (e.g. the most relevant)
               if(automatic === true) {
                 //Push the best matching video to the files array of the content object
@@ -447,16 +446,14 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
                 }
               } // end automatic if
             }
-            
             var soundQuery = contentObject.Name; 
             //Get audio for content object
-            sound.fetchSound(soundQuery, 1, 1, this);
+            sound.fetchSound(soundQuery, 0, 1, this);
   				},
   				function getSoundData(error,data) {
   					if(error) {
   						console.log('Freesound error: '+error);
   					}
-  					
   					if(data.length < 1) {
   						var soundQuery = contentObject.Name; 
   						//Get audio for content object
@@ -474,7 +471,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
   					if(error) {
   						console.log('Freesound error: '+error);
   					} else { 
-  					
+  					  
   						console.log('6. Composed Sound data fetched!');
   						
   					  //If automatic mode is on, than just store the first retrieved sound (e.g. the most relevant)

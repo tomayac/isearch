@@ -231,7 +231,7 @@ var fetchWeather = function(locationTimeData, callback) {
     }); //End jsdom
   })
   .on('error', function(data,response) {
-    callback(response.message, null);
+    callback(response ? response.message : 'Querying wunderground API failed due to an unknown reason.', null);
   });  
 }; // end of fetch weather function
   

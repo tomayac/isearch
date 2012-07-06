@@ -57,7 +57,7 @@ var getVideoData = function(video, callback) {
     
     //get weather data if we have a location
     weather.fetchWeather({Date: result.Date, Location: result.Location}, function(error, data) {
-      if(error) {
+      if(error || !data) {
         console.log('No weather data found for video with name "' + result.Name + '"');
       } else {
         result.Weather = data;

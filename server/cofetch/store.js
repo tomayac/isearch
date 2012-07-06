@@ -5,8 +5,7 @@
  * 
  * @author Jonas
  */
-var path        = require('path'), 
-    fs          = require('fs'), 
+var fs          = require('fs'), 
     nodeio      = require('node.io'),
     restler     = require('restler'),
     querystring = require('querystring');
@@ -509,7 +508,7 @@ exports.exists = function(name, categoryPath, callback) {
   console.log('Test exist: ' + fileOutputPath + coName + '.json');
   
   // Check if the folder for this content object already exists
-  path.exists(fileOutputPath + coName + '.json', function(exists) {
+  fs.exists(fileOutputPath + coName + '.json', function(exists) {
     if (exists) {
       var fileContents = fs.readFileSync(fileOutputPath + coName + '.json');
       try {
@@ -555,7 +554,7 @@ exports.store = function(co, overwrite, automatic, onlyJson, callback) {
   for ( var p = 0; p < catpath.length; p++) {
     fileOutputPath += '/' + catpath[p];
     webOutputUrl += '/' + catpath[p];
-    if (!path.existsSync(fileOutputPath)) {
+    if (!fs.existsSync(fileOutputPath)) {
       if (fs.mkdirSync(fileOutputPath, 0755)) {
         break;
       }
@@ -570,7 +569,7 @@ exports.store = function(co, overwrite, automatic, onlyJson, callback) {
   console.log("StoreData: Name=" + baseName + ' (' + co.Name + ')');
 
   // Check if the folder for this content object already exists
-  path.exists(fileOutputPath + baseName + '.json', function(exists) {
+  fs.exists(fileOutputPath + baseName + '.json', function(exists) {
     // Pre check
     if (exists && overwrite === false) {
       console.log('File exists!');

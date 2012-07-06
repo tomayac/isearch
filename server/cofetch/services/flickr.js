@@ -81,7 +81,7 @@ var getImageInfo = function(imageId, callback) {
         
         //get weather data if we have a location
         weather.fetchWeather({Date: photo.dates.taken, Location: result.Location}, function(error, data) {
-          if(error) {
+          if(error || !data) {
             console.log('No weather data found for image with id ' + imageId);
           } else {
             result.Weather = data;
