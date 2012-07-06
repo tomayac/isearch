@@ -808,12 +808,17 @@ var cofetchHandler = (function() {
     	);
     };
     
+    $("#loading").show();
+    
     //Send it to the server
     $.ajax({
     	  type: "POST",
     	  url: serverURL,
     	  data: JSON.stringify(jsonFile),
     	  success: function(data) {
+    	    
+    	    $("#loading").hide();
+    	    
     		  //Remove the saved CO from the temporary data array
     		  scraperData.splice(manualIndex,1);
     		  manualIndex = -1;
@@ -859,6 +864,9 @@ var cofetchHandler = (function() {
     		  $("#dialog").dialog('open');
     	  },
     	  error: function(jqXHR, textStatus, errorThrown) {
+    	    
+    	    $("#loading").hide();
+    	    
     		  var errorData = {};
         	  try {
         		  errorData = JSON.parse(jqXHR.responseText);
