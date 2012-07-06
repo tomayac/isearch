@@ -210,7 +210,7 @@ var getQueryRucod = function(query,sessionId,sessionStore,callback) {
                                    .replace(/-/g    , '.');
       
       //Try to fetch weather data for this location
-      wunder.fetchWeather({Date: datetime, Location: position}, function(error, data) {
+      wunder.fetchWeather(0, {Date: datetime, Location: position}, function(error, data) {
 
         if(error) {
           console.log('No weather data found for query with id ' + sessionId);

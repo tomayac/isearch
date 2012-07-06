@@ -46,20 +46,10 @@ var getSoundData = function(soundId, callback) {
 
       if(sounddata.geotag) {
         result.Location = [sounddata.geotag.lat || 0, sounddata.geotag.lon || 0, 0 ,0];
-        //get weather data if we have a location
-        weather.fetchWeather({Date: sounddata.created, Location: result.Location}, function(error, weatherdata) {
-          if(error || !weatherdata) {
-            console.log('No weather data found for sound with id ' + soundId);
-          } else {
-            result.Weather = weatherdata;
-          }
-          //Ok, got everything here so give the result back
-          callback(null, result);
-        });
-      } else {
-        //No location, hence no weather, just return the result
-        callback(null, result);
       }
+      //Ok, got everything here so give the result back
+      callback(null, result);
+      
     } catch (error) {
       callback(error, null);
     }

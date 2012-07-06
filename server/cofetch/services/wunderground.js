@@ -79,7 +79,7 @@ var weatherCondition = new Array();
   weatherCondition['Mostly Cloudy']     = 'BKN';
   weatherCondition['Scattered Clouds']  = 'FEW';
 
-var fetchWeather = function(locationTimeData, callback) {
+var fetchWeather = function(id, locationTimeData, callback) {
   if (!locationTimeData || typeof(locationTimeData) != 'object') {
     callback('No valid data was given to fetch weather data', null);
     return;
@@ -125,8 +125,8 @@ var fetchWeather = function(locationTimeData, callback) {
   //Get the weather page
   restler
   .get(requestURL)
-  .on('success', function(data) {    
-        
+  .on('success', function(data) { 
+
     //Get jQuery working on the returned HTML page
     jsdom.env({
       html: data,
@@ -223,18 +223,18 @@ var fetchWeather = function(locationTimeData, callback) {
         }
         
         //Fine we got something, so give it back
-        callback(null, weatherData);
+        callback(null, weatherData, id);
       
       } catch (error) {
-        callback(error, null);
+        callback(error, null, id);
       }
     }); //End jsdom
   })
   .on('error', function(data,response) {
-    callback(response ? response.message : 'Querying wunderground API failed due to an unknown reason.', null);
+    console.dir(response.data);
+    callback(response ? response.message : 'Querying wunderground API failed due to an unknown reason.', null, id);
   });  
-}; // end of fetch weather function
-  
+}; // end of fetch weather function 
   
 //Exposes it publicly
 if (typeof module !== 'undefined' && "exports" in module) {
