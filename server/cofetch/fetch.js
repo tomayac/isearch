@@ -42,34 +42,31 @@ Fetch.prototype.getBestMatch = function(query, results, callback) {
   var levenDistance = function(v1, v2){
     d = [];
 
-    for( i=0; i < v1.length; i++)
+    for( i=0; i < v1.length; i++) {
       d[i] = [];
-
-    if (v1[0] != v2[0])
+    }
+    if (v1[0] != v2[0]) {
       d[0][0] = 1;
-    else
+    } else {
       d[0][0] = 0;
-
-    for( i=1; i < v1.length; i++)
+    }
+    for( i=1; i < v1.length; i++) {
       d[i][0] = d[i-1][0] + 1;
-
-    for( j=1; j < v2.length; j++)
+    }
+    for( j=1; j < v2.length; j++) {
       d[0][j] = d[0][j-1] + 1;
-
-    for( i=1; i < v1.length; i++)
-    {
-      for( j=1; j < v2.length; j++)
-      {
+    }
+    for( i=1; i < v1.length; i++) {
+      for( j=1; j < v2.length; j++) {
         cost = 0;
-        if (v1[i] != v2[j])
+        if (v1[i] != v2[j]) {
           cost = 1;
-
+        }
         d[i][j] = d[i-1][j] + 1;
-        if ( d[i][j] > d[i][j-1]+1 ) d[i][j] = d[i][j-1] + 1;
-        if ( d[i][j] > d[i-1][j-1]+cost ) d[i][j] = d[i-1][j-1] + cost;
+        if ( d[i][j] > d[i][j-1]+1 ) { d[i][j] = d[i][j-1] + 1; }
+        if ( d[i][j] > d[i-1][j-1]+cost ) { d[i][j] = d[i-1][j-1] + cost; }
       }
     }
-
     return d[v1.length-1][v2.length-1] || 0;
   };
 
@@ -81,8 +78,6 @@ Fetch.prototype.getBestMatch = function(query, results, callback) {
   if(q.length < 3 || r.length < 1) {
     callback('Missing Input', null);
   } else {
-
-
     //Get all words of query
     var qwords = q.split(" ");
     //Remove query words shorter than 3 characters (e.g. "is" or "a")
@@ -98,7 +93,6 @@ Fetch.prototype.getBestMatch = function(query, results, callback) {
     qwords = removeShort(qwords);
 
     //1. First round - generate a list of occurrences of the query words within the result titles 
-
     //For each result item
     for(var i=0; i < r.length; i++) {
 
@@ -116,7 +110,6 @@ Fetch.prototype.getBestMatch = function(query, results, callback) {
     }
 
     //2. Second round - generate a list of differences between query and result titles
-
     var joinedQuery = qwords.join(' ');
 
     //For each result item
@@ -126,7 +119,6 @@ Fetch.prototype.getBestMatch = function(query, results, callback) {
     }
 
     //3. Third round - generate the result with the two most fitting result items
-
     var w1 = {Id: -1, Matches: 0, Diff: 1000}, 
     w2 = {Id: -1, Matches: 0, Diff: 1000};
 
@@ -144,7 +136,6 @@ Fetch.prototype.getBestMatch = function(query, results, callback) {
     }
 
     //4. Test the results
-
     //If we have both winners, return both in an array
     if(w1.Id > -1 && w2.Id > -1) {
       callback(null, new Array(r[w1.Id],r[w2.Id]));
@@ -181,7 +172,7 @@ Fetch.prototype.getPart = function(type, query, page, gps, callback) {
         function getResult(error,data) {
           //Be sure to have data before going on
           if(!error && data.length < 1) {
-            error = 'No data could be retrieved.';
+            error = 'No 3D models could be retrieved.';
           }
           if(error) {
             console.log('error: ' + error);
@@ -201,7 +192,7 @@ Fetch.prototype.getPart = function(type, query, page, gps, callback) {
         function getResult(error,data) {
           //Be sure to have data before going on
           if(!error && data.length < 1) {
-            error = 'No data could be retrieved.';
+            error = 'No text could be retrieved.';
           }
           if(error) {
             console.log('error: ' + error);
@@ -221,7 +212,7 @@ Fetch.prototype.getPart = function(type, query, page, gps, callback) {
         function getResult(error,data) {
           //Be sure to have data before going on
           if(!error && data.length < 1) {
-            error = 'No data could be retrieved.';
+            error = 'No images could be retrieved.';
           }
           if(error) {
             console.log('error: ' + error);
@@ -241,7 +232,7 @@ Fetch.prototype.getPart = function(type, query, page, gps, callback) {
         function getResult(error,data) {
           //Be sure to have data before going on
           if(!error && data.length < 1) {
-            error = 'No data could be retrieved.';
+            error = 'No videos could be retrieved.';
           }
           if(error) {
             console.log('error: ' + error);
@@ -261,10 +252,10 @@ Fetch.prototype.getPart = function(type, query, page, gps, callback) {
         function getResult(error, data) {
           //Be sure to have data before going on
           if(!error && data.length < 1) {
-            error = 'No data could be retrieved.';
+            error = 'No sounds could be retrieved.';
           }
           if(error) {
-            console.log('error: ' + error);
+            console.log('Error: ' + error);
             callback(error,[]);
           } else {
             callback(null,data);
