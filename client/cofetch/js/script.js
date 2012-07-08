@@ -17,6 +17,30 @@ $(document).ready(function(){
       autoHeight: false,
       collapsible: true
     });
+    //Init autocomplete for keyword box
+    $('#script-keywords,#search-text-phrase').autocomplete({
+      source: function( request, response ) {
+        $.ajax({
+          url: "http://en.wikipedia.org/w/api.php",
+          dataType: "jsonp",
+          data: {
+            action: "opensearch",
+            format: "json",
+            search: $('#script-keywords').val(),
+            max: 10
+          },
+          success: function( data ) {
+            response( $.map( data[1], function( item ) {
+              return {
+                label: item,
+                value: item
+              };
+            }));
+          }
+        });
+      },
+      minLength: 2
+    });
     
     if($("#script-automatic").attr("checked") !== undefined) {
     	$(".datatab").hide();
@@ -62,7 +86,6 @@ $(document).ready(function(){
 		 $(".datatab").hide(); 
 	  } else {
 		 $(".datatab").show();
-		 $("section").show();
 	  }
   });  
     
@@ -70,11 +93,12 @@ $(document).ready(function(){
   	if($("#script-keywords").val().length < 3 || $("#script-category").val() == "") {
   		alert("Please specify at least one search keyword as well as the search category!");
   	} else {
+  	  cofetchHandler.resetForm();
   	  resetSearchNav('threed');
   	  resetSearchNav('image');
   	  resetSearchNav('audio');
   	  resetSearchNav('video');
-  	  $('#script-tabs section').show();
+  	  $('.datatab').show();
   		cofetchHandler.fetch($("#script-keywords").val(),$("#script-category").val(),$("#script-automatic").attr("checked"));
   	}
   	return false;
@@ -186,43 +210,58 @@ $(document).ready(function(){
   });
   
   $("span.delete").click(function(){
+    //Activate previous tab
+    $(this).parent().prev().addClass('ui-tabs-selected ui-state-active');
+    $(this).parent().show();
+    //Activate previous tab content
+    var newItemNameId = $(this).parent().prev().find('a').attr('href');
+    $(newItemNameId).removeClass('ui-tabs-hide');
+    
+    //Hide actual tab
     $(this).parent().hide();
+    $(this).parent().removeClass('ui-tabs-selected ui-state-active');
+    //Reset actual tab content
     var itemNameId = $(this).prev().attr('href');
-    itemNameId = itemNameId.substring(1,itemNameId.length);
-    $('#' + itemNameId + '-name').val('');
-    $('#' + itemNameId).hide();
+    $(itemNameId + '-name').val('');
+    //Hide actual tab content 
+    $(itemNameId).addClass('ui-tabs-hide');
   });
   
   $("#previous").click(function(){
+    //Make all tabs visible again
+    $(".datatab").show();
     //Load the previous co
-	var prev = cofetchHandler.setPrevious();  
-	if(prev === false || prev === 0) {
-		$('#previous').attr('disabled', 'disabled');
-		$('#next').removeAttr('disabled');
-	} else {
-		$('#next').removeAttr('disabled');
-		$('#previous').removeAttr('disabled');
-	}
+  	var prev = cofetchHandler.setPrevious();  
+  	if(prev === false || prev === 0) {
+  		$('#previous').attr('disabled', 'disabled');
+  		$('#next').removeAttr('disabled');
+  	} else {
+  		$('#next').removeAttr('disabled');
+  		$('#previous').removeAttr('disabled');
+  	}
     return false;
   });
   
   $("#next").click(function(){
+    //Make all tabs visible again
+    $(".datatab").show();
     //load next co
-	var next = cofetchHandler.setNext();  
-	if(next === false || next === 0) {
-		$('#next').attr('disabled', 'disabled');
-		$('#previous').removeAttr('disabled');
-	} else {
-		$('#next').removeAttr('disabled');
-		$('#previous').removeAttr('disabled');
-	} 
+  	var next = cofetchHandler.setNext();  
+  	if(next === false || next === 0) {
+  		$('#next').attr('disabled', 'disabled');
+  		$('#previous').removeAttr('disabled');
+  	} else {
+  		$('#next').removeAttr('disabled');
+  		$('#previous').removeAttr('disabled');
+  	} 
     return false;
   });
   
   $("#save").click(function(e){
 	
     e.preventDefault();  
-	
+    //Make all tabs visible again
+    $(".datatab").show();
     //post JSON to the correct handler server
     cofetchHandler.save();
     
