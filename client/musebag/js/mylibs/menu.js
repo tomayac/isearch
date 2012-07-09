@@ -24,7 +24,7 @@ define("mylibs/menu",
     var menu = $('nav.query-composition');
 
     var reset = function() {
-      $('.panel').slideUp(config.constants.slideUpAnimationTime);
+      hidePanels();
       $('nav li').removeClass('active');
     };
 
@@ -394,7 +394,7 @@ define("mylibs/menu",
 
 	    	$('#videoUpload').click();
 
-	    	reset();
+	    	//reset();
 	        attachedModes.push('video');
 	    });
 
