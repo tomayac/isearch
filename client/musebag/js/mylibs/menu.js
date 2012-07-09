@@ -59,7 +59,7 @@ define("mylibs/menu",
 
     var updateSlider = function( menu ){
       if( menu.data('swipePanel') ){
-        menu.swipePanel('updateContainerWidth');
+        menu.swipePanel('updateContainerSize');
       } else {
 				menu.swipePanel({
 					container: menu.find('ul'),

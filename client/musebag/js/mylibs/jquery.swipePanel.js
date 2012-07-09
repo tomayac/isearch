@@ -10,7 +10,7 @@ define(['jquery', '!js/libs/jquery.mousewheel.js'], function($) {
   $.swipePanel = {
     /* will innerWrapp the root
         if set to null, a default one will be created
-        if set to a DOM/jQuery element, that will be used instead
+        if set to a DOM/jQuery object, that will be used instead
     */
     container: null,
     /* for which children to apply the events
@@ -33,6 +33,7 @@ define(['jquery', '!js/libs/jquery.mousewheel.js'], function($) {
       var data = $(this).data('swipePanel');
       if (data) {
         data.components.rootSize = $(this)[data.options._dimension]();
+        console.log( $(this)[data.options._dimension]() );
       }
     },
     remove: function(index, Element) {
@@ -45,7 +46,7 @@ define(['jquery', '!js/libs/jquery.mousewheel.js'], function($) {
         if (data.options.container) {
           data.options.container.css(data.options.container.data('origCSS'));
         } else {
-          // if a custom container is not used, reset the structure back to normal
+          // if a custom container is not used, reset the structure
           data.components.root.append(data.components.container.children());
           data.components.container.remove();
         }
@@ -60,10 +61,12 @@ define(['jquery', '!js/libs/jquery.mousewheel.js'], function($) {
    */
   $.fn.swipePanel = function(userOptions) {
     // if first parameter is string, then call the method with the same name
-    if (typeof userOptions == 'string'
-        && typeof methods[userOptions] == 'function'
-    ) {
-      return this.each(methods[userOptions]);
+    if (typeof userOptions == 'string') {
+      if( typeof methods[userOptions] == 'function' ){
+        return this.each(methods[userOptions]);
+      } else {
+        console.warn('[$.swipePanel] Unknown method: '+userOptions);
+      }
     }
 
     var options = $.extend({}, $.swipePanel, userOptions);
@@ -211,5 +214,4 @@ define(['jquery', '!js/libs/jquery.mousewheel.js'], function($) {
     }
     components.container.css(options._direction, newPosition+'px');
   }
-
 });
