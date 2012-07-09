@@ -213,5 +213,6 @@ define(['jquery', '!js/libs/jquery.mousewheel.js'], function($) {
       newPosition = components.rootSize - components.containerSize;
     }
     components.container.css(options._direction, newPosition+'px');
+    components.root.trigger('swipePanel-move');
   }
 });
