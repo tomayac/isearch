@@ -266,38 +266,40 @@ define("mylibs/filehandler", ["mylibs/loader", "libs/glge-compiled-min"], functi
                           });
                         });
                       var $containers = $();
+                      var maxWidth = 80;
+                      var maxHeight = 80;
                       for(var i in imageData){
                         var $keyframeContainer = $(document.createElement('span'));
+                        //var width = Math.min(imageData[i].width, maxWidth);
+                        //var height = Math.min(imageData[i].height, maxHeight);
                         $keyframeContainer
                           .attr({
                             score: imageData[i].score,
                             uri: imageData[i].uri
                           })
                           .css({
-                            width: imageData[i].width+'px',
-                            height: imageData[i].height+'px'
-                          })
-                          .html('<img src="'+imageData[i].uri+'" />')
+                            display: 'inline-block',
+                            border: '1px solid #ccc',
+                            background: "#fff url('"+imageData[i].uri+"') no-repeat",
+                            backgroundSize: 'cover',
+                            //backgroundPosition: '50% 50%',
+                            width: maxWidth+'px',
+                            height: maxHeight+'px',
+                            margin: '2px',
+                            padding: '2px'
+                          });
                         $containers = $containers.add($keyframeContainer);
                       }
-                      $containers
-                        .attr('class', 'keyframeContainer')
-                        .css({
-                          border: '1px solid #ccc',
-                          background: '#fff',
-                          display: 'inline-block',
-                          margin: '2px',
-                          padding: '2px'
-                        });
+                      $containers.attr('class', 'keyframeContainer');
                       $videoKeyframes
                         .show()
                         .html($containers)
                         .swipePanel('remove')
                         .swipePanel({
-
+                          scroll: 40
                         })
                         .bind('swipePanel-move', function(event){
-                          console.log('eureeeka', event)
+                          //TODO: actually preload nearby images
                         });
                     }
                   });
