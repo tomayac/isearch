@@ -882,6 +882,7 @@ nav a img {
 	text-align: center;
 	margin: 4px;
 	padding: 10px;
+	overflow-x: hidden;
 }
 
 .over {
