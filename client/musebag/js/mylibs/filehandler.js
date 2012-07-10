@@ -238,7 +238,6 @@ define("mylibs/filehandler", ["mylibs/loader", "libs/glge-compiled-min"], functi
       						console.log("Video uploaded...");
       						pictureIcon = $('nav li[data-mode="video"]');
       						genericItemType = 'VideoType';
-
                   setupVideoKeyframeSelector();
       					}
 
@@ -352,7 +351,11 @@ define("mylibs/filehandler", ["mylibs/loader", "libs/glge-compiled-min"], functi
                 margin: '2px',
                 padding: '2px'
               })
-              .bind('click.zoom', visualWordZoom);
+              .bind('click.zoom', function(){
+                if (!$videoKeyframes.data('swipePanel').components.swiped) {
+                  visualWordZoom.call(this, event);
+                }
+              });
             $containers = $containers.add($keyframeContainer);
           }
           $containers.attr('class', 'keyframeContainer');
