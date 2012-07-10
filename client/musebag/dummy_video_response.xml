@@ -1,0 +1,958 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<visualWords numOfWords="200">
+	<visualWord number="0" imageNumber="25" xMin="50" yMin="147" xMax="201" yMax="308" >
+		<patch number="0" xMin="50" yMin="147" xMax="201" yMax="308" imageNumber="25" score="155.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/0/0.jpg"/>
+		<patch number="1" xMin="50" yMin="147" xMax="201" yMax="308" imageNumber="24" score="89.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/0/1.jpg"/>
+		<patch number="2" xMin="50" yMin="147" xMax="201" yMax="308" imageNumber="0" score="18.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/0/2.jpg"/>
+	</visualWord>
+	<visualWord number="1" imageNumber="0" xMin="9" yMin="65" xMax="243" yMax="227" >
+		<patch number="0" xMin="9" yMin="65" xMax="243" yMax="227" imageNumber="0" score="178.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/1/0.jpg"/>
+		<patch number="1" xMin="9" yMin="65" xMax="243" yMax="227" imageNumber="24" score="32.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/1/1.jpg"/>
+		<patch number="2" xMin="9" yMin="65" xMax="243" yMax="227" imageNumber="25" score="26.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/1/2.jpg"/>
+	</visualWord>
+	<visualWord number="2" imageNumber="24" xMin="50" yMin="148" xMax="208" yMax="311" >
+		<patch number="0" xMin="50" yMin="148" xMax="208" yMax="311" imageNumber="24" score="154.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/2/0.jpg"/>
+		<patch number="1" xMin="50" yMin="148" xMax="208" yMax="311" imageNumber="25" score="100.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/2/1.jpg"/>
+		<patch number="2" xMin="50" yMin="148" xMax="208" yMax="311" imageNumber="0" score="29.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/2/2.jpg"/>
+	</visualWord>
+	<visualWord number="3" imageNumber="0" xMin="2" yMin="107" xMax="132" yMax="288" >
+		<patch number="0" xMin="2" yMin="107" xMax="132" yMax="288" imageNumber="0" score="167.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/3/0.jpg"/>
+		<patch number="1" xMin="2" yMin="107" xMax="132" yMax="288" imageNumber="24" score="23.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/3/1.jpg"/>
+		<patch number="2" xMin="2" yMin="107" xMax="132" yMax="288" imageNumber="25" score="20.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/3/2.jpg"/>
+	</visualWord>
+	<visualWord number="4" imageNumber="2" xMin="298" yMin="43" xMax="475" yMax="315" >
+		<patch number="0" xMin="298" yMin="43" xMax="475" yMax="315" imageNumber="2" score="172.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/4/0.jpg"/>
+		<patch number="1" xMin="298" yMin="43" xMax="475" yMax="315" imageNumber="3" score="54.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/4/1.jpg"/>
+	</visualWord>
+	<visualWord number="5" imageNumber="25" xMin="144" yMin="127" xMax="280" yMax="262" >
+		<patch number="0" xMin="144" yMin="127" xMax="280" yMax="262" imageNumber="25" score="158.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/5/0.jpg"/>
+		<patch number="1" xMin="144" yMin="127" xMax="280" yMax="262" imageNumber="24" score="90.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/5/1.jpg"/>
+		<patch number="2" xMin="144" yMin="127" xMax="280" yMax="262" imageNumber="0" score="15.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/5/2.jpg"/>
+	</visualWord>
+	<visualWord number="6" imageNumber="24" xMin="117" yMin="123" xMax="282" yMax="235" >
+		<patch number="0" xMin="117" yMin="123" xMax="282" yMax="235" imageNumber="24" score="162.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/6/0.jpg"/>
+		<patch number="1" xMin="117" yMin="123" xMax="282" yMax="235" imageNumber="25" score="112.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/6/1.jpg"/>
+		<patch number="2" xMin="117" yMin="123" xMax="282" yMax="235" imageNumber="0" score="29.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/6/2.jpg"/>
+	</visualWord>
+	<visualWord number="7" imageNumber="24" xMin="50" yMin="166" xMax="246" yMax="311" >
+		<patch number="0" xMin="50" yMin="166" xMax="246" yMax="311" imageNumber="24" score="154.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/7/0.jpg"/>
+		<patch number="1" xMin="50" yMin="166" xMax="246" yMax="311" imageNumber="25" score="97.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/7/1.jpg"/>
+		<patch number="2" xMin="50" yMin="166" xMax="246" yMax="311" imageNumber="0" score="28.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/7/2.jpg"/>
+	</visualWord>
+	<visualWord number="8" imageNumber="27" xMin="131" yMin="63" xMax="408" yMax="304" >
+		<patch number="0" xMin="131" yMin="63" xMax="408" yMax="304" imageNumber="27" score="141.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/8/0.jpg"/>
+		<patch number="1" xMin="131" yMin="63" xMax="408" yMax="304" imageNumber="26" score="109.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/8/1.jpg"/>
+	</visualWord>
+	<visualWord number="9" imageNumber="24" xMin="65" yMin="172" xMax="288" yMax="311" >
+		<patch number="0" xMin="65" yMin="172" xMax="288" yMax="311" imageNumber="24" score="158.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/9/0.jpg"/>
+		<patch number="1" xMin="65" yMin="172" xMax="288" yMax="311" imageNumber="25" score="102.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/9/1.jpg"/>
+		<patch number="2" xMin="65" yMin="172" xMax="288" yMax="311" imageNumber="0" score="29.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/9/2.jpg"/>
+	</visualWord>
+	<visualWord number="10" imageNumber="0" xMin="83" yMin="145" xMax="266" yMax="246" >
+		<patch number="0" xMin="83" yMin="145" xMax="266" yMax="246" imageNumber="0" score="178.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/10/0.jpg"/>
+		<patch number="1" xMin="83" yMin="145" xMax="266" yMax="246" imageNumber="24" score="26.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/10/1.jpg"/>
+		<patch number="2" xMin="83" yMin="145" xMax="266" yMax="246" imageNumber="25" score="25.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/10/2.jpg"/>
+	</visualWord>
+	<visualWord number="11" imageNumber="27" xMin="106" yMin="62" xMax="333" yMax="244" >
+		<patch number="0" xMin="106" yMin="62" xMax="333" yMax="244" imageNumber="27" score="140.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/11/0.jpg"/>
+		<patch number="1" xMin="106" yMin="62" xMax="333" yMax="244" imageNumber="26" score="103.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/11/1.jpg"/>
+	</visualWord>
+	<visualWord number="12" imageNumber="25" xMin="165" yMin="140" xMax="426" yMax="314" >
+		<patch number="0" xMin="165" yMin="140" xMax="426" yMax="314" imageNumber="25" score="156.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/12/0.jpg"/>
+		<patch number="1" xMin="165" yMin="140" xMax="426" yMax="314" imageNumber="24" score="88.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/12/1.jpg"/>
+		<patch number="2" xMin="165" yMin="140" xMax="426" yMax="314" imageNumber="0" score="14.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/12/2.jpg"/>
+	</visualWord>
+	<visualWord number="13" imageNumber="0" xMin="2" yMin="97" xMax="141" yMax="266" >
+		<patch number="0" xMin="2" yMin="97" xMax="141" yMax="266" imageNumber="0" score="166.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/13/0.jpg"/>
+		<patch number="1" xMin="2" yMin="97" xMax="141" yMax="266" imageNumber="24" score="22.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/13/1.jpg"/>
+		<patch number="2" xMin="2" yMin="97" xMax="141" yMax="266" imageNumber="25" score="20.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/13/2.jpg"/>
+	</visualWord>
+	<visualWord number="14" imageNumber="25" xMin="255" yMin="79" xMax="475" yMax="314" >
+		<patch number="0" xMin="255" yMin="79" xMax="475" yMax="314" imageNumber="25" score="158.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/14/0.jpg"/>
+		<patch number="1" xMin="255" yMin="79" xMax="475" yMax="314" imageNumber="24" score="104.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/14/1.jpg"/>
+	</visualWord>
+	<visualWord number="15" imageNumber="24" xMin="50" yMin="162" xMax="234" yMax="311" >
+		<patch number="0" xMin="50" yMin="162" xMax="234" yMax="311" imageNumber="24" score="154.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/15/0.jpg"/>
+		<patch number="1" xMin="50" yMin="162" xMax="234" yMax="311" imageNumber="25" score="98.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/15/1.jpg"/>
+		<patch number="2" xMin="50" yMin="162" xMax="234" yMax="311" imageNumber="0" score="31.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/15/2.jpg"/>
+	</visualWord>
+	<visualWord number="16" imageNumber="25" xMin="63" yMin="147" xMax="211" yMax="272" >
+		<patch number="0" xMin="63" yMin="147" xMax="211" yMax="272" imageNumber="25" score="157.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/16/0.jpg"/>
+		<patch number="1" xMin="63" yMin="147" xMax="211" yMax="272" imageNumber="24" score="94.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/16/1.jpg"/>
+		<patch number="2" xMin="63" yMin="147" xMax="211" yMax="272" imageNumber="0" score="19.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/16/2.jpg"/>
+	</visualWord>
+	<visualWord number="17" imageNumber="0" xMin="2" yMin="182" xMax="115" yMax="313" >
+		<patch number="0" xMin="2" yMin="182" xMax="115" yMax="313" imageNumber="0" score="164.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/17/0.jpg"/>
+		<patch number="1" xMin="2" yMin="182" xMax="115" yMax="313" imageNumber="24" score="19.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/17/1.jpg"/>
+	</visualWord>
+	<visualWord number="18" imageNumber="0" xMin="2" yMin="114" xMax="141" yMax="269" >
+		<patch number="0" xMin="2" yMin="114" xMax="141" yMax="269" imageNumber="0" score="166.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/18/0.jpg"/>
+		<patch number="1" xMin="2" yMin="114" xMax="141" yMax="269" imageNumber="24" score="23.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/18/1.jpg"/>
+		<patch number="2" xMin="2" yMin="114" xMax="141" yMax="269" imageNumber="25" score="20.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/18/2.jpg"/>
+	</visualWord>
+	<visualWord number="19" imageNumber="25" xMin="79" yMin="147" xMax="238" yMax="251" >
+		<patch number="0" xMin="79" yMin="147" xMax="238" yMax="251" imageNumber="25" score="157.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/19/0.jpg"/>
+		<patch number="1" xMin="79" yMin="147" xMax="238" yMax="251" imageNumber="24" score="94.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/19/1.jpg"/>
+		<patch number="2" xMin="79" yMin="147" xMax="238" yMax="251" imageNumber="0" score="20.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/19/2.jpg"/>
+	</visualWord>
+	<visualWord number="20" imageNumber="25" xMin="177" yMin="93" xMax="320" yMax="226" >
+		<patch number="0" xMin="177" yMin="93" xMax="320" yMax="226" imageNumber="25" score="156.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/20/0.jpg"/>
+		<patch number="1" xMin="177" yMin="93" xMax="320" yMax="226" imageNumber="24" score="101.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/20/1.jpg"/>
+		<patch number="2" xMin="177" yMin="93" xMax="320" yMax="226" imageNumber="0" score="17.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/20/2.jpg"/>
+	</visualWord>
+	<visualWord number="21" imageNumber="25" xMin="73" yMin="147" xMax="217" yMax="275" >
+		<patch number="0" xMin="73" yMin="147" xMax="217" yMax="275" imageNumber="25" score="154.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/21/0.jpg"/>
+		<patch number="1" xMin="73" yMin="147" xMax="217" yMax="275" imageNumber="24" score="93.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/21/1.jpg"/>
+		<patch number="2" xMin="73" yMin="147" xMax="217" yMax="275" imageNumber="0" score="19.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/21/2.jpg"/>
+	</visualWord>
+	<visualWord number="22" imageNumber="2" xMin="223" yMin="34" xMax="473" yMax="273" >
+		<patch number="0" xMin="223" yMin="34" xMax="473" yMax="273" imageNumber="2" score="167.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/22/0.jpg"/>
+		<patch number="1" xMin="223" yMin="34" xMax="473" yMax="273" imageNumber="3" score="32.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/22/1.jpg"/>
+		<patch number="2" xMin="223" yMin="34" xMax="473" yMax="273" imageNumber="6" score="15.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/22/2.jpg"/>
+	</visualWord>
+	<visualWord number="23" imageNumber="25" xMin="271" yMin="63" xMax="475" yMax="314" >
+		<patch number="0" xMin="271" yMin="63" xMax="475" yMax="314" imageNumber="25" score="157.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/23/0.jpg"/>
+		<patch number="1" xMin="271" yMin="63" xMax="475" yMax="314" imageNumber="24" score="104.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/23/1.jpg"/>
+	</visualWord>
+	<visualWord number="24" imageNumber="25" xMin="50" yMin="163" xMax="221" yMax="308" >
+		<patch number="0" xMin="50" yMin="163" xMax="221" yMax="308" imageNumber="25" score="152.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/24/0.jpg"/>
+		<patch number="1" xMin="50" yMin="163" xMax="221" yMax="308" imageNumber="24" score="84.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/24/1.jpg"/>
+		<patch number="2" xMin="50" yMin="163" xMax="221" yMax="308" imageNumber="0" score="16.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/24/2.jpg"/>
+	</visualWord>
+	<visualWord number="25" imageNumber="0" xMin="52" yMin="114" xMax="218" yMax="255" >
+		<patch number="0" xMin="52" yMin="114" xMax="218" yMax="255" imageNumber="0" score="175.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/25/0.jpg"/>
+		<patch number="1" xMin="52" yMin="114" xMax="218" yMax="255" imageNumber="24" score="28.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/25/1.jpg"/>
+		<patch number="2" xMin="52" yMin="114" xMax="218" yMax="255" imageNumber="25" score="17.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/25/2.jpg"/>
+	</visualWord>
+	<visualWord number="26" imageNumber="25" xMin="169" yMin="117" xMax="304" yMax="265" >
+		<patch number="0" xMin="169" yMin="117" xMax="304" yMax="265" imageNumber="25" score="155.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/26/0.jpg"/>
+		<patch number="1" xMin="169" yMin="117" xMax="304" yMax="265" imageNumber="24" score="95.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/26/1.jpg"/>
+		<patch number="2" xMin="169" yMin="117" xMax="304" yMax="265" imageNumber="0" score="15.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/26/2.jpg"/>
+	</visualWord>
+	<visualWord number="27" imageNumber="24" xMin="151" yMin="100" xMax="317" yMax="241" >
+		<patch number="0" xMin="151" yMin="100" xMax="317" yMax="241" imageNumber="24" score="160.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/27/0.jpg"/>
+		<patch number="1" xMin="151" yMin="100" xMax="317" yMax="241" imageNumber="25" score="111.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/27/1.jpg"/>
+		<patch number="2" xMin="151" yMin="100" xMax="317" yMax="241" imageNumber="0" score="27.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/27/2.jpg"/>
+	</visualWord>
+	<visualWord number="28" imageNumber="25" xMin="63" yMin="147" xMax="209" yMax="272" >
+		<patch number="0" xMin="63" yMin="147" xMax="209" yMax="272" imageNumber="25" score="156.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/28/0.jpg"/>
+		<patch number="1" xMin="63" yMin="147" xMax="209" yMax="272" imageNumber="24" score="92.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/28/1.jpg"/>
+		<patch number="2" xMin="63" yMin="147" xMax="209" yMax="272" imageNumber="0" score="19.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/28/2.jpg"/>
+	</visualWord>
+	<visualWord number="29" imageNumber="0" xMin="2" yMin="162" xMax="118" yMax="297" >
+		<patch number="0" xMin="2" yMin="162" xMax="118" yMax="297" imageNumber="0" score="166.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/29/0.jpg"/>
+		<patch number="1" xMin="2" yMin="162" xMax="118" yMax="297" imageNumber="24" score="22.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/29/1.jpg"/>
+		<patch number="2" xMin="2" yMin="162" xMax="118" yMax="297" imageNumber="25" score="17.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/29/2.jpg"/>
+	</visualWord>
+	<visualWord number="30" imageNumber="25" xMin="155" yMin="123" xMax="290" yMax="262" >
+		<patch number="0" xMin="155" yMin="123" xMax="290" yMax="262" imageNumber="25" score="157.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/30/0.jpg"/>
+		<patch number="1" xMin="155" yMin="123" xMax="290" yMax="262" imageNumber="24" score="94.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/30/1.jpg"/>
+	</visualWord>
+	<visualWord number="31" imageNumber="19" xMin="34" yMin="210" xMax="366" yMax="323" >
+		<patch number="0" xMin="34" yMin="210" xMax="366" yMax="323" imageNumber="19" score="186.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/31/0.jpg"/>
+		<patch number="1" xMin="34" yMin="210" xMax="366" yMax="323" imageNumber="18" score="19.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/31/1.jpg"/>
+		<patch number="2" xMin="34" yMin="210" xMax="366" yMax="323" imageNumber="17" score="13.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/31/2.jpg"/>
+	</visualWord>
+	<visualWord number="32" imageNumber="0" xMin="7" yMin="65" xMax="193" yMax="237" >
+		<patch number="0" xMin="7" yMin="65" xMax="193" yMax="237" imageNumber="0" score="169.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/32/0.jpg"/>
+		<patch number="1" xMin="7" yMin="65" xMax="193" yMax="237" imageNumber="24" score="28.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/32/1.jpg"/>
+		<patch number="2" xMin="7" yMin="65" xMax="193" yMax="237" imageNumber="25" score="23.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/32/2.jpg"/>
+	</visualWord>
+	<visualWord number="33" imageNumber="25" xMin="73" yMin="147" xMax="224" yMax="264" >
+		<patch number="0" xMin="73" yMin="147" xMax="224" yMax="264" imageNumber="25" score="155.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/33/0.jpg"/>
+		<patch number="1" xMin="73" yMin="147" xMax="224" yMax="264" imageNumber="24" score="94.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/33/1.jpg"/>
+		<patch number="2" xMin="73" yMin="147" xMax="224" yMax="264" imageNumber="0" score="18.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/33/2.jpg"/>
+	</visualWord>
+	<visualWord number="34" imageNumber="25" xMin="169" yMin="107" xMax="304" yMax="236" >
+		<patch number="0" xMin="169" yMin="107" xMax="304" yMax="236" imageNumber="25" score="154.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/34/0.jpg"/>
+		<patch number="1" xMin="169" yMin="107" xMax="304" yMax="236" imageNumber="24" score="98.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/34/1.jpg"/>
+		<patch number="2" xMin="169" yMin="107" xMax="304" yMax="236" imageNumber="0" score="16.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/34/2.jpg"/>
+	</visualWord>
+	<visualWord number="35" imageNumber="0" xMin="2" yMin="168" xMax="112" yMax="312" >
+		<patch number="0" xMin="2" yMin="168" xMax="112" yMax="312" imageNumber="0" score="165.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/35/0.jpg"/>
+		<patch number="1" xMin="2" yMin="168" xMax="112" yMax="312" imageNumber="24" score="20.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/35/1.jpg"/>
+	</visualWord>
+	<visualWord number="36" imageNumber="2" xMin="203" yMin="34" xMax="473" yMax="246" >
+		<patch number="0" xMin="203" yMin="34" xMax="473" yMax="246" imageNumber="2" score="167.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/36/0.jpg"/>
+		<patch number="1" xMin="203" yMin="34" xMax="473" yMax="246" imageNumber="3" score="23.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/36/1.jpg"/>
+		<patch number="2" xMin="203" yMin="34" xMax="473" yMax="246" imageNumber="6" score="16.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/36/2.jpg"/>
+	</visualWord>
+	<visualWord number="37" imageNumber="25" xMin="128" yMin="129" xMax="276" yMax="220" >
+		<patch number="0" xMin="128" yMin="129" xMax="276" yMax="220" imageNumber="25" score="159.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/37/0.jpg"/>
+		<patch number="1" xMin="128" yMin="129" xMax="276" yMax="220" imageNumber="24" score="88.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/37/1.jpg"/>
+		<patch number="2" xMin="128" yMin="129" xMax="276" yMax="220" imageNumber="0" score="18.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/37/2.jpg"/>
+	</visualWord>
+	<visualWord number="38" imageNumber="25" xMin="63" yMin="147" xMax="214" yMax="266" >
+		<patch number="0" xMin="63" yMin="147" xMax="214" yMax="266" imageNumber="25" score="157.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/38/0.jpg"/>
+		<patch number="1" xMin="63" yMin="147" xMax="214" yMax="266" imageNumber="24" score="95.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/38/1.jpg"/>
+		<patch number="2" xMin="63" yMin="147" xMax="214" yMax="266" imageNumber="0" score="19.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/38/2.jpg"/>
+	</visualWord>
+	<visualWord number="39" imageNumber="25" xMin="180" yMin="133" xMax="362" yMax="314" >
+		<patch number="0" xMin="180" yMin="133" xMax="362" yMax="314" imageNumber="25" score="157.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/39/0.jpg"/>
+		<patch number="1" xMin="180" yMin="133" xMax="362" yMax="314" imageNumber="24" score="91.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/39/1.jpg"/>
+		<patch number="2" xMin="180" yMin="133" xMax="362" yMax="314" imageNumber="0" score="14.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/39/2.jpg"/>
+	</visualWord>
+	<visualWord number="40" imageNumber="25" xMin="178" yMin="93" xMax="327" yMax="218" >
+		<patch number="0" xMin="178" yMin="93" xMax="327" yMax="218" imageNumber="25" score="157.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/40/0.jpg"/>
+		<patch number="1" xMin="178" yMin="93" xMax="327" yMax="218" imageNumber="24" score="105.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/40/1.jpg"/>
+	</visualWord>
+	<visualWord number="41" imageNumber="25" xMin="63" yMin="172" xMax="281" yMax="311" >
+		<patch number="0" xMin="63" yMin="172" xMax="281" yMax="311" imageNumber="25" score="155.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/41/0.jpg"/>
+		<patch number="1" xMin="63" yMin="172" xMax="281" yMax="311" imageNumber="24" score="90.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/41/1.jpg"/>
+		<patch number="2" xMin="63" yMin="172" xMax="281" yMax="311" imageNumber="0" score="16.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/41/2.jpg"/>
+	</visualWord>
+	<visualWord number="42" imageNumber="25" xMin="50" yMin="162" xMax="207" yMax="308" >
+		<patch number="0" xMin="50" yMin="162" xMax="207" yMax="308" imageNumber="25" score="153.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/42/0.jpg"/>
+		<patch number="1" xMin="50" yMin="162" xMax="207" yMax="308" imageNumber="24" score="86.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/42/1.jpg"/>
+		<patch number="2" xMin="50" yMin="162" xMax="207" yMax="308" imageNumber="0" score="17.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/42/2.jpg"/>
+	</visualWord>
+	<visualWord number="43" imageNumber="0" xMin="2" yMin="194" xMax="127" yMax="313" >
+		<patch number="0" xMin="2" yMin="194" xMax="127" yMax="313" imageNumber="0" score="164.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/43/0.jpg"/>
+		<patch number="1" xMin="2" yMin="194" xMax="127" yMax="313" imageNumber="24" score="17.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/43/1.jpg"/>
+	</visualWord>
+	<visualWord number="44" imageNumber="24" xMin="50" yMin="148" xMax="208" yMax="311" >
+		<patch number="0" xMin="50" yMin="148" xMax="208" yMax="311" imageNumber="24" score="154.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/44/0.jpg"/>
+		<patch number="1" xMin="50" yMin="148" xMax="208" yMax="311" imageNumber="25" score="100.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/44/1.jpg"/>
+		<patch number="2" xMin="50" yMin="148" xMax="208" yMax="311" imageNumber="0" score="30.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/44/2.jpg"/>
+	</visualWord>
+	<visualWord number="45" imageNumber="0" xMin="136" yMin="112" xMax="311" yMax="233" >
+		<patch number="0" xMin="136" yMin="112" xMax="311" yMax="233" imageNumber="0" score="175.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/45/0.jpg"/>
+		<patch number="1" xMin="136" yMin="112" xMax="311" yMax="233" imageNumber="24" score="26.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/45/1.jpg"/>
+		<patch number="2" xMin="136" yMin="112" xMax="311" yMax="233" imageNumber="25" score="20.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/45/2.jpg"/>
+	</visualWord>
+	<visualWord number="46" imageNumber="0" xMin="7" yMin="97" xMax="162" yMax="255" >
+		<patch number="0" xMin="7" yMin="97" xMax="162" yMax="255" imageNumber="0" score="167.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/46/0.jpg"/>
+		<patch number="1" xMin="7" yMin="97" xMax="162" yMax="255" imageNumber="24" score="22.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/46/1.jpg"/>
+		<patch number="2" xMin="7" yMin="97" xMax="162" yMax="255" imageNumber="25" score="20.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/46/2.jpg"/>
+	</visualWord>
+	<visualWord number="47" imageNumber="0" xMin="2" yMin="162" xMax="120" yMax="295" >
+		<patch number="0" xMin="2" yMin="162" xMax="120" yMax="295" imageNumber="0" score="166.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/47/0.jpg"/>
+		<patch number="1" xMin="2" yMin="162" xMax="120" yMax="295" imageNumber="24" score="22.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/47/1.jpg"/>
+		<patch number="2" xMin="2" yMin="162" xMax="120" yMax="295" imageNumber="25" score="18.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/47/2.jpg"/>
+	</visualWord>
+	<visualWord number="48" imageNumber="25" xMin="50" yMin="162" xMax="204" yMax="296" >
+		<patch number="0" xMin="50" yMin="162" xMax="204" yMax="296" imageNumber="25" score="154.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/48/0.jpg"/>
+		<patch number="1" xMin="50" yMin="162" xMax="204" yMax="296" imageNumber="24" score="89.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/48/1.jpg"/>
+		<patch number="2" xMin="50" yMin="162" xMax="204" yMax="296" imageNumber="0" score="17.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/48/2.jpg"/>
+	</visualWord>
+	<visualWord number="49" imageNumber="0" xMin="2" yMin="107" xMax="132" yMax="278" >
+		<patch number="0" xMin="2" yMin="107" xMax="132" yMax="278" imageNumber="0" score="166.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/49/0.jpg"/>
+		<patch number="1" xMin="2" yMin="107" xMax="132" yMax="278" imageNumber="24" score="23.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/49/1.jpg"/>
+		<patch number="2" xMin="2" yMin="107" xMax="132" yMax="278" imageNumber="25" score="20.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/49/2.jpg"/>
+	</visualWord>
+	<visualWord number="50" imageNumber="25" xMin="128" yMin="93" xMax="276" yMax="220" >
+		<patch number="0" xMin="128" yMin="93" xMax="276" yMax="220" imageNumber="25" score="158.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/50/0.jpg"/>
+		<patch number="1" xMin="128" yMin="93" xMax="276" yMax="220" imageNumber="24" score="87.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/50/1.jpg"/>
+		<patch number="2" xMin="128" yMin="93" xMax="276" yMax="220" imageNumber="0" score="18.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/50/2.jpg"/>
+	</visualWord>
+	<visualWord number="51" imageNumber="27" xMin="145" yMin="63" xMax="467" yMax="304" >
+		<patch number="0" xMin="145" yMin="63" xMax="467" yMax="304" imageNumber="27" score="140.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/51/0.jpg"/>
+		<patch number="1" xMin="145" yMin="63" xMax="467" yMax="304" imageNumber="26" score="105.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/51/1.jpg"/>
+		<patch number="2" xMin="145" yMin="63" xMax="467" yMax="304" imageNumber="25" score="13.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/51/2.jpg"/>
+	</visualWord>
+	<visualWord number="52" imageNumber="2" xMin="281" yMin="42" xMax="475" yMax="311" >
+		<patch number="0" xMin="281" yMin="42" xMax="475" yMax="311" imageNumber="2" score="170.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/52/0.jpg"/>
+		<patch number="1" xMin="281" yMin="42" xMax="475" yMax="311" imageNumber="3" score="45.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/52/1.jpg"/>
+	</visualWord>
+	<visualWord number="53" imageNumber="25" xMin="50" yMin="162" xMax="207" yMax="308" >
+		<patch number="0" xMin="50" yMin="162" xMax="207" yMax="308" imageNumber="25" score="153.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/53/0.jpg"/>
+		<patch number="1" xMin="50" yMin="162" xMax="207" yMax="308" imageNumber="24" score="85.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/53/1.jpg"/>
+		<patch number="2" xMin="50" yMin="162" xMax="207" yMax="308" imageNumber="0" score="16.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/53/2.jpg"/>
+	</visualWord>
+	<visualWord number="54" imageNumber="25" xMin="127" yMin="147" xMax="276" yMax="275" >
+		<patch number="0" xMin="127" yMin="147" xMax="276" yMax="275" imageNumber="25" score="156.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/54/0.jpg"/>
+		<patch number="1" xMin="127" yMin="147" xMax="276" yMax="275" imageNumber="24" score="86.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/54/1.jpg"/>
+		<patch number="2" xMin="127" yMin="147" xMax="276" yMax="275" imageNumber="0" score="17.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/54/2.jpg"/>
+	</visualWord>
+	<visualWord number="55" imageNumber="0" xMin="73" yMin="114" xMax="254" yMax="246" >
+		<patch number="0" xMin="73" yMin="114" xMax="254" yMax="246" imageNumber="0" score="178.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/55/0.jpg"/>
+		<patch number="1" xMin="73" yMin="114" xMax="254" yMax="246" imageNumber="24" score="25.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/55/1.jpg"/>
+		<patch number="2" xMin="73" yMin="114" xMax="254" yMax="246" imageNumber="25" score="23.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/55/2.jpg"/>
+	</visualWord>
+	<visualWord number="56" imageNumber="25" xMin="50" yMin="147" xMax="202" yMax="293" >
+		<patch number="0" xMin="50" yMin="147" xMax="202" yMax="293" imageNumber="25" score="156.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/56/0.jpg"/>
+		<patch number="1" xMin="50" yMin="147" xMax="202" yMax="293" imageNumber="24" score="92.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/56/1.jpg"/>
+		<patch number="2" xMin="50" yMin="147" xMax="202" yMax="293" imageNumber="0" score="17.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/56/2.jpg"/>
+	</visualWord>
+	<visualWord number="57" imageNumber="24" xMin="50" yMin="148" xMax="214" yMax="311" >
+		<patch number="0" xMin="50" yMin="148" xMax="214" yMax="311" imageNumber="24" score="154.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/57/0.jpg"/>
+		<patch number="1" xMin="50" yMin="148" xMax="214" yMax="311" imageNumber="25" score="99.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/57/1.jpg"/>
+		<patch number="2" xMin="50" yMin="148" xMax="214" yMax="311" imageNumber="0" score="31.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/57/2.jpg"/>
+	</visualWord>
+	<visualWord number="58" imageNumber="24" xMin="79" yMin="147" xMax="247" yMax="266" >
+		<patch number="0" xMin="79" yMin="147" xMax="247" yMax="266" imageNumber="24" score="158.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/58/0.jpg"/>
+		<patch number="1" xMin="79" yMin="147" xMax="247" yMax="266" imageNumber="25" score="109.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/58/1.jpg"/>
+		<patch number="2" xMin="79" yMin="147" xMax="247" yMax="266" imageNumber="0" score="35.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/58/2.jpg"/>
+	</visualWord>
+	<visualWord number="59" imageNumber="24" xMin="81" yMin="147" xMax="251" yMax="261" >
+		<patch number="0" xMin="81" yMin="147" xMax="251" yMax="261" imageNumber="24" score="159.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/59/0.jpg"/>
+		<patch number="1" xMin="81" yMin="147" xMax="251" yMax="261" imageNumber="25" score="109.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/59/1.jpg"/>
+		<patch number="2" xMin="81" yMin="147" xMax="251" yMax="261" imageNumber="0" score="35.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/59/2.jpg"/>
+	</visualWord>
+	<visualWord number="60" imageNumber="0" xMin="156" yMin="144" xMax="313" yMax="277" >
+		<patch number="0" xMin="156" yMin="144" xMax="313" yMax="277" imageNumber="0" score="177.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/60/0.jpg"/>
+		<patch number="1" xMin="156" yMin="144" xMax="313" yMax="277" imageNumber="24" score="23.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/60/1.jpg"/>
+		<patch number="2" xMin="156" yMin="144" xMax="313" yMax="277" imageNumber="25" score="22.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/60/2.jpg"/>
+	</visualWord>
+	<visualWord number="61" imageNumber="25" xMin="194" yMin="84" xMax="343" yMax="207" >
+		<patch number="0" xMin="194" yMin="84" xMax="343" yMax="207" imageNumber="25" score="153.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/61/0.jpg"/>
+		<patch number="1" xMin="194" yMin="84" xMax="343" yMax="207" imageNumber="24" score="102.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/61/1.jpg"/>
+		<patch number="2" xMin="194" yMin="84" xMax="343" yMax="207" imageNumber="0" score="13.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/61/2.jpg"/>
+	</visualWord>
+	<visualWord number="62" imageNumber="24" xMin="156" yMin="99" xMax="321" yMax="241" >
+		<patch number="0" xMin="156" yMin="99" xMax="321" yMax="241" imageNumber="24" score="162.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/62/0.jpg"/>
+		<patch number="1" xMin="156" yMin="99" xMax="321" yMax="241" imageNumber="25" score="113.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/62/1.jpg"/>
+		<patch number="2" xMin="156" yMin="99" xMax="321" yMax="241" imageNumber="0" score="27.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/62/2.jpg"/>
+	</visualWord>
+	<visualWord number="63" imageNumber="25" xMin="142" yMin="143" xMax="449" yMax="314" >
+		<patch number="0" xMin="142" yMin="143" xMax="449" yMax="314" imageNumber="25" score="156.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/63/0.jpg"/>
+		<patch number="1" xMin="142" yMin="143" xMax="449" yMax="314" imageNumber="24" score="85.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/63/1.jpg"/>
+	</visualWord>
+	<visualWord number="64" imageNumber="0" xMin="100" yMin="145" xMax="266" yMax="261" >
+		<patch number="0" xMin="100" yMin="145" xMax="266" yMax="261" imageNumber="0" score="178.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/64/0.jpg"/>
+		<patch number="1" xMin="100" yMin="145" xMax="266" yMax="261" imageNumber="24" score="24.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/64/1.jpg"/>
+		<patch number="2" xMin="100" yMin="145" xMax="266" yMax="261" imageNumber="25" score="20.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/64/2.jpg"/>
+	</visualWord>
+	<visualWord number="65" imageNumber="0" xMin="6" yMin="168" xMax="136" yMax="287" >
+		<patch number="0" xMin="6" yMin="168" xMax="136" yMax="287" imageNumber="0" score="164.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/65/0.jpg"/>
+		<patch number="1" xMin="6" yMin="168" xMax="136" yMax="287" imageNumber="24" score="21.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/65/1.jpg"/>
+		<patch number="2" xMin="6" yMin="168" xMax="136" yMax="287" imageNumber="25" score="17.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/65/2.jpg"/>
+	</visualWord>
+	<visualWord number="66" imageNumber="0" xMin="62" yMin="150" xMax="209" yMax="278" >
+		<patch number="0" xMin="62" yMin="150" xMax="209" yMax="278" imageNumber="0" score="171.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/66/0.jpg"/>
+		<patch number="1" xMin="62" yMin="150" xMax="209" yMax="278" imageNumber="24" score="26.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/66/1.jpg"/>
+	</visualWord>
+	<visualWord number="67" imageNumber="0" xMin="2" yMin="168" xMax="125" yMax="298" >
+		<patch number="0" xMin="2" yMin="168" xMax="125" yMax="298" imageNumber="0" score="162.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/67/0.jpg"/>
+		<patch number="1" xMin="2" yMin="168" xMax="125" yMax="298" imageNumber="24" score="19.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/67/1.jpg"/>
+		<patch number="2" xMin="2" yMin="168" xMax="125" yMax="298" imageNumber="25" score="16.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/67/2.jpg"/>
+	</visualWord>
+	<visualWord number="68" imageNumber="25" xMin="163" yMin="93" xMax="304" yMax="226" >
+		<patch number="0" xMin="163" yMin="93" xMax="304" yMax="226" imageNumber="25" score="154.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/68/0.jpg"/>
+		<patch number="1" xMin="163" yMin="93" xMax="304" yMax="226" imageNumber="24" score="96.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/68/1.jpg"/>
+		<patch number="2" xMin="163" yMin="93" xMax="304" yMax="226" imageNumber="0" score="15.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/68/2.jpg"/>
+	</visualWord>
+	<visualWord number="69" imageNumber="26" xMin="99" yMin="60" xMax="456" yMax="244" >
+		<patch number="0" xMin="99" yMin="60" xMax="456" yMax="244" imageNumber="26" score="143.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/69/0.jpg"/>
+		<patch number="1" xMin="99" yMin="60" xMax="456" yMax="244" imageNumber="27" score="104.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/69/1.jpg"/>
+	</visualWord>
+	<visualWord number="70" imageNumber="2" xMin="195" yMin="34" xMax="473" yMax="236" >
+		<patch number="0" xMin="195" yMin="34" xMax="473" yMax="236" imageNumber="2" score="167.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/70/0.jpg"/>
+		<patch number="1" xMin="195" yMin="34" xMax="473" yMax="236" imageNumber="3" score="17.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/70/1.jpg"/>
+		<patch number="2" xMin="195" yMin="34" xMax="473" yMax="236" imageNumber="6" score="14.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/70/2.jpg"/>
+	</visualWord>
+	<visualWord number="71" imageNumber="25" xMin="79" yMin="147" xMax="240" yMax="251" >
+		<patch number="0" xMin="79" yMin="147" xMax="240" yMax="251" imageNumber="25" score="157.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/71/0.jpg"/>
+		<patch number="1" xMin="79" yMin="147" xMax="240" yMax="251" imageNumber="24" score="93.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/71/1.jpg"/>
+		<patch number="2" xMin="79" yMin="147" xMax="240" yMax="251" imageNumber="0" score="23.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/71/2.jpg"/>
+	</visualWord>
+	<visualWord number="72" imageNumber="24" xMin="134" yMin="114" xMax="299" yMax="236" >
+		<patch number="0" xMin="134" yMin="114" xMax="299" yMax="236" imageNumber="24" score="160.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/72/0.jpg"/>
+		<patch number="1" xMin="134" yMin="114" xMax="299" yMax="236" imageNumber="25" score="112.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/72/1.jpg"/>
+		<patch number="2" xMin="134" yMin="114" xMax="299" yMax="236" imageNumber="0" score="22.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/72/2.jpg"/>
+	</visualWord>
+	<visualWord number="73" imageNumber="0" xMin="11" yMin="97" xMax="170" yMax="255" >
+		<patch number="0" xMin="11" yMin="97" xMax="170" yMax="255" imageNumber="0" score="169.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/73/0.jpg"/>
+		<patch number="1" xMin="11" yMin="97" xMax="170" yMax="255" imageNumber="24" score="22.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/73/1.jpg"/>
+		<patch number="2" xMin="11" yMin="97" xMax="170" yMax="255" imageNumber="25" score="21.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/73/2.jpg"/>
+	</visualWord>
+	<visualWord number="74" imageNumber="0" xMin="58" yMin="155" xMax="196" yMax="295" >
+		<patch number="0" xMin="58" yMin="155" xMax="196" yMax="295" imageNumber="0" score="164.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/74/0.jpg"/>
+		<patch number="1" xMin="58" yMin="155" xMax="196" yMax="295" imageNumber="24" score="20.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/74/1.jpg"/>
+		<patch number="2" xMin="58" yMin="155" xMax="196" yMax="295" imageNumber="25" score="15.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/74/2.jpg"/>
+	</visualWord>
+	<visualWord number="75" imageNumber="0" xMin="23" yMin="107" xMax="181" yMax="255" >
+		<patch number="0" xMin="23" yMin="107" xMax="181" yMax="255" imageNumber="0" score="170.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/75/0.jpg"/>
+		<patch number="1" xMin="23" yMin="107" xMax="181" yMax="255" imageNumber="24" score="27.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/75/1.jpg"/>
+		<patch number="2" xMin="23" yMin="107" xMax="181" yMax="255" imageNumber="25" score="21.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/75/2.jpg"/>
+	</visualWord>
+	<visualWord number="76" imageNumber="0" xMin="79" yMin="176" xMax="297" yMax="312" >
+		<patch number="0" xMin="79" yMin="176" xMax="297" yMax="312" imageNumber="0" score="168.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/76/0.jpg"/>
+	</visualWord>
+	<visualWord number="77" imageNumber="25" xMin="78" yMin="158" xMax="220" yMax="288" >
+		<patch number="0" xMin="78" yMin="158" xMax="220" yMax="288" imageNumber="25" score="155.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/77/0.jpg"/>
+		<patch number="1" xMin="78" yMin="158" xMax="220" yMax="288" imageNumber="24" score="92.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/77/1.jpg"/>
+		<patch number="2" xMin="78" yMin="158" xMax="220" yMax="288" imageNumber="0" score="19.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/77/2.jpg"/>
+	</visualWord>
+	<visualWord number="78" imageNumber="25" xMin="138" yMin="146" xMax="472" yMax="314" >
+		<patch number="0" xMin="138" yMin="146" xMax="472" yMax="314" imageNumber="25" score="156.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/78/0.jpg"/>
+		<patch number="1" xMin="138" yMin="146" xMax="472" yMax="314" imageNumber="24" score="83.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/78/1.jpg"/>
+		<patch number="2" xMin="138" yMin="146" xMax="472" yMax="314" imageNumber="6" score="14.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/78/2.jpg"/>
+	</visualWord>
+	<visualWord number="79" imageNumber="0" xMin="179" yMin="144" xMax="326" yMax="286" >
+		<patch number="0" xMin="179" yMin="144" xMax="326" yMax="286" imageNumber="0" score="173.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/79/0.jpg"/>
+		<patch number="1" xMin="179" yMin="144" xMax="326" yMax="286" imageNumber="25" score="20.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/79/1.jpg"/>
+		<patch number="2" xMin="179" yMin="144" xMax="326" yMax="286" imageNumber="24" score="17.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/79/2.jpg"/>
+	</visualWord>
+	<visualWord number="80" imageNumber="24" xMin="50" yMin="148" xMax="208" yMax="311" >
+		<patch number="0" xMin="50" yMin="148" xMax="208" yMax="311" imageNumber="24" score="154.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/80/0.jpg"/>
+		<patch number="1" xMin="50" yMin="148" xMax="208" yMax="311" imageNumber="25" score="100.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/80/1.jpg"/>
+		<patch number="2" xMin="50" yMin="148" xMax="208" yMax="311" imageNumber="0" score="29.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/80/2.jpg"/>
+	</visualWord>
+	<visualWord number="81" imageNumber="0" xMin="19" yMin="114" xMax="167" yMax="262" >
+		<patch number="0" xMin="19" yMin="114" xMax="167" yMax="262" imageNumber="0" score="167.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/81/0.jpg"/>
+		<patch number="1" xMin="19" yMin="114" xMax="167" yMax="262" imageNumber="24" score="21.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/81/1.jpg"/>
+		<patch number="2" xMin="19" yMin="114" xMax="167" yMax="262" imageNumber="25" score="20.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/81/2.jpg"/>
+	</visualWord>
+	<visualWord number="82" imageNumber="25" xMin="63" yMin="147" xMax="214" yMax="270" >
+		<patch number="0" xMin="63" yMin="147" xMax="214" yMax="270" imageNumber="25" score="157.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/82/0.jpg"/>
+		<patch number="1" xMin="63" yMin="147" xMax="214" yMax="270" imageNumber="24" score="95.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/82/1.jpg"/>
+		<patch number="2" xMin="63" yMin="147" xMax="214" yMax="270" imageNumber="0" score="19.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/82/2.jpg"/>
+	</visualWord>
+	<visualWord number="83" imageNumber="25" xMin="102" yMin="147" xMax="258" yMax="245" >
+		<patch number="0" xMin="102" yMin="147" xMax="258" yMax="245" imageNumber="25" score="161.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/83/0.jpg"/>
+		<patch number="1" xMin="102" yMin="147" xMax="258" yMax="245" imageNumber="24" score="94.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/83/1.jpg"/>
+		<patch number="2" xMin="102" yMin="147" xMax="258" yMax="245" imageNumber="0" score="20.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/83/2.jpg"/>
+	</visualWord>
+	<visualWord number="84" imageNumber="22" xMin="39" yMin="107" xMax="387" yMax="306" >
+		<patch number="0" xMin="39" yMin="107" xMax="387" yMax="306" imageNumber="22" score="182.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/84/0.jpg"/>
+		<patch number="1" xMin="39" yMin="107" xMax="387" yMax="306" imageNumber="2" score="17.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/84/1.jpg"/>
+	</visualWord>
+	<visualWord number="85" imageNumber="0" xMin="163" yMin="144" xMax="313" yMax="273" >
+		<patch number="0" xMin="163" yMin="144" xMax="313" yMax="273" imageNumber="0" score="176.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/85/0.jpg"/>
+		<patch number="1" xMin="163" yMin="144" xMax="313" yMax="273" imageNumber="24" score="23.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/85/1.jpg"/>
+		<patch number="2" xMin="163" yMin="144" xMax="313" yMax="273" imageNumber="25" score="19.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/85/2.jpg"/>
+	</visualWord>
+	<visualWord number="86" imageNumber="25" xMin="105" yMin="93" xMax="266" yMax="220" >
+		<patch number="0" xMin="105" yMin="93" xMax="266" yMax="220" imageNumber="25" score="161.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/86/0.jpg"/>
+		<patch number="1" xMin="105" yMin="93" xMax="266" yMax="220" imageNumber="24" score="94.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/86/1.jpg"/>
+		<patch number="2" xMin="105" yMin="93" xMax="266" yMax="220" imageNumber="0" score="22.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/86/2.jpg"/>
+	</visualWord>
+	<visualWord number="87" imageNumber="24" xMin="150" yMin="103" xMax="305" yMax="241" >
+		<patch number="0" xMin="150" yMin="103" xMax="305" yMax="241" imageNumber="24" score="160.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/87/0.jpg"/>
+		<patch number="1" xMin="150" yMin="103" xMax="305" yMax="241" imageNumber="25" score="112.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/87/1.jpg"/>
+		<patch number="2" xMin="150" yMin="103" xMax="305" yMax="241" imageNumber="0" score="27.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/87/2.jpg"/>
+	</visualWord>
+	<visualWord number="88" imageNumber="25" xMin="63" yMin="147" xMax="215" yMax="266" >
+		<patch number="0" xMin="63" yMin="147" xMax="215" yMax="266" imageNumber="25" score="157.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/88/0.jpg"/>
+		<patch number="1" xMin="63" yMin="147" xMax="215" yMax="266" imageNumber="24" score="95.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/88/1.jpg"/>
+		<patch number="2" xMin="63" yMin="147" xMax="215" yMax="266" imageNumber="0" score="16.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/88/2.jpg"/>
+	</visualWord>
+	<visualWord number="89" imageNumber="25" xMin="165" yMin="137" xMax="426" yMax="314" >
+		<patch number="0" xMin="165" yMin="137" xMax="426" yMax="314" imageNumber="25" score="156.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/89/0.jpg"/>
+		<patch number="1" xMin="165" yMin="137" xMax="426" yMax="314" imageNumber="24" score="88.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/89/1.jpg"/>
+		<patch number="2" xMin="165" yMin="137" xMax="426" yMax="314" imageNumber="0" score="14.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/89/2.jpg"/>
+	</visualWord>
+	<visualWord number="90" imageNumber="25" xMin="197" yMin="122" xMax="475" yMax="314" >
+		<patch number="0" xMin="197" yMin="122" xMax="475" yMax="314" imageNumber="25" score="159.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/90/0.jpg"/>
+		<patch number="1" xMin="197" yMin="122" xMax="475" yMax="314" imageNumber="24" score="92.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/90/1.jpg"/>
+	</visualWord>
+	<visualWord number="91" imageNumber="0" xMin="24" yMin="171" xMax="159" yMax="301" >
+		<patch number="0" xMin="24" yMin="171" xMax="159" yMax="301" imageNumber="0" score="166.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/91/0.jpg"/>
+		<patch number="1" xMin="24" yMin="171" xMax="159" yMax="301" imageNumber="24" score="16.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/91/1.jpg"/>
+		<patch number="2" xMin="24" yMin="171" xMax="159" yMax="301" imageNumber="25" score="13.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/91/2.jpg"/>
+	</visualWord>
+	<visualWord number="92" imageNumber="25" xMin="175" yMin="124" xMax="304" yMax="282" >
+		<patch number="0" xMin="175" yMin="124" xMax="304" yMax="282" imageNumber="25" score="151.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/92/0.jpg"/>
+		<patch number="1" xMin="175" yMin="124" xMax="304" yMax="282" imageNumber="24" score="91.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/92/1.jpg"/>
+		<patch number="2" xMin="175" yMin="124" xMax="304" yMax="282" imageNumber="0" score="14.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/92/2.jpg"/>
+	</visualWord>
+	<visualWord number="93" imageNumber="24" xMin="175" yMin="122" xMax="342" yMax="314" >
+		<patch number="0" xMin="175" yMin="122" xMax="342" yMax="314" imageNumber="24" score="162.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/93/0.jpg"/>
+		<patch number="1" xMin="175" yMin="122" xMax="342" yMax="314" imageNumber="25" score="111.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/93/1.jpg"/>
+		<patch number="2" xMin="175" yMin="122" xMax="342" yMax="314" imageNumber="0" score="24.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/93/2.jpg"/>
+	</visualWord>
+	<visualWord number="94" imageNumber="25" xMin="165" yMin="137" xMax="408" yMax="314" >
+		<patch number="0" xMin="165" yMin="137" xMax="408" yMax="314" imageNumber="25" score="157.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/94/0.jpg"/>
+		<patch number="1" xMin="165" yMin="137" xMax="408" yMax="314" imageNumber="24" score="89.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/94/1.jpg"/>
+	</visualWord>
+	<visualWord number="95" imageNumber="0" xMin="78" yMin="164" xMax="283" yMax="312" >
+		<patch number="0" xMin="78" yMin="164" xMax="283" yMax="312" imageNumber="0" score="166.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/95/0.jpg"/>
+		<patch number="1" xMin="78" yMin="164" xMax="283" yMax="312" imageNumber="24" score="19.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/95/1.jpg"/>
+		<patch number="2" xMin="78" yMin="164" xMax="283" yMax="312" imageNumber="25" score="15.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/95/2.jpg"/>
+	</visualWord>
+	<visualWord number="96" imageNumber="25" xMin="50" yMin="163" xMax="221" yMax="308" >
+		<patch number="0" xMin="50" yMin="163" xMax="221" yMax="308" imageNumber="25" score="152.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/96/0.jpg"/>
+		<patch number="1" xMin="50" yMin="163" xMax="221" yMax="308" imageNumber="24" score="85.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/96/1.jpg"/>
+		<patch number="2" xMin="50" yMin="163" xMax="221" yMax="308" imageNumber="0" score="17.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/96/2.jpg"/>
+	</visualWord>
+	<visualWord number="97" imageNumber="26" xMin="115" yMin="82" xMax="466" yMax="304" >
+		<patch number="0" xMin="115" yMin="82" xMax="466" yMax="304" imageNumber="26" score="144.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/97/0.jpg"/>
+		<patch number="1" xMin="115" yMin="82" xMax="466" yMax="304" imageNumber="27" score="103.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/97/1.jpg"/>
+	</visualWord>
+	<visualWord number="98" imageNumber="0" xMin="14" yMin="155" xMax="156" yMax="275" >
+		<patch number="0" xMin="14" yMin="155" xMax="156" yMax="275" imageNumber="0" score="168.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/98/0.jpg"/>
+		<patch number="1" xMin="14" yMin="155" xMax="156" yMax="275" imageNumber="24" score="23.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/98/1.jpg"/>
+		<patch number="2" xMin="14" yMin="155" xMax="156" yMax="275" imageNumber="25" score="21.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/98/2.jpg"/>
+	</visualWord>
+	<visualWord number="99" imageNumber="25" xMin="50" yMin="147" xMax="201" yMax="308" >
+		<patch number="0" xMin="50" yMin="147" xMax="201" yMax="308" imageNumber="25" score="155.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/99/0.jpg"/>
+		<patch number="1" xMin="50" yMin="147" xMax="201" yMax="308" imageNumber="24" score="89.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/99/1.jpg"/>
+		<patch number="2" xMin="50" yMin="147" xMax="201" yMax="308" imageNumber="0" score="18.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/99/2.jpg"/>
+	</visualWord>
+	<visualWord number="100" imageNumber="0" xMin="2" yMin="162" xMax="118" yMax="295" >
+		<patch number="0" xMin="2" yMin="162" xMax="118" yMax="295" imageNumber="0" score="166.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/100/0.jpg"/>
+		<patch number="1" xMin="2" yMin="162" xMax="118" yMax="295" imageNumber="24" score="23.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/100/1.jpg"/>
+		<patch number="2" xMin="2" yMin="162" xMax="118" yMax="295" imageNumber="25" score="18.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/100/2.jpg"/>
+	</visualWord>
+	<visualWord number="101" imageNumber="25" xMin="176" yMin="123" xMax="304" yMax="290" >
+		<patch number="0" xMin="176" yMin="123" xMax="304" yMax="290" imageNumber="25" score="153.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/101/0.jpg"/>
+		<patch number="1" xMin="176" yMin="123" xMax="304" yMax="290" imageNumber="24" score="93.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/101/1.jpg"/>
+	</visualWord>
+	<visualWord number="102" imageNumber="24" xMin="134" yMin="147" xMax="452" yMax="314" >
+		<patch number="0" xMin="134" yMin="147" xMax="452" yMax="314" imageNumber="24" score="155.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/102/0.jpg"/>
+		<patch number="1" xMin="134" yMin="147" xMax="452" yMax="314" imageNumber="25" score="96.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/102/1.jpg"/>
+		<patch number="2" xMin="134" yMin="147" xMax="452" yMax="314" imageNumber="0" score="17.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/102/2.jpg"/>
+	</visualWord>
+	<visualWord number="103" imageNumber="25" xMin="161" yMin="124" xMax="293" yMax="276" >
+		<patch number="0" xMin="161" yMin="124" xMax="293" yMax="276" imageNumber="25" score="155.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/103/0.jpg"/>
+		<patch number="1" xMin="161" yMin="124" xMax="293" yMax="276" imageNumber="24" score="92.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/103/1.jpg"/>
+		<patch number="2" xMin="161" yMin="124" xMax="293" yMax="276" imageNumber="0" score="17.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/103/2.jpg"/>
+	</visualWord>
+	<visualWord number="104" imageNumber="0" xMin="7" yMin="107" xMax="158" yMax="259" >
+		<patch number="0" xMin="7" yMin="107" xMax="158" yMax="259" imageNumber="0" score="167.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/104/0.jpg"/>
+		<patch number="1" xMin="7" yMin="107" xMax="158" yMax="259" imageNumber="25" score="21.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/104/1.jpg"/>
+		<patch number="2" xMin="7" yMin="107" xMax="158" yMax="259" imageNumber="24" score="21.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/104/2.jpg"/>
+	</visualWord>
+	<visualWord number="105" imageNumber="25" xMin="145" yMin="127" xMax="293" yMax="275" >
+		<patch number="0" xMin="145" yMin="127" xMax="293" yMax="275" imageNumber="25" score="156.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/105/0.jpg"/>
+		<patch number="1" xMin="145" yMin="127" xMax="293" yMax="275" imageNumber="24" score="90.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/105/1.jpg"/>
+		<patch number="2" xMin="145" yMin="127" xMax="293" yMax="275" imageNumber="0" score="15.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/105/2.jpg"/>
+	</visualWord>
+	<visualWord number="106" imageNumber="24" xMin="50" yMin="157" xMax="234" yMax="311" >
+		<patch number="0" xMin="50" yMin="157" xMax="234" yMax="311" imageNumber="24" score="155.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/106/0.jpg"/>
+		<patch number="1" xMin="50" yMin="157" xMax="234" yMax="311" imageNumber="25" score="98.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/106/1.jpg"/>
+		<patch number="2" xMin="50" yMin="157" xMax="234" yMax="311" imageNumber="0" score="31.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/106/2.jpg"/>
+	</visualWord>
+	<visualWord number="107" imageNumber="24" xMin="50" yMin="148" xMax="214" yMax="296" >
+		<patch number="0" xMin="50" yMin="148" xMax="214" yMax="296" imageNumber="24" score="156.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/107/0.jpg"/>
+		<patch number="1" xMin="50" yMin="148" xMax="214" yMax="296" imageNumber="25" score="102.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/107/1.jpg"/>
+		<patch number="2" xMin="50" yMin="148" xMax="214" yMax="296" imageNumber="0" score="32.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/107/2.jpg"/>
+	</visualWord>
+	<visualWord number="108" imageNumber="0" xMin="29" yMin="155" xMax="173" yMax="275" >
+		<patch number="0" xMin="29" yMin="155" xMax="173" yMax="275" imageNumber="0" score="169.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/108/0.jpg"/>
+		<patch number="1" xMin="29" yMin="155" xMax="173" yMax="275" imageNumber="24" score="19.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/108/1.jpg"/>
+		<patch number="2" xMin="29" yMin="155" xMax="173" yMax="275" imageNumber="25" score="16.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/108/2.jpg"/>
+	</visualWord>
+	<visualWord number="109" imageNumber="0" xMin="2" yMin="162" xMax="118" yMax="295" >
+		<patch number="0" xMin="2" yMin="162" xMax="118" yMax="295" imageNumber="0" score="166.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/109/0.jpg"/>
+		<patch number="1" xMin="2" yMin="162" xMax="118" yMax="295" imageNumber="24" score="21.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/109/1.jpg"/>
+		<patch number="2" xMin="2" yMin="162" xMax="118" yMax="295" imageNumber="25" score="18.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/109/2.jpg"/>
+	</visualWord>
+	<visualWord number="110" imageNumber="0" xMin="130" yMin="112" xMax="307" yMax="233" >
+		<patch number="0" xMin="130" yMin="112" xMax="307" yMax="233" imageNumber="0" score="173.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/110/0.jpg"/>
+		<patch number="1" xMin="130" yMin="112" xMax="307" yMax="233" imageNumber="24" score="25.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/110/1.jpg"/>
+		<patch number="2" xMin="130" yMin="112" xMax="307" yMax="233" imageNumber="25" score="20.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/110/2.jpg"/>
+	</visualWord>
+	<visualWord number="111" imageNumber="0" xMin="173" yMin="144" xMax="323" yMax="277" >
+		<patch number="0" xMin="173" yMin="144" xMax="323" yMax="277" imageNumber="0" score="175.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/111/0.jpg"/>
+		<patch number="1" xMin="173" yMin="144" xMax="323" yMax="277" imageNumber="25" score="21.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/111/1.jpg"/>
+		<patch number="2" xMin="173" yMin="144" xMax="323" yMax="277" imageNumber="24" score="19.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/111/2.jpg"/>
+	</visualWord>
+	<visualWord number="112" imageNumber="24" xMin="73" yMin="148" xMax="218" yMax="296" >
+		<patch number="0" xMin="73" yMin="148" xMax="218" yMax="296" imageNumber="24" score="155.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/112/0.jpg"/>
+		<patch number="1" xMin="73" yMin="148" xMax="218" yMax="296" imageNumber="25" score="104.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/112/1.jpg"/>
+		<patch number="2" xMin="73" yMin="148" xMax="218" yMax="296" imageNumber="0" score="34.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/112/2.jpg"/>
+	</visualWord>
+	<visualWord number="113" imageNumber="25" xMin="183" yMin="93" xMax="327" yMax="226" >
+		<patch number="0" xMin="183" yMin="93" xMax="327" yMax="226" imageNumber="25" score="157.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/113/0.jpg"/>
+		<patch number="1" xMin="183" yMin="93" xMax="327" yMax="226" imageNumber="24" score="105.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/113/1.jpg"/>
+		<patch number="2" xMin="183" yMin="93" xMax="327" yMax="226" imageNumber="0" score="15.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/113/2.jpg"/>
+	</visualWord>
+	<visualWord number="114" imageNumber="24" xMin="96" yMin="148" xMax="253" yMax="270" >
+		<patch number="0" xMin="96" yMin="148" xMax="253" yMax="270" imageNumber="24" score="161.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/114/0.jpg"/>
+		<patch number="1" xMin="96" yMin="148" xMax="253" yMax="270" imageNumber="25" score="110.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/114/1.jpg"/>
+		<patch number="2" xMin="96" yMin="148" xMax="253" yMax="270" imageNumber="0" score="34.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/114/2.jpg"/>
+	</visualWord>
+	<visualWord number="115" imageNumber="19" xMin="90" yMin="211" xMax="400" yMax="323" >
+		<patch number="0" xMin="90" yMin="211" xMax="400" yMax="323" imageNumber="19" score="184.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/115/0.jpg"/>
+	</visualWord>
+	<visualWord number="116" imageNumber="24" xMin="122" yMin="157" xMax="425" yMax="314" >
+		<patch number="0" xMin="122" yMin="157" xMax="425" yMax="314" imageNumber="24" score="157.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/116/0.jpg"/>
+		<patch number="1" xMin="122" yMin="157" xMax="425" yMax="314" imageNumber="25" score="98.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/116/1.jpg"/>
+		<patch number="2" xMin="122" yMin="157" xMax="425" yMax="314" imageNumber="0" score="15.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/116/2.jpg"/>
+	</visualWord>
+	<visualWord number="117" imageNumber="0" xMin="100" yMin="145" xMax="258" yMax="265" >
+		<patch number="0" xMin="100" yMin="145" xMax="258" yMax="265" imageNumber="0" score="179.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/117/0.jpg"/>
+		<patch number="1" xMin="100" yMin="145" xMax="258" yMax="265" imageNumber="24" score="22.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/117/1.jpg"/>
+		<patch number="2" xMin="100" yMin="145" xMax="258" yMax="265" imageNumber="25" score="20.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/117/2.jpg"/>
+	</visualWord>
+	<visualWord number="118" imageNumber="0" xMin="2" yMin="168" xMax="116" yMax="303" >
+		<patch number="0" xMin="2" yMin="168" xMax="116" yMax="303" imageNumber="0" score="166.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/118/0.jpg"/>
+		<patch number="1" xMin="2" yMin="168" xMax="116" yMax="303" imageNumber="24" score="21.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/118/1.jpg"/>
+		<patch number="2" xMin="2" yMin="168" xMax="116" yMax="303" imageNumber="25" score="17.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/118/2.jpg"/>
+	</visualWord>
+	<visualWord number="119" imageNumber="24" xMin="142" yMin="103" xMax="299" yMax="236" >
+		<patch number="0" xMin="142" yMin="103" xMax="299" yMax="236" imageNumber="24" score="160.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/119/0.jpg"/>
+		<patch number="1" xMin="142" yMin="103" xMax="299" yMax="236" imageNumber="25" score="113.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/119/1.jpg"/>
+		<patch number="2" xMin="142" yMin="103" xMax="299" yMax="236" imageNumber="0" score="26.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/119/2.jpg"/>
+	</visualWord>
+	<visualWord number="120" imageNumber="24" xMin="121" yMin="136" xMax="277" yMax="282" >
+		<patch number="0" xMin="121" yMin="136" xMax="277" yMax="282" imageNumber="24" score="159.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/120/0.jpg"/>
+		<patch number="1" xMin="121" yMin="136" xMax="277" yMax="282" imageNumber="25" score="104.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/120/1.jpg"/>
+		<patch number="2" xMin="121" yMin="136" xMax="277" yMax="282" imageNumber="0" score="25.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/120/2.jpg"/>
+	</visualWord>
+	<visualWord number="121" imageNumber="27" xMin="135" yMin="51" xMax="467" yMax="304" >
+		<patch number="0" xMin="135" yMin="51" xMax="467" yMax="304" imageNumber="27" score="141.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/121/0.jpg"/>
+		<patch number="1" xMin="135" yMin="51" xMax="467" yMax="304" imageNumber="26" score="106.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/121/1.jpg"/>
+	</visualWord>
+	<visualWord number="122" imageNumber="24" xMin="55" yMin="148" xMax="222" yMax="273" >
+		<patch number="0" xMin="55" yMin="148" xMax="222" yMax="273" imageNumber="24" score="156.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/122/0.jpg"/>
+		<patch number="1" xMin="55" yMin="148" xMax="222" yMax="273" imageNumber="25" score="102.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/122/1.jpg"/>
+		<patch number="2" xMin="55" yMin="148" xMax="222" yMax="273" imageNumber="0" score="31.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/122/2.jpg"/>
+	</visualWord>
+	<visualWord number="123" imageNumber="26" xMin="145" yMin="63" xMax="466" yMax="304" >
+		<patch number="0" xMin="145" yMin="63" xMax="466" yMax="304" imageNumber="26" score="144.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/123/0.jpg"/>
+		<patch number="1" xMin="145" yMin="63" xMax="466" yMax="304" imageNumber="27" score="101.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/123/1.jpg"/>
+	</visualWord>
+	<visualWord number="124" imageNumber="0" xMin="73" yMin="145" xMax="245" yMax="263" >
+		<patch number="0" xMin="73" yMin="145" xMax="245" yMax="263" imageNumber="0" score="177.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/124/0.jpg"/>
+		<patch number="1" xMin="73" yMin="145" xMax="245" yMax="263" imageNumber="24" score="24.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/124/1.jpg"/>
+		<patch number="2" xMin="73" yMin="145" xMax="245" yMax="263" imageNumber="25" score="23.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/124/2.jpg"/>
+	</visualWord>
+	<visualWord number="125" imageNumber="25" xMin="165" yMin="133" xMax="475" yMax="314" >
+		<patch number="0" xMin="165" yMin="133" xMax="475" yMax="314" imageNumber="25" score="157.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/125/0.jpg"/>
+		<patch number="1" xMin="165" yMin="133" xMax="475" yMax="314" imageNumber="24" score="86.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/125/1.jpg"/>
+		<patch number="2" xMin="165" yMin="133" xMax="475" yMax="314" imageNumber="6" score="15.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/125/2.jpg"/>
+	</visualWord>
+	<visualWord number="126" imageNumber="0" xMin="2" yMin="177" xMax="104" yMax="313" >
+		<patch number="0" xMin="2" yMin="177" xMax="104" yMax="313" imageNumber="0" score="163.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/126/0.jpg"/>
+		<patch number="1" xMin="2" yMin="177" xMax="104" yMax="313" imageNumber="24" score="19.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/126/1.jpg"/>
+		<patch number="2" xMin="2" yMin="177" xMax="104" yMax="313" imageNumber="25" score="15.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/126/2.jpg"/>
+	</visualWord>
+	<visualWord number="127" imageNumber="24" xMin="50" yMin="148" xMax="214" yMax="311" >
+		<patch number="0" xMin="50" yMin="148" xMax="214" yMax="311" imageNumber="24" score="154.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/127/0.jpg"/>
+		<patch number="1" xMin="50" yMin="148" xMax="214" yMax="311" imageNumber="25" score="99.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/127/1.jpg"/>
+		<patch number="2" xMin="50" yMin="148" xMax="214" yMax="311" imageNumber="0" score="31.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/127/2.jpg"/>
+	</visualWord>
+	<visualWord number="128" imageNumber="24" xMin="175" yMin="122" xMax="342" yMax="314" >
+		<patch number="0" xMin="175" yMin="122" xMax="342" yMax="314" imageNumber="24" score="162.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/128/0.jpg"/>
+		<patch number="1" xMin="175" yMin="122" xMax="342" yMax="314" imageNumber="25" score="111.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/128/1.jpg"/>
+		<patch number="2" xMin="175" yMin="122" xMax="342" yMax="314" imageNumber="0" score="23.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/128/2.jpg"/>
+	</visualWord>
+	<visualWord number="129" imageNumber="0" xMin="37" yMin="114" xMax="198" yMax="255" >
+		<patch number="0" xMin="37" yMin="114" xMax="198" yMax="255" imageNumber="0" score="174.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/129/0.jpg"/>
+		<patch number="1" xMin="37" yMin="114" xMax="198" yMax="255" imageNumber="24" score="30.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/129/1.jpg"/>
+		<patch number="2" xMin="37" yMin="114" xMax="198" yMax="255" imageNumber="25" score="19.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/129/2.jpg"/>
+	</visualWord>
+	<visualWord number="130" imageNumber="27" xMin="122" yMin="89" xMax="425" yMax="304" >
+		<patch number="0" xMin="122" yMin="89" xMax="425" yMax="304" imageNumber="27" score="139.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/130/0.jpg"/>
+		<patch number="1" xMin="122" yMin="89" xMax="425" yMax="304" imageNumber="26" score="107.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/130/1.jpg"/>
+		<patch number="2" xMin="122" yMin="89" xMax="425" yMax="304" imageNumber="6" score="15.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/130/2.jpg"/>
+	</visualWord>
+	<visualWord number="131" imageNumber="0" xMin="28" yMin="107" xMax="193" yMax="247" >
+		<patch number="0" xMin="28" yMin="107" xMax="193" yMax="247" imageNumber="0" score="171.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/131/0.jpg"/>
+		<patch number="1" xMin="28" yMin="107" xMax="193" yMax="247" imageNumber="24" score="29.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/131/1.jpg"/>
+		<patch number="2" xMin="28" yMin="107" xMax="193" yMax="247" imageNumber="25" score="19.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/131/2.jpg"/>
+	</visualWord>
+	<visualWord number="132" imageNumber="24" xMin="184" yMin="92" xMax="345" yMax="230" >
+		<patch number="0" xMin="184" yMin="92" xMax="345" yMax="230" imageNumber="24" score="161.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/132/0.jpg"/>
+		<patch number="1" xMin="184" yMin="92" xMax="345" yMax="230" imageNumber="25" score="117.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/132/1.jpg"/>
+	</visualWord>
+	<visualWord number="133" imageNumber="0" xMin="103" yMin="145" xMax="257" yMax="286" >
+		<patch number="0" xMin="103" yMin="145" xMax="257" yMax="286" imageNumber="0" score="174.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/133/0.jpg"/>
+	</visualWord>
+	<visualWord number="134" imageNumber="0" xMin="36" yMin="107" xMax="198" yMax="253" >
+		<patch number="0" xMin="36" yMin="107" xMax="198" yMax="253" imageNumber="0" score="174.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/134/0.jpg"/>
+		<patch number="1" xMin="36" yMin="107" xMax="198" yMax="253" imageNumber="24" score="29.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/134/1.jpg"/>
+		<patch number="2" xMin="36" yMin="107" xMax="198" yMax="253" imageNumber="25" score="20.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/134/2.jpg"/>
+	</visualWord>
+	<visualWord number="135" imageNumber="24" xMin="96" yMin="141" xMax="266" yMax="251" >
+		<patch number="0" xMin="96" yMin="141" xMax="266" yMax="251" imageNumber="24" score="160.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/135/0.jpg"/>
+		<patch number="1" xMin="96" yMin="141" xMax="266" yMax="251" imageNumber="25" score="107.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/135/1.jpg"/>
+		<patch number="2" xMin="96" yMin="141" xMax="266" yMax="251" imageNumber="0" score="34.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/135/2.jpg"/>
+	</visualWord>
+	<visualWord number="136" imageNumber="0" xMin="200" yMin="101" xMax="345" yMax="220" >
+		<patch number="0" xMin="200" yMin="101" xMax="345" yMax="220" imageNumber="0" score="175.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/136/0.jpg"/>
+		<patch number="1" xMin="200" yMin="101" xMax="345" yMax="220" imageNumber="25" score="22.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/136/1.jpg"/>
+		<patch number="2" xMin="200" yMin="101" xMax="345" yMax="220" imageNumber="24" score="16.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/136/2.jpg"/>
+	</visualWord>
+	<visualWord number="137" imageNumber="0" xMin="2" yMin="160" xMax="140" yMax="273" >
+		<patch number="0" xMin="2" yMin="160" xMax="140" yMax="273" imageNumber="0" score="165.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/137/0.jpg"/>
+		<patch number="1" xMin="2" yMin="160" xMax="140" yMax="273" imageNumber="24" score="22.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/137/1.jpg"/>
+		<patch number="2" xMin="2" yMin="160" xMax="140" yMax="273" imageNumber="25" score="20.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/137/2.jpg"/>
+	</visualWord>
+	<visualWord number="138" imageNumber="0" xMin="137" yMin="169" xMax="340" yMax="312" >
+		<patch number="0" xMin="137" yMin="169" xMax="340" yMax="312" imageNumber="0" score="171.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/138/0.jpg"/>
+		<patch number="1" xMin="137" yMin="169" xMax="340" yMax="312" imageNumber="25" score="13.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/138/1.jpg"/>
+		<patch number="2" xMin="137" yMin="169" xMax="340" yMax="312" imageNumber="24" score="13.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/138/2.jpg"/>
+	</visualWord>
+	<visualWord number="139" imageNumber="24" xMin="69" yMin="148" xMax="231" yMax="270" >
+		<patch number="0" xMin="69" yMin="148" xMax="231" yMax="270" imageNumber="24" score="156.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/139/0.jpg"/>
+		<patch number="1" xMin="69" yMin="148" xMax="231" yMax="270" imageNumber="25" score="107.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/139/1.jpg"/>
+		<patch number="2" xMin="69" yMin="148" xMax="231" yMax="270" imageNumber="0" score="34.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/139/2.jpg"/>
+	</visualWord>
+	<visualWord number="140" imageNumber="25" xMin="90" yMin="147" xMax="244" yMax="257" >
+		<patch number="0" xMin="90" yMin="147" xMax="244" yMax="257" imageNumber="25" score="159.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/140/0.jpg"/>
+		<patch number="1" xMin="90" yMin="147" xMax="244" yMax="257" imageNumber="24" score="95.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/140/1.jpg"/>
+		<patch number="2" xMin="90" yMin="147" xMax="244" yMax="257" imageNumber="0" score="24.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/140/2.jpg"/>
+	</visualWord>
+	<visualWord number="141" imageNumber="24" xMin="165" yMin="123" xMax="477" yMax="314" >
+		<patch number="0" xMin="165" yMin="123" xMax="477" yMax="314" imageNumber="24" score="162.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/141/0.jpg"/>
+		<patch number="1" xMin="165" yMin="123" xMax="477" yMax="314" imageNumber="25" score="102.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/141/1.jpg"/>
+	</visualWord>
+	<visualWord number="142" imageNumber="25" xMin="124" yMin="158" xMax="408" yMax="314" >
+		<patch number="0" xMin="124" yMin="158" xMax="408" yMax="314" imageNumber="25" score="157.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/142/0.jpg"/>
+		<patch number="1" xMin="124" yMin="158" xMax="408" yMax="314" imageNumber="24" score="89.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/142/1.jpg"/>
+	</visualWord>
+	<visualWord number="143" imageNumber="24" xMin="169" yMin="94" xMax="327" yMax="236" >
+		<patch number="0" xMin="169" yMin="94" xMax="327" yMax="236" imageNumber="24" score="163.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/143/0.jpg"/>
+		<patch number="1" xMin="169" yMin="94" xMax="327" yMax="236" imageNumber="25" score="116.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/143/1.jpg"/>
+		<patch number="2" xMin="169" yMin="94" xMax="327" yMax="236" imageNumber="0" score="25.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/143/2.jpg"/>
+	</visualWord>
+	<visualWord number="144" imageNumber="26" xMin="134" yMin="60" xMax="466" yMax="304" >
+		<patch number="0" xMin="134" yMin="60" xMax="466" yMax="304" imageNumber="26" score="144.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/144/0.jpg"/>
+		<patch number="1" xMin="134" yMin="60" xMax="466" yMax="304" imageNumber="27" score="101.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/144/1.jpg"/>
+	</visualWord>
+	<visualWord number="145" imageNumber="19" xMin="81" yMin="211" xMax="393" yMax="323" >
+		<patch number="0" xMin="81" yMin="211" xMax="393" yMax="323" imageNumber="19" score="183.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/145/0.jpg"/>
+		<patch number="1" xMin="81" yMin="211" xMax="393" yMax="323" imageNumber="20" score="13.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/145/1.jpg"/>
+	</visualWord>
+	<visualWord number="146" imageNumber="25" xMin="69" yMin="147" xMax="211" yMax="285" >
+		<patch number="0" xMin="69" yMin="147" xMax="211" yMax="285" imageNumber="25" score="155.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/146/0.jpg"/>
+		<patch number="1" xMin="69" yMin="147" xMax="211" yMax="285" imageNumber="24" score="94.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/146/1.jpg"/>
+		<patch number="2" xMin="69" yMin="147" xMax="211" yMax="285" imageNumber="0" score="20.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/146/2.jpg"/>
+	</visualWord>
+	<visualWord number="147" imageNumber="2" xMin="222" yMin="34" xMax="473" yMax="273" >
+		<patch number="0" xMin="222" yMin="34" xMax="473" yMax="273" imageNumber="2" score="168.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/147/0.jpg"/>
+		<patch number="1" xMin="222" yMin="34" xMax="473" yMax="273" imageNumber="3" score="31.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/147/1.jpg"/>
+	</visualWord>
+	<visualWord number="148" imageNumber="25" xMin="178" yMin="137" xMax="370" yMax="314" >
+		<patch number="0" xMin="178" yMin="137" xMax="370" yMax="314" imageNumber="25" score="157.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/148/0.jpg"/>
+		<patch number="1" xMin="178" yMin="137" xMax="370" yMax="314" imageNumber="24" score="91.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/148/1.jpg"/>
+		<patch number="2" xMin="178" yMin="137" xMax="370" yMax="314" imageNumber="0" score="14.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/148/2.jpg"/>
+	</visualWord>
+	<visualWord number="149" imageNumber="25" xMin="50" yMin="147" xMax="202" yMax="293" >
+		<patch number="0" xMin="50" yMin="147" xMax="202" yMax="293" imageNumber="25" score="156.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/149/0.jpg"/>
+		<patch number="1" xMin="50" yMin="147" xMax="202" yMax="293" imageNumber="24" score="91.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/149/1.jpg"/>
+		<patch number="2" xMin="50" yMin="147" xMax="202" yMax="293" imageNumber="0" score="19.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/149/2.jpg"/>
+	</visualWord>
+	<visualWord number="150" imageNumber="0" xMin="194" yMin="112" xMax="334" yMax="233" >
+		<patch number="0" xMin="194" yMin="112" xMax="334" yMax="233" imageNumber="0" score="174.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/150/0.jpg"/>
+		<patch number="1" xMin="194" yMin="112" xMax="334" yMax="233" imageNumber="25" score="25.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/150/1.jpg"/>
+		<patch number="2" xMin="194" yMin="112" xMax="334" yMax="233" imageNumber="24" score="18.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/150/2.jpg"/>
+	</visualWord>
+	<visualWord number="151" imageNumber="24" xMin="50" yMin="148" xMax="214" yMax="311" >
+		<patch number="0" xMin="50" yMin="148" xMax="214" yMax="311" imageNumber="24" score="154.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/151/0.jpg"/>
+		<patch number="1" xMin="50" yMin="148" xMax="214" yMax="311" imageNumber="25" score="99.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/151/1.jpg"/>
+		<patch number="2" xMin="50" yMin="148" xMax="214" yMax="311" imageNumber="0" score="31.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/151/2.jpg"/>
+	</visualWord>
+	<visualWord number="152" imageNumber="0" xMin="24" yMin="186" xMax="159" yMax="313" >
+		<patch number="0" xMin="24" yMin="186" xMax="159" yMax="313" imageNumber="0" score="161.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/152/0.jpg"/>
+		<patch number="1" xMin="24" yMin="186" xMax="159" yMax="313" imageNumber="24" score="14.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/152/1.jpg"/>
+		<patch number="2" xMin="24" yMin="186" xMax="159" yMax="313" imageNumber="25" score="13.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/152/2.jpg"/>
+	</visualWord>
+	<visualWord number="153" imageNumber="25" xMin="50" yMin="147" xMax="202" yMax="293" >
+		<patch number="0" xMin="50" yMin="147" xMax="202" yMax="293" imageNumber="25" score="156.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/153/0.jpg"/>
+		<patch number="1" xMin="50" yMin="147" xMax="202" yMax="293" imageNumber="24" score="91.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/153/1.jpg"/>
+		<patch number="2" xMin="50" yMin="147" xMax="202" yMax="293" imageNumber="0" score="19.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/153/2.jpg"/>
+	</visualWord>
+	<visualWord number="154" imageNumber="26" xMin="89" yMin="62" xMax="325" yMax="242" >
+		<patch number="0" xMin="89" yMin="62" xMax="325" yMax="242" imageNumber="26" score="145.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/154/0.jpg"/>
+		<patch number="1" xMin="89" yMin="62" xMax="325" yMax="242" imageNumber="27" score="103.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/154/1.jpg"/>
+	</visualWord>
+	<visualWord number="155" imageNumber="0" xMin="203" yMin="109" xMax="345" yMax="220" >
+		<patch number="0" xMin="203" yMin="109" xMax="345" yMax="220" imageNumber="0" score="175.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/155/0.jpg"/>
+		<patch number="1" xMin="203" yMin="109" xMax="345" yMax="220" imageNumber="25" score="21.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/155/1.jpg"/>
+		<patch number="2" xMin="203" yMin="109" xMax="345" yMax="220" imageNumber="24" score="14.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/155/2.jpg"/>
+	</visualWord>
+	<visualWord number="156" imageNumber="0" xMin="42" yMin="107" xMax="204" yMax="253" >
+		<patch number="0" xMin="42" yMin="107" xMax="204" yMax="253" imageNumber="0" score="174.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/156/0.jpg"/>
+		<patch number="1" xMin="42" yMin="107" xMax="204" yMax="253" imageNumber="24" score="31.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/156/1.jpg"/>
+		<patch number="2" xMin="42" yMin="107" xMax="204" yMax="253" imageNumber="25" score="25.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/156/2.jpg"/>
+	</visualWord>
+	<visualWord number="157" imageNumber="25" xMin="69" yMin="147" xMax="217" yMax="262" >
+		<patch number="0" xMin="69" yMin="147" xMax="217" yMax="262" imageNumber="25" score="155.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/157/0.jpg"/>
+		<patch number="1" xMin="69" yMin="147" xMax="217" yMax="262" imageNumber="24" score="95.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/157/1.jpg"/>
+		<patch number="2" xMin="69" yMin="147" xMax="217" yMax="262" imageNumber="0" score="20.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/157/2.jpg"/>
+	</visualWord>
+	<visualWord number="158" imageNumber="25" xMin="144" yMin="127" xMax="280" yMax="262" >
+		<patch number="0" xMin="144" yMin="127" xMax="280" yMax="262" imageNumber="25" score="158.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/158/0.jpg"/>
+		<patch number="1" xMin="144" yMin="127" xMax="280" yMax="262" imageNumber="24" score="90.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/158/1.jpg"/>
+		<patch number="2" xMin="144" yMin="127" xMax="280" yMax="262" imageNumber="0" score="15.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/158/2.jpg"/>
+	</visualWord>
+	<visualWord number="159" imageNumber="25" xMin="50" yMin="147" xMax="211" yMax="272" >
+		<patch number="0" xMin="50" yMin="147" xMax="211" yMax="272" imageNumber="25" score="157.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/159/0.jpg"/>
+		<patch number="1" xMin="50" yMin="147" xMax="211" yMax="272" imageNumber="24" score="95.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/159/1.jpg"/>
+		<patch number="2" xMin="50" yMin="147" xMax="211" yMax="272" imageNumber="0" score="20.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/159/2.jpg"/>
+	</visualWord>
+	<visualWord number="160" imageNumber="0" xMin="130" yMin="112" xMax="302" yMax="241" >
+		<patch number="0" xMin="130" yMin="112" xMax="302" yMax="241" imageNumber="0" score="174.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/160/0.jpg"/>
+		<patch number="1" xMin="130" yMin="112" xMax="302" yMax="241" imageNumber="24" score="25.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/160/1.jpg"/>
+		<patch number="2" xMin="130" yMin="112" xMax="302" yMax="241" imageNumber="25" score="20.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/160/2.jpg"/>
+	</visualWord>
+	<visualWord number="161" imageNumber="24" xMin="50" yMin="166" xMax="246" yMax="311" >
+		<patch number="0" xMin="50" yMin="166" xMax="246" yMax="311" imageNumber="24" score="154.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/161/0.jpg"/>
+		<patch number="1" xMin="50" yMin="166" xMax="246" yMax="311" imageNumber="25" score="97.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/161/1.jpg"/>
+		<patch number="2" xMin="50" yMin="166" xMax="246" yMax="311" imageNumber="0" score="28.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/161/2.jpg"/>
+	</visualWord>
+	<visualWord number="162" imageNumber="24" xMin="165" yMin="132" xMax="425" yMax="314" >
+		<patch number="0" xMin="165" yMin="132" xMax="425" yMax="314" imageNumber="24" score="160.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/162/0.jpg"/>
+		<patch number="1" xMin="165" yMin="132" xMax="425" yMax="314" imageNumber="25" score="104.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/162/1.jpg"/>
+	</visualWord>
+	<visualWord number="163" imageNumber="25" xMin="155" yMin="93" xMax="296" yMax="219" >
+		<patch number="0" xMin="155" yMin="93" xMax="296" yMax="219" imageNumber="25" score="157.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/163/0.jpg"/>
+		<patch number="1" xMin="155" yMin="93" xMax="296" yMax="219" imageNumber="24" score="98.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/163/1.jpg"/>
+	</visualWord>
+	<visualWord number="164" imageNumber="27" xMin="134" yMin="51" xMax="467" yMax="304" >
+		<patch number="0" xMin="134" yMin="51" xMax="467" yMax="304" imageNumber="27" score="140.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/164/0.jpg"/>
+		<patch number="1" xMin="134" yMin="51" xMax="467" yMax="304" imageNumber="26" score="105.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/164/1.jpg"/>
+	</visualWord>
+	<visualWord number="165" imageNumber="26" xMin="123" yMin="82" xMax="466" yMax="304" >
+		<patch number="0" xMin="123" yMin="82" xMax="466" yMax="304" imageNumber="26" score="145.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/165/0.jpg"/>
+		<patch number="1" xMin="123" yMin="82" xMax="466" yMax="304" imageNumber="27" score="103.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/165/1.jpg"/>
+		<patch number="2" xMin="123" yMin="82" xMax="466" yMax="304" imageNumber="12" score="14.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/165/2.jpg"/>
+	</visualWord>
+	<visualWord number="166" imageNumber="0" xMin="73" yMin="145" xMax="245" yMax="263" >
+		<patch number="0" xMin="73" yMin="145" xMax="245" yMax="263" imageNumber="0" score="177.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/166/0.jpg"/>
+		<patch number="1" xMin="73" yMin="145" xMax="245" yMax="263" imageNumber="24" score="25.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/166/1.jpg"/>
+		<patch number="2" xMin="73" yMin="145" xMax="245" yMax="263" imageNumber="25" score="23.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/166/2.jpg"/>
+	</visualWord>
+	<visualWord number="167" imageNumber="24" xMin="142" yMin="141" xMax="425" yMax="314" >
+		<patch number="0" xMin="142" yMin="141" xMax="425" yMax="314" imageNumber="24" score="156.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/167/0.jpg"/>
+		<patch number="1" xMin="142" yMin="141" xMax="425" yMax="314" imageNumber="25" score="98.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/167/1.jpg"/>
+		<patch number="2" xMin="142" yMin="141" xMax="425" yMax="314" imageNumber="0" score="13.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/167/2.jpg"/>
+	</visualWord>
+	<visualWord number="168" imageNumber="0" xMin="2" yMin="168" xMax="116" yMax="309" >
+		<patch number="0" xMin="2" yMin="168" xMax="116" yMax="309" imageNumber="0" score="166.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/168/0.jpg"/>
+		<patch number="1" xMin="2" yMin="168" xMax="116" yMax="309" imageNumber="24" score="20.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/168/1.jpg"/>
+		<patch number="2" xMin="2" yMin="168" xMax="116" yMax="309" imageNumber="25" score="17.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/168/2.jpg"/>
+	</visualWord>
+	<visualWord number="169" imageNumber="0" xMin="2" yMin="168" xMax="111" yMax="312" >
+		<patch number="0" xMin="2" yMin="168" xMax="111" yMax="312" imageNumber="0" score="164.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/169/0.jpg"/>
+		<patch number="1" xMin="2" yMin="168" xMax="111" yMax="312" imageNumber="24" score="20.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/169/1.jpg"/>
+	</visualWord>
+	<visualWord number="170" imageNumber="26" xMin="17" yMin="62" xMax="197" yMax="252" >
+		<patch number="0" xMin="17" yMin="62" xMax="197" yMax="252" imageNumber="26" score="138.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/170/0.jpg"/>
+		<patch number="1" xMin="17" yMin="62" xMax="197" yMax="252" imageNumber="27" score="110.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/170/1.jpg"/>
+	</visualWord>
+	<visualWord number="171" imageNumber="25" xMin="114" yMin="147" xMax="264" yMax="275" >
+		<patch number="0" xMin="114" yMin="147" xMax="264" yMax="275" imageNumber="25" score="162.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/171/0.jpg"/>
+		<patch number="1" xMin="114" yMin="147" xMax="264" yMax="275" imageNumber="24" score="90.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/171/1.jpg"/>
+		<patch number="2" xMin="114" yMin="147" xMax="264" yMax="275" imageNumber="0" score="20.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/171/2.jpg"/>
+	</visualWord>
+	<visualWord number="172" imageNumber="27" xMin="108" yMin="96" xMax="393" yMax="304" >
+		<patch number="0" xMin="108" yMin="96" xMax="393" yMax="304" imageNumber="27" score="135.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/172/0.jpg"/>
+		<patch number="1" xMin="108" yMin="96" xMax="393" yMax="304" imageNumber="26" score="104.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/172/1.jpg"/>
+	</visualWord>
+	<visualWord number="173" imageNumber="0" xMin="103" yMin="145" xMax="262" yMax="286" >
+		<patch number="0" xMin="103" yMin="145" xMax="262" yMax="286" imageNumber="0" score="175.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/173/0.jpg"/>
+		<patch number="1" xMin="103" yMin="145" xMax="262" yMax="286" imageNumber="24" score="24.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/173/1.jpg"/>
+		<patch number="2" xMin="103" yMin="145" xMax="262" yMax="286" imageNumber="25" score="23.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/173/2.jpg"/>
+	</visualWord>
+	<visualWord number="174" imageNumber="0" xMin="7" yMin="168" xMax="134" yMax="295" >
+		<patch number="0" xMin="7" yMin="168" xMax="134" yMax="295" imageNumber="0" score="165.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/174/0.jpg"/>
+		<patch number="1" xMin="7" yMin="168" xMax="134" yMax="295" imageNumber="24" score="21.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/174/1.jpg"/>
+		<patch number="2" xMin="7" yMin="168" xMax="134" yMax="295" imageNumber="25" score="17.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/174/2.jpg"/>
+	</visualWord>
+	<visualWord number="175" imageNumber="0" xMin="183" yMin="144" xMax="326" yMax="277" >
+		<patch number="0" xMin="183" yMin="144" xMax="326" yMax="277" imageNumber="0" score="172.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/175/0.jpg"/>
+		<patch number="1" xMin="183" yMin="144" xMax="326" yMax="277" imageNumber="25" score="20.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/175/1.jpg"/>
+		<patch number="2" xMin="183" yMin="144" xMax="326" yMax="277" imageNumber="24" score="17.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/175/2.jpg"/>
+	</visualWord>
+	<visualWord number="176" imageNumber="24" xMin="113" yMin="128" xMax="273" yMax="251" >
+		<patch number="0" xMin="113" yMin="128" xMax="273" yMax="251" imageNumber="24" score="161.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/176/0.jpg"/>
+		<patch number="1" xMin="113" yMin="128" xMax="273" yMax="251" imageNumber="25" score="107.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/176/1.jpg"/>
+		<patch number="2" xMin="113" yMin="128" xMax="273" yMax="251" imageNumber="0" score="28.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/176/2.jpg"/>
+	</visualWord>
+	<visualWord number="177" imageNumber="26" xMin="125" yMin="60" xMax="456" yMax="299" >
+		<patch number="0" xMin="125" yMin="60" xMax="456" yMax="299" imageNumber="26" score="144.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/177/0.jpg"/>
+		<patch number="1" xMin="125" yMin="60" xMax="456" yMax="299" imageNumber="27" score="105.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/177/1.jpg"/>
+	</visualWord>
+	<visualWord number="178" imageNumber="25" xMin="50" yMin="147" xMax="202" yMax="293" >
+		<patch number="0" xMin="50" yMin="147" xMax="202" yMax="293" imageNumber="25" score="156.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/178/0.jpg"/>
+		<patch number="1" xMin="50" yMin="147" xMax="202" yMax="293" imageNumber="24" score="92.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/178/1.jpg"/>
+		<patch number="2" xMin="50" yMin="147" xMax="202" yMax="293" imageNumber="0" score="18.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/178/2.jpg"/>
+	</visualWord>
+	<visualWord number="179" imageNumber="2" xMin="219" yMin="34" xMax="473" yMax="258" >
+		<patch number="0" xMin="219" yMin="34" xMax="473" yMax="258" imageNumber="2" score="168.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/179/0.jpg"/>
+		<patch number="1" xMin="219" yMin="34" xMax="473" yMax="258" imageNumber="3" score="30.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/179/1.jpg"/>
+		<patch number="2" xMin="219" yMin="34" xMax="473" yMax="258" imageNumber="6" score="15.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/179/2.jpg"/>
+	</visualWord>
+	<visualWord number="180" imageNumber="0" xMin="2" yMin="168" xMax="106" yMax="312" >
+		<patch number="0" xMin="2" yMin="168" xMax="106" yMax="312" imageNumber="0" score="164.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/180/0.jpg"/>
+		<patch number="1" xMin="2" yMin="168" xMax="106" yMax="312" imageNumber="24" score="19.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/180/1.jpg"/>
+		<patch number="2" xMin="2" yMin="168" xMax="106" yMax="312" imageNumber="25" score="15.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/180/2.jpg"/>
+	</visualWord>
+	<visualWord number="181" imageNumber="24" xMin="50" yMin="162" xMax="234" yMax="311" >
+		<patch number="0" xMin="50" yMin="162" xMax="234" yMax="311" imageNumber="24" score="154.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/181/0.jpg"/>
+		<patch number="1" xMin="50" yMin="162" xMax="234" yMax="311" imageNumber="25" score="98.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/181/1.jpg"/>
+		<patch number="2" xMin="50" yMin="162" xMax="234" yMax="311" imageNumber="0" score="30.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/181/2.jpg"/>
+	</visualWord>
+	<visualWord number="182" imageNumber="25" xMin="165" yMin="140" xMax="426" yMax="314" >
+		<patch number="0" xMin="165" yMin="140" xMax="426" yMax="314" imageNumber="25" score="156.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/182/0.jpg"/>
+		<patch number="1" xMin="165" yMin="140" xMax="426" yMax="314" imageNumber="24" score="88.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/182/1.jpg"/>
+	</visualWord>
+	<visualWord number="183" imageNumber="25" xMin="50" yMin="162" xMax="204" yMax="308" >
+		<patch number="0" xMin="50" yMin="162" xMax="204" yMax="308" imageNumber="25" score="154.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/183/0.jpg"/>
+		<patch number="1" xMin="50" yMin="162" xMax="204" yMax="308" imageNumber="24" score="88.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/183/1.jpg"/>
+		<patch number="2" xMin="50" yMin="162" xMax="204" yMax="308" imageNumber="0" score="18.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/183/2.jpg"/>
+	</visualWord>
+	<visualWord number="184" imageNumber="2" xMin="203" yMin="34" xMax="473" yMax="236" >
+		<patch number="0" xMin="203" yMin="34" xMax="473" yMax="236" imageNumber="2" score="167.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/184/0.jpg"/>
+		<patch number="1" xMin="203" yMin="34" xMax="473" yMax="236" imageNumber="3" score="21.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/184/1.jpg"/>
+	</visualWord>
+	<visualWord number="185" imageNumber="0" xMin="73" yMin="160" xMax="244" yMax="312" >
+		<patch number="0" xMin="73" yMin="160" xMax="244" yMax="312" imageNumber="0" score="162.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/185/0.jpg"/>
+		<patch number="1" xMin="73" yMin="160" xMax="244" yMax="312" imageNumber="24" score="21.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/185/1.jpg"/>
+		<patch number="2" xMin="73" yMin="160" xMax="244" yMax="312" imageNumber="25" score="16.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/185/2.jpg"/>
+	</visualWord>
+	<visualWord number="186" imageNumber="25" xMin="247" yMin="79" xMax="475" yMax="314" >
+		<patch number="0" xMin="247" yMin="79" xMax="475" yMax="314" imageNumber="25" score="157.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/186/0.jpg"/>
+		<patch number="1" xMin="247" yMin="79" xMax="475" yMax="314" imageNumber="24" score="106.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/186/1.jpg"/>
+	</visualWord>
+	<visualWord number="187" imageNumber="0" xMin="136" yMin="145" xMax="301" yMax="286" >
+		<patch number="0" xMin="136" yMin="145" xMax="301" yMax="286" imageNumber="0" score="178.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/187/0.jpg"/>
+		<patch number="1" xMin="136" yMin="145" xMax="301" yMax="286" imageNumber="24" score="25.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/187/1.jpg"/>
+		<patch number="2" xMin="136" yMin="145" xMax="301" yMax="286" imageNumber="25" score="20.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/187/2.jpg"/>
+	</visualWord>
+	<visualWord number="188" imageNumber="0" xMin="14" yMin="168" xMax="137" yMax="295" >
+		<patch number="0" xMin="14" yMin="168" xMax="137" yMax="295" imageNumber="0" score="164.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/188/0.jpg"/>
+		<patch number="1" xMin="14" yMin="168" xMax="137" yMax="295" imageNumber="24" score="21.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/188/1.jpg"/>
+		<patch number="2" xMin="14" yMin="168" xMax="137" yMax="295" imageNumber="25" score="17.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/188/2.jpg"/>
+	</visualWord>
+	<visualWord number="189" imageNumber="24" xMin="50" yMin="157" xMax="223" yMax="311" >
+		<patch number="0" xMin="50" yMin="157" xMax="223" yMax="311" imageNumber="24" score="155.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/189/0.jpg"/>
+		<patch number="1" xMin="50" yMin="157" xMax="223" yMax="311" imageNumber="25" score="98.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/189/1.jpg"/>
+		<patch number="2" xMin="50" yMin="157" xMax="223" yMax="311" imageNumber="0" score="29.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/189/2.jpg"/>
+	</visualWord>
+	<visualWord number="190" imageNumber="25" xMin="63" yMin="163" xMax="207" yMax="308" >
+		<patch number="0" xMin="63" yMin="163" xMax="207" yMax="308" imageNumber="25" score="153.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/190/0.jpg"/>
+		<patch number="1" xMin="63" yMin="163" xMax="207" yMax="308" imageNumber="24" score="85.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/190/1.jpg"/>
+		<patch number="2" xMin="63" yMin="163" xMax="207" yMax="308" imageNumber="0" score="18.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/190/2.jpg"/>
+	</visualWord>
+	<visualWord number="191" imageNumber="25" xMin="178" yMin="134" xMax="362" yMax="314" >
+		<patch number="0" xMin="178" yMin="134" xMax="362" yMax="314" imageNumber="25" score="157.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/191/0.jpg"/>
+		<patch number="1" xMin="178" yMin="134" xMax="362" yMax="314" imageNumber="24" score="92.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/191/1.jpg"/>
+		<patch number="2" xMin="178" yMin="134" xMax="362" yMax="314" imageNumber="0" score="18.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/191/2.jpg"/>
+	</visualWord>
+	<visualWord number="192" imageNumber="25" xMin="127" yMin="147" xMax="276" yMax="275" >
+		<patch number="0" xMin="127" yMin="147" xMax="276" yMax="275" imageNumber="25" score="156.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/192/0.jpg"/>
+		<patch number="1" xMin="127" yMin="147" xMax="276" yMax="275" imageNumber="24" score="86.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/192/1.jpg"/>
+		<patch number="2" xMin="127" yMin="147" xMax="276" yMax="275" imageNumber="0" score="16.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/192/2.jpg"/>
+	</visualWord>
+	<visualWord number="193" imageNumber="0" xMin="100" yMin="145" xMax="279" yMax="241" >
+		<patch number="0" xMin="100" yMin="145" xMax="279" yMax="241" imageNumber="0" score="177.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/193/0.jpg"/>
+		<patch number="1" xMin="100" yMin="145" xMax="279" yMax="241" imageNumber="24" score="26.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/193/1.jpg"/>
+		<patch number="2" xMin="100" yMin="145" xMax="279" yMax="241" imageNumber="25" score="20.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/193/2.jpg"/>
+	</visualWord>
+	<visualWord number="194" imageNumber="25" xMin="204" yMin="111" xMax="475" yMax="314" >
+		<patch number="0" xMin="204" yMin="111" xMax="475" yMax="314" imageNumber="25" score="160.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/194/0.jpg"/>
+		<patch number="1" xMin="204" yMin="111" xMax="475" yMax="314" imageNumber="24" score="93.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/194/1.jpg"/>
+		<patch number="2" xMin="204" yMin="111" xMax="475" yMax="314" imageNumber="6" score="14.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/194/2.jpg"/>
+	</visualWord>
+	<visualWord number="195" imageNumber="25" xMin="165" yMin="124" xMax="475" yMax="314" >
+		<patch number="0" xMin="165" yMin="124" xMax="475" yMax="314" imageNumber="25" score="159.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/195/0.jpg"/>
+		<patch number="1" xMin="165" yMin="124" xMax="475" yMax="314" imageNumber="24" score="92.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/195/1.jpg"/>
+		<patch number="2" xMin="165" yMin="124" xMax="475" yMax="314" imageNumber="0" score="13.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/195/2.jpg"/>
+	</visualWord>
+	<visualWord number="196" imageNumber="25" xMin="50" yMin="168" xMax="233" yMax="308" >
+		<patch number="0" xMin="50" yMin="168" xMax="233" yMax="308" imageNumber="25" score="152.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/196/0.jpg"/>
+		<patch number="1" xMin="50" yMin="168" xMax="233" yMax="308" imageNumber="24" score="87.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/196/1.jpg"/>
+		<patch number="2" xMin="50" yMin="168" xMax="233" yMax="308" imageNumber="0" score="18.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/196/2.jpg"/>
+	</visualWord>
+	<visualWord number="197" imageNumber="25" xMin="156" yMin="93" xMax="296" yMax="226" >
+		<patch number="0" xMin="156" yMin="93" xMax="296" yMax="226" imageNumber="25" score="156.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/197/0.jpg"/>
+		<patch number="1" xMin="156" yMin="93" xMax="296" yMax="226" imageNumber="24" score="98.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/197/1.jpg"/>
+	</visualWord>
+	<visualWord number="198" imageNumber="24" xMin="65" yMin="148" xMax="230" yMax="266" >
+		<patch number="0" xMin="65" yMin="148" xMax="230" yMax="266" imageNumber="24" score="156.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/198/0.jpg"/>
+		<patch number="1" xMin="65" yMin="148" xMax="230" yMax="266" imageNumber="25" score="105.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/198/1.jpg"/>
+		<patch number="2" xMin="65" yMin="148" xMax="230" yMax="266" imageNumber="0" score="33.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/198/2.jpg"/>
+	</visualWord>
+	<visualWord number="199" imageNumber="25" xMin="161" yMin="124" xMax="293" yMax="276" >
+		<patch number="0" xMin="161" yMin="124" xMax="293" yMax="276" imageNumber="25" score="155.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/199/0.jpg"/>
+		<patch number="1" xMin="161" yMin="124" xMax="293" yMax="276" imageNumber="24" score="92.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/199/1.jpg"/>
+		<patch number="2" xMin="161" yMin="124" xMax="293" yMax="276" imageNumber="0" score="17.0" uri="http://imedia-ftp.inria.fr:8080/VideoDescriptorExtractor/rest/VideoDescriptorExtractor/patch/80000000-8000-0000-8000-000080002657/199/2.jpg"/>
+	</visualWord>
+</visualWords>
