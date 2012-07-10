@@ -5,7 +5,6 @@
  * @description
  */
 define(['jquery', '!js/libs/jquery.mousewheel.js'], function($) {
-
   // global options
   $.swipePanel = {
     /* will innerWrapp the root
@@ -34,6 +33,18 @@ define(['jquery', '!js/libs/jquery.mousewheel.js'], function($) {
       if (data) {
         data.components.rootSize = $(this)[data.options._dimension]();
         console.log( $(this)[data.options._dimension]() );
+      }
+    },
+    pause: function(index, Element) {
+      var data = $(this).data('swipePanel');
+      if (data) {
+        data.components.paused = true;
+      }
+    },
+    unpause: function(index, Element) {
+      var data = $(this).data('swipePanel');
+      if (data) {
+        data.components.paused = false;
       }
     },
     remove: function(index, Element) {
@@ -87,7 +98,8 @@ define(['jquery', '!js/libs/jquery.mousewheel.js'], function($) {
         // wrapper for all the children in the root - used to scroll
         container: options.container || $(document.createElement('div')),
         containerSize: null,
-        pivot: 0
+        pivot: 0,
+        paused: false
       };
 
       components.root.data('swipePanel', {
@@ -204,15 +216,17 @@ define(['jquery', '!js/libs/jquery.mousewheel.js'], function($) {
   }
 
   function changePosition(components, options, value) {
-    var newPosition = parseInt(components.container.css(options._direction), 10)
-                      + value;
-    if (newPosition > 0) {
-      newPosition = 0;
+    if (!components.paused) {
+      var newPosition = parseInt(components.container.css(options._direction), 10)
+                        + value;
+      if (newPosition > 0) {
+        newPosition = 0;
+      }
+      if (newPosition < components.rootSize - components.containerSize) {
+        newPosition = components.rootSize - components.containerSize;
+      }
+      components.container.css(options._direction, newPosition+'px');
+      components.root.trigger('swipePanel-move');
     }
-    if (newPosition < components.rootSize - components.containerSize) {
-      newPosition = components.rootSize - components.containerSize;
-    }
-    components.container.css(options._direction, newPosition+'px');
-    components.root.trigger('swipePanel-move');
   }
 });
