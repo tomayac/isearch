@@ -331,8 +331,6 @@ define("mylibs/filehandler", ["mylibs/loader", "libs/glge-compiled-min"], functi
           var maxHeight = 80;
           for(var i in imageData){
             var $keyframeContainer = $(document.createElement('span'));
-            //var width = Math.min(imageData[i].width, maxWidth);
-            //var height = Math.min(imageData[i].height, maxHeight);
             $keyframeContainer
               .attr({
                 score: imageData[i].score,
@@ -353,9 +351,10 @@ define("mylibs/filehandler", ["mylibs/loader", "libs/glge-compiled-min"], functi
               })
               .bind('click.zoom', function(){
                 if (!$videoKeyframes.data('swipePanel').components.swiped) {
-                  visualWordZoom.call(this, event);
+                  keyframeZoom.call(this, event);
                 }
               });
+
             $containers = $containers.add($keyframeContainer);
           }
           $containers.attr('class', 'keyframeContainer');
@@ -372,27 +371,27 @@ define("mylibs/filehandler", ["mylibs/loader", "libs/glge-compiled-min"], functi
         }
       });
 
-      var visualWordZoom = (function(){
+      var keyframeZoom = (function(){
         var $lastZoom = null;
 
         $(document).bind('click.hideZoom', function(event){
           if ($lastZoom) {
             var $callTree = $(event.target).parents().add($(event.target));
             if ($callTree.filter($lastZoom).length == 0
-                && $callTree.filter('.visualWordZoom').length == 0){
+                && $callTree.filter('.keyframeZoom').length == 0){
               hideZoom($lastZoom);
             }
           }
         });
 
-        return function visualWordZoom (event) {
-          $(this).addClass('visualWordZoom');
-          var container = $(document.createElement('div'));
+        return function keyframeZoom (event) {
+          $(this).addClass('keyframeZoom');
+          var $container = $(document.createElement('div'));
           var width = $(this).width();
           var height = $(this).height();
           var src = $(this).attr('uri');
           var offset = $(this).offset();
-          container
+          $container
             .appendTo($('body'))
             .css({
               position: 'absolute',
@@ -414,13 +413,39 @@ define("mylibs/filehandler", ["mylibs/loader", "libs/glge-compiled-min"], functi
             }, 500, function(){
               var image = $(document.createElement('img'));
               image
-                .attr('src', src)
-                .appendTo(container)
                 .hide()
-                .fadeIn(400);
+                .attr('src', src)
+                .fadeIn(400)
+                .appendTo($container);
             });
+            var $addButton = $(document.createElement('a'));
+            var $closeButton = $(document.createElement('a'));
+
+            $addButton
+              .add($closeButton)
+              .data('target', $container)
+              .attr('href', 'javascript:void(0)')
+              .appendTo($container);
+            $addButton
+              .attr('class', 'keyframe-button keyframe-add')
+              .html('add')
+              .bind('click.add', function(event){
+                var src = $(this).data('target').find('img').eq(0).attr('src');
+                if ($(".token-input-list-isearch li img").filter('[src="'+src+'"]').length == 0) {
+                  var token = '<img src="'+src+'" alt="loading..." />';
+                  var id = 'fileQueryItem'+($(".token-input-list-isearch li").size()-1);
+                  $("#query-field").tokenInput('add',{id:id, name:token});
+                }
+              });
+            $closeButton
+              .attr('class', 'keyframe-button keyframe-close')
+              .html('close')
+              .bind('click.close', function(){
+                hideZoom();
+              });
+
             hideZoom($lastZoom);
-            $lastZoom = container;
+            $lastZoom = $container;
             $videoKeyframes.swipePanel('pause');
         };
 
