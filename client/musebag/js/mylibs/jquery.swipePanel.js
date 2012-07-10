@@ -99,6 +99,9 @@ define(['jquery', '!js/libs/jquery.mousewheel.js'], function($) {
         container: options.container || $(document.createElement('div')),
         containerSize: null,
         pivot: 0,
+        // signals if the last pointerdown event resulted in a swipe or not
+        swiped: false,
+        // whether the pointermove events are active or not
         paused: false
       };
 
@@ -114,19 +117,18 @@ define(['jquery', '!js/libs/jquery.mousewheel.js'], function($) {
 
       // add mouse events
       var stopSlideMouse = function(event) {
-        pointerUp(components, event);
+        mouseUp(components, event);
       };
 
       components.root
         .bind('mouseleave.stopSlide', stopSlideMouse)
         .bind('mouseup.stopSlide', stopSlideMouse)
         .bind('mousedown.startSlide', function(event) {
-          pointerDown(components, options, event);
+          mouseDown(components, options, event);
         })
         .bind('mousewheel.startSlide', function(event, delta) {
-          event.preventDefault();
-          event.stopPropagation();
-          changePosition(components, options, delta * options.scrollSize);
+          var pivot = components.pivot + (delta * options.scrollSize);
+          pointerMove(components, options, pivot, event);
         });
 
         // add touch events
@@ -140,14 +142,12 @@ define(['jquery', '!js/libs/jquery.mousewheel.js'], function($) {
             event.stopPropagation();
             var e = event.originalEvent;
             components.pivot = e.touches[0]['page'+options._axis];
+            components.swiped = false;
           })
           .bind('touchmove.slide', function(event) {
-            event.preventDefault();
-            event.stopPropagation();
             var e = event.originalEvent;
             var pivot = e.touches[0]['page'+options._axis];
-            changePosition(components, options, pivot - components.pivot);
-            components.pivot = pivot;
+            pointerMove(components, options, pivot, event);
           })
           .bind('touchleave.stopSlide', stopSlide)
           .bind('touchcancel.stopSlide', stopSlide)
@@ -193,40 +193,43 @@ define(['jquery', '!js/libs/jquery.mousewheel.js'], function($) {
     components.container.css(options._dimension, components.containerSize);
   }
 
-  function pointerDown(components, options, event) {
+  function pointerMove(components, options, pivot, event) {
+    if (!components.paused) {
+      event.preventDefault();
+      event.stopPropagation();
+      var newPosition = pivot - components.pivot;
+      components.pivot = pivot;
+      components.swiped = true;
+      changePosition(components, options, newPosition);
+      components.root.trigger('swipePanel-move');
+    }
+  }
+
+  function mouseDown(components, options, event) {
     event.stopPropagation();
     components.pivot = event.originalEvent['page'+options._axis];
+    components.swiped = false;
     components.root
       .unbind('.slide')
       .bind('mousemove.slide', function(event) {
-        pointerMove(components, options, event);
+        var pivot = event['page'+options._axis];
+        pointerMove(components, options, pivot, event);
       });
   }
 
-  function pointerUp(components, event) {
+  function mouseUp(components, event) {
     components.root.unbind('mousemove.slide');
   }
 
-  function pointerMove(components, options, event) {
-    event.preventDefault();
-    event.stopPropagation();
-    var pivot = event['page'+options._axis];
-    changePosition(components, options, pivot - components.pivot);
-    components.pivot = pivot;
-  }
-
   function changePosition(components, options, value) {
-    if (!components.paused) {
-      var newPosition = parseInt(components.container.css(options._direction), 10)
-                        + value;
-      if (newPosition > 0) {
-        newPosition = 0;
-      }
-      if (newPosition < components.rootSize - components.containerSize) {
-        newPosition = components.rootSize - components.containerSize;
-      }
-      components.container.css(options._direction, newPosition+'px');
-      components.root.trigger('swipePanel-move');
+    var newPosition = parseInt(components.container.css(options._direction), 10)
+                      + value;
+    if (newPosition > 0) {
+      newPosition = 0;
     }
+    if (newPosition < components.rootSize - components.containerSize) {
+      newPosition = components.rootSize - components.containerSize;
+    }
+    components.container.css(options._direction, newPosition+'px');
   }
 });
