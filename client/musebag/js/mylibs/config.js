@@ -396,17 +396,23 @@ define("mylibs/config",
       //----------------------------------------------------------
       // WARNING - very ugly code - janrain is baaad!
       
+      var beautifyJanrain = function() {
+        $('#janrainEngageEmbed .janrainContent').attr('style','min-height: 40px');
+        $('#janrainEngageEmbed #janrainView').attr('style','');
+        $('#janrainEngageEmbed #janrainView .janrainHeader').attr('style','display: none;');
+        $('#janrainEngageEmbed #janrainView #janrain-blank').remove();
+        $('#janrainEngageEmbed #janrainView #janrainProviderPages').attr('style','margin: 0; padding: 0;');
+        $('#janrainEngageEmbed #janrainView #attribution_footer').remove();
+        $('#janrainEngageEmbed .janrainContent > div:last:not(#janrainView)').remove();
+      };
+      
+      beautifyJanrain();
+      
       window.janrainWidgetOnload = function() {
         //Force to format the stupid authentication widget
         $(document).on('DOMNodeInserted','#janrainEngageEmbed .janrainContent',function() {
           //sendNotifyMessage($('#janrainEngageEmbed .janrainContent > div:last').text(),'info',false);
-          $('#janrainEngageEmbed .janrainContent').attr('style','min-height: 40px');
-          $('#janrainEngageEmbed #janrainView').attr('style','');
-          $('#janrainEngageEmbed #janrainView .janrainHeader').attr('style','display: none;');
-          $('#janrainEngageEmbed #janrainView #janrain-blank').remove();
-          $('#janrainEngageEmbed #janrainView #janrainProviderPages').attr('style','margin: 0; padding: 0;');
-          $('#janrainEngageEmbed #janrainView #attribution_footer').remove();
-          $('#janrainEngageEmbed .janrainContent > div:last:not(#janrainView)').remove();
+          beautifyJanrain();
         });
         
         $('#janrainEngageEmbed #janrain-google,#janrainEngageEmbed .providers').on('click', function(event) {
