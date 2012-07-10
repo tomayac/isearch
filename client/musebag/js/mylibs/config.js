@@ -406,10 +406,10 @@ define("mylibs/config",
         $('#janrainEngageEmbed .janrainContent > div:last:not(#janrainView)').remove();
       };
       
-      beautifyJanrain();
-      
       window.janrainWidgetOnload = function() {
         //Force to format the stupid authentication widget
+        beautifyJanrain();
+        
         $(document).on('DOMNodeInserted','#janrainEngageEmbed .janrainContent',function() {
           //sendNotifyMessage($('#janrainEngageEmbed .janrainContent > div:last').text(),'info',false);
           beautifyJanrain();
