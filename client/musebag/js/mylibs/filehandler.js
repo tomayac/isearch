@@ -436,6 +436,7 @@ define("mylibs/filehandler", ["mylibs/loader", "libs/glge-compiled-min"], functi
                   var id = 'fileQueryItem'+($(".token-input-list-isearch li").size()-1);
                   $("#query-field").tokenInput('add',{id:id, name:token});
                 }
+                hideZoom();
               });
             $closeButton
               .attr('class', 'keyframe-button keyframe-close')
