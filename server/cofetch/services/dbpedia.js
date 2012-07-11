@@ -22,7 +22,7 @@ var textMethods = {
           + 'QueryClass=' + qclass
           + '&QueryString=' + query
           + '&MaxHits=' + maxResults;
-
+      console.log(dbpediaURL);
       var context = this;
 
       
@@ -38,7 +38,7 @@ var textMethods = {
         var parser = new xml2js.Parser();
         //The function where the transformed JSON data comes in
         parser.on('end', function(res) {    	
-        	
+        	console.log(res);
         	if(res.Result) {
         		var result = {
             			"Type":"Text",

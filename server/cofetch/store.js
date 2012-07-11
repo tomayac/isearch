@@ -145,9 +145,8 @@ var getWeatherData = function(co, callback) {
         });
       }
     }
-  } else {
-    callback(co);
   }
+  callback(co);
 };
 
 var storeMultipleContentObjectData = function(data, onlyJson, callback) {
