@@ -845,7 +845,7 @@ var cofetchHandler = (function() {
     			  
     			  dialogHtml += '<p>You revised and saved every fetched Content Object. Please start a new search.</p>';
     			  $('#script-keywords').val('');
-    			  $(".datatab").show();
+    			  $(".datatab").hide();
     			  $("#save").attr('disabled', 'disabled');
     			  $("#dialog").html(dialogHtml);
     			  

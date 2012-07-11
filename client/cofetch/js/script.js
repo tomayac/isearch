@@ -42,9 +42,9 @@ $(document).ready(function(){
       minLength: 2
     });
     
-    if($("#script-automatic").attr("checked") !== undefined) {
+    /*if($("#script-automatic").attr("checked") !== undefined) {
     	$(".datatab").hide();
-    }
+    }*/
     
     cofetchHandler.resetForm();
     
@@ -259,7 +259,7 @@ $(document).ready(function(){
   
   $("#save").click(function(e){
 	
-    e.preventDefault();  
+    e.preventDefault(); 
     //Make all tabs visible again
     $(".datatab").show();
     //post JSON to the correct handler server

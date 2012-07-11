@@ -145,8 +145,14 @@ var getWeatherData = function(co, callback) {
         });
       }
     }
+    if(requestCount < 1) {
+      //This case happens if no location information is stored within the selected items
+      //so we simply call the callback
+      callback(co);
+    }
+  } else {
+    callback(co);
   }
-  callback(co);
 };
 
 var storeMultipleContentObjectData = function(data, onlyJson, callback) {
