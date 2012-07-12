@@ -1,4 +1,4 @@
-var AudioRenderer = function(containerDiv, urlMp3, urlOgg, urlImg, visType)
+var AudioRenderer = function(containerDiv, urlMp3, urlOgg, urlImg, mediaUrl, visType, startTime)
 {
 	var canvas, audio, tmpCanvas, tmpCtx ;
 	var ctx, displayQuality = 1.0  ;
@@ -519,7 +519,7 @@ var AudioRenderer = function(containerDiv, urlMp3, urlOgg, urlImg, visType)
 				
 			ctx = canvas.getContext('2d') ;
 				
-			var audioElement = $("<audio/>", {   preload: "none", controls : 'controls', "width": width, height: "32px"}).appendTo(containerDiv);
+			var audioElement = $("<audio/>", {   preload: "auto", controls : 'controls', "width": width, height: "32px"}).appendTo(containerDiv);
 			audio = audioElement.get(0) ;
 			
 			/**
@@ -538,15 +538,30 @@ var AudioRenderer = function(containerDiv, urlMp3, urlOgg, urlImg, visType)
 			}
 			else
 			{
-									
-				if ( urlOgg )
-					$('<source>').attr('src', urlOgg).appendTo(audioElement);  
+				
+				if ( startTime && mediaUrl )
+				{
+					$('<source>').attr('src', mediaUrl).appendTo(audioElement);  
+				}
+				else
+				{
+					if ( urlOgg )
+						$('<source>').attr('src', urlOgg).appendTo(audioElement);  
 		
-				if ( urlMp3 )
-					$('<source>').attr('src', urlMp3).appendTo(audioElement);  
+					if ( urlMp3 )
+						$('<source>').attr('src', urlMp3).appendTo(audioElement);  
+				}
 					
 				audio.addEventListener('MozAudioAvailable', audioAvailable, false);
 				audio.addEventListener('loadedmetadata', loadedMetadata, false);
+				
+				if ( startTime )
+				{
+					audio.addEventListener("canplay", function() {
+						audio.currentTime = startTime ;
+						audio.play() ;
+					}, false);
+				}
 			}
 		
 			ctx.clearRect(0, 0, canvas.width, canvas.height) ;
