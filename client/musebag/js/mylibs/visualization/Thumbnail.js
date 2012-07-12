@@ -64,6 +64,9 @@
 					
 			ctx.drawImage(data.image, offx, offy, thumbw, thumbh) ;	
 			
+			// hack to reuse aspect ratio for tooltip painting
+			$(data.ele).attr('orig-width', origw).attr('orig-height', origh) ;
+			
 			if ( options.decorator )
 				options.decorator(ctx, dstw2, dsth2, offx, offy, thumbw, thumbh) ;
 		};	
@@ -85,7 +88,7 @@
 				var ctx = canvas.getContext("2d");	
 			
 				var image = new Image ;
-				$this.data('data', { "image": image, "ctx": ctx, "url": methodOrUrl }) ;
+				$this.data('data', { "image": image, "ctx": ctx, "url": methodOrUrl, "ele": $this }) ;
 			
 				if ( options.autoLoad )
 					loadImage($this) ;

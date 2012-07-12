@@ -16,30 +16,16 @@ define("mylibs/visualization/HPanel",
 	], function(){
   
   
-	HPanel = function( searchResults, containerDiv, options ) {
+	HPanel = function( searchResults, containerDiv, options, ctx ) {
 		this.searchResults = searchResults ;
 		this.currentCluster = searchResults.clusters ;
 		this.hierarchy = [searchResults.clusters] ;
+		this.ctx = ctx ;
 
 		this.containerDiv = containerDiv ;
 
-		this.thumbOptions = {  } ;
-
-		if ( options.thumbSize )
-			this.thumbOptions.thumbSize = +options.thumbSize ;
-
-		if ( options.onItemClick )
-			this.thumbOptions.onClick = options.onItemClick ;
-			
-		if ( options.thumbSize )
-			this.thumbOptions.thumbSize = +options.thumbSize ;
-
-		if ( options.iconArrange )
-			this.thumbOptions.iconArrange = options.iconArrange ;
-		
-		if ( options.thumbRenderer )
-			this.thumbOptions.thumbRenderer = options.thumbRenderer ;
-			
+		this.thumbOptions = options.thumbOptions ;
+					
 		if ( options.hasOwnProperty("showGroups") )
 			this.showGroups = options.showGroups ;
 		
@@ -65,15 +51,10 @@ define("mylibs/visualization/HPanel",
 	p.onClick = null ;
 
 	p.setOptions = function(options) {
-		if ( options.thumbSize )
-			this.thumbOptions.thumbSize = +options.thumbSize ;
-		if ( options.iconArrange )
-			this.thumbOptions.iconArrange = options.iconArrange ;
-		if ( options.thumbRenderer )
-			this.thumbOptions.thumbRenderer = options.thumbRenderer ;
-		
-
-		this.resultsPanel = new ThumbContainer($('#hpanel-results'), this.icons, this.thumbOptions ) ;
+	
+		this.thumbOptions = options.thumbOptions ;
+	
+		this.resultsPanel = new ThumbContainer($('#hpanel-results'), this.icons, this.thumbOptions, this.ctx ) ;
 		this.resultsPanel.draw() ;
 
 	};
@@ -109,7 +90,7 @@ define("mylibs/visualization/HPanel",
 		}
 	};
 	
-	p.populatePanels = function()  {
+	p.populatePanels = function(modalities)  {
   	
 		var groupIcons = [] ;
 		var _this = this ;
@@ -125,7 +106,7 @@ define("mylibs/visualization/HPanel",
 			var idx = cluster.nodes[0].idx ;
 			var doc = this.searchResults.docs[idx] ;
 
-			var thumbUrl = ThumbContainer.selectThumbUrl(doc) ;
+			var thumbUrl = ThumbContainer.selectThumbUrl(doc, this.ctx.filterBar.modalities()) ;
 
 			groupIcons.push({url: thumbUrl, cluster: c, clicked: 
 				(function(item) {
@@ -153,7 +134,7 @@ define("mylibs/visualization/HPanel",
 			this.icons.push(obj) ;
 		}
 
-		this.resultsPanel = new ThumbContainer($('#hpanel-results'), this.icons, this.thumbOptions) ;
+		this.resultsPanel = new ThumbContainer($('#hpanel-results'), this.icons, this.thumbOptions, this.ctx) ;
 
 		this.resultsPanel.draw() ;
 	};
@@ -183,8 +164,8 @@ define("mylibs/visualization/HPanel",
 	};
   
 	return {
-		create: function(searchResults, containerDiv, options) {
-					return new HPanel(searchResults, containerDiv, options);
+		create: function(searchResults, containerDiv, options, ctx) {
+					return new HPanel(searchResults, containerDiv, options, ctx);
 			}
 	};
 });

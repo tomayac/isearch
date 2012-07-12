@@ -1,3 +1,25 @@
+DummyThumbRenderer = function() {	
+	
+};	
+
+var p = DummyThumbRenderer.prototype;	
+
+DummyThumbRenderer.thumbMargin = 4 ;
+
+p.render = function(item, container, options)
+{
+	var tm = DummyThumbRenderer.thumbMargin ;
+	var w = $(container).width() ;
+	var h = $(container).height() ;
+	if ( options.hover ) this.hover = options.hover ;
+	else this.hover = true ;
+	
+	var img = $('<div/>', { css: { border: "1px solid black", position: "absolute", left: tm, top: tm, width: w - tm - tm, height: h - tm - tm }  }).appendTo(container);	
+} ;
+
+
+/////////////////////////////////////////////////
+
 DefaultThumbRenderer = function() {	
 	this.hoverItem = null ;	
 	
@@ -10,8 +32,10 @@ p.hoverItem = null ;
 
 DefaultThumbRenderer.thumbMargin = 4 ;
 
-p.render = function(item, container, visBox)
+p.render = function(item, container, options)
 {
+	this.modalities = options.modalities ;
+	this.selected = options.selected ;
 
 	var mediaTypes  = this.getMediaTypes(item) ;
 	
@@ -19,11 +43,22 @@ p.render = function(item, container, visBox)
 	var w = $(container).width() ;
 	var h = $(container).height() ;
 	
+	if ( options.square ) h = w ;
+		
+	var visBox = options.viewport ;
+	if ( options.hover ) this.hover = options.hover ;
+	else this.hover = true ;
+	
+	
+		
+	var docid = ( item.doc.coid ) ? item.doc.coid : item.doc.id ;
 	
 	if ( mediaTypes.count == 1 )
 	{
-		var img = $('<div/>', { css: { position: "absolute", left: tm, top: tm, width: w - tm - tm, height: h - tm - tm }  }).appendTo(container) ;
-		img.thumb(ThumbContainer.selectThumbUrl(item.doc)) ;
+		var img = $('<div/>', { "docid": docid, css: {  position: "absolute", left: tm, top: tm, width: w - tm - tm, height: h - tm - tm }  }).appendTo(container) ;
+		img.thumb(ThumbContainer.selectThumbUrl(item.doc, options.selected)) ;
+		
+		this.img = img ;
 	}
 	else // stack metaphor
 	{
@@ -34,22 +69,51 @@ p.render = function(item, container, visBox)
 		var div2 = $('<div/>', 
 			{ css: { position: "absolute", left: tm, right: tm, top: tm, bottom: tm, 
 			"border-style": "solid", "border-width": "0px " + tm + "px " + tm + "px 0px", "border-color": "#afafaf" }}).appendTo(container) ;
-		var img = $('<div/>', { css: { position: "absolute", left: 0,  top: 0, width: w - tm - tm, height: h - tm - tm,
+		var img = $('<div/>', { "docid": docid, css: { position: "absolute", left: 0,  top: 0, width: w - tm - tm, height: h - tm - tm,
 "border": "1px solid black"		}  }).appendTo(container) ;
-		img.thumb(ThumbContainer.selectThumbUrl(item.doc)) ;
+		img.thumb(ThumbContainer.selectThumbUrl(item.doc, options.selected)) ;
+		this.img = img ;
 	}
 	
-	// setup tooltip
-	var obj = this ;
-	img.mouseover( 	function(e) {
-					obj.showTooltip(item, container, visBox) ;
-				}
-	) ;
 		
-	img.mouseout( 	function(e) {
+	$(img).draggable({opacity: '0.7', cursor: 'move', containment: 'body', helper: function(e) {
+			
+		var helper = $('<div/>', { css: { width: w , height: h, "z-index": 150  }  }) ;
+		helper.thumb(ThumbContainer.selectThumbUrl(item.doc, options.modalities)) ;
+		return helper ;
+	
+	}}) ;
+	
+	// setup tooltip mode
+	
+	var obj = this ;
+	
+	if ( options.hover )
+	{
+		img.mouseover( 	function(e) {
+					obj.showTooltip(item, container, visBox, false) ;
+				}
+		) ;
+		
+		img.mouseout( 	function(e) {
 					if ( !$('.tooltip').is(':visible') ) obj.hoverItem = null ;
 			}
-	) ;
+		) ;
+	}
+	else
+	{
+	
+					
+		img.click(function(e) {
+			if ( e.shiftKey || e.ctrlKey ) return ;
+			else	obj.showTooltip(item, container, visBox, true) ;
+		});
+		
+		img.mouseout( 	function(e) {
+					if ( !$('.tooltip').is(':visible') ) obj.hoverItem = null ;
+			}
+		) ;
+	}  
 		
 	
 	/*		
@@ -60,12 +124,54 @@ p.render = function(item, container, visBox)
 
 } ;
 
+p.renderDocument = function(doc, mediaType)
+{
+	var url = '' ;
+	for( var i=0 ; i<doc.media.length ; i++ )
+	{
+		var media = doc.media[i] ;
+		
+		if ( media.type != mediaType ) continue ;
+		else {
+			url = media.url ;
+			break ;
+		}
+	}
+	var sw = $(window).width() ;	
+	var sh = $(window).height() ;
+	
+	var docPreview = $('<div/>', { title: "Document Preview"}).appendTo('body') ;
+	
+	
+	var ytRx = new RegExp("https:\/\/www.youtube.com\/watch\\?v=(.*)") ;
+	var match = ytRx.exec(url) ;
+	
+	var contents ;
+
+	if ( mediaType == "VideoType"  &&	match.length > 1 )
+		contents = $('<iframe/>', { width: "640", height: "385", marginWidth: "0",  marginHeight:"0",  frameBorder:"0",  scrolling:"auto", 
+			src: "http://www.youtube.com/embed/" + match[1]}).appendTo(docPreview) ;
+
+	else
+	 contents = $('<iframe/>', { width: "100%", height: "100%", marginWidth: "0",  marginHeight:"0",  frameBorder:"0",  scrolling:"auto", src: url})	
+		.appendTo(docPreview) ;
+	
+	docPreview.dialog({
+			width: sw,
+			height: sh,
+			modal: true,
+			close: function() {
+				docPreview.empty() ;
+			}
+	});
+	
+	
+}
+
 p.renderContents = function(tooltip, thumb, mediaType)
 {
 	var mediaTypes  = this.getMediaTypes(thumb) ;
 		
-	
-			
 	// if multi-media display toolbar
 		
 	var that = this;
@@ -74,8 +180,10 @@ p.renderContents = function(tooltip, thumb, mediaType)
 		$('.tooltip-toolbar', tooltip).remove() ;
 		var tb = $('<div/>', { "class": "tooltip-toolbar" }).appendTo(tooltip) ;
 			
-		for ( mtype in mediaTypes.types )
+		for ( var i=0 ; i<mediaTypes.types.length ; i++ )
 		{
+			mtype = mediaTypes.types[i] ;
+			
 			var btn = $('<a/>', { href: "javascript:void(0)", "id": mtype, "class": (( mtype == mediaType ) ? ' selected': '') }).appendTo(tb) ;
 			
 			btn.click(function() {
@@ -90,14 +198,17 @@ p.renderContents = function(tooltip, thumb, mediaType)
 					current.remove() ;
 					that.renderContents(tooltip, thumb, thisMediaType) ;
 					$(this).toggleClass('selected') ;
-					$('a#' + currentId, tooltip).toggleClass('selected') ;
+				//	$('a#' + currentId, tooltip).toggleClass('selected') ;
 				}
 				
 			}) ;
 		}
 	}
+		
+	
+	
 	$('.media-preview', tooltip).remove() ;
-	var tooltipContents = $('<div/>', { "class": "media-preview", "id": mediaType }).appendTo(tooltip) ;
+	var tooltipContents = $('<div/>', { "class": "media-preview", "id": mediaType  }).appendTo(tooltip) ;
 	
 	var desc = ThumbContainer.selectTooltipText(thumb.doc) ;
 			
@@ -108,9 +219,13 @@ p.renderContents = function(tooltip, thumb, mediaType)
 		var imageUrls = [] ;
 		
 		var slideShow = $('<div/>', { "id": "slides"} ).appendTo(tooltipContents) ;
-		var slideContainer = $('<div/>', { "class": "slides-container", css: { width: tooltip.width() }}).appendTo(slideShow) ;
-					
+		var slideContainer = $('<a/>', { "class": "slides-container", css: { width: tooltip.width() }, "href": "javascript:void(0)"})
+		.appendTo(slideShow)
+		.click(function() {
+				that.renderDocument(thumb.doc, mediaType) ;
+		}) ;		
 		
+				
 		for( var i=0 ; i<thumb.doc.media.length ; i++ )
 		{
 			var media = thumb.doc.media[i] ;
@@ -123,12 +238,22 @@ p.renderContents = function(tooltip, thumb, mediaType)
 				{
 					var preview = media.previews[j] ;
 				
-					if ( ! /^image\//.test(preview.format) ) continue ;
+				/*	if ( ! /^image\//.test(preview.format) ) continue ; */
 				
 					imageUrls.push(preview.url) ;
 					
-					var cntSlide = $('<div/>', { "class": "slide", css: { width: tooltip.width(), height: tooltip.width() }}).appendTo(slideContainer) ;
-					var slide = $("<img/>", { src: preview.url }).appendTo(cntSlide) ;
+					var cntSlide = $('<div/>', { "class": "slide", 
+						css: { width: tooltip.width() + 'px', height: tooltip.width() + 'px', 'line-height': tooltip.width() + 'px', 'text-align': 'center' }
+					}).appendTo(slideContainer) ;
+					
+					var slide = $("<img/>", { load: function() {
+						if ( this.width < this.height )
+							$(this).attr('height', '100%') ;
+						else
+							$(this).attr('width', '100%') ;
+						},
+					src: preview.url,
+					css: { 'vertical-align' : 'middle'}}).appendTo(cntSlide) ;
 					
 				}
 			}
@@ -146,15 +271,6 @@ p.renderContents = function(tooltip, thumb, mediaType)
 				pause: 2500
 				}) ;
 		
-		
-	
-	if ( desc ) {
-		contents = "<br/><p style='max-height: 60px; overflow: hidden; text-overflow: ellipsis'>" + desc + "</p>" ;
-		tooltipContents.append(contents) ;
-		}
-	
-	//	tooltip.html(contents) ;
-		
 	}
 	else if ( mediaType == "SoundType" )
 	{
@@ -171,45 +287,103 @@ p.renderContents = function(tooltip, thumb, mediaType)
 				var  preview = media.previews[j] ;
 				
 				if ( preview.format == "image/png" ) urlPng = preview.url ;
-				if ( preview.format == "image/jpg" ) urlJpg = preview.url ;
+				else if ( preview.format == "image/jpg" ||  preview.format == "image/jpeg" ) urlJpg = preview.url ;
 				else if ( preview.format == "image/svg+xml" ) urlSvg = preview.url ;
 				else if ( preview.format == "audio/mpeg" ) urlMp3 = preview.url ;
 				else if ( preview.format == "audio/ogg" ) urlOgg = preview.url ;
+				else if ( preview.format == "" ) urlUnknown = preview.url ;
 			}
 			
 			if ( urlSvg && Modernizr.svg ) urlImg = urlSvg ;
 			else if ( urlPng ) urlImg = urlPng ;
 			else if ( urlJpg ) urlImg = urlJpg ;
+			else if ( urlUnknown ) urlImg = urlUnknown ;
 			
-			var anim = $('<div/>', { css: { width: tooltip.width() } }).appendTo(tooltipContents) ;
-			var audioRdr = new AudioRenderer(anim, urlMp3, urlOgg, urlImg, "flower") ;
+			
+			var anim = $('<div/>', { css: { width: tooltip.width() }}).appendTo(tooltipContents) ;
+			var audioRdr = new AudioRenderer(anim, urlMp3, urlOgg, urlImg, media.url, "flower", thumb.doc.startTime) ;
+			
+			$("#audiovis", anim).click(function() {
+				that.renderDocument(thumb.doc, mediaType) ;
+			}) ;
+			
 			
 			tooltip.bind('thide', function() { 
 				audioRdr.terminate() ; 
-			}) ; 
-			
-			if ( desc ) 
-				$('<p/>', { css: { "max-height": "60px", "overflow": "hidden", "text-overflow": "ellipsis"}, text: desc}).appendTo(tooltipContents) ;
+			}) ;
 		
 			break ;
 		}
 		
 	}
+	
+	if(desc) {
+	  $('<p/>', { css: { "float": "left", "max-height": "60px", "overflow": "hidden", "text-overflow": "ellipsis"}, text: desc}).appendTo(tooltipContents);
+	}
+	
+	/**
+	 * Triantafillos:
+	 * reverse geocode location of object and display it in the tooltip
+	 * if location is given as query, compute distance with object and display it in the tooltip
+	 */
+	if (thumb.doc.rw.pos) {
+	  var location =  new google.maps.LatLng(thumb.doc.rw.pos.coords.lat, thumb.doc.rw.pos.coords.lon);
+	  var geocoder = new google.maps.Geocoder();
+	  geocoder.geocode({'latLng': location}, function(results, status) {
+	  
+	    if (status == google.maps.GeocoderStatus.OK) {
+	      tooltipContents.append("<br><p>Location: "+results[0].formatted_address+"</p>");
+		}
+		else if (status == google.maps.GeocoderStatus.ZERO_RESULTS) {
+	      tooltipContents.append("<br><p>Location: no address for the coordinates: ("+thumbLatitude+","+thumbLongitude+")</p>");
+	    }
+		
+		if($("#queryContainer .Location").length) {
+		  var currentLatitude = $("#queryContainer .Location").attr('title').split(" ")[0];
+		  var currentLongitude = $("#queryContainer .Location").attr('title').split(" ")[1];
+		  var R = 6371;
+		  var dLat = (currentLatitude-thumbLatitude) *  Math.PI / 180;
+		  var dLon = (currentLongitude-thumbLongitude) *  Math.PI / 180;
+		  var lat1 = thumbLatitude *  Math.PI / 180;
+		  var lat2 = currentLatitude *  Math.PI / 180;
+		  var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
+		  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+		  var distance = R * c;
+		  tooltipContents.append("<p>Distance: "+distance.toFixed(3)+" km</p>");
+		}
+	  });
+	}
+	else tooltipContents.append("<br><p>Location: unavailable</p>");
 }
 
 p.getMediaTypes = function(thumb)
 {
-	var mediaTypes  = {} ;
+	var mediaTypes  = [] ;
 	var mcount = 0 ;
-	for( var i=0 ; i  < thumb.doc.media.length ; i++ )
+	
+	for(var i=0 ; i<this.modalities.length ; i++ )
 	{
-		var media = thumb.doc.media[i] ;
+		var mod = this.modalities[i] ;
+		for( var j=0 ; j < thumb.doc.media.length ; j++ )
+		{
+			var media = thumb.doc.media[j] ;
 			
-		if ( media.type == "Text" ) continue ;
-		if ( !mediaTypes.hasOwnProperty(media.type) ) { mediaTypes[media.type] = 1 ; mcount ++ ; }
-		else {
-			mediaTypes[media.type] ++ ;
+			if ( media.type == "Text" ) continue ;
+		
+	
+			if ( ( mod == "image" && media.type == "ImageType" ) ||
+				 ( mod == "3d" && media.type == "Object3D" ) ||
+				 ( mod == "audio" && media.type == "SoundType" ) ||
+				 ( mod == "video" && media.type == "VideoType" ) )
+			{
+				if ( $.inArray(media.type, mediaTypes) == -1 ) { 
+					mcount ++ ;
+					mediaTypes.push(media.type) ;
+				}
+				
+			}
 		}
+		
 	}
 	
 	return { 'count': mcount, 'types': mediaTypes } ;
@@ -252,11 +426,19 @@ p.doShowTooltip = function(thumb, container, visBox)
 	// see what type of media we have
 		
 	// select default media to show
-	var mediaType = null ;
+	var mediaTypes = this.getMediaTypes(thumb) ;
+	
 	if ( thumb.defaultMedia )
 		mediaType = thumb.defaultMedia ;
-	else if ( thumb.doc.media.length > 0 )
-		mediaType = thumb.doc.media[0].type ;
+	else if ( mediaTypes.count > 0 )
+	{
+		var sel = this.selected[0] ;
+		
+		if ( sel == "image" && $.inArray("ImageType", mediaTypes.types) != -1 ) mediaType = "ImageType" ; 
+		else if ( sel == "3d" && $.inArray("Object3D", mediaTypes.types) != -1 ) mediaType = "Object3D" ; 
+		else if ( sel == "audio" && $.inArray("SoundType", mediaTypes.types) != -1 ) mediaType = "SoundType" ; 
+		else if ( sel == "video" && $.inArray("VideoType", mediaTypes.types) != -1 ) mediaType = "VideoType" ; 
+	}
 		
 	// now render the contents
 		
@@ -275,19 +457,19 @@ p.doShowTooltip = function(thumb, container, visBox)
 	if ( posx + ttw < ww )	
 		tooltip.css("left", posx)	;
 	else 	
-		tooltip.css("left", ww-ttw-2)	
+		tooltip.css("left", ww-ttw-2);	
 
 	if ( posy + tth < wh  )	
 		tooltip.css("top", posy)	;
 	else 	
-		tooltip.css("top", wh-tth-2)	
+		tooltip.css("top", wh-tth-2);	
 
 		console.log(posx + ' ' + posy) ;
 	tooltip.fadeIn('fast') ;	
 
 };	
 
-p.showTooltip = function(item, container, visBox)	
+p.showTooltip = function(item, container, visBox, showNow)	
 {	
 	
 	var obj = this ;	
@@ -295,10 +477,12 @@ p.showTooltip = function(item, container, visBox)
 	this.hoverItem = item ;
 	
 	
-	
-	setTimeout( function() { 	
-		if ( obj.hoverItem === item ) obj.doShowTooltip(item, container, visBox) ;
-	}, 500) ;	
+	if ( showNow == true )
+		obj.doShowTooltip(item, container, visBox) ;
+	else
+		setTimeout( function() { 	
+			if ( obj.hoverItem === item ) obj.doShowTooltip(item, container, visBox) ;
+		}, 500) ;	
 
 };	
 

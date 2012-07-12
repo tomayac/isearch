@@ -7,9 +7,9 @@ This space is used to build the GUI part of I-SEARCH.
 ##Some info: 
 
 - this is the GUI project for I-SEARCH. It consists of several components which are here
-  splitted in a the client and server folder for a better project structure 
-- the main interface component is names MuSeBag which stands for Multimodal Search Bag. Its
-  mockup is built on top of the amazing HTML5BoilerPlate
+  splitted in a client and server folder for a better project structure 
+- the main interface component is named MuSeBag which stands for Multimodal Search Bag. The
+  prototype is built on top of the amazing HTML5BoilerPlate
 - the build/ test/ crossdomain.xml robots.txt and plugin stub within the client/musebag folder are there for the near future.
   We'll probably need it very soon. But if you ask: yes, they're unuseful right
   now.
@@ -57,6 +57,8 @@ Let's also embrace the use of **module pattern**. Example:
 
 ##Install guide
 
+###Linux 
+
 The GUI framework for I-SEARCH is based on client and server side Javascript. Which means, that
 a NodeJS server is needed with several module dependencies in order to run all components of the
 I-SEARCH GUI Framework. Here is a little step-by-step setup guide in order to run this code on
@@ -72,7 +74,7 @@ your Linux server:
    will be intalled along with the modules: 
    - Install Git on your server with the help of this guide: http://book.git-scm.com/2_installing_git.html
    - Install Redis as document based database used for session management:
-     - follow this guide for full install and config: http://library.linode.com/databases/redis (select the article for your server OS) 
+     - follow this guide for full install and config: http://redis.io/download
      - follow this instructions for fast install, without setup: http://rediscookbook.org/install_with_installer.html
      - Make sure the redis-cli binary is running on the server
    - Intall connect module via 
@@ -81,10 +83,8 @@ your Linux server:
      `npm install connect-redis -g`
    - Install express module via
      `npm install express -g`
-   - Install eyes module via
-     `npm install eyes -g`    
-   - Install formidable module via
-     `npm install formidable -g`          
+   - Install jsdom module via
+     `npm install jsdom -g`                
    - Install now module via
      `npm install now -g`
    - Install restler module via
@@ -95,14 +95,13 @@ your Linux server:
      `npm install step -g`
    - Install forever module via
      `npm install forever -g`  
+   - Install http-proxy module via
+     `npm install http-proxy -g`    
 4. Create a folder for the I-SEARCH GUI framework on your server under "/var/www/isearch"
 5. Pull this github repository into this folder by changing into the directory "/var/www/isearch" and typing
    `git clone git://github.com/tomayac/isearch.git`
 6. Make sure you reserve 1 public port (default: 80) for the GUI Framework as well as 5 local ports for GUI services (default: 8081,8082,8083,8084,8085)
-7. Please change the paths in the following Javascript files within the repository and replace all "isearch.ai.fh-erfurt.de" and "http://isearch.ai.fh-erfurt.de" with your server URL/IP address:
-   server/isearch-proxy.js
-   client/cofetch/js/libs/cofetchHandler.js
-8. Start the server scripts for the GUI framework:
+7. Start the server scripts for the GUI framework:
    - change directory to /var/www/isearch/server/pTag
    - enter: `forever start index-ptag.js`
    - change directory to /var/www/isearch/server/musebag
@@ -114,9 +113,35 @@ your Linux server:
      where the error occured
 9. You're done! Try your server URL and port in your browser.
    If any unexpected issues occur please feel free to list them as **issue** here on **github**.
+
+###Windows
     
-(NodeJS can also run on Windows, but it's not as nice as Linux. Find those
-instructions by searching your preferred search engine)
+NodeJS can also run on Windows, but it's not as nice as Linux. There is quite a lot going on right now.
+You can find the newest Windows binary here: http://nodejs.org/ and click the **Download"** button.
+
+Some guidiance in how to set up nodeJS on Windows 7 can be found here. After you installed the binary
+for Windows from nodejs.org do the following steps:
+
+1. nodejs is basically installed into "C:\Program Files (x86)\nodejs", add this path to your **PATH** 
+   enviroment variable via System Settings > System > Enhanced System Settings.
+2. Set up a new enviroment variavle called "NODE_PATH" with the value of your node directory - basically 
+   it's "C:\Program Files (x86)\nodejs"
+3. your global node modules will be installed under in the **npm** data directory which is mostly found 
+   under "C:\Users\USERNAME\AppData\Roaming\npm\node_modules"
+4. Install the modules listed in the Linux instructions within the `cmd.exe` in admin mode by just 
+   entering `npm install MODULENAME -g` - so the same procedure like under Linux.
+5. **Problems**: some modules want install now, since they need to be compiled. A trick can be to go 
+   directly to the GitHub pages of the module creators and download the sources as ZIP file. Some modules
+   creators provide already compiled versions of there modules for Windows builds of nodeJS.
+   The process is as follows:
+   1. Download the module package as ZIP file from the GitHub page of the module (i.e. https://github.com/visionmedia/express)
+   2. Extract the ZIP folder into yout npm data directory (e.g. "C:\Users\USERNAME\AppData\Roaming\npm\node_modules")
+   3. Rename the folder into the original module name (e.g. if you download "express" rename the folder to "express")
+   That's it.
+     
+   The jsdom module is an example of the problems currently seen with Windows installations of nodeJS.
+   Here is an example: https://github.com/tmpvar/jsdom/issues/378 for reference. 
+ 
 
 ##Other matters:
 

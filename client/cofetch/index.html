@@ -1,459 +1,523 @@
 <!doctype html>
 <html class="no-js" lang="en">
 <head>
-  <meta charset="utf-8">
+<meta charset="utf-8">
 
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-  <title>Cofetch - let's rock this party!</title>
-  <meta name="description" content="Automatic content object generation and retrieval script">
-  <meta name="author" content="Arnaud Brousseau and Jonas Etzold">
+<title>Cofetch - let's rock this party!</title>
+<meta name="description"
+	content="Automatic content object generation and retrieval script">
+<meta name="author" content="Arnaud Brousseau and Jonas Etzold">
 
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  
-  <link rel="stylesheet" href="css/jquery-ui-1.8.16.custom.css">
-  <link rel="stylesheet" href="css/style.css">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
-  <script src="js/libs/modernizr-2.0.6.min.js"></script>
+<link rel="stylesheet" href="css/jquery-ui-1.8.17.custom.css">
+<link rel="stylesheet" href="css/style.css">
+
+<script src="js/libs/modernizr-2.0.6.min.js"></script>
 </head>
 
 <body>
 
-  <div id="container">
-    <header>
-      <h1>Content-Object and RUCoD creation. The smart way.</h1>
-      <nav>
-        <button id="previous">Previous</button>
-        <button id="next">Next</button>
-        <button id="save">Save and Next</button>
-      </nav>
-    </header>
-    <div id="main" role="main">
-      <form method="post" action="" id="script-tabs">
-        
-        <ul>
-          <li><a href="#script">Start</a></li>
-          <li class="datatab"><a href="#basic">Basic Information</a></li>
-          <li class="datatab"><a href="#text">Text Item</a></li>
-          <li class="datatab"><a href="#threed">3D Item</a></li>
-          <li class="datatab"><a href="#image">Image Item</a></li>
-          <li class="datatab"><a href="#audio">Audio Item</a></li>
-          <li class="datatab"><a href="#video">Video Item</a></li>
-        </ul>  
-        
-        <section id="script">
-          <h3>Script Start</h3>
-          
-          <p>Please enter a comma separated list of keywords for which this script should
-          search public media sources in order to create content objects. Further please
-          specify a category for the entered keywords. Be aware that all keywords fit to the
-          specified category.<br/>
-          At the end please specify if you want the script to automatically finish the creation
-          process, or if you want to supervise the retrieved content before a content object is
-          finally stored.</p>
-          
-          <label for="script-keywords">Search Keywords</label>
-          <input type="text" name="script-keywords" value="" id="script-keywords" class="title" />
-          
-          <label for="script-category">Category</label>
-          <select name="script-category" id="script-category">
-            <option value="">Not set</option>
-          </select>
-          
-          <label for="script-automatic">
-          <input type="checkbox" name="script-automatic" id="script-automatic" /> run automatic    
-          
-          <p>
-          <button id="script-start">Start</button>
-          </p>
-        </section>
-          
-        <section id="basic">
-          <h3>Basic Information</h3>
-          
-          <label for="main-name">Content Object Name</label>
-          <input type="text" name="main-name" value="" id="main-name" class="title" />
-          
-          <label for="main-screenshot">Content Object Preview: </label>
-          <select name="main-screenshot" id="main-screenshot" size="1">
-            <option value="image">Image Preview</option>
-            <option value="3d">Original 3d Preview</option>
-            <option value="video">Video Thumbnail</option>
-            <option value="sound">Sound Waves</option>
-          </select>
-          
-          <label for="main-categoryPath">Category Path: </label>
-          <input type="text" name="main-categoryPath" value="" id="main-categoryPath" />
-        </section>
-        
-        <section id="text">
-          <h3>Text Item</h3>
-          
-          <input type="text" name="search-text-phrase" value="" id="search-text-phrase" class="inline" /> <button id="search-text">Search new</button><br/>
-          
-          <textarea name="text-content" id="text-content" cols="30" rows="10"></textarea>
-        </section>
-        
-        <section id="threed">
-          <h3>3D Item</h3>
-          
-          <button id="change-threed">Change</button>
-          or <input type="text" name="search-threed-phrase" value="" id="search-threed-phrase" class="inline" /> <button id="search-threed">Search new</button>
-          
-                    
-          <img src="http://zenvfx.net/wp-content/uploads/2011/01/NO-pic-150x150.jpg" id="threed-visualPreview" alt="" />
-          
-          <label for="threed-name">Name: </label>
-          <input type="text" name="threed-name" value="" id="threed-name" class="title" />
-          
-          <label for="threed-desc">Description: </label>
-          <input type="text" name="threed-desc" value="" id="threed-desc" />
-          
-          <label for="threed-tags">Tags: </label>
-          <input type="text" name="threed-tags" value="" id="threed-tags"/>
-          
-          <label for="threed-extension">Extension: </label>
-          <input type="text" name="threed-extension" value="" id="threed-extension" />
-          
-          <label for="threed-license">License: </label>
-          <input type="text" name="threed-license" value="" id="threed-license" />
-          
-          <label for="threed-licenseURL">License URL: </label>
-          <input type="text" name="threed-licenseURL" value="" id="threed-licenseURL" />
-          
-          <label for="threed-author">Author: </label>
-          <input type="text" name="threed-author" value="" id="threed-author" />
-          
-          <label for="threed-date">Date: </label><input type="text" name="threed-date" value="" id="threed-date" />
-          
-          <label for="threed-size">Size: </label>
-          <input type="text" name="threed-size" value="" id="threed-size" />
-          
-          <label for="threed-url">URL: </label>
-          <input type="text" name="threed-url" value="" id="threed-url" />
-          
-          <label for="threed-preview">Preview: </label>
-          <input type="text" name="threed-preview" value="" id="threed-preview" />
+	<div id="container">
+		<header>
+			<h1>Content-Object and RUCoD creation. The smart way.</h1>
+			<nav>
+				<button id="previous">Previous</button>
+				<button id="next">Next</button>
+				<button id="save">Save and Next</button>
+			</nav>
+		</header>
+		<div id="main" role="main">
+			<form method="post" action="" id="script-tabs">
 
-          <label for="threed-emotions">Emotions: </label>
-          <select name="threed-emotions" id="threed-emotions" multiple size="1">
-            <option value="">Not set</option>
-            <option value="affectionate">Affectionate</option>
-            <option value="afraid">Afraid</option>
-            <option value="amused">Amused</option>
-            <option value="angry">Angry</option>
-            <option value="bored">Bored</option>
-            <option value="confident">Confident</option>
-            <option value="content">Content</option>
-            <option value="disappointed">Disappointed</option>
-            <option value="excited">Excited</option>
-            <option value="happy">Happy</option>
-            <option value="interested">Interested</option>
-            <option value="loving">Loving</option>
-            <option value="Pleased">Pleased</option>
-            <option value="relaxed">Relaxed</option>
-            <option value="sad">Sad</option>
-            <option value="satisfied">Satisfied</option>
-            <option value="worried">Worried</option>
-          </select>
-          
-          <label for="threed-location">Location: </label>
-          <input type="text" name="threed-location" value="" id="threed-location" />
-          
-          <label for="threed-weather-condition">Weather condition</label>
-          <input type="text" name="threed-weather-condition" value="" id="threed-weather-condition" />
-          
-          <label for="threed-weather-wind">Wind</label>
-          <input type="text" name="threed-weather-wind" value="" id="threed-weather-wind" />
-          
-          <label for="threed-weather-temperature">Temperature (C)</label>
-          <input type="text" name="threed-weather-temperature" value="" id="threed-weather-temperature" />
-          
-          <label for="threed-weather-humidity">Humidity</label>
-          <input type="text" name="threed-weather-humidity" value="" id="threed-weather-humidity" />
-        </section>
-        
-        <section id="image">
-          <h3>Image Item</h3>
-          
-          <button id="change-image">Change</button>
-          or <input type="text" name="search-image-phrase" value="" id="search-image-phrase" class="inline" /> <button id="search-image">Search new</button>
-          
-          <img id="image-previewFlickr" src="http://zenvfx.net/wp-content/uploads/2011/01/NO-pic-150x150.jpg" />
-          
-          <label for="image-name">Image Name: </label>
-          <input type="text" name="image-name" value="" id="image-name" class="title" />
-          
-          <label for="image-desc">Image Description: </label>
-          <input type="text" name="image-desc" value="" id="image-desc" />
-          
-          <label for="image-tags">Image Tags: </label>
-          <input type="text" name="image-tags" value="" id="image-tags"/>
-          
-          <label for="image-extension">Extension: </label>
-          <input type="text" name="image-extension" value="" id="image-extension" />
-          
-          <label for="image-license">License: </label>
-          <input type="text" name="image-license" value="" id="image-license" />
-          
-          <label for="image-licenseURL">License URL: </label>
-          <input type="text" name="image-licenseURL" value="" id="image-licenseURL" />
-          
-          <label for="image-author">Author: </label>
-          <input type="text" name="image-author" value="" id="image-author" />
-          
-          <label for="image-date">Date: </label><input type="text" name="image-date" value="" id="image-date" />
-          
-          <label for="image-size">Size: </label>
-          <input type="text" name="image-size" value="" id="image-size" />
-          
-          <label for="image-url">URL: </label>
-          <input type="text" name="image-url" value="" id="image-url" />
-          
-          <label for="image-preview">Preview: </label>
-          <input type="text" name="image-preview" value="" id="image-preview" />
-          
-          <label for="image-dimensions">Dimensions: </label>
-          <input type="text" name="image-dimensions" value="" id="image-dimensions" />
-          
-          <label for="image-emotions">Emotions: </label>
-          <select name="image-emotions" id="image-emotions" multiple size="1">
-            <option value="">Not set</option>  
-            <option value="affectionate">Affectionate</option>
-            <option value="afraid">Afraid</option>
-            <option value="amused">Amused</option>
-            <option value="angry">Angry</option>
-            <option value="bored">Bored</option>
-            <option value="confident">Confident</option>
-            <option value="content">Content</option>
-            <option value="disappointed">Disappointed</option>
-            <option value="excited">Excited</option>
-            <option value="happy">Happy</option>
-            <option value="interested">Interested</option>
-            <option value="loving">Loving</option>
-            <option value="Pleased">Pleased</option>
-            <option value="relaxed">Relaxed</option>
-            <option value="sad">Sad</option>
-            <option value="satisfied">Satisfied</option>
-            <option value="worried">Worried</option>
-          </select>
-          
-          <label for="image-location">Location: </label>
-          <input type="text" name="image-location" value="" id="image-location" />
-          
-          <label for="image-weather-condition">Weather condition</label>
-          <input type="text" name="image-weather-condition" value="" id="image-weather-condition" />
-          
-          <label for="image-weather-wind">Wind</label>
-          <input type="text" name="image-weather-wind" value="" id="image-weather-wind" />
-          
-          <label for="image-weather-temperature">Temperature (C)</label>
-          <input type="text" name="image-weather-temperature" value="" id="image-weather-temperature" />
-          
-          <label for="image-weather-humidity">Humidity</label>
-          <input type="text" name="image-weather-humidity" value="" id="image-weather-humidity" />
-          
-        </section>
-        <section id="audio">
-          <h3>Audio Item</h3>
-          
-          <button id="change-sound">Change</button>
-          or <input type="text" name="search-sound-phrase" value="" id="search-sound-phrase" class="inline" /> <button id="search-sound">Search new</button>
-          
-          <audio id="sound-previewOGG" controls="controls"
-            src="http://beta.freesound.org/data/previews/83/83295_29541-lq.ogg"       
-            type="audio/ogg">
-          </audio>
-          
-          <label for="sound-name">Name: </label>
-          <input type="text" name="sound-name" value="" id="sound-name" class="title" />
-          
-          <label for="sound-tags">Tags: </label>
-          <input type="text" name="sound-tags" value="" id="sound-tags"/>
-          
-          <label for="sound-extension">Extension: </label>
-          <input type="text" name="sound-extension" value="" id="sound-extension" />
-          
-          <label for="sound-license">License: </label>
-          <input type="text" name="sound-license" value="" id="sound-license" />
-          
-          <label for="sound-licenseURL">License URL: </label>
-          <input type="text" name="sound-licenseURL" value="" id="sound-licenseURL" />
-          
-          <label for="sound-author">Author: </label>
-          <input type="text" name="sound-author" value="" id="sound-author" />
-          
-          <label for="sound-date">Date: </label><input type="text" name="sound-date" value="" id="sound-date" />
-          
-          <label for="sound-size">Size: </label>
-          <input type="text" name="sound-size" value="" id="sound-size" />
-          
-          <label for="sound-url">URL: </label>
-          <input type="text" name="sound-url" value="" id="sound-url" />
-          
-          <label for="sound-preview">Preview: </label>
-          <input type="text" name="sound-preview" value="" id="sound-preview" />
-          
-          <label for="sound-length">Length: </label>
-          <input type="text" name="sound-length" value="" id="sound-length" />
-          
-          <label for="sound-emotions">Emotions: </label>
-          <select name="sound-emotions" id="sound-emotions" multiple size="1">
-            <option value="">Not set</option>   
-            <option value="affectionate">Affectionate</option>
-            <option value="afraid">Afraid</option>
-            <option value="amused">Amused</option>
-            <option value="angry">Angry</option>
-            <option value="bored">Bored</option>
-            <option value="confident">Confident</option>
-            <option value="content">Content</option>
-            <option value="disappointed">Disappointed</option>
-            <option value="excited">Excited</option>
-            <option value="happy">Happy</option>
-            <option value="interested">Interested</option>
-            <option value="loving">Loving</option>
-            <option value="Pleased">Pleased</option>
-            <option value="relaxed">Relaxed</option>
-            <option value="sad">Sad</option>
-            <option value="satisfied">Satisfied</option>
-            <option value="worried">Worried</option>
-          </select>
-          
-          <label for="sound-location">Location: </label>
-          <input type="text" name="sound-location" value="" id="sound-location" />
-          
-          <label for="sound-weather-condition">Weather condition</label>
-          <input type="text" name="sound-weather-condition" value="" id="sound-weather-condition" />
-          
-          <label for="sound-weather-wind">Wind</label>
-          <input type="text" name="sound-weather-wind" value="" id="sound-weather-wind" />
-          
-          <label for="sound-weather-temperature">Temperature (C)</label>
-          <input type="text" name="sound-weather-temperature" value="" id="sound-weather-temperature" />
-          
-          <label for="sound-weather-humidity">Humidity</label>
-          <input type="text" name="sound-weather-humidity" value="" id="sound-weather-humidity" />
-        </section>
-        <section id="video">
-          
-          <h3>Video Item</h3>
-        
-          <button id="change-video">Change</button> 
-          or <input type="text" name="search-video-phrase" value="" id="search-video-phrase" class="inline" /> <button id="search-video">Search new</button> 
-        
-          <iframe id="video-previewYT" class="youtube-player" type="text/html" width="320" height="193" src="http://www.youtube.com/embed/8E-MtJBAZvw" frameborder="0">
-          </iframe>
-        
-          <label for="video-name">Name: </label>
-          <input type="text" name="video-name" value="" id="video-name" class="title" />
+				<ul>
+					<li><a href="#script">Start</a>
+					</li>
+					<li class="datatab"><a href="#basic">Basic Information</a>
+					</li>
+					<li class="datatab"><a href="#text" class="reduced">Text Item</a><span class="delete">X</span>
+					</li>
+					<li class="datatab"><a href="#threed" class="reduced">3D Item</a><span class="delete">X</span>
+					</li>
+					<li class="datatab"><a href="#image" class="reduced">Image Item</a><span class="delete">X</span>
+					</li>
+					<li class="datatab"><a href="#audio" class="reduced">Audio Item</a><span class="delete">X</span>
+					</li>
+					<li class="datatab"><a href="#video" class="reduced">Video Item</a><span class="delete">X</span>
+					</li>
+				</ul>
 
-          <label for="video-desc">Description: </label>
-          <input type="text" name="video-desc" value="" id="video-desc" />
+				<section id="script">
+					<h3>Script Start</h3>
+
+					<p>
+						Please enter a comma separated list of keywords for which this
+						script should search public media sources in order to create
+						content objects. Further please specify a category for the entered
+						keywords. Be aware that all keywords fit to the specified
+						category.<br /> At the end please specify if you want the script
+						to automatically finish the creation process, or if you want to
+						supervise the retrieved content before a content object is finally
+						stored.
+					</p>
+
+					<label for="script-keywords">Search Keywords</label> 
+					<input type="text" name="script-keywords" value="" id="script-keywords" class="title" /> 
+					<label for="script-category">Category</label> 
+					<select name="script-category" id="script-category">
+						<option value="">Not set</option>
+					</select> 
+					<label for="script-automatic"> 
+					 <input type="checkbox" name="script-automatic" id="script-automatic" /> run automatic
+					</label>
+					<p>
+						<button id="script-start">Start</button>
+					</p>
+				</section>
+
+				<section id="basic">
+					<h3>Basic Information</h3>
+
+					<label for="main-name">Content Object Name</label> 
+					<input type="text" name="main-name" value="" id="main-name" class="title" />
+
+					<label for="main-screenshot">Content Object Preview: </label> 
+					<select name="main-screenshot" id="main-screenshot" size="1">
+						<option value="image">Image Preview</option>
+						<option value="3d">Original 3d Preview</option>
+						<option value="video">Video Thumbnail</option>
+						<option value="sound">Sound Waves</option>
+					</select> 
+					<label for="main-categoryPath">Category Path: </label> 
+					<input type="text" name="main-categoryPath" value="" id="main-categoryPath" />
+				</section>
+
+				<section id="text">
+					<h3>Text Item</h3>
           
-          <label for="video-tags">Tags: </label>
-          <input type="text" name="video-tags" value="" id="video-tags"/>
+          <div class="media-search">
+            <input type="text" name="search-text-phrase" value="" id="search-text-phrase" class="inline" />
+            <button id="search-text">Search new</button>
+            <ul id="text-list">
+            </ul>
+            <p>No text items available.</p>
+            <div id="search-text-loader" class="loader">
+              <p>
+                <img src="ajax-loader.gif" alt="Fetching items..." />
+              </p>
+            </div>     
+          </div>
+					
+					<div class="media-details">
+					  <label for="text-content">Text content:</label> 
+					  <textarea name="text-content" id="text-content" cols="30" rows="10"></textarea>
+					</div>  
+				</section>
 
-          <label for="video-extension">Extension: </label>
-          <input type="text" name="video-extension" value="" id="video-extension" />
+				<section id="threed">
+					<h3>3D Item</h3>
+          
+          <div class="media-search">
+            <input type="text" name="search-threed-phrase" value="" data-last="" id="search-threed-phrase" class="search-part inline" />
+            <button id="search-threed">Find new</button>
+            <button id="search-threed-prev" class="search-nav-button" title="Previous 10 results" data-page="0" disabled="disabled">&lt;</button><button id="search-threed-next" class="search-nav-button" title="Next 10 results" data-page="2">&gt;</button>
+            <ul id="threed-list">
+            </ul>  
+            <p>No 3D models available.</p> 
+            <div id="search-threed-loader" class="loader">
+              <p>
+                <img src="ajax-loader.gif" alt="Fetching items..." />
+              </p>
+            </div>  
+          </div>
+          
+          <div class="media-details accordion">
+            <h3><a href="#">Basic Information</a></h3>
+            <div>
+              <img src="no-pic.png" id="threed-visualPreview" alt="" />
+              <label for="threed-name">Name:</label> 
+              <input type="text" name="threed-name" value="" id="threed-name" class="title" />
+              <label for="threed-desc">Description: </label> 
+              <input type="text" name="threed-desc" value="" id="threed-desc" class="wide"/> 
+              <label for="threed-tags">Tags: </label> 
+              <input type="text" name="threed-tags" value="" id="threed-tags" class="wide" /> 
+            </div>
+            <h3><a href="#">License Information</a></h3>
+            <div>
+              <label for="threed-license">License: </label>
+              <input type="text" name="threed-license" value="" id="threed-license" /> 
+              <label for="threed-licenseURL">License URL: </label> 
+              <input type="text" name="threed-licenseURL" value="" id="threed-licenseURL" /> 
+              <label for="threed-author">Author: </label> 
+              <input type="text" name="threed-author" value="" id="threed-author" />
+            </div>
+            <h3><a href="#">File Information</a></h3>
+            <div>
+              <label for="threed-date">Date: </label>
+              <input type="text" name="threed-date" value="" id="threed-date" />
+              <label for="threed-extension">Extension: </label> 
+              <input type="text" name="threed-extension" value="" id="threed-extension" /> 
+              <label for="threed-size">Size: </label> 
+              <input type="text" name="threed-size" value="" id="threed-size" /> 
+              <label for="threed-url">URL: </label> 
+              <input type="text" name="threed-url" value="" id="threed-url" /> 
+              <label for="threed-preview">Preview: </label> 
+              <input type="text" name="threed-preview" value="" id="threed-preview" />
+            </div>
+            <h3><a href="#">Extented Information</a></h3>
+            <div>
+              <label for="threed-emotions">Emotions: </label> 
+              <select name="threed-emotions" id="threed-emotions" multiple size="1">
+                <option value="">Not set</option>
+                <option value="affectionate">Affectionate</option>
+                <option value="afraid">Afraid</option>
+                <option value="amused">Amused</option>
+                <option value="angry">Angry</option>
+                <option value="bored">Bored</option>
+                <option value="confident">Confident</option>
+                <option value="content">Content</option>
+                <option value="disappointed">Disappointed</option>
+                <option value="excited">Excited</option>
+                <option value="happy">Happy</option>
+                <option value="interested">Interested</option>
+                <option value="loving">Loving</option>
+                <option value="Pleased">Pleased</option>
+                <option value="relaxed">Relaxed</option>
+                <option value="sad">Sad</option>
+                <option value="satisfied">Satisfied</option>
+                <option value="worried">Worried</option>
+              </select> 
+              <label for="threed-location">Location: </label> 
+              <input type="text" name="threed-location" value="" id="threed-location" /> 
+              <label for="threed-weather-condition">Weather condition: </label> 
+              <input type="text" name="threed-weather-condition" value="" id="threed-weather-condition" /> 
+              <label for="threed-weather-wind">Wind: </label>
+              <input type="text" name="threed-weather-wind" value="" id="threed-weather-wind" /> 
+              <label for="threed-weather-temperature">Temperature (C): </label> 
+              <input type="text" name="threed-weather-temperature" value="" id="threed-weather-temperature" /> 
+              <label for="threed-weather-humidity">Humidity: </label> 
+              <input type="text" name="threed-weather-humidity" value="" id="threed-weather-humidity" />
+            </div>
+          </div>   
+    		</section>
 
-          <label for="video-license">License: </label>
-          <input type="text" name="video-license" value="" id="video-license" />
+				<section id="image">
+					<h3>Image Item</h3>
+          
+          <div class="media-search">
+            <input type="text" name="search-image-phrase" value="" data-last="" id="search-image-phrase" class="search-part inline" />
+            <img src="icon_gps.png" alt="GPS" title="Enable/Disable location based search" id="search-image-gps" data-value="0" class="image-checkbox" />
+            <button id="search-image">Find new</button>
+            <button id="search-image-prev" class="search-nav-button" title="Previous 10 results" data-page="0" disabled="disabled">&lt;</button><button id="search-image-next" class="search-nav-button" title="Next 10 results" data-page="2">&gt;</button>
+            <ul id="image-list">
+            </ul>
+            <p>No image items available.</p> 
+            <div id="search-image-loader" class="loader">
+              <p>
+                <img src="ajax-loader.gif" alt="Fetching items..." />
+              </p>
+            </div>  
+          </div>
+          
+					<div class="media-details accordion">
+            <h3><a href="#">Basic Information</a></h3>
+            <div>
+              <img id="image-previewFlickr" src="no-pic.png" />
+              <label for="image-name">Image Name: </label> 
+              <input type="text" name="image-name" value="" id="image-name" class="title" /> 
+              <label for="image-desc">Image Description: </label> 
+              <input type="text" name="image-desc" value="" id="image-desc" class="wide" /> 
+              <label for="image-tags">Image Tags: </label> 
+              <input type="text" name="image-tags" value="" id="image-tags" class="wide" />
+            </div>
+            <h3><a href="#">License Information</a></h3>
+            <div>
+              <label for="image-license">License: </label> 
+              <input type="text" name="image-license" value="" id="image-license" /> 
+              <label for="image-licenseURL">License URL: </label> 
+              <input type="text" name="image-licenseURL" value="" id="image-licenseURL" /> 
+              <label for="image-author">Author: </label> 
+              <input type="text" name="image-author" value="" id="image-author" />
+            </div>
+            <h3><a href="#">File Information</a></h3>
+            <div>
+              <label for="image-date">Date: </label>
+              <input type="text" name="image-date" value="" id="image-date" />
+              <label for="image-extension">Extension: </label> 
+              <input type="text" name="image-extension" value="" id="image-extension" />
+              <label for="image-size">Size: </label> 
+              <input type="text" name="image-size" value="" id="image-size" /> 
+              <label for="image-url">URL: </label> 
+              <input type="text" name="image-url" value="" id="image-url" /> 
+              <label for="image-preview">Preview: </label>
+              <input type="text" name="image-preview" value="" id="image-preview" />
+              <label for="image-dimensions">Dimensions: </label> 
+              <input type="text" name="image-dimensions" value="" id="image-dimensions" />
+            </div>
+            <h3><a href="#">Extented Information</a></h3>
+            <div>
+              <label for="image-emotions">Emotions: </label> 
+              <select name="image-emotions" id="image-emotions" multiple size="1">
+                <option value="">Not set</option>
+                <option value="affectionate">Affectionate</option>
+                <option value="afraid">Afraid</option>
+                <option value="amused">Amused</option>
+                <option value="angry">Angry</option>
+                <option value="bored">Bored</option>
+                <option value="confident">Confident</option>
+                <option value="content">Content</option>
+                <option value="disappointed">Disappointed</option>
+                <option value="excited">Excited</option>
+                <option value="happy">Happy</option>
+                <option value="interested">Interested</option>
+                <option value="loving">Loving</option>
+                <option value="Pleased">Pleased</option>
+                <option value="relaxed">Relaxed</option>
+                <option value="sad">Sad</option>
+                <option value="satisfied">Satisfied</option>
+                <option value="worried">Worried</option>
+              </select>
+              <label for="image-location">Location: </label> 
+              <input type="text" name="image-location" value="" id="image-location" /> 
+              <label for="image-weather-condition">Weather condition</label> 
+              <input type="text" name="image-weather-condition" value="" id="image-weather-condition" /> 
+              <label for="image-weather-wind">Wind: </label>
+              <input type="text" name="image-weather-wind" value="" id="image-weather-wind" />
+              <label for="image-weather-temperature">Temperature (C): </label>
+              <input type="text" name="image-weather-temperature" value="" id="image-weather-temperature" /> 
+              <label for="image-weather-humidity">Humidity: </label> 
+              <input type="text" name="image-weather-humidity" value="" id="image-weather-humidity" />
+            </div>
+          </div>  
+				</section>
+				
+				<section id="audio">
+					<h3>Audio Item</h3>
+          
+          <div class="media-search">
+            <div id="search-sound-loader" class="loader">
+              <p>
+                <img src="ajax-loader.gif" alt="Fetching items..." />
+              </p>
+            </div>  
+            <input type="text" name="search-sound-phrase" value="" data-last="" id="search-sound-phrase" class="search-part inline" />
+            <img src="icon_gps.png" alt="GPS" title="Enable/Disable location based search" id="search-sound-gps" data-value="0" class="image-checkbox" />
+            <button id="search-sound">Find new</button>
+            <button id="search-sound-prev" class="search-nav-button" title="Previous 10 results" data-page="0" disabled="disabled">&lt;</button><button id="search-sound-next" class="search-nav-button" title="Next 10 results" data-page="2">&gt;</button>
+            <ul id="sound-list">
+            </ul>
+            <p>No audio items available.</p>  
+          </div>
+					
+          <div class="media-details accordion">
+            <h3><a href="#">Basic Information</a></h3>
+            <div>
+              <audio id="sound-previewOGG" controls="controls"
+               src="http://beta.freesound.org/data/previews/83/83295_29541-lq.ogg"
+               type="audio/ogg">
+              </audio>
 
-          <label for="video-licenseURL">License URL: </label>
-          <input type="text" name="video-licenseURL" value="" id="video-licenseURL" />
+              <label for="sound-name">Name: </label> 
+              <input type="text" name="sound-name" value="" id="sound-name" class="title" class="wide" />
+              <label for="sound-desc">Audio Description: </label> 
+              <input type="text" name="sound-desc" value="" id="sound-desc" class="wide" />
+              <label for="sound-tags">Tags: </label> 
+              <input type="text" name="sound-tags" value="" id="sound-tags" class="wide" />
+            </div>
+            <h3><a href="#">License Information</a></h3>
+            <div>
+              <label for="sound-license">License: </label> 
+              <input type="text" name="sound-license" value="" id="sound-license" /> 
+              <label for="sound-licenseURL">License URL: </label> 
+              <input type="text" name="sound-licenseURL" value="" id="sound-licenseURL" /> 
+              <label for="sound-author">Author: </label> 
+              <input type="text" name="sound-author" value="" id="sound-author" />
+            </div>
+            <h3><a href="#">File Information</a></h3>
+            <div>
+              <label for="sound-date">Date: </label>
+              <input type="text" name="sound-date" value="" id="sound-date" /> 
+              <label for="sound-extension">Extension: </label> 
+              <input type="text" name="sound-extension" value="" id="sound-extension" />  
+              <label for="sound-size">Size: </label> 
+              <input type="text" name="sound-size" value="" id="sound-size" /> 
+              <label for="sound-url">URL: </label> 
+              <input type="text" name="sound-url" value="" id="sound-url" /> 
+              <label for="sound-preview">Preview: </label> 
+              <input type="text" name="sound-preview" value="" id="sound-preview" /> 
+              <label for="sound-length">Length: </label>
+              <input type="text" name="sound-length" value="" id="sound-length" />
+            </div>
+            <h3><a href="#">Extented Information</a></h3>
+            <div>
+              <label for="sound-emotions">Emotions: </label> 
+              <select name="sound-emotions" id="sound-emotions" multiple size="1">
+                <option value="">Not set</option>
+                <option value="affectionate">Affectionate</option>
+                <option value="afraid">Afraid</option>
+                <option value="amused">Amused</option>
+                <option value="angry">Angry</option>
+                <option value="bored">Bored</option>
+                <option value="confident">Confident</option>
+                <option value="content">Content</option>
+                <option value="disappointed">Disappointed</option>
+                <option value="excited">Excited</option>
+                <option value="happy">Happy</option>
+                <option value="interested">Interested</option>
+                <option value="loving">Loving</option>
+                <option value="Pleased">Pleased</option>
+                <option value="relaxed">Relaxed</option>
+                <option value="sad">Sad</option>
+                <option value="satisfied">Satisfied</option>
+                <option value="worried">Worried</option>
+              </select> 
+              <label for="sound-location">Location: </label> 
+              <input type="text" name="sound-location" value="" id="sound-location" /> 
+              <label for="sound-weather-condition">Weather condition: </label> 
+              <input type="text" name="sound-weather-condition" value="" id="sound-weather-condition" /> 
+              <label for="sound-weather-wind">Wind: </label>
+              <input type="text" name="sound-weather-wind" value="" id="sound-weather-wind" />
+              <label for="sound-weather-temperature">Temperature (C): </label>
+              <input type="text" name="sound-weather-temperature" value="" id="sound-weather-temperature" /> 
+              <label for="sound-weather-humidity">Humidity: </label>
+              <input type="text" name="sound-weather-humidity" value="" id="sound-weather-humidity" />
+            </div>
+          </div>  
+				</section>
+				
+				<section id="video">
 
-          <label for="video-author">Author: </label>
-          <input type="text" name="video-author" value="" id="video-author" />
+					<h3>Video Item</h3>
+          
+          <div class="media-search">
+            <div id="search-video-loader" class="loader">
+              <p>
+                <img src="ajax-loader.gif" alt="Fetching items..." />
+              </p>
+            </div>  
+            <input type="text" name="search-video-phrase" value="" data-last="" id="search-video-phrase" class="search-part inline" />
+            <img src="icon_gps.png" alt="GPS" title="Enable/Disable location based search" id="search-video-gps" data-value="0" class="image-checkbox" />
+            <button id="search-video">Find new</button>
+            <button id="search-video-prev" class="search-nav-button" title="Previous 8 results" data-page="0" disabled="disabled">&lt;</button><button id="search-video-next" class="search-nav-button" title="Next 8 results" data-page="2">&gt;</button>
+            <ul id="video-list">
+            </ul>  
+            <p>No video items available.</p> 
+          </div>
+          
+					<div class="media-details accordion">
+            <h3><a href="#">Basic Information</a></h3>
+            <div>
+              <iframe id="video-previewYT" class="youtube-player"
+               type="text/html" width="320" height="193"
+               src="http://www.youtube.com/embed/8E-MtJBAZvw" frameborder="0">
+              </iframe>
 
-          <label for="video-date">Date: </label><input type="text" name="video-date" value="" id="video-date" />
+              <label for="video-name">Name: </label>
+              <input type="text" name="video-name" value="" id="video-name" class="title" />
+              <label for="video-desc">Description: </label>
+              <input type="text" name="video-desc" value="" id="video-desc" class="wide" />
+              <label for="video-tags">Tags: </label>
+              <input type="text" name="video-tags" value="" id="video-tags" class="wide" />
+            </div>
+            <h3><a href="#">License Information</a></h3>
+            <div>
+              <label for="video-license">License: </label>
+              <input type="text" name="video-license" value="" id="video-license" />
+              <label for="video-licenseURL">License URL: </label>
+              <input type="text" name="video-licenseURL" value="" id="video-licenseURL" />
+              <label for="video-author">Author: </label>
+              <input type="text" name="video-author" value="" id="video-author" />
+            </div>
+            <h3><a href="#">File Information</a></h3>
+            <div>
+              <label for="video-extension">Extension: </label>
+              <input type="text" name="video-extension" value="" id="video-extension" />
+              <label for="video-date">Date: </label>
+              <input type="text" name="video-date" value="" id="video-date" /> 
+              <label for="video-size">Size: </label>
+              <input type="text" name="video-size" value="" id="video-size" /> 
+              <label for="video-url">URL: </label>
+              <input type="text" name="video-url" value="" id="video-url" />
+              <label for="video-preview">Preview: </label>
+              <input type="text" name="video-preview" value="" id="video-preview" />
+              <label for="video-dimensions">Dimensions: </label>
+              <input type="text" name="video-dimensions" value="" id="video-dimensions" />
+              <label for="video-length">Length: </label>
+              <input type="text" name="video-length" value="" id="video-length" />
+            </div>
+            <h3><a href="#">Extented Information</a></h3>
+            <div>
+              <label for="video-emotions">Emotions: </label> 
+              <select name="video-emotions" id="video-emotions" multiple size="1">
+                <option value="">Not set</option>
+                <option value="affectionate">Affectionate</option>
+                <option value="afraid">Afraid</option>
+                <option value="amused">Amused</option>
+                <option value="angry">Angry</option>
+                <option value="bored">Bored</option>
+                <option value="confident">Confident</option>
+                <option value="content">Content</option>
+                <option value="disappointed">Disappointed</option>
+                <option value="excited">Excited</option>
+                <option value="happy">Happy</option>
+                <option value="interested">Interested</option>
+                <option value="loving">Loving</option>
+                <option value="Pleased">Pleased</option>
+                <option value="relaxed">Relaxed</option>
+                <option value="sad">Sad</option>
+                <option value="satisfied">Satisfied</option>
+                <option value="worried">Worried</option>
+              </select> 
+              <label for="video-location">Location: </label> 
+              <input type="text" name="video-location" value="" id="video-location" /> 
+              <label for="video-weather-condition">Weather condition: </label> 
+              <input type="text" name="video-weather-condition" value="" id="video-weather-condition" />
+              <label for="video-weather-wind">Wind: </label>
+              <input type="text" name="video-weather-wind" value="" id="video-weather-wind" />
+              <label for="video-weather-temperature">Temperature(C): </label> 
+              <input type="text" name="video-weather-temperature" value="" id="video-weather-temperature" />
+              <label for="video-weather-humidity">Humidity: </label> 
+              <input type="text" name="video-weather-humidity" value="" id="video-weather-humidity" />
+            </div>
+          </div>  
+				</section>
 
-          <label for="video-size">Size: </label>
-          <input type="text" name="video-size" value="" id="video-size" />
+			</form>
 
-          <label for="video-url">URL: </label>
-          <input type="text" name="video-url" value="" id="video-url" />
+		</div>
+		<div class="push"></div>
 
-          <label for="video-preview">Preview: </label>
-          <input type="text" name="video-preview" value="" id="video-preview" />
+	</div>
 
-          <label for="video-dimensions">Dimensions: </label>
-          <input type="text" name="video-dimensions" value="" id="video-dimensions" />
+	<footer> &copy; 2011 CoFetch Corp. by Google and the University of Applied Sciences Fulda </footer>
 
-          <label for="video-length">Length: </label>
-          <input type="text" name="video-length" value="" id="video-length" />
+	<div id="loading">
+		<p>
+			<img src="ajax-loader.gif" alt="loading..." /> Please wait...
+		</p>
+	</div>
 
-          <label for="video-emotions">Emotions: </label>
-          <select name="video-emotions" id="video-emotions" multiple size="1">
-            <option value="">Not set</option>  
-            <option value="affectionate">Affectionate</option>
-            <option value="afraid">Afraid</option>
-            <option value="amused">Amused</option>
-            <option value="angry">Angry</option>
-            <option value="bored">Bored</option>
-            <option value="confident">Confident</option>
-            <option value="content">Content</option>
-            <option value="disappointed">Disappointed</option>
-            <option value="excited">Excited</option>
-            <option value="happy">Happy</option>
-            <option value="interested">Interested</option>
-            <option value="loving">Loving</option>
-            <option value="Pleased">Pleased</option>
-            <option value="relaxed">Relaxed</option>
-            <option value="sad">Sad</option>
-            <option value="satisfied">Satisfied</option>
-            <option value="worried">Worried</option>
-          </select>
+	<div id="dialog" title="Result">
+		<p></p>
+		<ul></ul>
+	</div>
 
-          <label for="video-location">Location: </label>
-          <input type="text" name="video-location" value="" id="video-location" />
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')</script>
+	<script defer src="js/libs/jquery-ui-1.8.17.custom.min.js"></script>
 
-          <label for="video-weather-condition">Weather condition</label>
-          <input type="text" name="video-weather-condition" value="" id="video-weather-condition" />
-
-          <label for="video-weather-wind">Wind</label>
-          <input type="text" name="video-weather-wind" value="" id="video-weather-wind" />
-
-          <label for="video-weather-temperature">Temperature (C)</label>
-          <input type="text" name="video-weather-temperature" value="" id="video-weather-temperature" />
-
-          <label for="video-weather-humidity">Humidity</label>
-          <input type="text" name="video-weather-humidity" value="" id="video-weather-humidity" />
-        </section>
-      
-      </form>
-      
-    </div>
-    <div class="push"></div>
-
-  </div> 
-  
-  <footer>
-      &copy; 2011 CoFetch Corp.
-  </footer>
-  
-  <div id="loading">
-     <p><img src="ajax-loader.gif" alt="loading..." /> Please Wait</p>
-  </div>
-  
-  <div id="dialog" title="Result">
-    <p></p>
-    <ul></ul>
-  </div>
-  
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-  <script>window.jQuery || document.write('<script src="js/libs/jquery-1.6.2.min.js"><\/script>')</script>
-  <script defer src="js/libs/jquery-ui-1.8.16.custom.min.js"></script>
-   
-  <script defer src="js/libs/cofetchHandler.js"></script>
-  <script defer src="js/script.js"></script>
+	<script defer src="js/libs/cofetchHandler.js"></script>
+	<script defer src="js/script.js"></script>
 
 
-  <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.
+	<!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.
        chromium.org/developers/how-tos/chrome-frame-getting-started -->
-  <!--[if lt IE 7 ]>
+	<!--[if lt IE 7 ]>
     <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
     <script>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
   <![endif]-->
-  
+
 </body>
 </html>

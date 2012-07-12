@@ -1,5 +1,5 @@
-GraphNode = function(id, info, url) {	
-	this.id = id ;	
+GraphNode = function(icons, info, url) {	
+	this.icons = icons ;	
 	if ( info != undefined ) this.info = info ;	
 	this.drawn = false ;	
 	this.initLength = 0.5 ;	
@@ -16,12 +16,13 @@ GraphNode = function(id, info, url) {
 	this.thumbSize = 0 ;	
 	this.px = 0 ;	
 	this.py = 0 ;	
+	this.selected = 0 ;
 		
 };	
 
 var p = GraphNode.prototype ;	
 
-p.show = function(ctx, x, y) {	
+p.show = function(ctx, x, y, selected) {	
 			
 	if ( !this.url ) return ;	
 		
@@ -29,21 +30,21 @@ p.show = function(ctx, x, y) {
 	{	
 		var obj = this ;	
 		this.image.onload = function() {	
-			obj.loadCallback(ctx, x, y);	
+			obj.loadCallback(ctx, x, y, selected);	
 		};	
 		this.image.src = this.url;	
 		
 	}	
-	else this.drawImage(ctx, x, y) ;	
+	else this.drawImage(ctx, x, y, selected) ;	
 		
 };	
 
-p.loadCallback = function(ctx, x, y) {	
+p.loadCallback = function(ctx, x, y, selected) {	
 	this.loaded = true ;	
-	this.drawImage(ctx, x, y) ;	
+	this.drawImage(ctx, x, y, selected) ;	
 };	
 
-p.drawImage = function(ctx, x, y)	
+p.drawImage = function(ctx, x, y, selected)	
 {	
 	var size = 1.0 - Math.sqrt(this.pos.x() * this.pos.x() + this.pos.y() * this.pos.y()) ;	
 	var dstw2 = HyperbolicTree.iconSize * size / ( Math.min(ctx.canvas.height, ctx.canvas.width)/2) ;  	
@@ -70,13 +71,36 @@ p.drawImage = function(ctx, x, y)
 	this.py = y ;	
 		
 	ctx.drawImage(this.image, x - thumbw/2, y - thumbh/2, thumbw, thumbh) ;	
+	
+	if ( selected == 1 )
+	{
+		ctx.strokeStyle = "#000000";
+		ctx.lineWidth = ctx.lineWidth/2 ;
+		ctx.beginPath();
+		var radius = dstw2 ;
+		ctx.arc(x, y, radius, 0, Math.PI*2, true);
+		ctx.closePath();
+		ctx.stroke();
+	}
+	else if ( selected == 2 )
+	{
+		ctx.strokeStyle = "red";
+		ctx.lineWidth = ctx.lineWidth/2 ;
+		ctx.beginPath();
+		var radius = dstw2 ;
+		ctx.arc(x, y, radius, 0, Math.PI*2, true);
+		ctx.closePath();
+		ctx.stroke();
+	}
+	
+	
 };	
 
-HyperGraph = function(res)	
+HyperGraph = function(res, ctx)	
 {	
 	this.nodes = [] ;	
 	this.icons = [] ;	
-	this.createNodes(res.docs, res.clusters, null) ;	
+	this.createNodes(res.docs, res.clusters, null, ctx.filterBar.modalities()) ;	
 	this.calculatePositions() ;	
 };	
 
@@ -85,7 +109,7 @@ var p = HyperGraph.prototype ;
 p.nodes = null ;	
 p.icons = null ;	
 			
-p.createNodes = function(docs, c, parent)	
+p.createNodes = function(docs, c, parent, modalities)	
 {	
 		
 	var iconSize = 48 ;	
@@ -93,12 +117,12 @@ p.createNodes = function(docs, c, parent)
 								
 	if ( parent != null )	
 	{	
-					
+			
+		// select first document in cluster as representative
+		
 		var doc = docs[c.nodes[0].idx] ;	
-																			
-		var img = new Image ; 	
-				
-		var thumbUrl = ThumbContainer.selectThumbUrl(doc) ;	
+		
+		var thumbUrl = ThumbContainer.selectThumbUrl(doc, modalities) ;	
 									
 		var arr = [] ;	
 					
@@ -113,22 +137,20 @@ p.createNodes = function(docs, c, parent)
 			var obj = { "doc": docx, "x": x, "y": y } ;	
 			arr.push(obj) ;	
 		}	
-					
-		this.icons.push(arr) ;	
-			
-		var gnode = new GraphNode(this.icons.length, null, thumbUrl) ;	
+							
+		var gnode = new GraphNode(arr, null, thumbUrl) ;	
 		parent.children.push(gnode) ;	
 			
 	}	
 	else	
-		gnode = new GraphNode(0, null) ;	
+		gnode = new GraphNode(null, null) ;	
 			
 					
 	this.nodes.push(gnode) ;		
 						
 	for(var i=0 ; i<c.children.length ; i++)	
 	{	
-		this.createNodes(docs, c.children[i], gnode) ;	
+		this.createNodes(docs, c.children[i], gnode, modalities) ;	
 	}	
 };	
 			

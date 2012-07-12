@@ -6,6 +6,7 @@ define("mylibs/visualization/dataParser", function(){
   //Let's parse the results.
   //They can be JSON or XML
   var parse = function(data) {
+    
     if (typeof data == 'string') {
       parseXML(data);
     } else {	
@@ -19,9 +20,9 @@ define("mylibs/visualization/dataParser", function(){
     };
     
   };
-  /*
+  
   var parseXML = function(xmlStr) {
-
+    /*
   	var xmlDoc = jQuery.parseXML( xmlStr ), xml = $( xmlDoc );
 
   	var totalResults = xml.find("documentList").attr("count") ;
@@ -60,21 +61,27 @@ define("mylibs/visualization/dataParser", function(){
   	}) ;
 
   	parseClustersXML(xml.find("searchResults").children("cluster"), clusters) ;
-
+    */
   };
-  */
+  
 
   var parseJSON = function(data) {
-
+    
+    if (data == undefined || data == null) {
+      return;
+    }
+    
+    docs = [] ;
+		
   	for (var i=0 ; i<data.documentList.length ; i++ ) {
   		var doc = data.documentList[i] ;
   		docs.push(doc) ;
   	}
 
-	if ( data.clusters )
-		parseClustersJSON(data.clusters[0], clusters) ;
-
-  };
+  	if ( data.clusters )
+  		parseClustersJSON(data.clusters[0], clusters) ;
+  
+    };
 /*
   var parseClustersXML = function(data, cluster) {
     
@@ -110,11 +117,19 @@ define("mylibs/visualization/dataParser", function(){
 */
   var parseClustersJSON = function(data, cluster) {
     
-    if (data == undefined) {
+    if (data == undefined || data == null) {
       return;
     }
 
     var level = data.level ;
+	
+	if (data.Si) {
+		cluster.Si = data.Si;
+	}
+	
+	if (data.St) {
+		cluster.St = data.St;
+	}
 
   	cluster.level = level ;
   	cluster.nodes = [] ;
