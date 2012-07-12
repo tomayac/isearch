@@ -522,12 +522,30 @@ define(
 		
 		var mouseWheel = function(e) {
 		
+			console.log(e);
+		
 			var mouse = getMouse(e);
 		
 			var p = this.unproject(mouse.x, mouse.y);
 			
+			var scrollUp = false;
+			if (e.wheelDelta)			// Chrome
+			{
+				if (e.wheelDelta > 0)
+					scrollUp = true;
+				else
+					scrollUp = false;
+			}
+			else						// Firefox
+			{
+				if (e.detail < 0)
+					scrollUp = true;
+				else
+					scrollUp = false;
+			}
+			
 			var ratio = 1;
-			if (e.detail < 0)	// scroll up
+			if (scrollUp)	// scroll up
 			{
 				ratio = 0.8;
 				this.zoomLevel++;
@@ -807,7 +825,7 @@ define(
 			{
 				for (var i=0; i<5; i++)
 					temperature = Graph.applyForcesStep(T);
-				if (temperature < 0.1)
+				if (temperature < 0.5)
 						initializing = false;
 			}
 			
@@ -888,13 +906,39 @@ define(
 			// context.fillText("Text: " + textWeight.toFixed(2), canvas.width - 80, canvas.height - 10);
 			
 			// print initializing message
-			if (initializing)			
+			// if (initializing)			
+			// {
+				// var context = canvas.getContext("2d");
+				// context.fillStyle = "black";
+				// context.font ="10pt Arial";
+			
+				// context.fillText("Initializing . . .", 10, 25);
+			// }
+			
+			// draw initializing screen
+			if (initializing)
 			{
 				var context = canvas.getContext("2d");
+				
+				context.globalAlpha = 0.5;
+				
+				context.beginPath();
+				context.rect(0, 0, canvas.width, canvas.height);
+				context.fillStyle = "grey";
+				context.fill();
+				
+				context.globalAlpha = 1;
+				
+				var rectW = 150;
+				var rectH = 60;
+				context.beginPath();
+				context.rect(canvas.width/2 - rectW/2, canvas.height/2 - rectH/2, rectW, rectH);
+				context.fillStyle = "white";
+				context.fill();
+				
 				context.fillStyle = "black";
-				context.font ="10pt Arial";
-			
-				context.fillText("Initializing . . .", 10, 25);
+				context.font = "12pt Arial";
+				context.fillText("Adjusting zoom ...", canvas.width/2 - rectW/2 + 10, canvas.height/2 + 6);
 			}
 			
 			// update slider

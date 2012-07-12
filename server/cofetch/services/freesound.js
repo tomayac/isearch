@@ -5,24 +5,24 @@ var restler = require('restler'),
 var APIKey = "e642ab56df1f4cfc87f419fbf9ac5088";
 
 var getSoundData = function(soundId, callback) {
-  
+
   if(!soundId) {
     callback('No sound ID given!', null);
     return;
   }
-  
+
   //Building of the URL to get the details about a sound
   var detailsURL = "http://www.freesound.org/api/sounds/"
       + soundId
       + '?api_key=' + APIKey
       + '&format=json';
-  
+
   //DEBUG
   //console.log(detailsURL);
-  
+
   restler
   .get(detailsURL)
-  .on('success', function(sounddata) { 
+  .on('success', function(sounddata) {
     try {
       var result = {
           "Type": "SoundType",
@@ -30,7 +30,7 @@ var getSoundData = function(soundId, callback) {
           "Description": sounddata.description,
           "Tags": sounddata.tags,
           "Extension": sounddata.type,
-          "License": "CC", 
+          "License": "CC",
           "LicenseURL": sounddata.license,
           "Author": sounddata.user.username,
           "Date": sounddata.created,
@@ -43,45 +43,35 @@ var getSoundData = function(soundId, callback) {
           "Location": [],
           "Weather": {}
         };
-      
+
       if(sounddata.geotag) {
         result.Location = [sounddata.geotag.lat || 0, sounddata.geotag.lon || 0, 0 ,0];
-        //get weather data if we have a location
-        weather.fetchWeather({Date: sounddata.created, Location: result.Location}, function(error, weatherdata) {
-          if(error) {
-            console.log('No weather data found for sound with id ' + soundId);
-          } else {
-            result.Weather = weatherdata;
-          }
-          //Ok, got everything here so give the result back
-          callback(null, result);
-        });
-      } else {
-        //No location, hence no weather, just return the result
-        callback(null, result);
       }
+      //Ok, got everything here so give the result back
+      callback(null, result);
+      
     } catch (error) {
       callback(error, null);
     }
   })
   .on('error', function(data,response) {
     callback(response.message, null);
-  }); 
-  
+  });
+
 };
 
 var fetchSound = function(query, isGeo, page, callback) {
-  
+
   if (!query) {
     callback('No arguments were given to the freesound job', null);
     return;
   }
-  
+
   //Replace spaces
   var query = query.replace(/\s/g,'+');
   //Store if we search for sounds with geolocation
   var isGeo = isGeo;
-  
+
   //The array for storing the results
   var results = new Array();
   //maximum count of images to retrieve
@@ -90,18 +80,18 @@ var fetchSound = function(query, isGeo, page, callback) {
   var end = page * maxResults;
   var start = end - maxResults;
   var soundPage = Math.ceil(end / 30);
-  
+
   var freesoundURL = "http://www.freesound.org/api/sounds/search?"
     + 'q=' + query
     + '&p=' + soundPage
     + '&api_key=' + APIKey
     + '&format=json';
-   
+
   if (isGeo === 1) {
     //If we want geotagged sounds
     freesoundURL += '&f=is_geotagged:true';
   }
-  
+
   //DEBUG:
   //console.log(freesoundURL);
 
@@ -110,56 +100,64 @@ var fetchSound = function(query, isGeo, page, callback) {
     parser: restler.parsers.json
   })
   .on('success', function(data) {
-    try { 
-      
+    try {
+
       //No sounds found, get back
       if(!data.sounds) {
         callback(null, results);
         return;
       }
-      
+
       if(data.sounds.length < 1) {
         callback(null, results);
         return;
       }
-      
+
       var sounds = data.sounds || new Array();
-      
+
       //Adjust the maxResults parameter if there weren't enough results
       if(sounds.length < end) {
         end = sounds.length;
       }
-      
-      //Fetch sound info for all sounds below the maximum of sounds to retrieve   
-      for(var i=start; i < end; i++) {         
-        step(
-          function initialize() {
-            getSoundData(sounds[i].id, this);
-          },
-          function assemble(error, sounditem) {
-            if(error) {
-              console.log("Freesound error: " + error);
-              maxResults--;
-            } else {
-              results.push(sounditem);
-            }
-            if (results.length === end) {
-              //Exit the job if we're done, i.e Array full
-              callback(null, results);
-            }
-          }
-        ); //End step
+
+      //Fetch sound info for all sounds below the maximum of sounds to retrieve
+      var newArguments = [];
+      var initializeClosure = function(soundID){
+        return function initialize() {
+          getSoundData(soundID, this);
+        };
+      };
+      var assembleClosure = function assemble(error, sounditem) {
+        if(error) {
+          console.log("Freesound error: " + error);
+          maxResults--;
+        } else {
+          results.push(sounditem);
+        }
+        if (results.length === end) {
+          //Exit the job if we're done, i.e Array full
+          callback(null, results);
+        } else {
+          this();
+        }
+      };
+      for(var i=start; i < end; i++) {
+        newArguments.push(
+          initializeClosure(sounds[i].id),
+          assembleClosure
+        );
       }
+      step.apply(step, newArguments);
     } catch (error) {
       callback(error, null);
     }
   })
   .on('error', function(data,response) {
     callback(response.message, null);
-  }); 
+  });
 };
 
 //Exposes it publicly
 if (typeof module !== 'undefined' && "exports" in module) {
-    module.exports.fetchSound = fetchSound; 
-} 
+    module.exports.fetchSound = fetchSound;
+}

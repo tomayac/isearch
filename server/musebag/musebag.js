@@ -29,6 +29,7 @@ var authApi = '3cab95115953b1b1b31f35c48eaa36a746b479af';
 var msg     = {error: 'Something went wrong.'};
 var tmpPath = '../../client/musebag/tmp';
 var tmpUrl  = '/tmp';
+var apcPath = 'http://89.97.237.248:8089/IPersonalisation/';
 
 var queryRucodTpl   = '<?xml version="1.0" encoding="UTF-8"?>'
                     + '<RUCoD xmlns="http://www.isearch-project.eu/isearch/RUCoD" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'
@@ -209,7 +210,7 @@ var getQueryRucod = function(query,sessionId,sessionStore,callback) {
                                    .replace(/-/g    , '.');
       
       //Try to fetch weather data for this location
-      wunder.fetchWeather({Date: datetime, Location: position}, function(error, data) {
+      wunder.fetchWeather(0, {Date: datetime, Location: position}, function(error, data) {
 
         if(error) {
           console.log('No weather data found for query with id ' + sessionId);
@@ -260,13 +261,11 @@ var getSessionStore = function(req) {
       settings : '{"maxResults" : 100, "clusterType" : "3D"}',
       querycounter: 0
     };
-  };
-    
+  };    
   return req.session.user;
 };
 
-var getExternalSessionId = function(req,renew) {
-  
+var getExternalSessionId = function(req,renew) {  
   if(req) {
     var sessionStore = getSessionStore(req);
     if(!req.session.user.extSessionId) {
@@ -276,8 +275,7 @@ var getExternalSessionId = function(req,renew) {
       req.session.user.extSessionId = sid;
     } 
     return req.session.user.extSessionId;
-  }
-  
+  } 
 };
 
 /**
@@ -327,14 +325,13 @@ exports.login = function(req, res){
 			req.session.user = user; 
 			
 			//Test if the user is known by the personalisation component
-			var checkUrl = 'http://89.97.237.248:8089/IPersonalisation/resources/users/profileFor/' + user.userId + '/withRole/Consumer';
+			var checkUrl = apcPath + 'resources/users/profileFor/' + user.userId + '/withRole/Consumer';
 			
 			restler
 		  .get(checkUrl)
-		  .on('complete', function(data) { 
-		    if(data) {
-		      console.log('User data received:');
-		      console.log(data.user);
+		  .on('complete', function(data, response) { 
+
+		    if(data) {		      
 		      //assign retrieved data to local user profile
 		      var name = data.user.name.split(' ');
 		      user.name = name[0];
@@ -343,15 +340,22 @@ exports.login = function(req, res){
 		        if(key === 'name') {
 		          continue;
 		        }
+		        //Special treatment for date of birth key
+	          if(key === 'dateOfBirth') {
+	            user[key] = data.user[key].substring(0,data.user[key].indexOf('T'));
+	            continue;
+	          }
 		        user[key] = data.user[key];
 		      }
+		      console.log('User data received:');
+          console.log(data.user);
 		      
 		    } else {
 		      console.log('User does not exist, request additional user information...');
 		      user.state = 'new';
 		      
 		      //Lets create the user in the personalisation service
-		      var setUrl = 'http://89.97.237.248:8089/IPersonalisation/resources/users/setProfileDataFor/' + user.userId;
+		      var setUrl = apcPath + 'resources/users/setProfileDataFor/' + user.userId;
 	        var callData = {
 	          "name"   : user.name+' '+user.familyname,
 	          "settings" : user.settings,
@@ -370,8 +374,7 @@ exports.login = function(req, res){
 	        })
 	        .on('error', function(data,response) {
 	          console.log("Personalisation component query error: " + data.toString());
-	        }); 
-		      
+	        });	      
 		    }
 		    
 		    //Return user data to client
@@ -390,8 +393,7 @@ exports.login = function(req, res){
 	
 };
 
-exports.logout = function(req, res) {
-	
+exports.logout = function(req, res) {	
 	console.log("Logout function called...");
 	
 	//Destroy the session
@@ -405,7 +407,6 @@ exports.logout = function(req, res) {
 			res.send(JSON.stringify({msg: true}));
 		}
 	});
-	
 };
 
 exports.profile = function(req, res) {
@@ -413,7 +414,7 @@ exports.profile = function(req, res) {
 	var attrib = req.params.attrib;
 	//Get the right session storage (depending on log in status - guest if not, user if yes)
 	var sessionStore = getSessionStore(req);
-	
+	console.dir(sessionStore);
 	if(sessionStore['userId'] === 'guest') {
 	  res.send(JSON.stringify({error : 'User is not logged in!'}));
 	  return;
@@ -461,23 +462,23 @@ exports.setProfile = function(req, res) {
             settings[key] = newSettings[key];
             changed = true;
           }
-        } 
-        
+        }        
         //ok, the settings object is updated, so transform it back to a JSON string
         //and store it in the session
-        sessionStore[attrib] = JSON.stringify(settings);
+        req.session.user[attrib] = JSON.stringify(settings);
         
       } catch(e) {
         res.send(JSON.stringify({error : 'malformed'}));
         return;
       }
     } else {
+      
       if(attrib === 'dateOfBirth') {
         data += 'T00:00:00+02:00';
       }
       //Set the profile attribute to the new value as long as it is a logged in user
       if(sessionStore[attrib] !== data && !isGuest(req)) {
-        sessionStore[attrib] = data;
+        req.session.user[attrib] = data;
         changed = true;
       }
     }
@@ -496,9 +497,16 @@ exports.setProfile = function(req, res) {
     } else { 
   
       //if we have a logged in user, we store everything in the profile
-      var storeURL = 'http://89.97.237.248:8089/IPersonalisation/resources/users/setProfileDataFor/' + sessionStore['userId'];
-      var callData = sessionStore;
-      callData.name = sessionStore['name']+' '+sessionStore['familyname'],
+      var storeURL = apcPath + 'resources/users/setProfileDataFor/' + sessionStore['userId'];
+      var callData = {};
+      
+      for( var key in sessionStore ) {
+        if(key === 'name') {
+          callData['name'] = sessionStore['name']+' '+sessionStore['familyname']; 
+        } else {
+          callData[key] = sessionStore[key];
+        }
+      }
       console.log(callData);
       //save the user data in the user profile
       restler
@@ -507,6 +515,9 @@ exports.setProfile = function(req, res) {
         //Check if return data is ok
         if (response.statusCode == 201) {
           data = {success : attrib};
+          req.session.user['state'] = 'member';
+          
+          console.log(sessionStore);
           //Notify client about success full save
           res.send(JSON.stringify(data));
         } else {
@@ -523,6 +534,45 @@ exports.setProfile = function(req, res) {
     res.send(JSON.stringify({error : 'unknown parameter to set'}));
     return;
   }//end if requested profile attribute is available
+};
+
+exports.getProfileHistory = function(req, res) {
+  
+  console.log("get profile history function called...");
+  
+  //Get the right session storage (depending on log in status - guest if not, user if yes)
+  var sessionStore = getSessionStore(req);
+  
+  var result = {};
+  
+  //Check if history update data is complete 
+  if(!isGuest(req)) {
+    //Submit the query to authentication/personalisation component
+    var getURL = apcPath + 'resources/historydatas/getSearchHistoryFor/'  + sessionStore.userId + '/limit/5';
+    
+    restler
+    .get(getURL)
+    .on('complete', function(data, response) { 
+      console.log(data);
+      console.log(response.statusCode);
+      
+      //Check if result is ok
+      if (response.statusCode == 200) {
+        //Notify client about successful save
+        res.send(JSON.stringify(data));
+      } else {
+        result.error = 'Error ' + response.statusCode;
+        res.send(JSON.stringify(result));
+      }
+   })
+   .on('error', function(data,response) {
+     result.error = data.toString();
+     res.send(JSON.stringify(result));
+   });
+  } else {
+    result.error = 'No history data available for guest users.';
+    res.send(JSON.stringify(result));
+  }//end if
 };
 
 exports.updateProfileHistory = function(req, res) {
@@ -545,10 +595,9 @@ exports.updateProfileHistory = function(req, res) {
   //Check if history update data is complete 
   if(isNumber(sessionStore.userId) && sessionStore.query && sessionStore.items) {
     //Submit the query to authentication/personalisation component
-    var storeURL = "http://gdv.fh-erfurt.de/i-search/apc-dummy/index.php";
+    var storeURL = apcPath + 'resources/historydatas/updateSearchHistoryFor/'  + sessionStore.userId;
     
     var callData = {
-        "f"      : "updateSearchHistory",
         "userid" : sessionStore.userId,
         "query"  : JSON.stringify(sessionStore.query),
         "items"  : JSON.stringify(sessionStore.items)
@@ -558,11 +607,8 @@ exports.updateProfileHistory = function(req, res) {
     console.log(callData);
     
     restler
-    .post(storeURL, { 
-      data : callData
-    })
-    .on('complete', function(data) { 
-
+    .postJson(storeURL, callData)
+    .on('complete', function(data,repsonse) { 
       //Check if result is ok
       if(data.error) {
         result.error = data.error;
@@ -573,6 +619,7 @@ exports.updateProfileHistory = function(req, res) {
         //After successful storing of search history entry reset session data
         sessionStore.query = undefined;
         sessionStore.items = undefined;
+        sessionStore.tags  = undefined;
       }
       
       res.send(JSON.stringify(result));
@@ -603,6 +650,8 @@ exports.query = function(req, res) {
   var result = {};
   
   try {
+    //store the used query tags in the session
+    sessionStore.tags = data.tags ? data.tags.join() : '';
     
     //Compose the query
     getQueryRucod(data, extSessionId, sessionStore, function(error,queryData) {
@@ -743,6 +792,6 @@ exports.queryItem = function(req, res) {
 
 exports.queryStream = function(req, res) {
   
-  console.log("QueryStrem function called...");
+  console.log("QueryStream function called...");
   
 }; //end function queryStream

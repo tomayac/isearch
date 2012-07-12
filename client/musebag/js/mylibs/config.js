@@ -1,15 +1,15 @@
-  define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualization/DefaultThumbRenderer.js", "libs/jquery.select-to-autocomplete"],
-  function(tags, profile, cofind) {
+//  define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualization/DefaultThumbRenderer.js", "libs/jquery.select-to-autocomplete"],
+//  function(tags, profile, cofind) {
     
-//define("mylibs/config", 
-//  [
-//    "mylibs/tags", 
-//    "mylibs/cofind",
-//    "mylibs/profile", 
- //   "!js/mylibs/visualization/DefaultThumbRenderer.js",
-//    "libs/jquery.select-to-autocomplete"
-//  ],
-//  function(tags, cofind, profile) {
+define("mylibs/config", 
+  [
+    "mylibs/tags", 
+    "mylibs/cofind",
+    "mylibs/profile", 
+    "!js/mylibs/visualization/DefaultThumbRenderer.js",
+    "libs/jquery.select-to-autocomplete"
+  ],
+  function(tags, cofind, profile) {
 
     var constants = {
       //Menu parameters
@@ -94,6 +94,36 @@
         $("#messages").show(200);
       }
     }; 
+    
+    //Get user specific search history
+    var getUserHistory = function() {
+      var userId = profile.get('userId');     
+      
+      if(userId) {
+        //Ask for user search history
+        $.ajax({
+          type: "GET",
+          url: "profile/history",
+          success: function(data) {
+            
+            console.log(data);
+            try {
+              data = JSON.parse(data);
+              
+              //Create history table
+              var historyTable = '<table><tr><th>Query</th><th>Tags</th>Items<th></th></tr>';
+              
+              historyTable += '</table>';
+              
+            } catch(e) {
+              console.error(e);
+            }  
+          },
+          dataType: "text",
+          contentType : "application/json; charset=utf-8"
+        });
+      }     
+    };
     
     //Get tag recommendations for the user which is logged in
     var getUserTags = function() {
@@ -182,6 +212,8 @@
 
       //get user tags from pTag component
       getUserTags();
+      //get user search history
+      getUserHistory();
       //init settings form based on user profile data
       initSettings();
       
@@ -279,7 +311,7 @@
     };
     
     var handleLogout = function() {
-       var serverURL = constants.userLoginServerUrl || "login";       
+      var serverURL = constants.userLoginServerUrl || "login";       
 	   
       //Send it to the server
       $.ajax({
@@ -311,13 +343,8 @@
   	  
   	  panels.messages = $("#messages");
   	  panels.messages.hide();
-  	  
-  	  //init profile stuff
-  	  $('#profile-accordion').accordion({ autoHeight: false });
-  	  $('#dateOfBirth').datepicker({ dateFormat: "yy-mm-dd" });
-  	  $('#country').selectToAutocomplete();
   	 
-		// initialize settings from local configuration if any 
+		  //initialize settings from local configuration if any 
       if(localConfig) {
         if(typeof(localConfig) === "function") {
           localConfig(constants);
@@ -331,6 +358,11 @@
       } else {
         initSettings();
       }
+      
+      //init profile form modification stuff
+      $('#profile-accordion').accordion({ autoHeight: false });
+      $('#dateOfBirth').datepicker({ dateFormat: "yy-mm-dd" });
+      $('#country').selectToAutocomplete();
       
   	  //init custom checkbox events
   	  $('.checkbox').toggle(function() {
@@ -364,8 +396,7 @@
       //----------------------------------------------------------
       // WARNING - very ugly code - janrain is baaad!
       
-      window.janrainWidgetOnload = function() {
-        //Force to format the stupid authentication widget
+      var beautifyJanrain = function() {
         $('#janrainEngageEmbed .janrainContent').attr('style','min-height: 40px');
         $('#janrainEngageEmbed #janrainView').attr('style','');
         $('#janrainEngageEmbed #janrainView .janrainHeader').attr('style','display: none;');
@@ -373,10 +404,15 @@
         $('#janrainEngageEmbed #janrainView #janrainProviderPages').attr('style','margin: 0; padding: 0;');
         $('#janrainEngageEmbed #janrainView #attribution_footer').remove();
         $('#janrainEngageEmbed .janrainContent > div:last:not(#janrainView)').remove();
+      };
+      
+      window.janrainWidgetOnload = function() {
+        //Force to format the stupid authentication widget
+        beautifyJanrain();
         
         $(document).on('DOMNodeInserted','#janrainEngageEmbed .janrainContent',function() {
           //sendNotifyMessage($('#janrainEngageEmbed .janrainContent > div:last').text(),'info',false);
-          $('#janrainEngageEmbed .janrainContent > div:last').remove();
+          beautifyJanrain();
         });
         
         $('#janrainEngageEmbed #janrain-google,#janrainEngageEmbed .providers').on('click', function(event) {

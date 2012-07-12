@@ -26,7 +26,7 @@ app.configure(function(){
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(app.router);
-  app.use(express.static('../../client/cofetch'));
+  app.use(express.static(__dirname+'/../../client/cofetch'));
   app.use(express.logger({ format: ':method :url' }));
 });
 
@@ -49,5 +49,4 @@ app.get  ('/getPart/:type/:query/:page/:gps', cofetch.getPart);
 app.post ('/post'                           , cofetch.post);
 
 app.listen(port);
-
-console.log("CoFetch Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+console.log("CoFetch Express server listening on port %d in %s mode", port/*app.address().port*/, app.settings.env);

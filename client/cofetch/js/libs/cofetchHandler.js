@@ -17,7 +17,7 @@ var cofetchHandler = (function() {
   
   //-------------------------------------------------------------  
   var fetchCategories = function() {
-	  var serverURL = "/cofetch/getCat";  
+	  var serverURL = "getCat";  
 	  
 	  $.ajax({
     	  type: "GET",
@@ -46,7 +46,7 @@ var cofetchHandler = (function() {
 		automatic = 0;
 	}
 
-	var serverURL = "/cofetch/get"
+	var serverURL = "get"
 		          + "/" + $.trim(query)
 		          + "/" + encodeURIComponent(category)
 		          + "/" + automatic;
@@ -127,13 +127,13 @@ var cofetchHandler = (function() {
       },
       error: function(jqXHR, textStatus, errorThrown) {
     	  var errorData = {};
+    	  $("#loading").hide();
     	  
     	  try {
     		  errorData = JSON.parse(jqXHR.responseText);
     	  } catch (e) {}
     	  
     	  alert("An error occured: " + errorData.message || errorThrown + "\n\rPlease indicate if this error is relevant to your expected result. If yes, please try again or contact the administrator of this service.");
-    	  $("#loading").hide();
       }
     });
     
@@ -142,7 +142,7 @@ var cofetchHandler = (function() {
   //-------------------------------------------------------------  
   var fetchPart = function(type, query, page, gps) {
 	  
-	  var serverURL = "/cofetch/getPart/";
+	  var serverURL = "getPart/";
 	  //var serverURL = "http://localhost:8082/get/";
 	  
 	  console.log('Waiting for results for ' + type + ' search with query "' + query + '"');
@@ -296,6 +296,11 @@ var cofetchHandler = (function() {
 	  
 	  $.each(files, function(index, file){
 		  
+	    //avoid errors if weather is set to null
+	    if(!file.weather) {
+	      file.weather = {};
+	    }
+	    
 	    if (file.Type === "ImageType") {
   		  images.push(file);
   		} else if (file.Type === "Object3d") {
@@ -648,7 +653,7 @@ var cofetchHandler = (function() {
   //-------------------------------------------------------------  
   var save = function() {
 	  
-  	var serverURL = "/cofetch/post/";  
+  	var serverURL = "post/";  
   	
   	if($('#main-name').val().length < 2) {
   		alert("You need at least a valid name for the Content Object in order to save it!");
@@ -803,12 +808,17 @@ var cofetchHandler = (function() {
     	);
     };
     
+    $("#loading").show();
+    
     //Send it to the server
     $.ajax({
     	  type: "POST",
     	  url: serverURL,
     	  data: JSON.stringify(jsonFile),
     	  success: function(data) {
+    	    
+    	    $("#loading").hide();
+    	    
     		  //Remove the saved CO from the temporary data array
     		  scraperData.splice(manualIndex,1);
     		  manualIndex = -1;
@@ -835,7 +845,8 @@ var cofetchHandler = (function() {
     			  
     			  dialogHtml += '<p>You revised and saved every fetched Content Object. Please start a new search.</p>';
     			  $('#script-keywords').val('');
-    			  $(".datatab").show();
+    			  $(".datatab").hide();
+    			  $("#save").attr('disabled', 'disabled');
     			  $("#dialog").html(dialogHtml);
     			  
     		  } else {
@@ -854,6 +865,9 @@ var cofetchHandler = (function() {
     		  $("#dialog").dialog('open');
     	  },
     	  error: function(jqXHR, textStatus, errorThrown) {
+    	    
+    	    $("#loading").hide();
+    	    
     		  var errorData = {};
         	  try {
         		  errorData = JSON.parse(jqXHR.responseText);

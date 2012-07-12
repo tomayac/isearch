@@ -20,14 +20,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0; user-scalable=0;"/>
 
 <!-- For iPhone 4 with high-resolution Retina display: -->
-<link rel="apple-touch-icon-precomposed" sizes="114x114"
-	href="img/h/apple-touch-icon.png" />
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/h/apple-touch-icon.png" />
 <!-- For first-generation iPad: -->
-<link rel="apple-touch-icon-precomposed" sizes="72x72"
-	href="img/m/apple-touch-icon.png" />
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/m/apple-touch-icon.png" />
 <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
-<link rel="apple-touch-icon-precomposed"
-	href="img/l/apple-touch-icon-precomposed.png" />
+<link rel="apple-touch-icon-precomposed" href="img/l/apple-touch-icon-precomposed.png" />
 <!-- For nokia devices: -->
 <link rel="shortcut icon" href="img/l/apple-touch-icon.png" />
 
@@ -45,11 +42,11 @@
 
 <body>
 	<div id="settings">
-		<span id="login-status">Hello Guest</span> 
+		<span id="login-status">Hello Guest</span>
 		<ul class="clearfix">
 		  <li id="button-login-settings"><a href="javascript:void(0)">Login</a></li>
 		  <li id="button-global-settings"><a href="javascript:void(0)"><img src="img/settings.png" height="30" alt="Settings" title="General search settings"></a></li>
-		</ul>  
+		</ul>
 	</div>
 	<div class="settings-panel" id="login-settings">
 	  <div class="setting" id="janrainEngageEmbed"></div>
@@ -58,13 +55,13 @@
       <section class="setting">
         <label for="email">Email</label> <input type="text" id="email" name="email" />
       </section>
-  
+
       <section class="setting clearfix">
         <label for="password">Password</label> <input type="password" id="pw" name="pw" />
       </section>
     </form>
     -->
-  </div>  
+  </div>
   <div class="settings-panel" id="profile-settings">
     <form method="post" action="#">
     <div id="profile-accordion">
@@ -89,7 +86,7 @@
           <label for="city">City</label> <input type="text" id="city" name="city" />
         </section>
         <section class="setting">
-          <label for="country">Country</label> 
+          <label for="country">Country</label>
           <select name="country" id="country" autofocus="autofocus" autocorrect="off" autocomplete="off">
             <option value="" selected="selected">Select Country</option>
             <option value="Afghanistan" data-alternative-spellings="AF افغانستان">Afghanistan</option>
@@ -345,21 +342,23 @@
         </section>
       </div>
       <h3>Search History</h3>
-      <div></div>
+      <div id="searchHistory">
+        <p>Your search history is empty.</p>
+      </div>
     </div>
     <button id="logout">Logout</button>
     </form>
-  </div>  
+  </div>
   <div class="settings-panel" id="global-settings">
     <form method="post" action="#">
-      
+
       <section class="setting">
-        <label for="audio-cluster-type">Audio Use Case?</label> 
+        <label for="audio-cluster-type">Audio Use Case?</label>
         <div class="checkbox"><input type="checkbox" id="audio-cluster-type" /></div>
       </section>
-      
+
       <section class="setting clearfix">
-        <label for="max-num-results">Size of result</label> 
+        <label for="max-num-results">Size of result</label>
         <input type="text" id="max-num-results" size="8" />
       </section>
 <!--
@@ -373,7 +372,7 @@
       </section>
 
       <section class="setting clearfix">
-        <label for="visualization-method">Visualization Method</label> 
+        <label for="visualization-method">Visualization Method</label>
         <select id="visualization-method">
           <option value="classic">Classic</option>
           <option value="tmap">Tree Map</option>
@@ -385,7 +384,7 @@
     </form>
   </div>
   <div class="settings-panel" id="messages">
-  </div>  
+  </div>
 	<div id="container">
 		<header>
 			<h1>
@@ -407,9 +406,9 @@
 			<nav class="query-composition">
 				<ul>
 					<li data-mode="sound"><a> <img src="img/icon-isearch-sound.png" alt="Sound" /> </a></li>
-					<li data-mode="rhythm"><a> <img src="img/icon-isearch-rhythm.png" alt="Rhythm" /> </a></li>							
+					<li data-mode="rhythm"><a> <img src="img/icon-isearch-rhythm.png" alt="Rhythm" /> </a></li>
 					<li data-mode="picture"><a> <img src="img/icon-isearch-picture.png" alt="Picture" /> </a></li>
-          <li data-mode="video"><a> <img src="img/icon-isearch-video.png" alt="Video" /> </a></li>							
+          <li data-mode="video"><a> <img src="img/icon-isearch-video.png" alt="Video" /> </a></li>
 					<li data-mode="sketch"><a> <img src="img/icon-isearch-sketch.png" alt="Sketch" /> </a></li>
 					<li data-mode="3d"><a> <img src="img/icon-isearch-3d.png" alt="3D" /> </a></li>
           <li data-mode="emotion"><a> <img src="img/icon-isearch-emotion.png" alt="Emotion" /> </a></li>
@@ -423,7 +422,7 @@
 				  Grab an audio file and drop it here
 				</div>
 				<div class="instruction">
-					Upload a file with this button: 
+					Upload a file with this button:
 					<button class="upload">Upload</button>
 					<input type="file" id="soundUpload"  style="visibility: hidden;" />
 				</div>
@@ -442,7 +441,7 @@
 				  Grab an audio file with a rhythm and drop it here
 			  </div>
 				<div class="instruction">
-					Upload a file with this button: 
+					Upload a file with this button:
 					<button class="upload">Upload</button>
 					<input type="file" id="rhythmUpload" style="visibility: hidden;" />
 				</div>
@@ -455,16 +454,16 @@
             <p>
               <label for="rhythm-progress">Elapsed time in seconds:
                 <span id="elapsed-span"></span>
-              </label>          
-            </p>      
-            <p>  
-              <label for="duration-spinner">Duration in seconds:</label>
-              <input id="duration-spinner" type="number" value="10" max="60" min="5" step="1" />      
+              </label>
             </p>
             <p>
-              <div id="rhythm-div">Start</div>      
-            </p>  
-            <canvas width="" id="rhythm-canvas"></canvas>  
+              <label for="duration-spinner">Duration in seconds:</label>
+              <input id="duration-spinner" type="number" value="10" max="60" min="5" step="1" />
+            </p>
+            <p>
+              <div id="rhythm-div">Start</div>
+            </p>
+            <canvas width="" id="rhythm-canvas"></canvas>
           </div>
 				</div>
 				<div class="instruction">
@@ -477,19 +476,18 @@
 				</footer>
 			</section>
 
-
 			<section class="panel picture">
 				<div class="instruction dropContainer" id="imageDrop">
 					<span>Grab a picture and drop it here</span>
 				</div>
 				<div class="instruction">
-					Upload a image with this button: 
+					Upload a image with this button:
 					<button class="upload">Upload</button>
 					<input type="file" id="imageUpload" style="visibility: hidden;" />
 				</div>
 				<div class="instruction">
 					Take a picture with your device:
-          
+
           <div class="device">
 					  <video width="352" height="288" autoplay></video>
 					  <canvas width="352" height="288" class="overlay" id="imageCapture"></canvas>
@@ -497,26 +495,26 @@
 					  <button class="new">Capture again</button>
 					</div>
 					<button class="shoot">Show camera</button>
-    
+
 				</div>
 				<footer>
 					<a href="#">close</a>
 				</footer>
 			</section>
-			
+
       <section class="panel video">
         <div class="instruction dropContainer" id="videoDrop">
           <span>Grab a video and drop it here</span>
         </div>
         <div class="instruction">
-          Upload a video with this button: 
-          
+          Upload a video with this button:
+
           <button class="upload">Upload</button>
           <input type="file" id="videoUpload" style="visibility:hidden;"/>
         </div>
         <div class="instruction">
-          Take a video with your device: 
-          
+          Take a video with your device:
+
           <div class="device">
             <video width="352" height="288" autoplay></video>
             <canvas width="352" height="288" class="overlay" id="videoCapture"></canvas>
@@ -525,8 +523,9 @@
           </div>
           <button class="shoot">Show camera</button>
         </div>
+        <div class="instruction" id="videoKeyframes" style="display:none"></div>
         <footer><a href="#">close</a></footer>
-      </section>			
+      </section>
 
 			<section class="panel sketch">
 				<div class="instruction">
@@ -548,7 +547,7 @@
 				  Drag'n'drop one of your 3D model here
 				</div>
 				<div class="instruction">
-					Upload a 3D file with this button: 
+					Upload a 3D file with this button:
 					<button class="upload">Upload</button>
 					<input type="file" id="threedUpload" style="visibility: hidden;" />
 				</div>
@@ -556,15 +555,15 @@
 					<a href="#">close</a>
 				</footer>
 			</section>
-			
+
       <section class="panel emotion">
         <div class="instruction">
           Drag the slider to include the desired emotion
-          <div class="emotion-slider" id="emotion-slider"></div>          
+          <div class="emotion-slider" id="emotion-slider"></div>
         </div>
         <footer><a href="#">close</a></footer>
-      </section>		
-      	
+      </section>
+
 			<section class="panel geolocation">
 				<div class="instruction">
 					Click here to give your current location:
@@ -573,23 +572,12 @@
 				<div class="instruction">
 					Choose a location from the interactive map:
 					<button id="chooseLocation">Open map</button>
-				</div>	
-				<footer>
-					<a href="#">close</a>
-				</footer>
-			</section>
-			
-			<section class="panel text">
-				<div class="instruction">
-					Enter you request (old style!): <input type="text"
-						value="Type here...slowly :)" />
-					<button>Add to query</button>
 				</div>
 				<footer>
 					<a href="#">close</a>
 				</footer>
 			</section>
-			
+
 			<section class="tags"></section>
 		</div>
 
@@ -600,7 +588,7 @@
 	<script type="text/javascript" src="js/local/basic.js"></script>
 	<!-- All the script dependencies will be managed with requireJS
        More info? Check http://requirejs.org -->
-  <script data-main="js/main" src="js/libs/require-jquery.min.js"></script>     
+  <script data-main="js/main" src="js/libs/require-jquery.min.js"></script>
 
 	<!--No need for GA right now. But maybe later...who knows?!-->
 	<!-- <script> -->

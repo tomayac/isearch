@@ -22,9 +22,8 @@ var textMethods = {
           + 'QueryClass=' + qclass
           + '&QueryString=' + query
           + '&MaxHits=' + maxResults;
-
+ 
       var context = this;
-
       
       //Let's go and request our content
       this.get(dbpediaURL, function(error, data, headers) {
@@ -38,7 +37,6 @@ var textMethods = {
         var parser = new xml2js.Parser();
         //The function where the transformed JSON data comes in
         parser.on('end', function(res) {    	
-        	
         	if(res.Result) {
         		var result = {
             			"Type":"Text",
@@ -55,8 +53,7 @@ var textMethods = {
             context.emit(result);
         	} else {
         		context.emit({});
-        	} 
-        	
+        	}        	
         	
         });
         //http://dbpedia.org/data/Atlantic_blue_marlin.json -- http://xmlns.com/foaf/0.1/page

@@ -163,7 +163,7 @@ button,input,select,textarea {
 }
 
 input:valid,textarea:valid {
-	
+
 }
 
 input:invalid,textarea:invalid {
@@ -176,7 +176,7 @@ input:invalid,textarea:invalid {
 input[type="file"] {
     float: right;
     width: 1px;
-} 
+}
 
 .no-boxshadow input:invalid,.no-boxshadow textarea:invalid {
 	background-color: #f0dddd;
@@ -234,7 +234,7 @@ button {
 
 #container {
 	/**
-	 * Triantafillos: changed max-width from 920 to 1240px 
+	 * Triantafillos: changed max-width from 920 to 1240px
 	 * for better look on WXGA screens.
 	 */
 	max-width: 1240px;
@@ -313,7 +313,7 @@ nav {
 	padding: 5px;
 	background-color: #444;
 	color: white;
-	
+
 	top: 0;
   left: 0;
 	height: 1.3em;
@@ -334,7 +334,7 @@ nav {
   float: left;
   height: 2.6em;
   padding: 0.1em 1em;
-  
+
   background-color: #444;
   border-right: 1px solid #ccc;
   border-bottom-right-radius: 4px;
@@ -376,15 +376,15 @@ nav {
   top: 2.0em;
   right: 0;
   z-index: 100;
-    
+
 	background-color: #666;
 	color: white;
 	box-shadow: 0px 0px 3px #111;
   border-bottom-left-radius: 4px;
-	
+
 	padding: 1.5em 1.5em 1.5em 2.5em;
 	display: none;
-	
+
 	text-align: center;
 }
 
@@ -439,11 +439,16 @@ nav {
 }
 
 .settings-panel .ui-accordion .setting {
-  padding-left: 18%; 
+  padding-left: 18%;
 }
 
 .settings-panel .setting:last-child {
   /*margin-right: 0;*/
+}
+
+.settings-panel #searchHistory p {
+  color: #fff;
+  margin: 1em;
 }
 
 .settings-panel .setting label {
@@ -466,7 +471,7 @@ nav {
   display: inline-block;
   padding: 0;
   margin: 0.1em 0.2em;
-  
+
   font-weight: bold;
   text-shadow: 0px 0px 1px #fcc;
   color: #d88;
@@ -514,27 +519,27 @@ nav {
   display: inline-block;
   overflow: hidden;
   cursor: text;
-  
+
   margin: 0 0 0 0.4em;
   padding: 0 0 0 0.4em;
   border-left: 1px solid #999;
-  
+
   height: 100%;
   max-width: 70%;
   min-height: 1.8em;
-  
+
   background-color: transparent;
 }
 
 .chat-container ul {
-  float: left;  
+  float: left;
   display: block;
   width: 10000em;
   height: 100%;
-  
+
   margin: 0;
   padding: 0.3em 0 0 0;
-  
+
   background-color: transparent;
   list-style-type: none;
   clear: left;
@@ -546,21 +551,21 @@ nav {
   border-radius: 3px;
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
-  
+
   padding: 0.2em;
   margin: 0 0.4em 0 0;
-  
+
   background-color: #999;
   color: #fff;
   cursor: default;
-  
+
   white-space: nowrap;
   font-size: 0.9em;
 }
 
 .chat-container ul li span {
   display: inline;
-  margin: 0 2px; 
+  margin: 0 2px;
   padding: 0;
   height: 100%;
   line-height: 1.4em;
@@ -577,21 +582,21 @@ nav {
   border: 0;
   padding: 0.1em;
   margin: 0;
-  
+
   background-color: white;
-  
+
   font-size: 1em;
   line-height: 1.2em;
   -webkit-appearance: caret;
 }
- 
+
 /*
  * end of CoFind chat styles
- */ 
+ */
 /*
  * Begin of query input and assembling styles
  */
- 
+
 #query {
 	position: relative;
 }
@@ -646,7 +651,7 @@ nav {
 }
 
 li.token-input-token-isearch {
-  
+
   height: auto !important;
   height: 15px;
   margin: 2px;
@@ -665,7 +670,7 @@ li.token-input-token-isearch {
 }
 
 li.token-input-token-isearch p {
-  display: inline-block; 
+  display: inline-block;
   padding: 0;
   height: 1.9em;
   line-height: 1.9em;
@@ -683,14 +688,14 @@ li.token-input-token-isearch p img {
   vertical-align: middle;
   margin-top: -3px;
   max-height: 2.5em;
-  
+
   background-color: #fff;
 }
 
 li.token-input-token-isearch  canvas,
 li.token-input-token-isearch  audio,
 li.token-input-token-isearch  video {
-  position: relative; 
+  position: relative;
   border: 1px solid #aaa;
 }
 
@@ -877,6 +882,7 @@ nav a img {
 	text-align: center;
 	margin: 4px;
 	padding: 10px;
+	overflow-x: hidden;
 }
 
 .over {
@@ -1018,23 +1024,23 @@ footer {
   left: 0;
   right: 0;
   z-index: 100;
-  
+
   height: 120px;
-    
+
   background-color: #444;
   color: white;
   box-shadow: 0px 0px 3px #555;
   border-top-right-radius: 4px;
   border-top-left-radius: 4px;
-  
+
   padding: 1em;
   margin: 0 auto;
-  
+
   text-align: center;
 }
 
 .bottom-overlay p {
-  font-weight: bold;
+7  font-weight: bold;
   line-height: 2em;
   padding: 0em 1em;
 }
@@ -1135,7 +1141,7 @@ footer {
 	position: absolute;
 	left: 25px;
 	bottom: 20px;
-	
+
 	background-color: #FAFAFA;
 	padding: 10px;
 	border: 1px solid #C0C0C0;
@@ -1293,6 +1299,37 @@ div.rhythm canvas {
 }
 /* Rhythm input end */
 
+
+/* Video input start */
+#videoKeyframes{
+  border: 1px solid #ccc;
+  padding: 3px;
+}
+.keyframe-button{
+  position: absolute;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 7px 10px;
+  text-align: center;
+  text-decoration: none;
+  color: #fff;
+  overflow: hidden;
+}
+.keyframe-button:hover{
+  color: orange;
+}
+.keyframe-add{
+  bottom: 0;
+  left: 0;
+  border-radius: 0 10px 0 0;
+}
+.keyframe-close{
+  top: 0;
+  right: 0;
+  border-radius: 0 0 0 10px;
+}
+/* Video input end */
+
+
 /**
  * Media queries for responsive design.
  */
@@ -1308,7 +1345,7 @@ div.rhythm canvas {
     top: 70px;
     right: 10px;
   }
-  
+
   .settings-panel,
   .bottom-overlay {
     width: 480px;

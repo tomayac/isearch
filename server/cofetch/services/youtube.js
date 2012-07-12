@@ -54,21 +54,10 @@ var getVideoData = function(video, callback) {
     var loc = video['georss$where']['gml$Point']['gml$pos']['$t'];
     loc = loc.split(' ');
     result.Location = [loc[0] || 0 ,loc[1] || 0,0,0];
-    
-    //get weather data if we have a location
-    weather.fetchWeather({Date: result.Date, Location: result.Location}, function(error, data) {
-      if(error) {
-        console.log('No weather data found for video with name "' + result.Name + '"');
-      } else {
-        result.Weather = data;
-      }
-      //Ok, got everything here so return the result
-      callback(null, result);
-    }); //end fetch weather
-  } else {
-    //No location, hence no weather, just return the result
-    callback(null, result);
-  }
+  }  
+  
+  //Ok, got everything here so return the result
+  callback(null, result);
 };
 
 var fetchVideo = function(query, geo, page, callback) {

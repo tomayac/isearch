@@ -78,21 +78,10 @@ var getImageInfo = function(imageId, callback) {
       //Check if we have an location
       if(photo.location) {
         result.Location = [photo.location.latitude || 0 ,photo.location.longitude || 0,0,0];
-        
-        //get weather data if we have a location
-        weather.fetchWeather({Date: photo.dates.taken, Location: result.Location}, function(error, data) {
-          if(error) {
-            console.log('No weather data found for image with id ' + imageId);
-          } else {
-            result.Weather = data;
-          }
-          //Ok, got everything here so give the result back
-          callback(null, result);
-        });
-      } else {
-        //No location, hence no weather, just return the result
-        callback(null, result);
-      }
+      }  
+       
+      //Ok, got everything here so give the result back
+      callback(null, result);
       
     } catch (error) {
       callback(error, null);
