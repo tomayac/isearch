@@ -1,7 +1,7 @@
 var AudioRenderer = function(containerDiv, urlMp3, urlOgg, urlImg, visType)
 {
 	var canvas, audio, tmpCanvas, tmpCtx ;
-	var ctx, displayQuality = 1.0  ;
+        	var ctx, displayQuality = 1.0  ;
 	var channels,  rate,  frameBufferLength;
 	var analyzer, sm2obj = null ;
 
