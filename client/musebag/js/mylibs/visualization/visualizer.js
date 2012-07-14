@@ -144,29 +144,89 @@ define("mylibs/visualization/visualizer",
 		
 		var menuPaneHtml = '<form id="vis-options" style="padding-top: 5px">'  ;
 		
-		if ( hasHierarchy ) menuPaneHtml +=
-				'<div class="formitem"><span style="margin-right: 5px;">Method</span><div id="method-buttons" style="display:inline;">' 
-			+ '<input type="radio" name="method" id="vis-classic"/><label for="vis-classic">Classic</label>' 
-			+ '<input type="radio" name="method" id="vis-hpanel"/><label for="vis-hpanel">HPanel</label>' 
-			+ '<input type="radio" name="method" id="vis-htree"/><label for="vis-htree">Hyperbolic Tree</label>'
-			+	'<input type="radio" name="method" id="vis-tmap"/><label for="vis-tmap">Treemap</label></div></div>' ;
+		if ( !hasHierarchy || !options.methods || options.methods.length <= 1 ) ;
+		else
+		{
+			menuPaneHtml +=	'<div class="formitem"><span style="margin-right: 5px;">Method</span><div id="method-buttons" style="display:inline;">'  ;
+
+			for (var idx in options.methods )
+			{
+				switch ( options.methods[idx] )
+				{
+					case "classic":
+						menuPaneHtml +=	'<input type="radio" name="method" id="vis-classic"/><label for="vis-classic">Classic</label>' ;
+						break ;
+					case "hpanel":
+						menuPaneHtml +=	'<input type="radio" name="method" id="vis-hpanel"/><label for="vis-hpanel">HPanel</label>'  ;
+						break ;
+					case "htree":
+						menuPaneHtml += '<input type="radio" name="method" id="vis-htree"/><label for="vis-htree">Hyperbolic Tree</label>' ;
+						break ;
+					case "tmap":
+						menuPaneHtml +=	'<input type="radio" name="method" id="vis-tmap"/><label for="vis-tmap">Treemap</label>' ;
+						break ;
+				}
+			}			
+				
+			menuPaneHtml += '</div></div>' ;
+		}
+		
+		menuPaneHtml +=	 '<div class="formitem"><span style="margin-right: 5px;">Icon Size</span><div id="ts-buttons" style="display:inline;">'
+			+	'<label for="ts64">Small</label><input type="radio" name="ts" id="ts64"/>'
+			+ 	'<label for="ts96">Medium</label><input type="radio" name="ts" id="ts96"/>'
+			+	'<label for="ts128">Large</label><input type="radio" name="ts" id="ts128"/>'
+			+	'</div></div>'
+		
+		if ( !options.thumbOptions.iconArrangeMethods || 
+			 options.thumbOptions.iconArrangeMethods.length <= 1 ) ;
+		else
+		{
+			menuPaneHtml +=	 '<div class="formitem"><span style="margin-right: 5px;">Layout</span><div id="arrange-buttons" style="display:inline;">'
+						
+			for (var idx in options.thumbOptions.iconArrangeMethods )
+			{
+				switch ( options.thumbOptions.iconArrangeMethods[idx] )
+				{
+					case "grid":
+						menuPaneHtml +=	'<input type="radio" name="ia" id="ia-grid"/><label for="ia-grid">Grid</label>' ;
+						break ;
+					case "smart":
+						menuPaneHtml += '<input type="radio" name="ia" id="ia-smart"/><label for="ia-smart">Smart</label>' ;
+						break ;
+					case "smart-grid":
+						menuPaneHtml +=	'<input type="radio" name="ia" id="ia-smart-grid"/><label for="ia-smart-grid">Smart Grid</label>' ;
+						break ;
+				}
+				
+			}
 			
-		menuPaneHtml +=	
-				'<div class="formitem"><span style="margin-right: 5px;">Icon Size</span><div id="ts-buttons" style="display:inline;">'
-			+	'<input type="radio" name="ts" id="ts64"/><label for="ts64">Small</label>'
-			+ 	'<input type="radio" name="ts" id="ts96"/><label for="ts96">Medium</label>'
-			+	'<input type="radio" name="ts" id="ts128"/><label for="ts128">Large</label>'
-			+	'</div></div>'
-			+	'<div class="formitem"><span style="margin-right: 5px;">Layout</span><div id="arrange-buttons" style="display:inline;">'
-			+	'<input type="radio" name="ia" id="ia-grid"/><label for="ia-grid">Grid</label>'
-			+ 	'<input type="radio" name="ia" id="ia-smart"/><label for="ia-smart">Smart</label>'
-			+ 	'<input type="radio" name="ia" id="ia-smart-grid"/><label for="ia-smart-grid">Smart Grid</label>'
-			+	'</div></div>'
-			+	'<div class="formitem" style="float: right"><span style="margin-right: 5px;">Navigation Mode</span><div id="nav-buttons" style="display:inline;">'
-			+	'<input type="radio" name="nav" id="nav-browse"/><label for="nav-browse">Browse</label>'
-			+ 	'<input type="radio" name="nav" id="nav-feedback"/><label for="nav-feedback">Feedback</label>'
-			+	'</div></div>'
-			+ 	'</form>';
+			menuPaneHtml +=	'</div></div>' ;
+		}
+		
+		if ( !options.thumbOptions.navModes || 
+			 options.thumbOptions.navModes.length <= 1 ) ;
+		else
+		{
+			menuPaneHtml +=	'<div class="formitem" style="float: right"><span style="margin-right: 5px;">Navigation Mode</span><div id="nav-buttons" style="display:inline;">' ;
+			
+			for (var idx in options.thumbOptions.navModes )
+			{
+				switch ( options.thumbOptions.navModes[idx] )
+				{
+					case "browse":
+						menuPaneHtml +=	'<input type="radio" name="nav" id="nav-browse"/><label for="nav-browse">Browse</label>' ;
+						break ;
+					case "feedback":
+						menuPaneHtml += '<input type="radio" name="nav" id="nav-feedback"/><label for="nav-feedback">Feedback</label>' ; 
+						break ;
+				}
+				
+			}
+			
+			menuPaneHtml +=	'</div></div>' ;
+		}
+		
+		menuPaneHtml +=	'</form>';
 			
 		menuPane.html(menuPaneHtml) ;
 		

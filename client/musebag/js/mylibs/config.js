@@ -16,6 +16,7 @@ define("mylibs/config",
       slideUpAnimationTime: 200,
       slideDownAnimationTime: 200,
       menuWidth: 470, //cf style.css for more explanations
+      useOldAuthentication: false,
 
       //Query parameters
   	  queryOptions: {
@@ -29,14 +30,18 @@ define("mylibs/config",
 
       //Visualization parameters  
   	  visOptions: {
+  	  	  methods: [ "classic", "tmap",  "htree", "hpanel" ], // this can be adjusted to restrict visualisation options
   	      method: "classic", //tmap, htree, hpan, classic or cubes (or mst)
   	      thumbOptions: {
-  	      thumbSize: 64, //16, 32, 48, 64
-  	      iconArrange: "grid",
-  	      navMode: "browse",
-  	      thumbRenderer: new DefaultThumbRenderer()
-  			},
-  			showFilterPane: true,
+	  	      thumbSize: 64, //16, 32, 48, 64, 96, 128
+  		      iconArrange: "grid",
+  		      iconArrangeMethods: [ "grid", "smart", "smart-grid" ],
+	  	      navMode: "feedback",	
+  		      navModes: ["feedback", "browse"],
+  		      feedback: ["tags", "likes"],
+  		      thumbRenderer: new DefaultThumbRenderer()
+  		  },
+  		showFilterPane: true,
   			filterBar: {
   			  modalities: { "image": { label: "Images"}, "3d": { label: "3D models" }  } // this is the modalities that the user can switch between, depending on use case.
   			}
@@ -99,11 +104,13 @@ define("mylibs/config",
     var getUserHistory = function() {
       var userId = profile.get('userId');     
       
+      var historyServerUrl = (constants.userProfileServerUrl || "profile/" ) + "history"
+      
       if(userId) {
         //Ask for user search history
         $.ajax({
           type: "GET",
-          url: "profile/history",
+          url: historyServerUrl,
           success: function(data) {
             
             console.log(data);
@@ -176,6 +183,13 @@ define("mylibs/config",
         if(data.clusterType) {
           set('queryOptions.clusterType', data.clusterType);
         }
+        if ( data.numClusters ) {
+			set('queryOptions.clusters0', data.numClusters);
+		}
+
+		if ( data.transMethod ) {
+			set('queryOptions.trans', data.transMethod);
+		}
   	  }
      
   	  //Initialize the form with the default values
@@ -187,6 +201,9 @@ define("mylibs/config",
         $("#audio-cluster-type").parent().addClass('checked');
         $("#audio-cluster-type").attr('checked', true);
       }
+      
+      $("#num-clusters").val(constants.queryOptions.clusters0);
+      $("#trans-method option[value=" + constants.queryOptions.trans + "]").attr('selected','selected');
     };
     
     var performLoggedInSetup = function() {
@@ -255,16 +272,26 @@ define("mylibs/config",
       
       var mr = parseInt(panels.settings.find("#max-num-results").val());
   	  var ct = $("#audio-cluster-type").attr('checked') ? 'Audio' : '3D';
+  	  
+	  var nc = parseInt(panels.settings.find("#num-clusters").val()) ;
+	  var tm = panels.settings.find("#trans-method option:selected").val() ;
       
       if(constants.queryOptions.maxNumResults === mr &&
-			   constants.queryOptions.clusterType   === ct){
+   	     constants.queryOptions.clusterType   === ct &&
+   	     constants.queryOptions.cluster0      === nc &&
+   	     constants.queryOptions.trans         === tm ){
         return;
       }  
 	          
       set('queryOptions.maxNumResults', mr);
   	  set('queryOptions.clusterType', ct);
+  	  set('queryOptions.cluster0', nc);
+  	  set('queryOptions.trans', tm) ;
       
-      var settings = {"maxResults" :  mr , "clusterType" : ct};
+      var settings = {"maxResults" :  mr , "clusterType" : ct, 
+	      "numClusters" : nc ,  "transMethod" : tm 
+	  };
+	  
       profile.set('settings',settings,sendNotifyMessage);
   	  
       //Notify the user that their action has been successful -- close the panel
@@ -275,10 +302,15 @@ define("mylibs/config",
       
       var serverURL = constants.userLoginServerUrl || "login";        
 	    
-      /*var postData = {email: panels.login.find("#email").val() || '',
+	  var postData ;
+	  
+	  if ( constants.useOldAuthentication )
+	  {
+      	 postData = {email: panels.login.find("#email").val() || '',
                          pw: panels.login.find("#pw").val()    || ''};
-      */
-      var postData = {token: token};
+      }
+      else
+	      var postData = {token: token};
       
       //Send it to the server
       $.ajax({
@@ -332,6 +364,9 @@ define("mylibs/config",
         contentType : "application/json; charset=utf-8"
       });
     };
+    
+   
+    
 
     var initPanel = function() {
       
@@ -358,7 +393,7 @@ define("mylibs/config",
       } else {
         initSettings();
       }
-      
+     
       //init profile form modification stuff
       $('#profile-accordion').accordion({ autoHeight: false });
       $('#dateOfBirth').datepicker({ dateFormat: "yy-mm-dd" });
@@ -372,7 +407,7 @@ define("mylibs/config",
   	    $(this).removeClass('checked');
   	    $(this).find(':checkbox').attr('checked', false);
   	  });
-      
+    
       $("#button-global-settings").on('click touchstart',function(event){
         if($("#button-global-settings").hasClass('active')) {
           handleSettingsSave();
@@ -381,13 +416,15 @@ define("mylibs/config",
         } else {
           panels.hide(constants.slideDownAnimationTime);
           panels.settings.show(constants.slideDownAnimationTime);
-          $("#button-global-settings").addClass('active');
+    	  $("#button-global-settings").addClass('active');
           $("body").one("click", function() {
             panels.hide(constants.slideDownAnimationTime);
           });
         }
         event.stopPropagation();
+        return false ;
       });
+
       panels.settings.click(function(event) {
         event.stopPropagation();
       });
@@ -451,7 +488,7 @@ define("mylibs/config",
               panels.hide(constants.slideDownAnimationTime);
             });
           }
-        } else {
+        } else {http://localhost/isearch/register.php
           
           if($("#button-login-settings").hasClass('active')) {
             profile.setFromForm(sendNotifyMessage);
@@ -466,7 +503,10 @@ define("mylibs/config",
             });*/
           }
         }
+        
         event.stopPropagation();
+        
+        return false ;
       });
       
       //Logout button
@@ -482,6 +522,47 @@ define("mylibs/config",
         event.stopPropagation();
       });
 
+	  $('#user-registration').click(function(event) {
+	    	$.ajax({
+	    		type: "POST",
+    			url: constants.userRegisterServerUrl,
+    			success: function(data) {
+    			
+    				var frm = $('<div>').html(data) ;
+    				
+    				var onSumbit = function() {
+    					var fields = $(this).serialize();
+	    					
+    					$.ajax({
+    							type: 'POST',
+				    			url: constants.userRegisterServerUrl,
+				    			data: fields,
+   								success: function(data) {
+    								frm.html(data) ;
+    							
+    								$('form', frm).submit(onSumbit) ; 
+    							}
+    						}) ;			
+	    					
+						return false;
+	    			} ;
+    				    			
+	     			frm.dialog(
+	     					{ 	modal: true, 
+	     						title: "Registration", 
+	     						width: 800, 
+	     						height: 400,
+	     						autoOpen: false,
+                                maxHeight: 400,
+	     					}).dialog('open');
+	     					
+	     				$('form', frm).submit(onSumbit) ; 
+			    }
+			   
+		  });
+	  
+	  }) ;
+	  
       //Listen to keypress click to change settings
       $("#global-settings form").keypress(function(event) {
         if ( event.which == 13 ) {
@@ -495,11 +576,15 @@ define("mylibs/config",
         if ( event.which == 13 ) {
           event.preventDefault();
           if($("#button-login-settings").hasClass('active')) {
-            //if(panels.login.find("#email").val().length > 0 || panels.login.find("#pw").val().length > 0) {
-            //  handleLogin();
-            //} else {
-              panels.login.hide(constants.slideDownAnimationTime);
-            //}
+          	if ( constants.useOldAuthentication )
+          	{
+          		if(panels.login.find("#email").val().length > 0 || panels.login.find("#pw").val().length > 0) {
+            	  handleLogin();
+            	} 
+          	}	
+
+            panels.login.hide(constants.slideDownAnimationTime);
+           
             $("#button-login-settings").removeClass('active');
           }
           return false;

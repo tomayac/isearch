@@ -201,6 +201,7 @@ p.renderContents = function(tooltip, thumb, mediaType)
 				//	$('a#' + currentId, tooltip).toggleClass('selected') ;
 				}
 				
+				return false ;
 			}) ;
 		}
 	}

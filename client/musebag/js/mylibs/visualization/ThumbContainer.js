@@ -23,6 +23,9 @@ ThumbContainer = function(containerDiv, data, options, ctx) {
 	if ( options.navMode )
 		this.navMode = options.navMode ;
 		
+	if ( options.feedback )
+		this.feedback = options.feedback ;
+		
 	this.containerDiv = containerDiv ;	
 
 	this.ctx = ctx ;
@@ -577,19 +580,28 @@ p.createThumbnail = function(i, x, y)
 	if ( this.navMode == 'feedback' )
 	{
 		var trans = $('<div/>', { "class": "thumbnail-overlay" }).appendTo(imgOut) ;
-		
-		var tagBtn = $('<a/>', { href: "javascript:void(0)", "id": "TagEdit", "title": "Edit tags", css: { "float": "right" }} ).appendTo(trans) ;
-		var relBtn = $('<a/>', { href: "javascript:void(0)", "id": "Relevance", "title": "Toggle relevance", css: { "float": "right" }} ).appendTo(trans) ;
 	
-		if ( !item.doc.relevant ) relBtn.addClass("inactive") ;
+				
+		if ( $.inArray("likes", this.feedback) )
+		{
+			var relBtn = $('<a/>', { href: "javascript:void(0)", "id": "Relevance", "title": "Toggle relevance", css: { "float": "right" }} ).appendTo(trans) ;
 	
-		relBtn.click(function(e) {
-			item.doc.relevant = !item.doc.relevant ;
-			$(this).toggleClass("inactive") ;
-			e.stopImmediatePropagation() ;
-		}) ;
+			if ( !item.doc.relevant ) relBtn.addClass("inactive") ;
+	
+			relBtn.click(function(e) {
+				item.doc.relevant = !item.doc.relevant ;
+				$(this).toggleClass("inactive") ;
+				e.stopImmediatePropagation() ;
+				
+				return false ;
+			}) ;
+		}
 		
-		tagBtn.click( 
+		if ( $.inArray("tags", this.feedback) )
+		{
+			var tagBtn = $('<a/>', { href: "javascript:void(0)", "id": "TagEdit", "title": "Edit tags", css: { "float": "right" }} ).appendTo(trans) ;
+		
+			tagBtn.click( 
 			( 
 				function(item) 	{ 
 					return function() {
@@ -637,9 +649,12 @@ p.createThumbnail = function(i, x, y)
 							}
 						}) ; 
 					};
+					
+					return false ;
 				}
 			)(item)
-		);
+			);
+		}
 	}
 			
 	var that = this ;

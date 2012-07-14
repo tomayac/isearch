@@ -1507,3 +1507,55 @@ div.jqmNotice .jqmClose {
     position: static;
 	display: block;
 }
+
+
+#user-registration-form form p { margin: 0; }
+/*form h2 { font-weight:bold;	margin-bottom:8px; padding-bottom:5px; border-bottom: #ddd 1px solid;} */
+#user-registration-form form  p.note { margin-left: 170px; font-size: 90%; color: #333; }
+
+#user-registration-form form legend {	
+	margin : 1em; 
+	padding : 0 0.5em; 
+	color : #3B617F; 
+	background : transparent; 
+	font-size : 1.2em; 
+	font-weight : bold; 
+}
+
+#user-registration-form form fieldset {	
+	margin : 1em 0;	
+	padding : 0 1em .5em;	
+	border : #DDD 1px solid;
+	background-color: #f8f8f8 ;
+	
+	}
+
+#user-registration-form form div.field { padding: 0.5em 0}
+
+#user-registration-form form label,
+#user-registration-form form span.label { margin-right: 10px; padding-right: 10px; width: 150px; display: inline; float: left; text-align: right; position: relative; font-weight: bold}
+
+#user-registration-form form .error { background-color: #FEE;}
+#user-registration-form form label em,
+#user-registration-form form span.label em { position: absolute; right: 0; font-size: 120%; font-style: normal; color: #C00; }
+
+#user-registration-form form input:focus,
+#user-registration-form form textarea:focus { background-color: #FFC; border-color: #FC6; }
+
+#user-registration-form form div.controlset label,
+#user-registration-form form div.controlset input , 
+#user-registration-form form div.controlset select{ display: inline; float: none; }
+#user-registration-form form div.controlset div.controlbox { display: block; margin-left: 170px ; margin-bottom: 5px ;}
+#user-registration-form form div.controlset  #map { margin-left: 170px; }
+#user-registration-form form div.buttonrow { margin-left: 170px; margin-top: 10px ;} 
+
+
+#user-registration-form form { margin: 10px auto; padding: 0px; background-color: #FFF; }
+
+#user-registration-form p.legend { margin-bottom: 1em; }
+#user-registration-form p.legend em { color: #C00; font-style: normal; }
+
+#user-registration-form div.errors { margin: 0 0 10px 0;  border: #FC6 1px solid; background-color: #FFC; }
+#user-registration-form div.message { margin: 0 0 10px 0;  color: #F00; }
+#user-registration-form div.errors p { margin: 0; }
+#user-registration-form div.errors p em { color: #C00; font-style: normal; font-weight: bold; }
