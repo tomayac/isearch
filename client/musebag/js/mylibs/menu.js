@@ -24,8 +24,8 @@ define("mylibs/menu",
     var menu = $('nav.query-composition');
 
     var reset = function() {
-      hidePanels();
-      $('nav li').removeClass('active');
+      //hidePanels();
+      //$('nav li').removeClass('active');
     };
 
     var adjust = function() {
@@ -840,15 +840,32 @@ define("mylibs/menu",
             });
           };
 
+          var getUserMediaOptions = {
+            audio: true,
+            video : true,
+            toString : function(){
+              return "video,audio";
+            }
+          };
           //Opera
           if (navigator.getUserMedia) {
-            navigator.getUserMedia({audio: true, video: true}, function(stream) {
+            navigator.getUserMedia(getUserMediaOptions, function(stream) {
               video.attr('src',stream);
               captureSetup();
             }, onFailSoHard);
           //Webkit
           } else if (navigator.webkitGetUserMedia) {
-            navigator.webkitGetUserMedia('audio, video', function(stream) {
+            //normalize window.URL
+            window.URL ||
+              (window.URL = window.webkitURL || window.msURL || window.oURL);
+
+            //normalize navigator.getUserMedia
+            navigator.getUserMedia ||
+              (navigator.getUserMedia = navigator.webkitGetUserMedia ||
+                                        navigator.mozGetUserMedia ||
+                                        navigator.msGetUserMedia
+              );
+            navigator.webkitGetUserMedia(getUserMediaOptions, function(stream) {
               video.attr('src',window.webkitURL.createObjectURL(stream));
               localStream = stream;
               captureSetup();
