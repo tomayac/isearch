@@ -574,6 +574,7 @@ p.createThumbnail = function(i, x, y)
 	
 	var tm = ThumbContainer.thumbMargin ;
 	
+	var that = this ;
 		// create the main thumbnail box
 	var imgOut = $('<div/>', { "class": "thumbnail", "id": "thumb-" + i, css: {  /*overflow: "hidden",*/ position: "absolute", width: this.thumbSize, height: this.thumbSize, left: x, top: y } }).appendTo(this.thumbView) ;
 	
@@ -582,7 +583,7 @@ p.createThumbnail = function(i, x, y)
 		var trans = $('<div/>', { "class": "thumbnail-overlay" }).appendTo(imgOut) ;
 	
 				
-		if ( $.inArray("likes", this.feedback) )
+		if ( $.inArray("likes", this.feedback) >= 0 )
 		{
 			var relBtn = $('<a/>', { href: "javascript:void(0)", "id": "Relevance", "title": "Toggle relevance", css: { "float": "right" }} ).appendTo(trans) ;
 	
@@ -591,13 +592,15 @@ p.createThumbnail = function(i, x, y)
 			relBtn.click(function(e) {
 				item.doc.relevant = !item.doc.relevant ;
 				$(this).toggleClass("inactive") ;
+				
+				that.ctx.tagManager.toggleRelevance(item.doc) ;
 				e.stopImmediatePropagation() ;
 				
 				return false ;
 			}) ;
 		}
 		
-		if ( $.inArray("tags", this.feedback) )
+		if ( $.inArray("tags", this.feedback) >= 0)
 		{
 			var tagBtn = $('<a/>', { href: "javascript:void(0)", "id": "TagEdit", "title": "Edit tags", css: { "float": "right" }} ).appendTo(trans) ;
 		
@@ -648,11 +651,15 @@ p.createThumbnail = function(i, x, y)
 								that.ctx.tagManager.store(item.doc) ;
 							}
 						}) ; 
+						
+						return false ;
 					};
 					
-					return false ;
+					
 				}
+				
 			)(item)
+			
 			);
 		}
 	}
