@@ -5,6 +5,33 @@
 	
 }
 
+.list-thumbnail {
+}
+
+.list-thumbnail-odd { 	
+
+	background-color: #eaeaea;
+}
+
+.list-thumbnail-even { 	
+
+	background-color: #fafafa;
+}
+
+.list-thumbnail:hover
+{
+	background-color:#D6EBFF;
+} 
+
+.play-hover:hover
+{
+
+	background-image:url('../img/Button-Play-icon.png');
+	background-repeat:no-repeat;
+	background-position:center; 
+
+}
+
 .thumbnail-overlay {
 	overflow: hidden;
 	z-index: 1;

@@ -1,3 +1,5 @@
+define("mylibs/visualization/DefaultThumbRenderer",   function() {
+
 DummyThumbRenderer = function() {	
 	
 };	
@@ -494,3 +496,7 @@ p.hideTooltip = function(item)
 	
 
 };	
+
+return new DefaultThumbRenderer ;
+
+}) ;

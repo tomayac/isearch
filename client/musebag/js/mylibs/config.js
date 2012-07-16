@@ -6,7 +6,6 @@ define("mylibs/config",
     "mylibs/tags", 
     "mylibs/cofind",
     "mylibs/profile", 
-    "!js/mylibs/visualization/DefaultThumbRenderer.js",
     "libs/jquery.select-to-autocomplete"
   ],
   function(tags, cofind, profile) {
@@ -33,13 +32,13 @@ define("mylibs/config",
   	  	  methods: [ "classic", "tmap",  "htree", "hpanel" ], // this can be adjusted to restrict visualisation options
   	      method: "classic", //tmap, htree, hpan, classic or cubes (or mst)
   	      thumbOptions: {
-	  	      thumbSize: 64, //16, 32, 48, 64, 96, 128
+	  	      thumbSize: 128, //16, 32, 48, 64, 96, 128
   		      iconArrange: "grid",
-  		      iconArrangeMethods: [ "grid", "smart", "smart-grid" ],
-	  	      navMode: "feedback",	
+  		      iconArrangeMethods: [ "grid", "smart", "smart-grid", "list" ],
+	  	      navMode: "browse",	
   		      navModes: ["feedback", "browse"],
   		      feedback: ["tags", "likes"],
-  		      thumbRenderer: new DefaultThumbRenderer()
+  		      thumbRenderer: "audio"
   		  },
   		showFilterPane: true,
   			filterBar: {

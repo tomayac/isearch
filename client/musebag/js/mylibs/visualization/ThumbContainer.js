@@ -1,5 +1,6 @@
-require(["jquery","libs/timeline_2.3.0/timeline_js/timeline-api", "!js/libs/jquery.mousewheel.min.js"],
-    function($) {
+require(["jquery", "mylibs/visualization/ThumbRendererFactory", "libs/timeline_2.3.0/timeline_js/timeline-api", "!js/libs/jquery.mousewheel.min.js"
+	],
+    function($, rf) {
 ThumbContainer = function(containerDiv, data, options, ctx) {	
   
 	$(containerDiv).empty() ;	
@@ -13,9 +14,14 @@ ThumbContainer = function(containerDiv, data, options, ctx) {
 		if ( options.iconArrange == "grid" ) this.mode = ThumbContainer.GRID_MODE ;
 		else if ( options.iconArrange == "smart" ) this.mode = ThumbContainer.TRANS_MODE ;	
 		else if ( options.iconArrange == "smart-grid" ) this.mode = ThumbContainer.TRANS_GRID_MODE ;
+		else if ( options.iconArrange == "list" ) this.mode = ThumbContainer.LIST_MODE ;
 	}
-	if ( options.thumbRenderer )
-		this.thumbRenderer = options.thumbRenderer ;
+	
+	if (options.thumbRenderer )
+		this.thumbRenderer = rf.create(options.thumbRenderer) ;
+	else
+		this.thumbRenderer = rf.create("default") ;
+		
 		
 	if ( options.tagManager )
 		this.tagManager = options.tagManager ;
@@ -41,6 +47,7 @@ var p = ThumbContainer.prototype;
 ThumbContainer.GRID_MODE = 0 ;	
 ThumbContainer.TRANS_MODE = 1 ;	
 ThumbContainer.TRANS_GRID_MODE = 2 ;	
+ThumbContainer.LIST_MODE = 3 ;	
 
 ThumbContainer.NAVBAR_FIXED = 0 ;	
 ThumbContainer.NAVBAR_HOVER = 1 ;	
@@ -92,7 +99,8 @@ p.createCanvas = function()	{
 
 	// add navigation bar	
 	
-	if ( this.mode == ThumbContainer.GRID_MODE && this.navBarMode != ThumbContainer.NAV_HIDDEN ) {	
+	if ( ( this.mode == ThumbContainer.GRID_MODE || this.mode == ThumbContainer.LIST_MODE ) 
+			&& this.navBarMode != ThumbContainer.NAV_HIDDEN ) {	
 		this.navBar = $("<div/>", { "class": "thumb-container-nav-bar", 	
 					  css: { 	"position": "absolute", 	
 								"z-index": 1,
@@ -153,7 +161,7 @@ p.createCanvas = function()	{
 		}
 	} );
 	// add thumbnail view that may be larger than viewport when zoomed
-	this.thumbView = $('<div/>', { css: { position: "relative" }}).appendTo(this.thumbViewport) ; 
+	this.thumbView = $('<div/>', { css: { position: "relative", "overflow": "hidden" }}).appendTo(this.thumbViewport) ; 
 	
 	
 	// on shift-click start selection rubberband
@@ -173,7 +181,7 @@ p.createCanvas = function()	{
 	if ( ThumbContainer.wheelZoom )
 	{
 	    $(this.thumbViewport).bind('mousewheel', function(event, delta) {
-			if ( obj.mode != ThumbContainer.GRID_MODE )
+			if ( obj.mode != ThumbContainer.GRID_MODE && obj.mode != ThumbContainer.LIST_MODE )
 			{
 				if ( delta > 0 ) obj.zoomIn() ;
 				else if ( delta < 0 ) obj.zoomOut() ;
@@ -422,6 +430,7 @@ p.redrawNavBar = function(page, maxPage, width)
 		var page = this.id.substr(5) ;	
 		that.offset = that.pageCount * (page - 1) ;	
 		that.draw() ;	
+		return false ;
 	}) ;	
 };	
 
@@ -568,7 +577,7 @@ ThumbContainer.modalFilter = function(doc, modalities)
 
 
 // This creates each thumbnail div and handles thumbnail interaction
-p.createThumbnail = function(i, x, y)
+p.createThumbnail = function(i, x, y, sw, tclass)
 {
 	var item = this.thumbs[i] ;
 	
@@ -576,7 +585,7 @@ p.createThumbnail = function(i, x, y)
 	
 	var that = this ;
 		// create the main thumbnail box
-	var imgOut = $('<div/>', { "class": "thumbnail", "id": "thumb-" + i, css: {  /*overflow: "hidden",*/ position: "absolute", width: this.thumbSize, height: this.thumbSize, left: x, top: y } }).appendTo(this.thumbView) ;
+	var imgOut = $('<div/>', { "class": tclass || "thumbnail", "id": "thumb-" + i, css: {  /*overflow: "hidden",*/ position: "absolute", width: sw || this.thumbSize, height: this.thumbSize, left: x, top: y } }).appendTo(this.thumbView) ;
 	
 	if ( this.navMode == 'feedback' )
 	{
@@ -849,6 +858,56 @@ p.redraw = function(contentWidth, contentHeight)
 		}	
 
 	}	
+	else if ( this.mode == ThumbContainer.LIST_MODE )	
+	{	
+		// compute layout	
+		
+		var m = ThumbContainer.margin ;	
+		var of = this.thumbSize + m ;	
+
+		var sh = ( this.navBarMode != ThumbContainer.NAVBAR_HIDDEN ) ? (contentHeight - ThumbContainer.navBarSize - m ) : contentHeight - m ;	
+		var sw = contentWidth - m ;	
+
+		var nr = Math.floor(sh/of) ;	
+		this.pageCount = Math.floor(sh/of) ;
+		this.offset = this.pageCount * Math.floor(this.offset / this.pageCount) ;	
+
+		if ( this.pageCount == 0 ) return ;	
+
+		var x = m, y = m ;	
+		var r = 0, c = 0 ;	
+		
+		var itemCount = 0 ;
+		for(var i=0 ; i< this.thumbs.length; i++)
+		{
+			var item = this.thumbs[i] ;	
+			if ( item.doc.filtered === true ) continue ;
+			if ( ThumbContainer.modalFilter(item.doc, this.ctx.filterBar.modalities()) == true ) continue ;
+			itemCount++ ;
+		}
+			
+
+		for( var i=this.offset ; i<Math.min(this.offset + this.pageCount, this.thumbs.length) ; i++ )	
+		{	
+			var item = this.thumbs[i] ;	
+			
+			if ( item.doc.filtered === true ) continue ;
+			if ( ThumbContainer.modalFilter(item.doc, this.ctx.filterBar.modalities()) == true ) continue ;
+			
+			this.createThumbnail(i, x, y, sw, ( i % 2 ) ? "list-thumbnail list-thumbnail-odd" : "list-thumbnail list-thumbnail-even") ;
+			
+			c++ ;	
+			y += of ;	
+		}	
+
+		if ( this.navBarMode != ThumbContainer.NAV_HIDDEN )	
+		{	
+			var page = Math.floor(this.offset/this.pageCount) ;	
+			var maxPage = Math.ceil(itemCount/this.pageCount) ;	
+			this.redrawNavBar(page+1, maxPage, contentWidth) ;	
+		}	
+
+	}
 	else	
 	{	
 		

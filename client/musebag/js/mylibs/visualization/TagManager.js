@@ -28,9 +28,12 @@ function() {
 			url: tagServerUrl + '&a=all',
 			data: { "tags":	JSON.stringify(data) },
 			success: function(data) {
+			
+				if ( !data ) return ;
+				
 				if ( data.error ) {
 				}
-				else
+				else if ( data )
 				{
 					var allTags = {} ;
 				

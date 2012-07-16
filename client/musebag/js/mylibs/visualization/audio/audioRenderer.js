@@ -1,4 +1,4 @@
-var AudioRenderer = function(containerDiv, urlMp3, urlOgg, urlImg, mediaUrl, visType, startTime)
+var AudioRenderer = function(containerDiv, urlMp3, urlOgg, urlImg, mediaUrl, visType, startTime, mode)
 {
 	var canvas, audio, tmpCanvas, tmpCtx ;
         	var ctx, displayQuality = 1.0  ;
@@ -15,7 +15,6 @@ var AudioRenderer = function(containerDiv, urlMp3, urlOgg, urlImg, mediaUrl, vis
 		tmpCanvas.height = 100 ;
 		tmpCtx = tmpCanvas.getContext("2d")
 		
-		analyzer = new audioProcessor("html5") ;
         
 	}
 
@@ -358,6 +357,7 @@ var AudioRenderer = function(containerDiv, urlMp3, urlOgg, urlImg, mediaUrl, vis
 		}
 		else if ( visType == "flower" )
 		{
+		
 			var soundData = {
 				bass : audioData.relFreqBands[0],
 				mid : audioData.relFreqBands[1],
@@ -429,7 +429,7 @@ var AudioRenderer = function(containerDiv, urlMp3, urlOgg, urlImg, mediaUrl, vis
 			soundManager.flash9Options.useWaveformData = true;
 			//soundManager.useHighPerformance = true;
 			soundManager.allowPolling = true;
-			soundManager.url = 'js/mylibs/visualization/audio/soundmanager/'; // path to directory containing SoundManager2 .SWF file
+			soundManager.url = 'http://localhost/isearch/client/musebag/js/mylibs/visualization/audio/soundmanager/'; // path to directory containing SoundManager2 .SWF file
 			soundManager.onload = function() {
 			
 				soundManagerLoaded = true;
@@ -453,7 +453,7 @@ var AudioRenderer = function(containerDiv, urlMp3, urlOgg, urlImg, mediaUrl, vis
 						sm2sound.pause() ;
 					
 					}
-					
+					return false ;
 				}) ;
 				
 				sm2sound = soundManager.createSound({
@@ -504,20 +504,55 @@ var AudioRenderer = function(containerDiv, urlMp3, urlOgg, urlImg, mediaUrl, vis
 
 	}
 
-	function init() {
+	function init(mode) {
 	
 		var width = $(containerDiv).width() ;
 			
 		var extLink = $('<a/>', { id: "audiovis", href: "javascript:void(0)" }).appendTo(containerDiv) ;
 		
-		if ( Modernizr.audio )
+		canvas = $("<canvas/>").appendTo(extLink).get(0);
+			
+		canvas.width = canvas.height = width ;
+				
+		ctx = canvas.getContext('2d') ;
+		
+		ctx.clearRect(0, 0, canvas.width, canvas.height) ;
+		var img = new Image();
+		img.onload = function() {
+			
+			var dstw2 = canvas.width ;
+			var dsth2 = canvas.height ;	
+		
+			var origw = this.width ;	
+			var origh = this.height ;	
+				
+			var thumbw, thumbh, offx, offy ;	
+		
+			if ( origw > origh )	
+			{	
+				thumbw = dstw2 ;  	
+				thumbh = dsth2*(origh/origw);  	
+			}  	
+			else if ( origw <= origh )   	
+			{  	
+				thumbh = dsth2 ;  	
+				thumbw = dstw2*(origw/origh);  	
+			}  	
+				
+			thumbw = Math.min(thumbw, origw) ;
+			thumbh = Math.min(thumbh, origh) ;
+				
+			offx = (dstw2 - thumbw)/2 ;
+			offy = (dsth2 - thumbh)/2 ;
+						
+			ctx.drawImage(this, offx, offy, thumbw, thumbh) ;	
+				
+		}
+		img.src = urlImg ;
+			
+		if ( Modernizr.audio && mode == "html5" )
 		{
 			
-			canvas = $("<canvas/>").appendTo(extLink).get(0);
-			
-			canvas.width = canvas.height = width ;
-				
-			ctx = canvas.getContext('2d') ;
 				
 			var audioElement = $("<audio/>", {   preload: "auto", controls : 'controls', "width": width, height: "32px"}).appendTo(containerDiv);
 			audio = audioElement.get(0) ;
@@ -539,7 +574,7 @@ var AudioRenderer = function(containerDiv, urlMp3, urlOgg, urlImg, mediaUrl, vis
 			else
 			{
 				
-				if ( startTime && mediaUrl )
+				if ( ( startTime && startTime > 0 ) && mediaUrl )
 				{
 					$('<source>').attr('src', mediaUrl).appendTo(audioElement);  
 				}
@@ -555,7 +590,7 @@ var AudioRenderer = function(containerDiv, urlMp3, urlOgg, urlImg, mediaUrl, vis
 				audio.addEventListener('MozAudioAvailable', audioAvailable, false);
 				audio.addEventListener('loadedmetadata', loadedMetadata, false);
 				
-				if ( startTime )
+				if ( startTime && startTime > 0 )
 				{
 					audio.addEventListener("canplay", function() {
 						audio.currentTime = startTime ;
@@ -564,44 +599,19 @@ var AudioRenderer = function(containerDiv, urlMp3, urlOgg, urlImg, mediaUrl, vis
 				}
 			}
 		
-			ctx.clearRect(0, 0, canvas.width, canvas.height) ;
-			var img = new Image();
-			img.onload = function() {
-			
-				var dstw2 = canvas.width ;
-				var dsth2 = canvas.height ;	
 		
-				var origw = this.width ;	
-				var origh = this.height ;	
-				
-				var thumbw, thumbh, offx, offy ;	
-		
-				if ( origw > origh )	
-				{	
-						thumbw = dstw2 ;  	
-						thumbh = dsth2*(origh/origw);  	
-				}  	
-				else if ( origw <= origh )   	
-				{  	
-					thumbh = dsth2 ;  	
-					thumbw = dstw2*(origw/origh);  	
-				}  	
-				
-				thumbw = Math.min(thumbw, origw) ;
-				thumbh = Math.min(thumbh, origh) ;
-				
-				offx = (dstw2 - thumbw)/2 ;
-				offy = (dsth2 - thumbh)/2 ;
-					
-				ctx.drawImage(this, offx, offy, thumbw, thumbh) ;	
-				
-			}
-			img.src = urlImg ;
 			
 		}
 		else
 		{
-			img = $('<img/>').attr('src', urlImg).appendTo(extLink) ;
+		
+			sm2obj = fallbackSM2();
+											
+			analyzer = new audioProcessor("sm2") ;
+			
+		//	img = $('<img/>').attr('src', urlImg).appendTo(extLink) ;
+			
+			
 		}
 	}
 	
@@ -611,7 +621,8 @@ var AudioRenderer = function(containerDiv, urlMp3, urlOgg, urlImg, mediaUrl, vis
 		else audio.pause() ;
 	}
 
-	init() ;
+	if ( mode ) init(mode) ;
+	else init("html5") ;
 	
 	return { 'terminate': terminate } ;
 }
