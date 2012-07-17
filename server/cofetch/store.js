@@ -74,6 +74,22 @@ var encodeXml = function(s) {
   );
 };
 
+var getLastFileVersion = function(fileOutputPath,baseName,returnNextVersion) {
+  var version = 1;
+  var latestName = baseName;
+  var exists = fs.existsSync(fileOutputPath + baseName + '_' + version + '.json');
+  while(exists) {
+    latestName = baseName + '_' + version;
+    version++;
+    exists = fs.existsSync(fileOutputPath + baseName + '_' + version + '.json');
+  }
+  if(returnNextVersion) {
+    return baseName + '_' + version;
+  } else {
+    return latestName;
+  }
+};
+
 var getVideoSourceUrl = function(youtubeLink, id, callback) {
 
   var result = false;
@@ -190,7 +206,16 @@ var storeMultipleContentObjectData = function(data, onlyJson, callback) {
           }
         },
         run : function(input) {
-
+          //if the data is already loaded from file we don't need to save it again
+          if(input.fromFile) {
+            var data = {
+              message : 'Skipped saving of content object with file origin.'  
+            };
+            console.log(data.message);
+            this.emit(data);
+            return;
+          }
+          
           var onlyJson = false;
 
           if (this.options.args[1]) {
@@ -252,7 +277,7 @@ exports.init = function(serverUrl) {
  *          indicates whether the publishRUCoD routine is part of an automatic
  *          storing process
  */
-exports.publishRUCoD = function(data, outputPath, webOutputUrl, automatic, callback) {
+exports.publishRUCoD = function(data, outputPath, webOutputUrl, baseName, automatic, callback) {
 
   // Set the static structure of the RUCoD XML file
   var rucodHeadS = '<?xml version="1.0" encoding="UTF-8"?>'
@@ -267,7 +292,7 @@ exports.publishRUCoD = function(data, outputPath, webOutputUrl, automatic, callb
     + '<Contributor><Name>HS Fulda</Name></Contributor>'
     + '<Contributor><Name>Google</Name></Contributor>'
     + '<Contributor><Name>flickr.com</Name></Contributor>'
-    + '<Contributor><Name>dbpedia.org</Name></Contributor>'
+    + '<Contributor><Name>wikipedia.org</Name></Contributor>'
     + '<Contributor><Name>freesound.org</Name></Contributor>'
     + '<Contributor><Name>wunderground.com</Name></Contributor>'
     + '<Contributor><Name>youtube.com</Name></Contributor>'
@@ -310,7 +335,7 @@ exports.publishRUCoD = function(data, outputPath, webOutputUrl, automatic, callb
   // ------------------------------------------------
   var saveRucodMedia = function(rucodBody, data, outputPath, callback) {
 
-    var rucodname = data.Name.replace(/\s/g, '_').replace(/[|&;$%@"<>()+,]/g, '').replace(/\//g,'-'); 
+    var rucodname = baseName || data.Name.replace(/\s/g, '_').replace(/[|&;$%@"<>()+,]/g, '').replace(/\//g,'-'); 
 
     rucodBody += '<ContentObjectTypes>';
 
@@ -611,9 +636,11 @@ exports.store = function(co, overwrite, automatic, onlyJson, callback) {
     fs.exists(fileOutputPath + baseName + '.json', function(exists) {
       // Pre check
       if (exists && overwrite === false) {
-        console.log('File exists!');
-        callback('File already exists and overwrite was not allowed', null);
-        return;
+        if(fs.existsSync(fileOutputPath + baseName + '_rucod.xml')) {
+          console.log('JSON and RUCoD files exist!');
+          baseName = getLastFileVersion(fileOutputPath, baseName, true);
+          console.log('Saving with new file name: ' + baseName);
+        }
       }
   
       // Write JSON file
@@ -625,7 +652,7 @@ exports.store = function(co, overwrite, automatic, onlyJson, callback) {
   
         if(!onlyJson) {
           // Create RUCoD for Content Object data
-          exports.publishRUCoD(co, fileOutputPath, webOutputUrl, automatic,callback);
+          exports.publishRUCoD(co, fileOutputPath, webOutputUrl, baseName, automatic, callback);
         } else {
           callback(null, {
             message : "JSON successfully saved.",

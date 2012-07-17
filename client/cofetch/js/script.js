@@ -26,10 +26,11 @@ $(document).ready(function(){
           data: {
             action: "opensearch",
             format: "json",
-            search: $('#script-keywords').val(),
+            search: request.term,
             max: 10
           },
           success: function( data ) {
+            console.log(data);
             response( $.map( data[1], function( item ) {
               return {
                 label: item,
@@ -96,7 +97,7 @@ $(document).ready(function(){
   	  cofetchHandler.resetForm();
   	  resetSearchNav('threed');
   	  resetSearchNav('image');
-  	  resetSearchNav('audio');
+  	  resetSearchNav('sound');
   	  resetSearchNav('video');
   	  $('.datatab').show();
   		cofetchHandler.fetch($("#script-keywords").val(),$("#script-category").val(),$("#script-automatic").attr("checked"));
@@ -209,22 +210,22 @@ $(document).ready(function(){
     return false;
   });
   
-  $("span.delete").click(function(){
-    //Activate previous tab
-    $(this).parent().prev().addClass('ui-tabs-selected ui-state-active');
-    $(this).parent().show();
-    //Activate previous tab content
-    var newItemNameId = $(this).parent().prev().find('a').attr('href');
-    $(newItemNameId).removeClass('ui-tabs-hide');
+  $("input.delete").click(function(){
     
-    //Hide actual tab
-    $(this).parent().hide();
-    $(this).parent().removeClass('ui-tabs-selected ui-state-active');
-    //Reset actual tab content
-    var itemNameId = $(this).prev().attr('href');
-    $(itemNameId + '-name').val('');
-    //Hide actual tab content 
-    $(itemNameId).addClass('ui-tabs-hide');
+    var tabId = '#' + $(this).val();
+    
+    if($(this).attr('checked') === 'checked') {
+      $(tabId + '-inactive').hide();
+    } else {
+      $(tabId + '-inactive').css({
+        height : $(tabId).outerHeight(true),
+        width : $(tabId).outerWidth(true),
+        top : $(tabId).position().top,
+        left : $(tabId).position().left
+      });
+      
+      $(tabId + '-inactive').show();
+    }
   });
   
   $("#previous").click(function(){

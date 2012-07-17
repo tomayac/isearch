@@ -4,7 +4,7 @@
 var step     = require('./lib/step');
 sketchup = require('./services/sketchup');
 modeldb  = require('./services/modeldb');
-dbpedia  = require('./services/dbpedia');
+wikipedia  = require('./services/wikipedia');
 flickr   = require('./services/flickr');
 youtube  = require('./services/youtube'),
 sound    = require('./services/freesound'),
@@ -187,7 +187,7 @@ Fetch.prototype.getPart = function(type, query, page, gps, callback) {
     step(
         function init() {
           //Fetch free text data for the model
-          dbpedia.fetchText(query, '', this);
+          wikipedia.fetchText(query, '', this);
         },
         function getResult(error,data) {
           //Be sure to have data before going on
@@ -282,6 +282,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
   rucod.exists(keyword, categoryPath, function(data) {
     if(data != undefined) {
       console.log("LOADED: query data for '" + keyword +"'.");
+      data.fromFile = true;
       callback(null,data,index);
     } else {
       console.log("LOAD: data for query '" + keyword +"'...");
@@ -345,23 +346,25 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
                 }
               }  					
               //Even if nothing was found for 3D, go on and try to find some text
-              var dbpediaQuery = contentObject.Name;
+              var wikipediaQuery = contentObject.Name;
 
               //Fetch free text data for the model
-              dbpedia.fetchText(dbpediaQuery, '', this);
+              wikipedia.fetchText(wikipediaQuery, '', this);
             },
             function getTextData(error,data) {
               //Be sure to have data before going on
-              if(!error && data[0].Type === undefined) {
+              if(!error && data.length < 1) {
                 error = 'No text data could be retrieved.';
               }
               if(error) {
-                console.log('3. dbpedia error: '+error);
+                console.log('3. wikipedia error: '+error);
               } else {
 
                 console.log('3. Text data fetched!');
                 //Push the text data in the Files array because it will be treated as MediaItem in RUCoD
-                contentObject.Files.push(data[0]);
+                for(var t=0; t < data.length; t++) {
+                  contentObject.Files.push(data[t]);
+                }
               }
 
               var flickrQuery = contentObject.Name;
