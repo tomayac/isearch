@@ -19,7 +19,8 @@ define("mylibs/profile", ["libs/modernizr.min"], function(){
   var init = function() {
     console.log('Init profile data.');
     var ok = false;
-    
+  
+ 
     //Get the user data if available      
     $.ajax({
       type: "GET",
@@ -33,7 +34,7 @@ define("mylibs/profile", ["libs/modernizr.min"], function(){
           setProfileForm();
           ok = true;
         } else {
-          console.error(data.error);
+          console.log(data.error);
         }
       },
       error: function() {},

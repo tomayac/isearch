@@ -28,9 +28,12 @@ function() {
 			url: tagServerUrl + '&a=all',
 			data: { "tags":	JSON.stringify(data) },
 			success: function(data) {
+			
+				if ( !data ) return ;
+				
 				if ( data.error ) {
 				}
-				else
+				else if ( data )
 				{
 					var allTags = {} ;
 				
@@ -71,6 +74,19 @@ function() {
 		});
 		
 	} ;
+	
+	var toggleRelevance = function(doc)
+	{
+  		var docid = doc.id ;
+		
+		var data = { "id": docid, "rel": (doc.relevant ? 'yes' : 'no')  } ;
+		
+		$.ajax({
+			type: 'GET',
+			url: tagServerUrl + '&a=rel',
+			data: data
+		});
+	}
 
 	
 	var store = function(doc)
@@ -144,7 +160,8 @@ function() {
 		init: init, 
 		tags: sortedTagList,
 		store: store,
-		clear: clear
+		clear: clear,
+		toggleRelevance: toggleRelevance,
 	} ;
 
 }) ;

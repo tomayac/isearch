@@ -1,3 +1,5 @@
+define("mylibs/visualization/DefaultThumbRenderer",   function() {
+
 DummyThumbRenderer = function() {	
 	
 };	
@@ -201,6 +203,7 @@ p.renderContents = function(tooltip, thumb, mediaType)
 				//	$('a#' + currentId, tooltip).toggleClass('selected') ;
 				}
 				
+				return false ;
 			}) ;
 		}
 	}
@@ -299,8 +302,9 @@ p.renderContents = function(tooltip, thumb, mediaType)
 			else if ( urlJpg ) urlImg = urlJpg ;
 			else if ( urlUnknown ) urlImg = urlUnknown ;
 			
+			
 			var anim = $('<div/>', { css: { width: tooltip.width() }}).appendTo(tooltipContents) ;
-			var audioRdr = new AudioRenderer(anim, urlMp3, urlOgg, urlImg, "flower") ;
+			var audioRdr = new AudioRenderer(anim, urlMp3, urlOgg, urlImg, media.url, "flower", thumb.doc.startTime) ;
 			
 			$("#audiovis", anim).click(function() {
 				that.renderDocument(thumb.doc, mediaType) ;
@@ -492,3 +496,7 @@ p.hideTooltip = function(item)
 	
 
 };	
+
+return new DefaultThumbRenderer ;
+
+}) ;
