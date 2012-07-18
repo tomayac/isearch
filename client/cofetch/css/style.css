@@ -553,15 +553,19 @@ footer {
 }
 
 #main {
-	width: 770px;
+	width: 780px;
 	margin: 200px auto;
 	margin-bottom: 20px;
 }
 
 div.media-search {
-  width: 300px;
+  width: 310px;
   display: inline-block;
   vertical-align: top;
+}
+
+div.media-search input.search-part {
+  width: 140px;
 }
 
 div.media-search p {
