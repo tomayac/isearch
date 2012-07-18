@@ -829,6 +829,8 @@ var cofetchHandler = (function() {
       	      case 'sound' : sounds.splice(value, 1); updateScraperData(manualIndex, 'sound', sounds); break;
       	    }
     	    });
+    	    
+    	    selectedItems = {};
 
     		  var restData = hasScraperData();
     		  var dialogHtml = '';

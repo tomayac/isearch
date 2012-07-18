@@ -225,6 +225,7 @@ $(document).ready(function(){
       });
       
       $(tabId + '-inactive').show();
+      cofetchHandler.unsetItem($(this).val());
     }
   });
   
