@@ -22,17 +22,11 @@ var SimileAjax_urlPrefix = "js/libs/timeline_2.3.0/timeline_ajax/" ;
 
 require(["jquery",
          "mylibs/config",
-         "mylibs/tags",
          "mylibs/results",
-         "mylibs/uiiface",
          "mylibs/query",
-		 "mylibs/loader",
-		 "mylibs/uiiface-v1",
-         "libs/jquery.tokeninput",
-         "libs/smiley-slider",
-         "http://widget-cdn.rpxnow.com/js/lib/isearch/engage.js"
+		 "mylibs/loader"
         ], 
-    function($,  config, tags, results, uiiface, query, loader) {
+    function($,  config, results, query, loader) {
       
       $(function() {
         
