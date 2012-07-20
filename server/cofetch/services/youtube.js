@@ -1,5 +1,4 @@
 var restler = require('restler'),
-    weather = require('./wunderground'),
     step    = require('../lib/step');
 
 //Function to get tags

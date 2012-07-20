@@ -110,7 +110,7 @@ var fetchThreed = function(query, page, callback) {
           }
               
           var result = {
-            "Type": "Object3d",
+            "Type": "Object3D",
             "Name": models[i]['title']['$t'] || models[i]['title']["'$t'"],
             "Description": models[i]['summary']['$t'] || models[i]['summary']["'$t'"],
             "Tags": [modelTag],

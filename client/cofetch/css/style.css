@@ -531,19 +531,12 @@ header nav button[disabled="disabled"] {
   display: none;
 }
 
-.ui-tabs .ui-tabs-nav li span.delete {
-  color: #AA0000;
-  cursor: pointer;
-  display: inline-block;
-  font-weight: bold;
-  padding-right: 0.4em;
-  padding-left: 0.2em;
-  padding-top: 0.5em;
-  vertical-align: middle;
+.ui-tabs .ui-tabs-nav li input.delete {
+  margin: 10px 6px 0 0;
 }
-
 .ui-tabs .ui-tabs-nav li a.reduced {
   padding-right: 0.4em;
+  padding-left: 0.8em;
 }
 
 footer,.push {
@@ -560,15 +553,19 @@ footer {
 }
 
 #main {
-	width: 770px;
+	width: 780px;
 	margin: 200px auto;
 	margin-bottom: 20px;
 }
 
 div.media-search {
-  width: 300px;
+  width: 310px;
   display: inline-block;
   vertical-align: top;
+}
+
+div.media-search input.search-part {
+  width: 140px;
 }
 
 div.media-search p {
@@ -668,6 +665,24 @@ section {
 	background-image: url("../loadingbg.png");
 }
 
+#loading p {
+  position: relative;
+  top: 250px;
+  left: 45%;
+  display: inline-block;
+  width: 200px;
+  background-color: #555;
+  border-radius: 5px; 
+  box-shadow: 0px 0px 10px #fff;
+  
+  padding: 5px;
+  
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+  
+}
+
 .loader {
   position: absolute;
   top: 50px;
@@ -687,27 +702,20 @@ section {
   margin: 30% 0;
 }
 
-#loading p {
-	position: relative;
-	top: 250px;
-	left: 45%;
-	display: inline-block;
-	width: 200px;
-	background-color: #555;
-	border-radius: 5px; 
-	box-shadow: 0px 0px 10px #fff;
-	
-	padding: 5px;
-	
-	color: #fff;
-	font-weight: bold;
-	text-align: center;
-	
-}
-
 .loader p img,
 #loading p img {
   display: inline;
+}
+
+.inactive {
+  position: absolute;
+  top: 50px;
+  left: 15px;
+  width: 95%;
+  height: 90%;
+  z-index: 100;
+  display: none;
+  background-color: rgba(50,50,50,0.5);
 }
 
 /* =============================================================================

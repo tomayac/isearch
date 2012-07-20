@@ -37,15 +37,15 @@
 					</li>
 					<li class="datatab"><a href="#basic">Basic Information</a>
 					</li>
-					<li class="datatab"><a href="#text" class="reduced">Text Item</a><span class="delete">X</span>
+					<li class="datatab"><a href="#text" class="reduced">Text Item</a><input type="checkbox" name="text" value="text" checked="checked" class="delete">
 					</li>
-					<li class="datatab"><a href="#threed" class="reduced">3D Item</a><span class="delete">X</span>
+					<li class="datatab"><a href="#threed" class="reduced">3D Item</a><input type="checkbox" name="threed" value="threed" checked="checked" class="delete">
 					</li>
-					<li class="datatab"><a href="#image" class="reduced">Image Item</a><span class="delete">X</span>
+					<li class="datatab"><a href="#image" class="reduced">Image Item</a><input type="checkbox" name="image" value="image" checked="checked" class="delete">
 					</li>
-					<li class="datatab"><a href="#audio" class="reduced">Audio Item</a><span class="delete">X</span>
+					<li class="datatab"><a href="#sound" class="reduced">Audio Item</a><input type="checkbox" name="sound" value="sound" checked="checked" class="delete">
 					</li>
-					<li class="datatab"><a href="#video" class="reduced">Video Item</a><span class="delete">X</span>
+					<li class="datatab"><a href="#video" class="reduced">Video Item</a><input type="checkbox" name="video" value="video" checked="checked" class="delete">
 					</li>
 				</ul>
 
@@ -113,7 +113,10 @@
 					<div class="media-details">
 					  <label for="text-content">Text content:</label> 
 					  <textarea name="text-content" id="text-content" cols="30" rows="10"></textarea>
-					</div>  
+					  <input type="hidden" name="text-url" id="text-url" value="" />
+					  <a title="Text URL" id="text-visible-url"></a>
+					</div>
+					<div id="text-inactive" class="inactive"></div>   
 				</section>
 
 				<section id="threed">
@@ -200,7 +203,8 @@
               <label for="threed-weather-humidity">Humidity: </label> 
               <input type="text" name="threed-weather-humidity" value="" id="threed-weather-humidity" />
             </div>
-          </div>   
+          </div>  
+          <div id="threed-inactive" class="inactive"></div>   
     		</section>
 
 				<section id="image">
@@ -290,10 +294,11 @@
               <label for="image-weather-humidity">Humidity: </label> 
               <input type="text" name="image-weather-humidity" value="" id="image-weather-humidity" />
             </div>
-          </div>  
+          </div>
+          <div id="image-inactive" class="inactive"></div>    
 				</section>
 				
-				<section id="audio">
+				<section id="sound">
 					<h3>Audio Item</h3>
           
           <div class="media-search">
@@ -384,11 +389,11 @@
               <label for="sound-weather-humidity">Humidity: </label>
               <input type="text" name="sound-weather-humidity" value="" id="sound-weather-humidity" />
             </div>
-          </div>  
+          </div>
+          <div id="sound-inactive" class="inactive"></div>  
 				</section>
 				
 				<section id="video">
-
 					<h3>Video Item</h3>
           
           <div class="media-search">
@@ -482,10 +487,11 @@
               <input type="text" name="video-weather-humidity" value="" id="video-weather-humidity" />
             </div>
           </div>  
+          <div id="video-inactive" class="inactive"></div>
 				</section>
 
 			</form>
-
+      
 		</div>
 		<div class="push"></div>
 

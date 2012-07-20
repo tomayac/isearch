@@ -3,7 +3,6 @@
  * Facilitates Flickr API with node.io
  */
 var restler = require('restler'),
-    weather = require('./wunderground'),
     step    = require('../lib/step');
 
 var licenses = [

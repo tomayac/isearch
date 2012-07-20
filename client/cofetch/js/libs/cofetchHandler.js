@@ -8,6 +8,7 @@ var cofetchHandler = (function() {
                         //work here. It seems the script does have access to the
                         //variable only if it's an array. W.E.I.R.D ^^
   var manualIndex = 0;
+  var selectedItems = {};
   
   var threed = [];
   var text = [];
@@ -40,16 +41,16 @@ var cofetchHandler = (function() {
   //-------------------------------------------------------------  
   var fetch = function(query,category,automatic) {
 
-	if(automatic !== undefined) {
-		automatic = 1;
-	} else {
-		automatic = 0;
-	}
-
-	var serverURL = "get"
-		          + "/" + $.trim(query)
-		          + "/" + encodeURIComponent(category)
-		          + "/" + automatic;
+  	if(automatic !== undefined) {
+  		automatic = 1;
+  	} else {
+  		automatic = 0;
+  	}
+  
+  	var serverURL = "get"
+		        + "/" + $.trim(query)
+		        + "/" + encodeURIComponent(category)
+		        + "/" + automatic;
 	
     console.log('Waiting for results for query "' + query + '"');
     $("#loading").show();
@@ -143,7 +144,6 @@ var cofetchHandler = (function() {
   var fetchPart = function(type, query, page, gps) {
 	  
 	  var serverURL = "getPart/";
-	  //var serverURL = "http://localhost:8082/get/";
 	  
 	  console.log('Waiting for results for ' + type + ' search with query "' + query + '"');
 	    
@@ -166,93 +166,18 @@ var cofetchHandler = (function() {
 			    files = data.response;
 			  }
 			  
+			  updateScraperData(manualIndex,type,files);
+			  
 			  //Now, let's sort the files according to their type
-        if (type === "image") {
-      	  //Reset the old result
-      	  images = [];
-      	  
-      	  $.each(files, function(index, file){  
-      		  images.push(file);
-      	  });
-      	  
-      	  if(images.length > 0) {
-      	    $('#search-image-prev,#search-image-next').show();
-      		  setImage();
-      	  } else {
-      	    $('#search-image-prev,#search-image-next').hide();
-      	    setMediaList('image',images);
-      	  }
-      	  
+        if (type === "image") {    	  
       	  $('#search-image-loader').hide();
-      	  
         } else if (type === "text") {
-      	  //Reset the old result
-      	  text = [];
-      	  
-      	  $.each(files, function(index, file){  
-      		  text.push(file);
-      	  });
-      	  
-      	  if(text.length > 0) {
-      		  setText();
-      	  } else {
-      	    setMediaList('text',text);
-      	  }
-      	  
       	  $('#search-text-loader').hide();
-      	  
         } else if (type === "video") {
-      	  //Reset the old result
-      	  videos = [];
-      	  
-      	  $.each(files, function(index, file){  
-      		  videos.push(file);
-      	  });
-      	  
-      	  if(videos.length > 0) {
-      	    $('#search-video-prev,#search-video-next').show();
-      		  setVideo();
-      	  } else {
-      	    $('#search-video-prev,#search-video-next').hide();
-      	    setMediaList('video',videos);
-      	  }
-      	  
       	  $('#search-video-loader').hide();
-      	  
         } else if (type === "sound") {
-      	  //Reset the old result
-      	  sounds = [];
-      	  
-      	  $.each(files, function(index, file){  
-      		  sounds.push(file);
-      	  });
-      	  
-      	  if(sounds.length > 0) {
-      	    $('#search-sound-prev,#search-sound-next').show();
-      		  setSound();
-      	  } else {
-      	    $('#search-sound-prev,#search-sound-next').hide();
-      	    setMediaList('sound',sounds);
-      	  }
-      	  
       	  $('#search-sound-loader').hide();
-      	  
-        } else if (type === "3d") {
-      	  //Reset the old result
-      	  threed = [];
-      	  
-      	  $.each(files, function(index, file){  
-      		  threed.push(file);
-      	  });
-      	  
-      	  if(threed.length > 0) {
-      	    $('#search-threed-prev,#search-threed-next').show();
-      		  set3d();
-      	  } else {
-      	    $('#search-threed-prev,#search-threed-next').hide();
-      	    setMediaList('threed',threed);
-      	  } 
-      	  
+        } else if (type === "3d") { 
       	  $('#search-threed-loader').hide();
         }
         
@@ -283,62 +208,123 @@ var cofetchHandler = (function() {
   };
   
   //-------------------------------------------------------------
-  var setScraperData = function(index) {
-	  
-	  //Now, let's sort the files according to their type
-	  var files = scraperData[index].Files;
-	  
-	  images = [];
-	  threed = [];
-	  videos = [];
-	  sounds = [];
-	  text   = [];
-	  
-	  $.each(files, function(index, file){
-		  
-	    //avoid errors if weather is set to null
-	    if(!file.weather) {
-	      file.weather = {};
-	    }
-	    
-	    if (file.Type === "ImageType") {
-  		  images.push(file);
-  		} else if (file.Type === "Object3d") {
-  		  threed.push(file);
-  		} else if (file.Type === "VideoType") {
-  		  videos.push(file);
-  		} else if (file.Type === "SoundType") {
-  		  sounds.push(file);
-  		} else if (file.Type === "Text") {
-  		  text.push(file);
-  		}
-	    
-	  });
-  
-	  //Populate the form
-	  populateForm(index);
+  //after new partial retrieval of media items or after content object save,
+  //update the scraper data array with the new retrieved partial data 
+  //or remove the used items after a content object save 
+  var updateScraperData = function(index, type, newItems) {
+
+    var files = scraperData[index].Files;
+    var realType = false;
+    
+    switch(type) {
+      case 'text'  : realType = 'Text'; break;
+      case '3d'    : realType = 'Object3D'; break;
+      case 'image' : realType = 'ImageType'; break;
+      case 'video' : realType = 'VideoType'; break;
+      case 'sound' : realType = 'SoundType'; break;
+    }
+    var count = 0;
+    
+    for(var f in files) {
+      if (files[f].Type === realType) {
+        if(newItems[count]) {
+          scraperData[index].Files[f] = newItems[count];
+          count++;
+        } else {
+          scraperData[index].Files.splice(f,1);
+        } 
+      } 
+    }
+    //make sure to add new items again to the files array
+    while(newItems[count]) {
+      scraperData[index].Files.push(newItems[count]);
+      count++;
+    }
+
+    setScraperData(index,realType);
   };
   
   //-------------------------------------------------------------
-  var populateForm = function(index) {
-    
-    //console.log(scraperData[index]);
-    
-    var changes = [
-      {id: "main-name", value: scraperData[index].Name},
-      {id: "main-categoryPath", value: scraperData[index].CategoryPath},
-      {id: "main-screenshot", value: "3d"} //defaut: 3d screenshot
-    ];
-    set(changes);
-    
-    console.log('Will set the individual mode fieldsets');
-    
-    if(text.length > 0)   { setText(); }
-    if(threed.length > 0) { set3d();    $('#search-threed-prev,#search-threed-next').show();}
-    if(videos.length > 0) { setVideo(); $('#search-video-prev,#search-video-next').show();}
-    if(sounds.length > 0) { setSound(); $('#search-sound-prev,#search-sound-next').show();}
-    if(images.length > 0) { setImage(); $('#search-image-prev,#search-image-next').show();}
-    
+  var setScraperData = function(index,populatePart) {
+
+	  //Now, let's sort the files according to their type
+	  var files = scraperData[index].Files;
+	  
+	  if(!populatePart) {
+	    
+	    //If not a specific type of the scraper data should be set,
+	    //then reset and set everything new
+	    images = [];
+	    threed = [];
+	    videos = [];
+	    sounds = [];
+	    text   = [];
+	    
+	    $.each(files, function(index, file){      
+	      //avoid errors if weather is set to null
+	      if(!file.Weather) {
+	        file.Weather = {};
+	      }
+
+	      if (file.Type === "ImageType") {
+	        images.push(file);
+	      } else if (file.Type === "Object3D") {
+	        threed.push(file);
+	      } else if (file.Type === "VideoType") {
+	        videos.push(file);
+	      } else if (file.Type === "SoundType") {
+	        sounds.push(file);
+	      } else if (file.Type === "Text") {
+	        text.push(file);
+	      }      
+	    });
+	    
+	  } else {
+	    
+	    var items = [];
+	    
+	    $.each(files, function(index, file){
+	      if (file.Type === populatePart) {
+	        //avoid errors if weather is set to null
+	        if(!file.Weather) {
+	          file.Weather = {};
+	        }
+	        items.push(file);
+	      }     
+	    });
+	    
+	    switch(populatePart) {
+        case 'Text'      : text   = items; break;
+        case 'Object3D'  : threed = items; break;
+        case 'ImageType' : images = items; break;
+        case 'VideoType' : videos = items; break;
+        case 'SoundType' : sounds = items; break;
+      }
+	  }
+	  
+	  //Populate the form
+	  populateForm(index,populatePart);
+  };
+  
+  //-------------------------------------------------------------
+  var populateForm = function(index,populatePart) {
+
+    if(!populatePart) {
+      var changes = [
+        {id: "main-name", value: scraperData[index].Name},
+        {id: "main-categoryPath", value: scraperData[index].CategoryPath},
+        {id: "main-screenshot", value: "3d"} //defaut: 3d screenshot
+      ];
+      set(changes);   
+    }
+    console.log('Will set the individual mode fieldsets ' + (populatePart ? 'for ' + populatePart : ''));
+
+    if(text.length   > 0 && (!populatePart || populatePart === 'Text'))      { setText(); }
+    if(threed.length > 0 && (!populatePart || populatePart === 'Object3D'))  { set3d();    $('#search-threed-prev,#search-threed-next').show();}
+    if(videos.length > 0 && (!populatePart || populatePart === 'VideoType')) { setVideo(); $('#search-video-prev,#search-video-next').show();}
+    if(sounds.length > 0 && (!populatePart || populatePart === 'SoundType')) { setSound(); $('#search-sound-prev,#search-sound-next').show();}
+    if(images.length > 0 && (!populatePart || populatePart === 'ImageType')) { setImage(); $('#search-image-prev,#search-image-next').show();}
+   
   };
   
   //-------------------------------------------------------------
@@ -391,9 +377,12 @@ var cofetchHandler = (function() {
     }
     
     setMediaList('text',text,index);
+    selectedItems['text'] = index;
     
 	  var changes = [
-      {id: "text-content", value: text[index].FreeText}
+      {id: "text-content", value: text[index].FreeText},
+      {id: "text-url", value: text[index].URL},
+      {id: "text-visible-url", value: text[index].URL}
     ];
     
 	  set(changes);
@@ -421,6 +410,7 @@ var cofetchHandler = (function() {
     }
     
     setMediaList('threed',threed,index);
+    selectedItems['threed'] = index;
     
     var model = threed[index];
     
@@ -477,6 +467,7 @@ var cofetchHandler = (function() {
     }
     
     setMediaList('video',videos,index);
+    selectedItems['video'] = index;
     
     var video = videos[index];
     
@@ -538,6 +529,7 @@ var cofetchHandler = (function() {
     }
     
     setMediaList('sound',sounds,index);
+    selectedItems['sound'] = index;
     
     var sound = sounds[index];
     
@@ -594,7 +586,8 @@ var cofetchHandler = (function() {
     }
     
     setMediaList('image',images,index);
-
+    selectedItems['image'] = index;
+    
     var image = images[index];
     
     //Set the Flickr preview to the right URL
@@ -629,6 +622,13 @@ var cofetchHandler = (function() {
   };
   
   //-------------------------------------------------------------
+  var unsetItem = function(type) {
+    if(selectedItems[type]) {
+      selectedItems[type] = false;
+    }
+  };
+  
+  //-------------------------------------------------------------
   var setNext = function() {
 	  manualIndex++;
 	  if(manualIndex < scraperData.length) {
@@ -650,6 +650,20 @@ var cofetchHandler = (function() {
 	  }
   };
   
+  //------------------------------------------------------------- 
+  var getTags = function(tagFieldId) {
+    if($(tagFieldId).length < 1) {
+      return [];
+    }
+    var tags = $(tagFieldId).val().split(",");
+    for(var t=0; t < tags.length; t++) {
+      tags[t] = tags[t].replace(/^\s*|\s*$/g,'');
+      tags[t] = tags[t].charAt(0).toUpperCase() + tags[t].slice(1);
+    }
+    
+    return tags;
+  };
+  
   //-------------------------------------------------------------  
   var save = function() {
 	  
@@ -659,12 +673,6 @@ var cofetchHandler = (function() {
   		alert("You need at least a valid name for the Content Object in order to save it!");
   		return;
   	}
-  	
-  	var tags = $('#threed-tags').val().split(",");
-  	for(var t=0; t < tags.length; t++) {
-  		tags[t] = tags[t].replace(/^\s*|\s*$/g,'');
-  		tags[t] = tags[t].charAt(0).toUpperCase() + tags[t].slice(1);
-  	}
 	
     //Let's serialize our form:   
     var jsonFile = {
@@ -672,20 +680,25 @@ var cofetchHandler = (function() {
       "Name": $('#main-name').val(),
       "Screenshot": getScreenshot(),
       "CategoryPath": $('#main-categoryPath').val(), 
-      "Files": [{
-          "Type": "Text",
-          "FreeText": $('#text-content').val()
-      }]
+      "Files": []
     };
     
-    if($('#threed-name').val().length > 0) {
+    if($('input[name="text"]').attr('checked') === 'checked') {
+      jsonFile.Files.push({
+        "Type": "Text",
+        "FreeText": $('#text-content').val(),
+        "URL": $('#text-url').val()
+      });
+    }
+    
+    if($('input[name="threed"]').attr('checked') === 'checked') {
       
       jsonFile.Files.push(
       {
         "Type": "Object3D",
         "Name": $('#threed-name').val(), 
-        "Description:": $('#threed-desc').val(),
-        "Tags": tags,
+        "Description": $('#threed-desc').val(),
+        "Tags": getTags('#threed-tags'),
         "Extension": $('#threed-extension').val(),
         "License": $('#threed-license').val(),
         "LicenseURL": $('#threed-licenseURL').val(),
@@ -705,19 +718,14 @@ var cofetchHandler = (function() {
       });
     }
     
-    if($('#image-name').val().length > 0) {
-    	var tags = $('#image-tags').val().split(",");
-    	for(var t=0; t < tags.length; t++) {
-    		tags[t] = tags[t].replace(/^\s*|\s*$/g,'');
-    		tags[t] = tags[t].charAt(0).toUpperCase() + tags[t].slice(1);
-    	}
-    	
+    if($('input[name="image"]').attr('checked') === 'checked') {
+    
     	jsonFile.Files.push(
 			{
 		        "Type": "ImageType",
 		        "Name": $('#image-name').val(),
 		        "Description": $('#image-desc').val(),
-		        "Tags": tags,
+		        "Tags": getTags('#image-tags'),
 		        "Extension": $('#image-extension').val(),
 		        "License": $('#image-license').val(),
 		        "LicenseURL": $('#image-licenseURL').val(),
@@ -739,19 +747,14 @@ var cofetchHandler = (function() {
     	); 
     };
     
-    if($('#video-name').val().length > 0) {
-    	var tags = $('#video-tags').val().split(",");
-    	for(var t=0; t < tags.length; t++) {
-    		tags[t] = tags[t].replace(/^\s*|\s*$/g,'');
-    		tags[t] = tags[t].charAt(0).toUpperCase() + tags[t].slice(1);
-    	}
+    if($('input[name="video"]').attr('checked') === 'checked') {
     	
     	jsonFile.Files.push(
 			{
 		        "Type": "VideoType",
 		        "Name": $('#video-name').val(), 
 		        "Description": $('#video-desc').val(),
-		        "Tags": tags,
+		        "Tags": getTags('#video-tags'),
 		        "Extension": $('#video-extension').val(),
 		        "License": $('#video-license').val(),
 		        "LicenseURL": $('#video-licenseURL').val(),
@@ -774,19 +777,14 @@ var cofetchHandler = (function() {
     	);
     };
     
-    if($('#sound-name').val().length > 0) {
-    	var tags = $('#sound-tags').val().split(",");
-    	for(var t=0; t < tags.length; t++) {
-    		tags[t] = tags[t].replace(/^\s*|\s*$/g,'');
-    		tags[t] = tags[t].charAt(0).toUpperCase() + tags[t].slice(1);
-    	}
+    if($('input[name="sound"]').attr('checked') === 'checked') {
     	
     	jsonFile.Files.push(
 			{
 		        "Type": "SoundType",
 		        "Name": $('#sound-name').val(),
 		        "Description": $('#sound-desc').val(),
-		        "Tags": tags,
+		        "Tags": getTags('#sound-tags'),
 		        "Extension": $('#sound-extension').val(),
 		        "License": $('#sound-license').val(),
 		        "LicenseURL": $('#sound-licenseURL').val(),
@@ -807,7 +805,7 @@ var cofetchHandler = (function() {
 		     }
     	);
     };
-    
+
     $("#loading").show();
     
     //Send it to the server
@@ -819,14 +817,22 @@ var cofetchHandler = (function() {
     	    
     	    $("#loading").hide();
     	    
-    		  //Remove the saved CO from the temporary data array
-    		  scraperData.splice(manualIndex,1);
-    		  manualIndex = -1;
-    		  $('#previous').attr('disabled', 'disabled');
-    		  resetForm();
+    	    $.each(selectedItems, function(key, value) {
+    	      if(!value) {
+    	        return;
+    	      }
+    	      switch(key) {
+      	      case 'text'  : text.splice(value, 1); updateScraperData(manualIndex, 'text', text); break;
+      	      case 'threed': threed.splice(value, 1); updateScraperData(manualIndex, '3d', threed); break;
+      	      case 'image' : images.splice(value, 1); updateScraperData(manualIndex, 'image', images); break;
+      	      case 'video' : videos.splice(value, 1); updateScraperData(manualIndex, 'video', videos); break;
+      	      case 'sound' : sounds.splice(value, 1); updateScraperData(manualIndex, 'sound', sounds); break;
+      	    }
+    	    });
+    	    
+    	    selectedItems = {};
 
     		  var restData = hasScraperData();
-    		  
     		  var dialogHtml = '';
     		  
     		  data = JSON.parse(data);
@@ -852,16 +858,16 @@ var cofetchHandler = (function() {
     		  } else {
     			  
     			  $("#dialog").html(dialogHtml);
-    			  
+    			  /*
     			  var next = setNext();  
     			  if(next === false || next === 0) {
     				  $('#next').attr('disabled', 'disabled');
     			  } else {
     				  $('#next').removeAttr('disabled');
     			  }
-    			  
+    			  */
     		  }
-    		  
+
     		  $("#dialog").dialog('open');
     	  },
     	  error: function(jqXHR, textStatus, errorThrown) {
@@ -901,7 +907,7 @@ var cofetchHandler = (function() {
 	  setMediaList('text',[]);
 	  setMediaList('threed',[]);
 	  setMediaList('image',[]);
-	  setMediaList('audio',[]);
+	  setMediaList('sound',[]);
 	  setMediaList('video',[]);
 	  
 	  $("#script-tabs").tabs( "select" , 0);
@@ -972,13 +978,19 @@ var cofetchHandler = (function() {
       for (i=0; i<changes.length; i++){
         if(typeof changes[i].value !== undefined) {
           setField(changes[i].id, changes[i].value);
-        }
+        } 
       }
     }
   };
   
   //-------------------------------------------------------------  
   var setField = function(id, value) {
+    
+    if($("#" + id).is("a")) {
+      $("#" + id).attr('href',value);
+      $("#" + id).text(value);
+      return;
+    }
     
     //jQuery is awesome. Whether it be a select, a multiple select or a simple text field, 
     //it handles it through this simple call. Hooray :)
@@ -1015,6 +1027,7 @@ var cofetchHandler = (function() {
     setSound: setSound,
     getImage: getImage,
     setImage: setImage,
+    unsetItem: unsetItem,
     setNext: setNext,
     setPrevious: setPrevious,
     save: save, 

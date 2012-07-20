@@ -157,7 +157,7 @@ exports.post = function(req, res) {
   //Initialize the rucod store library
   rucod.init('http://' + req.headers.host);
   
-  rucod.store(coJson, true, false, false, function(error,info) {
+  rucod.store(coJson, false, false, false, function(error,info) {
     if(error) {
       handleError(error,res);
     } else {
