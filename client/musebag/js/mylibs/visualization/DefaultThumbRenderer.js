@@ -329,7 +329,7 @@ p.renderContents = function(tooltip, thumb, mediaType)
 	 * reverse geocode location of object and display it in the tooltip
 	 * if location is given as query, compute distance with object and display it in the tooltip
 	 */
-	if (thumb.doc.rw.pos) {
+	if (thumb.doc.rw && thumb.doc.rw.pos) {
 	  var location =  new google.maps.LatLng(thumb.doc.rw.pos.coords.lat, thumb.doc.rw.pos.coords.lon);
 	  var geocoder = new google.maps.Geocoder();
 	  geocoder.geocode({'latLng': location}, function(results, status) {

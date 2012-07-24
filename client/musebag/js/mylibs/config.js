@@ -38,7 +38,7 @@ define("mylibs/config",
 	  	      navMode: "browse",	
   		      navModes: ["feedback", "browse"],
   		      feedback: ["tags", "likes"],
-  		      thumbRenderer: "audio"
+  		      thumbRenderer: "default"
   		  },
   		showFilterPane: true,
   			filterBar: {
