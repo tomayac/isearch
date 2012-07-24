@@ -265,6 +265,14 @@ var getSessionStore = function(req) {
   return req.session.user;
 };
 
+var setSessionStore = function(req,user) {
+  try {
+    req.session.user = user;
+  } catch(e) {
+    console.error('Session store could not be set due to an error: ' + e.message);
+  }
+};
+
 var getExternalSessionId = function(req,renew) {  
   if(req) {
     var sessionStore = getSessionStore(req);
@@ -322,7 +330,7 @@ exports.login = function(req, res){
       user.username = data.profile.displayName || '';
       
       //Store user data in session
-			req.session.user = user; 
+      setSessionStore(req,user); 
 			
 			//Test if the user is known by the personalisation component
 			var checkUrl = apcPath + 'resources/users/profileFor/' + user.userId + '/withRole/Consumer';
@@ -439,55 +447,59 @@ exports.setProfile = function(req, res) {
   
   console.log("Set profile function called...");
   
-  var attrib = req.params.attrib;
   //get post data
-  var data   = req.body.data;
+  var data = req.body.data;
   //Get the right session storage (depending on log in status - guest if not, user if yes)
   var sessionStore = getSessionStore(req);
-  console.log(attrib + ': ' +data);
   //Does the requested profile attribute is available
   if(data) {
     
     var changed = false;
     
-    if(attrib === 'settings') {
-      //threat user settings in JSON format
-      try {
-        //check if new settings are already in the session storage
-        var newSettings = data;
-        var settings = JSON.parse(sessionStore[attrib]);
-        
-        for (var key in newSettings) {
-          if(!settings[key] || settings[key] !== newSettings[key]) {
-            settings[key] = newSettings[key];
-            changed = true;
-          }
-        }        
-        //ok, the settings object is updated, so transform it back to a JSON string
-        //and store it in the session
-        req.session.user[attrib] = JSON.stringify(settings);
-        
-      } catch(e) {
-        res.send(JSON.stringify({error : 'malformed'}));
-        return;
-      }
-    } else {
-      
-      if(attrib === 'dateOfBirth') {
-        data += 'T00:00:00+02:00';
-      }
-      //Set the profile attribute to the new value as long as it is a logged in user
-      if(sessionStore[attrib] !== data && !isGuest(req)) {
-        req.session.user[attrib] = data;
-        changed = true;
-      }
-    }
+    for (var attrib in data) {
+    
+      if(data[attrib] === 'settings') {
+        //threat user settings in JSON format
+        try {
+          //check if new settings are already in the session storage
+          var newSettings = data[attrib];
+          var settings = JSON.parse(sessionStore[attrib]);
+          
+          for (var key in newSettings) {
+            if(!settings[key] || settings[key] !== newSettings[key]) {
+              settings[key] = newSettings[key];
+              changed = true;
+            }
+          }        
+          //ok, the settings object is updated, so transform it back to a JSON string
+          //and store it in the session
+          sessionStore[attrib] = JSON.stringify(settings);
+          
+        } catch(e) {
+          res.send(JSON.stringify({error : 'malformed'}));
+          return;
+        }
+      } else {
 
+        if(data[attrib] === 'dateOfBirth') {
+          data[attrib] += 'T00:00:00+02:00';
+        }
+        //Set the profile attribute to the new value as long as it is a logged in user
+        if(sessionStore[attrib] !== data[attrib] && !isGuest(req)) {
+          sessionStore[attrib] = data[attrib];
+          changed = true;
+        }
+      }
+    } //end for
+    
     //If nothing changed we don't need to go on
     if(!changed) {
       res.send(JSON.stringify({info : 'nochange'}));
       return;
     }
+    
+    //set the changed temporary profile data to the session profile data
+    setSessionStore(req,sessionStore);
     
     if(isGuest(req)) {
       //if it's a guest user we don't store the information in the profile (it is stored already in the session)
@@ -507,7 +519,6 @@ exports.setProfile = function(req, res) {
           callData[key] = sessionStore[key];
         }
       }
-      console.log(callData);
       //save the user data in the user profile
       restler
       .postJson(storeURL, sessionStore)
@@ -515,9 +526,10 @@ exports.setProfile = function(req, res) {
         //Check if return data is ok
         if (response.statusCode == 201) {
           data = {success : attrib};
-          req.session.user['state'] = 'member';
-          
-          console.log(sessionStore);
+          sessionStore['state'] = 'member';
+          console.log('Profile data sucessfully transmitted to personalisation web service.');
+          //set the changed temporary profile data to the session profile data
+          setSessionStore(req,sessionStore);
           //Notify client about success full save
           res.send(JSON.stringify(data));
         } else {

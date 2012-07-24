@@ -1,8 +1,7 @@
 //  define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualization/DefaultThumbRenderer.js", "libs/jquery.select-to-autocomplete"],
 //  function(tags, profile, cofind) {
     
-define("mylibs/config", 
-  [
+define("mylibs/config", [
     "mylibs/tags", 
     "mylibs/cofind",
     "mylibs/profile", 
@@ -168,9 +167,7 @@ define("mylibs/config",
     };
     
     var initSettings = function() {
-      
      
-      
   	  //Apply settings stored in current profile to general settings form
   	  var settings = profile.get('settings');
 
@@ -182,13 +179,12 @@ define("mylibs/config",
         if(data.clusterType) {
           set('queryOptions.clusterType', data.clusterType);
         }
-        if ( data.numClusters ) {
-			set('queryOptions.clusters0', data.numClusters);
-		}
-
-		if ( data.transMethod ) {
-			set('queryOptions.trans', data.transMethod);
-		}
+        if(data.numClusters) {
+          set('queryOptions.clusters0', data.numClusters);
+        }
+        if(data.transMethod) {
+          set('queryOptions.trans', data.transMethod);
+        }
   	  }
      
   	  //Initialize the form with the default values
@@ -207,11 +203,6 @@ define("mylibs/config",
     
     var performLoggedInSetup = function() {
       
-      if(arguments.length == 1) {
-        //Set profile
-        profile.set(arguments[0]);
-      } 
-      
       $("#login-status").html("Hello " + profile.get('email'));
       $("#button-login-settings").find('a:first').text('Profile');
       
@@ -224,7 +215,7 @@ define("mylibs/config",
          panels          : panels,
          messageCallback : sendNotifyMessage  
       };      
-      if ( cofind ) cofind.setup(cofindOptions);
+      if (cofind) cofind.setup(cofindOptions);
 
       //get user tags from pTag component
       getUserTags();
@@ -272,8 +263,8 @@ define("mylibs/config",
       var mr = parseInt(panels.settings.find("#max-num-results").val());
   	  var ct = $("#audio-cluster-type").attr('checked') ? 'Audio' : '3D';
   	  
-	  var nc = parseInt(panels.settings.find("#num-clusters").val()) ;
-	  var tm = panels.settings.find("#trans-method option:selected").val() ;
+  	  var nc = parseInt(panels.settings.find("#num-clusters").val()) ;
+  	  var tm = panels.settings.find("#trans-method option:selected").val() ;
       
       if(constants.queryOptions.maxNumResults === mr &&
    	     constants.queryOptions.clusterType   === ct &&
@@ -287,9 +278,12 @@ define("mylibs/config",
   	  set('queryOptions.cluster0', nc);
   	  set('queryOptions.trans', tm) ;
       
-      var settings = {"maxResults" :  mr , "clusterType" : ct, 
-	      "numClusters" : nc ,  "transMethod" : tm 
-	  };
+      var settings = {
+        "maxResults" :  mr , 
+        "clusterType" : ct, 
+        "numClusters" : nc ,
+        "transMethod" : tm 
+	    };
 	  
       profile.set('settings',settings,sendNotifyMessage);
   	  
@@ -300,16 +294,7 @@ define("mylibs/config",
     var handleLogin = function(token) {
       
       var serverURL = constants.userLoginServerUrl || "login";        
-	    
-	  var postData ;
-	  
-	  if ( constants.useOldAuthentication )
-	  {
-      	 postData = {email: panels.login.find("#email").val() || '',
-                         pw: panels.login.find("#pw").val()    || ''};
-      }
-      else
-	      var postData = {token: token};
+	    var postData = {token: token};
       
       //Send it to the server
       $.ajax({
@@ -363,9 +348,6 @@ define("mylibs/config",
         contentType : "application/json; charset=utf-8"
       });
     };
-    
-   
-    
 
     var initPanel = function() {
       
@@ -470,13 +452,6 @@ define("mylibs/config",
         if($("#button-login-settings").find('a:first').text() == 'Login') {
           
           if($("#button-login-settings").hasClass('active')) {
-            /* 
-            if(panels.login.find("#email").val().length > 0 || panels.login.find("#pw").val().length > 0) {
-              handleLogin();
-            } else { 
-              panels.login.hide(constants.slideDownAnimationTime);
-            } 
-            */
             panels.login.hide(constants.slideUpAnimationTime);
             $("#button-login-settings").removeClass('active');
           } else {
@@ -487,7 +462,7 @@ define("mylibs/config",
               panels.hide(constants.slideDownAnimationTime);
             });
           }
-        } else {http://localhost/isearch/register.php
+        } else {
           
           if($("#button-login-settings").hasClass('active')) {
             profile.setFromForm(sendNotifyMessage);
@@ -520,47 +495,6 @@ define("mylibs/config",
         event.preventDefault();
         event.stopPropagation();
       });
-
-	  $('#user-registration').click(function(event) {
-	    	$.ajax({
-	    		type: "POST",
-    			url: constants.userRegisterServerUrl,
-    			success: function(data) {
-    			
-    				var frm = $('<div>').html(data) ;
-    				
-    				var onSumbit = function() {
-    					var fields = $(this).serialize();
-	    					
-    					$.ajax({
-    							type: 'POST',
-				    			url: constants.userRegisterServerUrl,
-				    			data: fields,
-   								success: function(data) {
-    								frm.html(data) ;
-    							
-    								$('form', frm).submit(onSumbit) ; 
-    							}
-    						}) ;			
-	    					
-						return false;
-	    			} ;
-    				    			
-	     			frm.dialog(
-	     					{ 	modal: true, 
-	     						title: "Registration", 
-	     						width: 800, 
-	     						height: 400,
-	     						autoOpen: false,
-                                maxHeight: 400,
-	     					}).dialog('open');
-	     					
-	     				$('form', frm).submit(onSumbit) ; 
-			    }
-			   
-		  });
-	  
-	  }) ;
 	  
       //Listen to keypress click to change settings
       $("#global-settings form").keypress(function(event) {
@@ -602,8 +536,7 @@ define("mylibs/config",
         }
       });
 
-    }; //End of initPanel()   
-    
+    }; //End of initPanel()     
     
     //Public variables and functions
     return {

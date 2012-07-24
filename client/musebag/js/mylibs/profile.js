@@ -31,7 +31,7 @@ define("mylibs/profile", ["libs/modernizr.min"], function(){
 
         if(!data.error) {
           profile = data;
-          setProfileForm();
+          setProfileForm(profile);
           ok = true;
         } else {
           console.log(data.error);
@@ -57,34 +57,11 @@ define("mylibs/profile", ["libs/modernizr.min"], function(){
     return profile;
   };  
   
-  var set = function() {
-    
-    var ok = false;
-    if(arguments.length === 1 && arguments[0]) {
-      profile = arguments[0];
-      ok = true;
-    } else {
-      var key = arguments[0];
-      var value = arguments[1] || false;
-      var callback = arguments[2] || false;
-      
-      if(value) {
-        if(!profile[key] || (profile[key] && profile[key] !== value)) {
-          profile[key] = value;
-          save(key,value,callback);
-          ok = true;
-        }
-      }
-    }    
-    setProfileForm();
-    return ok;
-  };
-  
   var reset = function() {
     profile = {};
   };
   
-  var setProfileForm = function() {
+  var setProfileForm = function(profile) {
     $.each(profile, function(index, value) {
       $('#' + index).val(value);
     });
@@ -92,24 +69,29 @@ define("mylibs/profile", ["libs/modernizr.min"], function(){
   };
   
   var setFromForm = function(callback) {
+    var profile = {};
+    
     $("#profile-settings input,#profile-settings select").each(function(){
       if($(this).attr('id')) {
         var key = String($(this).attr('id'));
-        set(key,$(this).val(),callback);
+        profile[key] = $(this).val();
       }
     });
+    
+    save(profile,callback);
   };
   
-  var save = function(key,value,callback) {
-    console.log('Saving ' + key + ' with value ' + value);
+  var save = function(profile,callback) {
+    console.log('Saving profile data with: ');
+    console.dir(profile);
     
     var postData = {
-      data : value 
+      data : profile 
     };
     //Save profile to server
     $.ajax({
       type: "POST",
-      url: profileServerUrl + key,
+      url: profileServerUrl,
       data: JSON.stringify(postData),
       success: function(data) {
         //parse the result
@@ -124,7 +106,7 @@ define("mylibs/profile", ["libs/modernizr.min"], function(){
         } else if(data.info){
           console.log("Rejected because: " + data.info);
         } else {
-          console.log("User profile key saved: " + data.success);
+          console.log("User profile saved: " + data.success);
           if(typeof callback === 'function') {
             callback('Profile saved!','success',false);
           }
@@ -140,7 +122,7 @@ define("mylibs/profile", ["libs/modernizr.min"], function(){
     init         : init,
     get          : get,
     getAll       : getAll,
-    set          : set,
+    setForm      : setProfileForm,
     setFromForm  : setFromForm,
     reset        : reset
   };
