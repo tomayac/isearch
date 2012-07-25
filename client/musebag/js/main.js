@@ -12,7 +12,7 @@ if(typeof console == "undefined") {
 //----------------------------------------------------------
 if (typeof window.janrain !== 'object') window.janrain = {};
 window.janrain.settings = {};
-janrain.settings.tokenUrl = 'http://localhost';
+janrain.settings.tokenUrl = 'http://' + location.host;
 janrain.settings.tokenAction='event';
 //----------------------------------------------------------
 
@@ -38,7 +38,7 @@ require(["jquery",
       $(function() {
         
         console.log('In the start function');
-        
+       
         $(document).ready(function(){
           
           //Resizing of the menu on load and when window resizes
