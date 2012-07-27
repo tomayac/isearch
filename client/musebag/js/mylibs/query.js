@@ -95,11 +95,10 @@ define("mylibs/query", ["mylibs/config",], function(config) {
         queryItem.Content  = $(this).find('p:first').text();
         queryJson.fileItems.push(queryItem);
       }
-	  
-	  //
-	  queryJson.bluetooth = 2;
-      
-    });
+    }); //end each query list item
+    
+    //Set the mysterious bluetooth value to something default 
+    queryJson.bluetooth = 2;
     
     return queryJson;
   };
@@ -108,21 +107,18 @@ define("mylibs/query", ["mylibs/config",], function(config) {
     
     var query = getQueryItems();
     
-    if (query.fileItems.length > 0 || query.emotion != false || query.location != false || query.rhythm != false || query.tags != false ||
-	relevant.length > 0 ) { 
+    if (query.fileItems.length > 0 || query.emotion != false || 
+        query.location != false    || query.rhythm  != false || 
+        query.tags != false        || relevant.length > 0 ) 
+    { 
+      
       console.log('searching for query data: ');
       console.log(query);
 	
       query.relevant = relevant ;
 	  
-      //Send it to the server
-	  
-	  var mqfUrl = config.constants.queryFormulatorUrl || 'query' ;
-	  
-	  if ( config.constants.queryOptions.maxNumResults ) mqfUrl += '&total=' + config.constants.queryOptions.maxNumResults ;
-	  if ( config.constants.queryOptions.clusters0 ) mqfUrl += '&cls=' + config.constants.queryOptions.clusters0 ;
-	  if ( config.constants.queryOptions.trans ) mqfUrl += '&tr=' + config.constants.queryOptions.trans ;
-	  if ( config.constants.queryOptions.smatrix === true ) mqfUrl += '&smat=true' ;
+      //Send it to the server  
+	    var mqfUrl = config.constants.queryFormulatorUrl || 'query';
 	  
       $.ajax({
         type: "POST",

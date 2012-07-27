@@ -31,10 +31,14 @@ define("mylibs/profile", ["libs/modernizr.min"], function(){
 
         if(!data.error) {
           profile = data;
-          setProfileForm(profile);
+          setForm(profile);
           ok = true;
         } else {
           console.log(data.error);
+          //even if we have guest user, let him/her use the setting values stored in the session
+          if(data.settings) {
+            profile['settings'] = data.settings;
+          }
         }
       },
       error: function() {},
@@ -61,15 +65,25 @@ define("mylibs/profile", ["libs/modernizr.min"], function(){
     profile = {};
   };
   
-  var setProfileForm = function(profile) {
-    $.each(profile, function(index, value) {
+  var set = function(key,value,callback) {
+    if(!key || !value) {
+      callback('Missing data to save profile.','error',false);
+      return;
+    }
+    
+    var profileItem = {};
+    profileItem[key] = value;
+    
+    save(profileItem, callback); 
+  };
+  
+  var setForm = function(newProfile) {
+    $.each(newProfile, function(index, value) {
       $('#' + index).val(value);
     });
-    
   };
   
   var setFromForm = function(callback) {
-    var profile = {};
     
     $("#profile-settings input,#profile-settings select").each(function(){
       if($(this).attr('id')) {
@@ -122,7 +136,8 @@ define("mylibs/profile", ["libs/modernizr.min"], function(){
     init         : init,
     get          : get,
     getAll       : getAll,
-    setForm      : setProfileForm,
+    set          : set,
+    setForm      : setForm,
     setFromForm  : setFromForm,
     reset        : reset
   };

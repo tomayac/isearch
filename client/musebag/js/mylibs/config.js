@@ -22,8 +22,8 @@ define("mylibs/config", [
     		clusterType: '3D',
     		clusters0: 5,
     		clusters1: 3, 
-    		trans: "rand",
-			  smatrix: true //Can be "lle" or "rand" 
+    		trans: "rand", //Can be "lle" or "rand" 
+			  smatrix: true 
       },
 
       //Visualization parameters  
@@ -102,7 +102,7 @@ define("mylibs/config", [
     var getUserHistory = function() {
       var userId = profile.get('userId');     
       
-      var historyServerUrl = (constants.userProfileServerUrl || "profile/" ) + "history"
+      var historyServerUrl = (constants.userProfileServerUrl || "profile/" ) + "history";
       
       if(userId) {
         //Ask for user search history
@@ -260,15 +260,15 @@ define("mylibs/config", [
     var handleSettingsSave = function() {
       console.log('handleSettingSave...');
       
-      var mr = parseInt(panels.settings.find("#max-num-results").val());
+      var mr = parseInt(panels.settings.find("#max-num-results").val() || constants.queryOptions.maxNumResults);
   	  var ct = $("#audio-cluster-type").attr('checked') ? 'Audio' : '3D';
+  	  //Not displayed in GUI
+  	  var nc = parseInt(panels.settings.find("#num-clusters").val() || constants.queryOptions.clusters0) ;
+  	  var tm = panels.settings.find("#trans-method option:selected").val() || constants.queryOptions.trans ;
   	  
-  	  var nc = parseInt(panels.settings.find("#num-clusters").val()) ;
-  	  var tm = panels.settings.find("#trans-method option:selected").val() ;
-      
       if(constants.queryOptions.maxNumResults === mr &&
    	     constants.queryOptions.clusterType   === ct &&
-   	     constants.queryOptions.cluster0      === nc &&
+   	     constants.queryOptions.clusters0     === nc &&
    	     constants.queryOptions.trans         === tm ){
         return;
       }  
@@ -279,9 +279,9 @@ define("mylibs/config", [
   	  set('queryOptions.trans', tm) ;
       
       var settings = {
-        "maxResults" :  mr , 
+        "maxResults"  : mr, 
         "clusterType" : ct, 
-        "numClusters" : nc ,
+        "numClusters" : nc,
         "transMethod" : tm 
 	    };
 	  

@@ -29,7 +29,10 @@ var authApi = '3cab95115953b1b1b31f35c48eaa36a746b479af';
 var msg     = {error: 'Something went wrong.'};
 var tmpPath = '../../client/musebag/tmp';
 var tmpUrl  = '/tmp';
-var apcPath = 'http://89.97.237.248:8089/IPersonalisation/';
+
+//External service paths
+var apcPath = 'http://89.97.237.248:8089/IPersonalisation/'; //personalisation component
+var mqfPath = 'http://vision.iti.gr/isearch/server/scripts/'; //multimodal query formulation component
 
 var queryRucodTpl   = '<?xml version="1.0" encoding="UTF-8"?>'
                     + '<RUCoD xmlns="http://www.isearch-project.eu/isearch/RUCoD" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'
@@ -98,9 +101,11 @@ var distributeFile = function(destinationUrl, callParams, fileInfo, callback) {
     //creating the call parameter
     var callData = {
         "fileName" : fileInfo.name,
+        "name"     : fileInfo.name, //for CERTH MQF
         "fileSize" : fileInfo.size,
         "fileType" : fileInfo.type,
-        "file" : restler.file(fileInfo.path, fileInfo.type)
+        "subtype"  : fileInfo.type, //for CERTH MQF
+        "files" : restler.file(fileInfo.path, fileInfo.type) //originally this property is called "file"
     };
     //add the additional call params
     for(var prop in callParams) {
@@ -115,8 +120,10 @@ var distributeFile = function(destinationUrl, callParams, fileInfo, callback) {
       multipart: true,
       data     : callData
     })
-    .on('complete', function(data) { 
-
+    .on('complete', function(data, response) { 
+      console.log('external MQF upload complete');
+      console.log(data);
+      console.dir(response);
       //Check if return data is ok
       if(data.error) {
         msg.error = data.error;
@@ -258,7 +265,7 @@ var getSessionStore = function(req) {
     //If not create an guest session store
     req.session.user = { 
       userId : 'guest',
-      settings : '{"maxResults" : 100, "clusterType" : "3D"}',
+      settings : '{"maxResults" : 100, "clusterType" : "3D", "numClusters" : 5, "transMethod" : "rand"}',
       querycounter: 0
     };
   };    
@@ -422,9 +429,12 @@ exports.profile = function(req, res) {
 	var attrib = req.params.attrib;
 	//Get the right session storage (depending on log in status - guest if not, user if yes)
 	var sessionStore = getSessionStore(req);
-	console.dir(sessionStore);
+
 	if(sessionStore['userId'] === 'guest') {
-	  res.send(JSON.stringify({error : 'User is not logged in!'}));
+	  res.send(JSON.stringify({
+	    error : 'User is not logged in!',
+	    settings : sessionStore['settings']
+	  }));
 	  return;
 	}
 	
@@ -455,10 +465,10 @@ exports.setProfile = function(req, res) {
   if(data) {
     
     var changed = false;
-    
+
     for (var attrib in data) {
-    
-      if(data[attrib] === 'settings') {
+
+      if(attrib === 'settings') {
         //threat user settings in JSON format
         try {
           //check if new settings are already in the session storage
@@ -481,7 +491,7 @@ exports.setProfile = function(req, res) {
         }
       } else {
 
-        if(data[attrib] === 'dateOfBirth') {
+        if(attrib === 'dateOfBirth') {
           data[attrib] += 'T00:00:00+02:00';
         }
         //Set the profile attribute to the new value as long as it is a logged in user
@@ -652,12 +662,13 @@ exports.query = function(req, res) {
 	
   //get post data
   var data = req.body;
+  console.log(data);
   //Get the external session id of the MQF
   var extSessionId = getExternalSessionId(req);
   //Get the right session storage (depending on log in status - guest if not, user if yes)
   var sessionStore = getSessionStore(req);
   //Url of MQF component
-  var queryFormulatorURL = "http://gdv.fh-erfurt.de/i-search/mqf-dummy/handle.php";
+  var queryFormulatorURL = mqfPath + 'mqf.php?index=uc6';
   
   var result = {};
   
@@ -665,7 +676,45 @@ exports.query = function(req, res) {
     //store the used query tags in the session
     sessionStore.tags = data.tags ? data.tags.join() : '';
     
+    //set the query parameters from the user settings
+    var settings = JSON.parse(sessionStore.settings);
+    
+    if ( settings.maxNumResults ) queryFormulatorURL += '&total=' + settings.maxNumResults ;
+    if ( settings.numClusters )   queryFormulatorURL += '&cls=' + settings.numClusters ;
+    if ( settings.transMethod )   queryFormulatorURL += '&tr=' + settings.transMethod ;
+    if ( !settings.smatrix )      queryFormulatorURL += '&smat=true' ;
+    
+   
+    //Submit the query to MQF
+    restler
+    .post(queryFormulatorURL, { 
+      data : JSON.stringify(data)
+    })
+    .on('complete', function(data) { 
+
+      //Check if result is ok
+      if(data.error) {
+        result.error = data.error;
+        console.log(result.error);
+      } else {
+        result = data.result;
+      }
+      
+      res.send(result);
+      //After successful submission of query increase the query counter
+      sessionStore.querycounter++;
+    })
+    .on('error', function(data,response) {
+      console.log(response.client['_httpMessage']['res']['rawEncoded']);
+      result.error = data.toString();
+      res.send(JSON.stringify(result));
+    });
+    
     //Compose the query
+    //This would be the specification conform MQF querying
+    //but since it isn't ready we use the CERTH version which works without
+    //RUCoD as query format
+    /*
     getQueryRucod(data, extSessionId, sessionStore, function(error,queryData) {
       if(error) {
         result.error = 'Query error: ' + error;
@@ -718,6 +767,7 @@ exports.query = function(req, res) {
         
       } //End no error else
     }); //End getQueryRucod
+    */
     
   } catch(error) {
     result.error = 'Error while query processing: ' + error.message;
@@ -732,7 +782,7 @@ exports.queryItem = function(req, res) {
 	console.log("Queryitem function called...");
 
 	//Url for forwarding the uploaded file to the multimodal query formulator
-  var queryFormulatorURL = "http://gdv.fh-erfurt.de/i-search/mqf-dummy/handle.php";
+  var queryFormulatorURL = mqfPath + '/upload.php';
 	
   //Callback function for external webservice calls
   var externalCallback = function(error,data) {
@@ -766,7 +816,7 @@ exports.queryItem = function(req, res) {
                        size : file.size };
 	  
 	  distributeFile(queryFormulatorURL, 
-      {"f": "storeQueryItem", "session": sid}, 
+      {"f": "storeQueryItem", "session": sid}, //Not used with CERTH MQF
       uploadItem, 
       externalCallback
     );
@@ -793,7 +843,7 @@ exports.queryItem = function(req, res) {
       }
       
       distributeFile(queryFormulatorURL, 
-        {"f": "storeQueryItem", "session": sid}, 
+        {"f": "storeQueryItem", "session": sid}, //Not used with CERTH MQF
         uploadItem, 
         externalCallback
       );

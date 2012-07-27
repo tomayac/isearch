@@ -14,7 +14,7 @@ define("mylibs/cofind",
   function(){
 
   //Static HTML snippets for CoFind interface
-  var buttonSnippet = '<li id="button-cofind-settings"><a href="#"><img src="img/collaborate.png" alt="Collaborate" title="Collaboration panel" style="max-height: 31px;"></a></li>';
+  var buttonSnippet  = '<li id="button-cofind-settings"><a href="#"><img src="img/collaborate.png" alt="Collaborate" title="Collaboration panel" style="max-height: 31px;"></a></li>';
   var settingSnippet = '<div class="settings-panel" id="cofind-settings"><form method="post" action="#" class="clearfix"><section class="setting"><label for="email">Invite a friend to collaborate:</label><input type="text" id="cofind-email" name="Email" value="Email" /></section></form></div>  ';
   var generalSnippet = '<div class="bottom-overlay" id="cofind-resultbasket"><p>Your result basket is empty.<br/>Drop here any results you like to share.</p></div>';
 
