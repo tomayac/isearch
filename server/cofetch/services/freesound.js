@@ -68,8 +68,6 @@ var fetchSound = function(query, isGeo, page, callback) {
 
   //Replace spaces
   var query = query.replace(/\s/g,'+');
-  //Store if we search for sounds with geolocation
-  var isGeo = isGeo;
 
   //The array for storing the results
   var results = new Array();
@@ -85,7 +83,8 @@ var fetchSound = function(query, isGeo, page, callback) {
     + '&p=' + soundPage
     + '&api_key=' + APIKey
     + '&format=json';
-
+  
+  //Check if we search for sounds with geolocation
   if (isGeo === 1) {
     //If we want geotagged sounds
     freesoundURL += '&f=is_geotagged:true';
