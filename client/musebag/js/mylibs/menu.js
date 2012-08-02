@@ -1,6 +1,7 @@
 define("mylibs/menu",
   [
     "mylibs/config",
+    "mylibs/extensions",
     "mylibs/uiiface",
     "mylibs/filehandler",
     "mylibs/location",
@@ -9,7 +10,7 @@ define("mylibs/menu",
     "mylibs/jquery.swipePanel",
     "libs/progress-polyfill.min"
   ],
-  function(config, uiiface, filehandler, location) {
+  function(config, extensions, uiiface, filehandler, location) {
     var hasGetUserMedia = function hasGetUserMedia() {
       // Note: Opera builds are unprefixed.
       return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
@@ -236,12 +237,12 @@ define("mylibs/menu",
 
       });
 
-	  $('.panel.geolocation #chooseLocation').click(function(){
-    	location.showMap(function(lat, lon){
-    	  $("#query-field").tokenInput('add',{id:"geo",name:'<img src="img/fake/fake-geolocation.jpg" title="'+lat+" "+lon+'" class="Location" data-mode="Image" />'});
-          reset();
-          attachedModes.push('geolocation');
-    	});
+	    $('.panel.geolocation #chooseLocation').click(function(){
+    	  location.showMap(function(lat, lon){
+    	    $("#query-field").tokenInput('add',{id:"geo",name:'<img src="img/fake/fake-geolocation.jpg" title="'+lat+" "+lon+'" class="Location" data-mode="Image" />'});
+            reset();
+            attachedModes.push('geolocation');
+    	  });
       });
 
     };
@@ -285,7 +286,13 @@ define("mylibs/menu",
     var attach3dEvents = function() {
 
     	//Drag and Drop of files
-	    var handler = new filehandler.FileHandler('threedDrop',['dae','3ds'],config.constants.fileUploadServer,getQueryItemCount());
+	    var handler = new filehandler.FileHandler(
+        'threedDrop',
+        extensions['3d'],
+        config.constants.fileUploadServer,
+        getQueryItemCount()
+      );
+
 	    var pictureIcon = $('nav li[data-mode="3d"]');
 
 	    uiiface.registerEvent('threedDrop','drop',function(event) {
@@ -324,7 +331,13 @@ define("mylibs/menu",
     var attachPictureEvents = function() {
 
     	//Drag and Drop of files
-	    var handler = new filehandler.FileHandler('imageDrop',['jpg','png','gif'],config.constants.fileUploadServer,getQueryItemCount());
+	    var handler = new filehandler.FileHandler(
+        'imageDrop',
+        extensions.picture,
+        config.constants.fileUploadServer,
+        getQueryItemCount()
+      );
+
 	    var pictureIcon = $('nav li[data-mode="picture"]');
 
 	    //Drop trigger for image upload
@@ -364,7 +377,13 @@ define("mylibs/menu",
     var attachVideoEvents = function() {
 
     	//Drag and Drop of files
-	    var handler = new filehandler.FileHandler('videoDrop',['webm','mp4','avi','ogv'],config.constants.fileUploadServer,getQueryItemCount());
+	    var handler = new filehandler.FileHandler(
+        'videoDrop',
+        extensions.video,
+        config.constants.fileUploadServer,
+        getQueryItemCount()
+      );
+
 	    var videoIcon = $('nav li[data-mode="video"]');
 
 	    //Drop trigger for video upload
@@ -441,7 +460,13 @@ define("mylibs/menu",
     var attachSoundEvents = function() {
 
     	//Drag and Drop of files
-	    var handler = new filehandler.FileHandler('soundDrop',['oga','ogg','mp3','wav'],config.constants.fileUploadServer,getQueryItemCount());
+	    var handler = new filehandler.FileHandler(
+        'soundDrop',
+        extensions.sound,
+        config.constants.fileUploadServer,
+        getQueryItemCount()
+      );
+
 	    var pictureIcon = $('nav li[data-mode="sound"]');
 
 	    uiiface.registerEvent('soundDrop','drop',function(event) {
@@ -529,7 +554,13 @@ define("mylibs/menu",
     var attachRhythmEvents = function() {
 
     	//Drag and Drop of files
-	    var handler = new filehandler.FileHandler('rhythmDrop',['oga','ogg','mp3','wav'],config.constants.fileUploadServer,getQueryItemCount());
+	    var handler = new filehandler.FileHandler(
+        'rhythmDrop',
+        extensions.rhythm,
+        config.constants.fileUploadServer,
+        getQueryItemCount()
+      );
+
 	    var rhythmIcon = $('nav li[data-mode="rhythm"]');
 
 	    uiiface.registerEvent('rhythmDrop','drop',function(event) {
