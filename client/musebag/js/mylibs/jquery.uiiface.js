@@ -82,8 +82,21 @@ define("mylibs/uiiface-v1",
             'handler'  : function(event) { console.log('drag handler'); }
           },
           'drop'      : {
-            'mouse'    : { 'events' : 'dragstart', 'context' : 'this' },
-            'handler'  : function(event) { console.log('drop handler'); }
+            'mouse'    : { 'events' : 'drop dragenter dragleave', 'context' : 'this' },
+            'handler'  : function(event) { 
+              switch(event.type) {
+                case 'dragenter' : $(event.target).addClass('over'); break;
+                case 'dragleave' : $(event.target).removeClass("over"); break;
+                case 'drop' : 
+                  //check if there is an custom handler which should be called for this event
+                  $(event.target).removeClass("over");
+                  if(typeof event.data.customHandler === 'function') {
+                    event.data.customHandler.apply(this, [event]);
+                  }
+                  break;
+              }
+            },
+            'internalHandlerCall': true
           },
           'pan'       : {
             'trigger'    : { 'events' : 'down move up', 'context' : 'this' },
@@ -181,8 +194,8 @@ define("mylibs/uiiface-v1",
               });
             }
           }
-        }
-      }, // end eventRegister object
+        } // end eventRegister object
+      }, 
       /**
        * Initialize function
        * 
@@ -218,7 +231,7 @@ define("mylibs/uiiface-v1",
       },
       register : function() {
         var self = this;
-        
+
         $.each(self.events, function(index, event) {
           
           var eventDefinition = self.config.eventRegister[event];
@@ -240,11 +253,16 @@ define("mylibs/uiiface-v1",
         //Parse event definition
         var handler = eventDefinition.handler;
         //Allowing custom event handler
+        var customHandler = false;
         if(typeof self.options.callback === 'function') {
-          handler = self.options.callback; 
-        }      
+          if(eventDefinition.internalHandlerCall) {
+            customHandler = self.options.callback; 
+          } else {
+            handler = self.options.callback;
+          }     
+        }
         //always assign custom event to element for reference
-        $(self.element).on(event, handler);
+        $(self.element).on(event, { customHandler : customHandler }, handler);
 
         var getEventElement = function(element) {
           var foundItem = false;

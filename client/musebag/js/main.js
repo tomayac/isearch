@@ -25,15 +25,14 @@ require(["jquery",
          "mylibs/config",
          "mylibs/tags",
          "mylibs/results",
-         "mylibs/uiiface",
          "mylibs/query",
 		     "mylibs/loader",
-		     "mylibs/uiiface-v1",
+		     "mylibs/jquery.uiiface",
          "libs/jquery.tokeninput",
          "libs/smiley-slider",
          "http://widget-cdn.rpxnow.com/js/lib/isearch/engage.js"
         ], 
-    function($, menu, config, tags, results, uiiface, query, loader) {
+    function($, menu, config, tags, results, query, loader) {
       
       $(function() {
         
@@ -62,12 +61,6 @@ require(["jquery",
           //$('nav > ul > li').uiiface('select');
           //$('#logo').uiiface('pan');
           
-          //Initializes the UIIFace // GestureHint display on every screen element with enabled gestures
-          uiiface.initialize({gestureHint:true});
-          //test actions on logo
-          //uiiface.registerEvent('logo','scale',function(event) {
-          //  console.log(event);
-          //});
           
           //Behaviour of the menu (panels, etc)
           $('nav li').uiiface({ 
@@ -87,7 +80,12 @@ require(["jquery",
           
           //Get tokens and load them as auto suggestions for the user
           var tokens = tags.getTokens();
-          $("#query-field").tokenInput('init', tokens, {theme: "isearch", preventDuplicates:true});
+          $("#query-field").tokenInput('init', tokens, {
+            theme: "isearch", 
+            preventDuplicates : true,
+            onAdd: query.updateItemCount,
+            onDelete: query.updateItemCount
+          });
           
           //Close button of the panel
           $('.panel footer a').click(function(){

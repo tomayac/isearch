@@ -11,9 +11,9 @@
 /**
  * Required node modules
  */
-var fs         = require('fs'),
-    restler    = require('restler'),
-    wunder     = require('./wunderground');
+var fs       = require('fs'),
+    restler  = require('restler'),
+    wunder   = require('./wunderground');
 
 /**
  * Global variables
@@ -115,35 +115,40 @@ var distributeFile = function(destinationUrl, callParams, fileInfo, callback) {
     } 
     
     //Initiate the external file distribution
+    //31.07.2012 made this function error ignorant by using the local copy of the uploaded
+    //file, if the external MQF has thrown an error. 
     restler
     .post(destinationUrl, { 
       multipart: true,
       data     : callData
     })
     .on('complete', function(data, response) { 
-      console.log('external MQF upload complete');
-      console.log(data);
-      console.dir(response);
+
       //Check if return data is ok
       if(data.error) {
         msg.error = data.error;
-        callback(msg,null);
-        return;
+        console.log(msg.error);
+        //callback(msg,null);
+        //return;
       }
+      
       //Add the public path, move the original local file system path
       if(fileInfo.path.lastIndexOf('/') > -1) {
-      fileInfo.originPath = tmpUrl + '/' + fileInfo.path.substring(fileInfo.path.lastIndexOf('/'),fileInfo.path.length);
+        fileInfo.originPath = tmpUrl + '/' + fileInfo.path.substring(fileInfo.path.lastIndexOf('/'),fileInfo.path.length);
       } else { 
         fileInfo.originPath = tmpUrl + '/' + fileInfo.path.substring(fileInfo.path.lastIndexOf('\\')+1,fileInfo.path.length);
       }
-      fileInfo.path = data.file;
       fileInfo.subtype = fileInfo.subtype || '';
-      
+      //If there was an error uploading the file to MQF, then the "file" field with the external item URL
+      //will not be set and instead of throwing an error the local file path is used
+      fileInfo.path = data.file ? data.file : fileInfo.host + fileInfo.originPath.substr(1);
+
       callback(null,fileInfo);
     })
    .on('error', function(data,response) {
       msg.error = data.toString();
-      callback(msg,null);
+      console.log(msg.error);
+      //callback(msg,null);
     });
     
   }); //end function fs.readFile
@@ -803,17 +808,21 @@ exports.queryItem = function(req, res) {
 	
 	//Store the session id
 	var sid = getExternalSessionId(req);
+	//Create the initial file meta information object
+	var uploadItem = {
+	  'host' : req.headers.referer  
+	};
 	
 	//Check if we have a file item as query item
 	if(req.files.files) {
 	  
     var file = req.files.files;
     
-    //The temporary information about the uploaded file
-    var uploadItem = { path : file.path,
-                       name : file.name, 
-                       type : file.type,
-                       size : file.size };
+    //Set the temporary information about the uploaded file
+    uploadItem['path'] = file.path;
+    uploadItem['name'] = file.name; 
+    uploadItem['type'] = file.type;
+    uploadItem['size'] = file.size;
 	  
 	  distributeFile(queryFormulatorURL, 
       {"f": "storeQueryItem", "session": sid}, //Not used with CERTH MQF
@@ -828,12 +837,12 @@ exports.queryItem = function(req, res) {
     var base64Data = req.body.canvas.replace(/^data:image\/png;base64,/,"");
     var dataBuffer = new Buffer(base64Data, 'base64');
     
-    //The temporary information about the created file
-    var uploadItem = { path : tmpPath + "/" + req.body.name,
-                       name : req.body.name, 
-                       type : 'image/png',
-                       subtype: req.body.subtype,
-                       size : dataBuffer.length};
+    //Set the temporary information about the created file
+    uploadItem['path']    = tmpPath + "/" + req.body.name;
+    uploadItem['name']    = req.body.name; 
+    uploadItem['type']    = 'image/png';
+    uploadItem['subtype'] = req.body.subtype;
+    uploadItem['size']    = dataBuffer.length;
     
     fs.writeFile(uploadItem.path, dataBuffer, function(error) {
       if(error) {
@@ -842,7 +851,8 @@ exports.queryItem = function(req, res) {
         return;
       }
       
-      distributeFile(queryFormulatorURL, 
+      distributeFile(
+        queryFormulatorURL, 
         {"f": "storeQueryItem", "session": sid}, //Not used with CERTH MQF
         uploadItem, 
         externalCallback

@@ -1,15 +1,14 @@
 define("mylibs/menu",
   [
     "mylibs/config",
-    "mylibs/uiiface",
     "mylibs/filehandler",
     "mylibs/location",
     "mylibs/recorder",
-    "mylibs/uiiface-v1",
+    "mylibs/jquery.uiiface",
     "mylibs/jquery.swipePanel",
     "libs/progress-polyfill.min"
   ],
-  function(config, uiiface, filehandler, location) {
+  function(config, filehandler, location) {
     var hasGetUserMedia = function hasGetUserMedia() {
       // Note: Opera builds are unprefixed.
       return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
@@ -22,12 +21,16 @@ define("mylibs/menu",
     var slider = null;
 
     var menu = $('nav.query-composition');
-
+    
+    var getQueryItemCount = function() {
+      return $(".token-input-list-isearch li").size()-1;
+    };
+    
     var reset = function() {
       //hidePanels();
-      //$('nav li').removeClass('active');
+      $('nav li').removeClass('active');
     };
-
+    
     var adjust = function() {
       console.log('entered adjust function');
 
@@ -51,10 +54,6 @@ define("mylibs/menu",
         //removeControls();
         removeSlider( menu );
       }
-    };
-
-    var getQueryItemCount = function() {
-    	return $(".token-input-list-isearch li").size()-1;
     };
 
     var updateSlider = function( menu ){
@@ -142,10 +141,10 @@ define("mylibs/menu",
       // }
     };
 
-    var getRequestedMode = function(jQueryObject) {
+    var getRequestedMode = function($object) {
       //the requested "mode", i.e "audio", "picture",...
-      //is stored in the "data-mode" html5 attribute of the DOM elt.
-      return jQueryObject.attr('data-mode');
+      //is stored in the "data-mode" html5 attribute of the DOM element.
+      return $object.attr('data-mode');
     };
 
     var showPanel = function(mode) {
@@ -287,17 +286,16 @@ define("mylibs/menu",
     	//Drag and Drop of files
 	    var handler = new filehandler.FileHandler('threedDrop',['dae','3ds'],config.constants.fileUploadServer,getQueryItemCount());
 	    var pictureIcon = $('nav li[data-mode="3d"]');
-
-	    uiiface.registerEvent('threedDrop','drop',function(event) {
-
-	    	pictureIcon.addClass('uploading');
-
-	    	$.proxy(handler.handleFiles(event.originalEvent),handler);
-	    	$('#threedDrop').removeClass("over");
-
-	    	reset();
-	      attachedModes.push('3d');
-	    });
+	    
+	    $('#threedDrop').uiiface({ 
+        events : 'drop',  
+        callback : function(event){
+          pictureIcon.addClass('uploading');
+          $.proxy(handler.handleFiles(event.originalEvent),handler);
+          reset();
+          attachedModes.push('3d');
+        }
+      });
 
 	    //Invisible file input
 	    $('#threedUpload').change(function(event) {
@@ -326,20 +324,18 @@ define("mylibs/menu",
     	//Drag and Drop of files
 	    var handler = new filehandler.FileHandler('imageDrop',['jpg','png','gif'],config.constants.fileUploadServer,getQueryItemCount());
 	    var pictureIcon = $('nav li[data-mode="picture"]');
-
+	    
 	    //Drop trigger for image upload
-	    uiiface.registerEvent('imageDrop','drop',function(event) {
-
-	    	pictureIcon.addClass('uploading');
-
-	    	$.proxy(handler.handleFiles(event.originalEvent),handler);
-	    	$('#imageDrop').removeClass("over");
-
-	    	reset();
-	      attachedModes.push('3d');
-
+	    $('#imageDrop').uiiface({ 
+        events : 'drop',  
+        callback : function(event){
+          pictureIcon.addClass('uploading');
+          $.proxy(handler.handleFiles(event.originalEvent),handler);
+          reset();
+          attachedModes.push('picture');
+        }
 	    });
-
+	    
 	    //Invisible file input
 	    $('#imageUpload').change(function(event) {
 
@@ -368,16 +364,15 @@ define("mylibs/menu",
 	    var videoIcon = $('nav li[data-mode="video"]');
 
 	    //Drop trigger for video upload
-	    uiiface.registerEvent('videoDrop','drop',function(event) {
-
-	    	videoIcon.addClass('uploading');
-
-	    	$.proxy(handler.handleFiles(event.originalEvent),handler);
-	    	$('#videoDrop').removeClass("over");
-
-	    	reset();
-	      attachedModes.push('video');
-	    });
+	    $('#videoDrop').uiiface({ 
+        events : 'drop',  
+        callback : function(event){
+          pictureIcon.addClass('uploading');
+          $.proxy(handler.handleFiles(event.originalEvent),handler);
+          reset();
+          attachedModes.push('video');
+        }
+      });
 
 	    //Invisible file input
 	    $('#videoUpload').change(function(event) {
@@ -404,17 +399,15 @@ define("mylibs/menu",
     var attachSketchEvents = function() {
 
       $('#sketch').uiiface('sketch');
-
-    	uiiface.registerEvent('sketch','delete',function(error) {
-
-	    	if(error <= 0.4) {
-	    		console.log('delete gesture detected with error: ' + error);
-	    		var canvas = $('#sketch')[0];
-	    		var context = canvas.getContext('2d');
-	    		context.clearRect(0, 0, canvas.width, canvas.height);
-	    	}
-	    });
-
+      
+      $('#sketch').uiiface({ 
+        events : 'reset',  
+        callback : function(event){
+          var canvas = $('#sketch')[0];
+          var context = canvas.getContext('2d');
+          context.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      });
 
       $('.panel.sketch button.done').click(function(event){
 
@@ -443,17 +436,16 @@ define("mylibs/menu",
     	//Drag and Drop of files
 	    var handler = new filehandler.FileHandler('soundDrop',['oga','ogg','mp3','wav'],config.constants.fileUploadServer,getQueryItemCount());
 	    var pictureIcon = $('nav li[data-mode="sound"]');
-
-	    uiiface.registerEvent('soundDrop','drop',function(event) {
-
-	    	pictureIcon.addClass('uploading');
-
-	    	$.proxy(handler.handleFiles(event.originalEvent),handler);
-	    	$('#soundDrop').removeClass("over");
-
-	    	reset();
-	        attachedModes.push('sound');
-	    });
+	    
+	    $('#soundDrop').uiiface({ 
+        events : 'drop',  
+        callback : function(event){
+          pictureIcon.addClass('uploading');
+          $.proxy(handler.handleFiles(event.originalEvent),handler);
+          reset();
+          attachedModes.push('sound');
+        }
+      });
 
 	    //Invisible file input
 	    $('#soundUpload').change(function(event) {
@@ -531,17 +523,16 @@ define("mylibs/menu",
     	//Drag and Drop of files
 	    var handler = new filehandler.FileHandler('rhythmDrop',['oga','ogg','mp3','wav'],config.constants.fileUploadServer,getQueryItemCount());
 	    var rhythmIcon = $('nav li[data-mode="rhythm"]');
-
-	    uiiface.registerEvent('rhythmDrop','drop',function(event) {
-
-	    	rhythmIcon.addClass('uploading');
-
-	    	$.proxy(handler.handleFiles(event.originalEvent),handler);
-	    	$('#rhythmDrop').removeClass("over");
-
-	    	reset();
-	        attachedModes.push('rhythm');
-	    });
+	    
+	    $('#rhythmDrop').uiiface({ 
+        events : 'drop',  
+        callback : function(event){
+          pictureIcon.addClass('uploading');
+          $.proxy(handler.handleFiles(event.originalEvent),handler);
+          reset();
+          attachedModes.push('rhythm');
+        }
+      });
 
 	    //Invisible file input
 	    $('#rhythmUpload').change(function(event) {
