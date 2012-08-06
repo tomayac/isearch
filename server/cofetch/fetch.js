@@ -347,7 +347,6 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
               }  					
               //Even if nothing was found for 3D, go on and try to find some text
               var wikipediaQuery = contentObject.Name;
-
               //Fetch free text data for the model
               wikipedia.fetchText(wikipediaQuery, '', this);
             },

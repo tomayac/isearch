@@ -246,9 +246,13 @@ var cofetchHandler = (function() {
   
   //-------------------------------------------------------------
   var setScraperData = function(index,populatePart) {
-
+    
 	  //Now, let's sort the files according to their type
 	  var files = scraperData[index].Files;
+	  
+	  if(files.length < 1) {
+	    alert("No content object data could be found for '" + scraperData[index].Name + "'. You can try to find data for this keyword by individually searching within the individual modality tabs.");
+	  }
 	  
 	  if(!populatePart) {
 	    

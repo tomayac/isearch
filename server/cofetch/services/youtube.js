@@ -87,7 +87,7 @@ var fetchVideo = function(query, geo, page, callback) {
     //If we want geotagged videos
     youtubeURL += '&location=';
   }
-  console.log(youtubeURL);
+  //console.log(youtubeURL);
   
   restler
   .get(youtubeURL, {

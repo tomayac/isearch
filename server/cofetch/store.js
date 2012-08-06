@@ -215,6 +215,15 @@ var storeMultipleContentObjectData = function(data, onlyJson, callback) {
             this.emit(data);
             return;
           }
+          //skip empty content objects
+          if(input.Files.length < 1) {
+            var data = {
+              message : 'Skipped saving of empty content object.'  
+            };
+            console.log(data.message);
+            this.emit(data);
+            return;
+          }
           
           var onlyJson = false;
 
