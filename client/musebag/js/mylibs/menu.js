@@ -3,12 +3,13 @@ define("mylibs/menu",
     "mylibs/config",
     "mylibs/filehandler",
     "mylibs/location",
+    "mylibs/query",
     "mylibs/recorder",
     "mylibs/jquery.uiiface",
     "mylibs/jquery.swipePanel",
     "libs/progress-polyfill.min"
   ],
-  function(config, filehandler, location) {
+  function(config, filehandler, location, query) {
     var hasGetUserMedia = function hasGetUserMedia() {
       // Note: Opera builds are unprefixed.
       return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
@@ -142,7 +143,7 @@ define("mylibs/menu",
     };
 
     var getRequestedMode = function($object) {
-      //the requested "mode", i.e "audio", "picture",...
+      //the requested "mode", i.e "audio", "image",...
       //is stored in the "data-mode" html5 attribute of the DOM element.
       return $object.attr('data-mode');
     };
@@ -164,8 +165,8 @@ define("mylibs/menu",
         attachGeolocationEvents();
       } else if (mode === '3d' && !isAttached('3d')) {
         attach3dEvents();
-      } else if (mode === 'picture' && !isAttached('picture')) {
-        attachPictureEvents();
+      } else if (mode === 'image' && !isAttached('image')) {
+        attachImageEvents();
       } else if (mode === 'video' && !isAttached('video')) {
         attachVideoEvents();
       } else if (mode === 'emotion' && !isAttached('emotion')) {
@@ -319,20 +320,26 @@ define("mylibs/menu",
       });
     };
 
-    var attachPictureEvents = function() {
+    var attachImageEvents = function() {
 
     	//Drag and Drop of files
-	    var handler = new filehandler.FileHandler('imageDrop',['jpg','png','gif'],config.constants.fileUploadServer,getQueryItemCount());
-	    var pictureIcon = $('nav li[data-mode="picture"]');
+	    //var handler = new filehandler.FileHandler('imageDrop',['jpg','png','gif'],config.constants.fileUploadServer,getQueryItemCount());
+	    var pictureIcon = $('nav li[data-mode="image"]');
 	    
 	    //Drop trigger for image upload
 	    $('#imageDrop').uiiface({ 
         events : 'drop',  
         callback : function(event){
+          
           pictureIcon.addClass('uploading');
-          $.proxy(handler.handleFiles(event.originalEvent),handler);
+          //add Items takes the following parameters: fileDrop event || canvas element id, 
+          //type of uploaded media, callback function when upload is complete
+          query.addItems(event.originalEvent,query.types.Image,function(fileInfo) {
+            $('nav li[data-mode="image"]').removeClass('uploading');
+          });
+          //$.proxy(handler.handleFiles(event.originalEvent),handler);
           reset();
-          attachedModes.push('picture');
+          attachedModes.push('image');
         }
 	    });
 	    
@@ -345,16 +352,16 @@ define("mylibs/menu",
 
 	    });
 	    //Trigger button for file input
-	    $('.panel.picture button.upload').click(function(){
+	    $('.panel.image button.upload').click(function(){
 
 	      pictureIcon.addClass('uploading');
 	    	$('#imageUpload').click();
 
 	    	reset();
-	      attachedModes.push('picture');
+	      attachedModes.push('image');
 	    });
 
-	    addMediaCapture('picture');
+	    addMediaCapture('image');
     };
 
     var attachVideoEvents = function() {
@@ -413,13 +420,16 @@ define("mylibs/menu",
 
         console.log('Button "sketch done" pressed');
         //We don't need to bind it to
-        var handler = new filehandler.FileHandler('sketch',['png'],config.constants.fileUploadServer,getQueryItemCount());
+        //var handler = new filehandler.FileHandler('sketch',['png'],config.constants.fileUploadServer,getQueryItemCount());
 
         var sketchIcon = $('nav li[data-mode="sketch"]');
         sketchIcon.addClass('uploading');
 
         //----
-        $.proxy(handler.handleCanvasData(),handler);
+        query.addItems('#sketch',query.types.Image,function(fileInfo) {
+          $('nav li[data-mode="sketch"]').removeClass('uploading');
+        });
+        //$.proxy(handler.handleCanvasData(),handler);
 
         reset();
         attachedModes.push('sketch');
@@ -787,7 +797,7 @@ define("mylibs/menu",
             drawCanvasHint(ctx);
 
             var canvasClick = function(event) {
-              if(type === 'picture') {
+              if(type === 'image') {
                 ctx.drawImage(video[0], 0, 0, 352, 288);
               } else if(type === 'video') {
                 ctx.clearRect(0,0,canvas[0].width, canvas[0].height);
@@ -805,10 +815,10 @@ define("mylibs/menu",
             var newBtn = video.parent().find('.new');
 
             useBtn.one('click', function(event) {
-              if(type === 'picture') {
+              if(type === 'image') {
                 icon.addClass('uploading');
 
-                //For pictures use the good old file uploader
+                //For images use the good old file uploader
                 var handler = new filehandler.FileHandler('imageCapture',['png'],config.constants.fileUploadServer,getQueryItemCount());
                 $.proxy(handler.handleCanvasData('capturedImage.png','image/png',''),handler);
               } else if(type === 'video') {

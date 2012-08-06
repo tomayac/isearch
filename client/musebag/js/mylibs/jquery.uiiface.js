@@ -89,6 +89,7 @@ define("mylibs/uiiface-v1",
                 case 'dragleave' : $(event.target).removeClass("over"); break;
                 case 'drop' : 
                   //check if there is an custom handler which should be called for this event
+                  event.preventDefault();
                   $(event.target).removeClass("over");
                   if(typeof event.data.customHandler === 'function') {
                     event.data.customHandler.apply(this, [event]);
@@ -181,7 +182,7 @@ define("mylibs/uiiface-v1",
               var context = canvas.getContext('2d');
              
               event.epoints.foreach(function(key, point) {
-                console.log(key + '= x:'+parseFloat(point.x - offset.left)+' y:'+parseFloat(point.y - offset.top));
+                //console.log(key + '= x:'+parseFloat(point.x - offset.left)+' y:'+parseFloat(point.y - offset.top));
                 context.strokeStyle = 'rgba(40,0,0,.3)';
                 context.lineWidth = 3;  
                 context.lineCap = 'round';

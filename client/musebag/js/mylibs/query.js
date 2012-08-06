@@ -1,10 +1,22 @@
-define("mylibs/query", ["mylibs/config",], function(config) {
+define("mylibs/query", 
+  [
+    "mylibs/config",
+    "mylibs/loader"
+  ], 
+  function(config,loader) {
+  
+  var queryTypes = {
+    'Image'  : 'ImageType',
+    'Video'  : 'VideoType',
+    'Audio'  : 'SoundType',
+    'Threed' : 'Object3D'
+  };
   
   var allowedTypes = {
-    'image' : ['jpg','png','gif'],
-    'video' : ['webm','mp4','avi','ogv'],
-    '3d'    : ['dae','3ds'],
-    'audio' : ['oga','ogg','mp3','wav']
+    'ImageType' : ['jpg','png','gif'],
+    'VideoType' : ['webm','mp4','avi','ogv'],
+    'Object3D'  : ['dae','3ds'],
+    'SoundType' : ['oga','ogg','mp3','wav']
   };
   
   var itemCount = 0;
@@ -31,19 +43,19 @@ define("mylibs/query", ["mylibs/config",], function(config) {
         name    : (new Date().getTime()) + '-' + 'sketch.png',
         type    : 'image/png',
         subtype : 'sketch',
-        base64  : document.getElementById(element).toDataURL('image/png')
+        base64  : $(element)[0].toDataURL('image/png')
       });
 
     } catch(e) {
       console.dir(e);
-      console.log('The specified data container is not a canvas element and therefore not supported!');
+      console.log('The specified element is not a canvas element and therefore not supported!');
     } 
     
     //Go on, handle it like a normal file upload/drop
     return file;
   };
   
-  var uploadFile = function(file,id) {
+  var uploadFile = function(file, id, callback) {
     
     //Create upload bar
     var $progressbar = $('<div class="progressBar"><p>0%</p></div>').appendTo('#' + id);
@@ -56,14 +68,13 @@ define("mylibs/query", ["mylibs/config",], function(config) {
       } else {
         formData.append('canvas', file.base64);
         formData.append('name', file.name);
-        formData.append('subtype', file.subtype || '');
       }
     } catch(e) {
       console.error('Browser does not support the creation of FormData! Exiting...');
       return;
     };
     
-    //Upload handler functions
+    //Upload progress handler function
     var uploadProgressHandler = function(event) {
       if (event.lengthComputable) {
         var percentage = Math.round((event.loaded * 100) / event.total);
@@ -74,20 +85,109 @@ define("mylibs/query", ["mylibs/config",], function(config) {
       }
     };
     
+    //Upload error handler function
     var errorHandler = function(error) {
       console.log('Query item upload error: ' + error);
     };
     
-    var completeHandler = function(event) {
+    //Upload complete handler function
+    var completeHandler = function(data) {
       //add load completed style to upload element 
       $('#' + id).addClass('loaded');
       console.log("Query item upload with id " + id + " complete.");
       
-      console.dir(event);
+      //Analyze the upload result data and get the file information
+      var fileInfo = {};
+      
+      try {
+        fileInfo = JSON.parse(data);
+      } catch(e) {
+        fileInfo.error = 'Error while parsing result JSON from file upload.';
+      }
+      if(fileInfo.error) {
+        alert('Woops...somehow your query input got lost through an error in space. You can try it again or report this error to my creators: \n' + fileInfo.error);
+        return;
+      }
+      
+      //Set the picture icon for the uploaded file type
+      pictureIcon = $('nav li[data-mode="picture"]');
+      
+      //Check if need special treatment for displaying 3D content
+      if($('#' + id).attr('data-type') === queryTypes.Threed) {
+        //for 3D first check if an preview image is available
+        if(fileInfo.preview) {
+          //draw the preview image on the 3D canvas
+          var context = $('#' + id).get(0).getContext('2d');
+          if(context) {
+            var img = new Image ;
+            img.onload = function() {
+              var ratioW = img.width/canvas.width;
+              var ratioH = img.height/canvas.height;
+
+              var thumbw, thumbh;
+
+              if (ratioW > ratioH)
+              {
+                thumbw = canvas.width;
+                thumbh = canvas.width*(img.height/img.width);
+              }
+              else
+              {
+                thumbh = canvas.height;
+                thumbw = canvas.height*(img.width/img.height);
+              }
+              context.drawImage(img, (canvas.width - thumbw)/2, (canvas.height - thumbh)/2, thumbw, thumbh) ;
+            };
+            img.src = fileInfo.preview;        
+          }
+        } else {
+          //Use WebGL for presentation of 3D model
+        }
+      } else {
+        
+        //For all other types just set the received data to the HTML query item token       
+        $('#' + id).attr({
+          'alt'          : fileInfo.name,
+          'src'          : fileInfo.path,
+          'data-token'   : fileInfo.token
+        });
+        
+        // Sotiris: special handling for multiple audio formats
+        // The path element may contain multiple objects pointing to files in different formats
+        // Also a token attribute is returned to allow for reusing temporary files on the server during the query
+        if ( !$.isArray(fileInfo.path) )
+        {
+          $('#' + id).attr({'src': fileInfo.path, 'data-token': fileInfo.token}) ;
+        }
+        else
+        {
+          $('#' + id).empty().removeAttr('src').attr({'preload':'auto', 'data-token':fileInfo.token }) ;
+
+          for ( var i=0 ; i<fileInfo.path.length ; i++ )
+          {
+            var url = fileInfo.path[i].url ;
+            var mime = fileInfo.path[i].mime ;
+
+            $('<source/>', { src: url, type: mime }).appendTo('#' + id) ;
+          }
+        }
+        
+      }
+      console.dir(data);
+      
+      //Hide user uploading message upon upload complete event
+      //loader.stop();
+      
+      if(typeof callback === 'function') {
+        callback(fileInfo);
+      }
     };
     
+    //Show a message to the user, that content is actually being uploaded...
+    //loader.start("Uploading") ;
+    
     $.ajax({
-      url: config.constants.queryFormulatorUrl || 'query/item',  //server script to process data
+      url: config.constants.fileUploadServer || 'query/item',  //server script to process data
       type: 'POST',
       xhr: function() {  // custom xhr
           myXhr = $.ajaxSettings.xhr();
@@ -108,16 +208,17 @@ define("mylibs/query", ["mylibs/config",], function(config) {
     });
   };
   
-  var addItems = function(element,event,type,isBase64Format) {
-    
-    var files = event.files || event.target.files || event.dataTransfer.files;
-    
-    if(isBase64Format) {
-      files = getBase64File(element);
+  var addItems = function(event,type,callback) {
+
+    if(typeof event === 'string') {
+      var files = getBase64File(event);
+    } else {
+      var files = event.files || event.target.files || event.dataTransfer.files;
     }
     
+    
     //Test if browser supports the File API
-    if (typeof files !== "undefined") {
+    if (typeof files !== 'undefined') {
       //iterate through the uploaded files
       for (var i=0; i < files.length; i++) {
         //test if current file is allowed to be uploaded
@@ -131,21 +232,21 @@ define("mylibs/query", ["mylibs/config",], function(config) {
           //Create token content dependend from the media input
           console.log(files[i].type);
           if((/image/i).test(files[i].type)) {
-            tokenHtml = '<img id="' + id + '" alt="" src="" />';
+            tokenHtml = '<img id="' + id + '" alt="" src="" data-type="' + type + '" />';
           } else if((/audio/i).test(files[i].type) || (/ogg/i).test(files[i].name)) {
-            tokenHtml = '<audio controls="controls" id="' + id + '" >No audio preview.</audio>';
+            tokenHtml = '<audio controls="controls" id="' + id + '" data-type="' + type + '">No audio preview.</audio>';
           } else if((/video/i).test(files[i].type)) {
-            tokenHtml = '<video src="" controls="controls" id="' + id + '" width="60" height="25">No video preview.</video>';
+            tokenHtml = '<video src="" controls="controls" id="' + id + '" width="60" height="25" data-type="' + type + '">No video preview.</video>';
           } else if((/dae/i).test(files[i].name) || (/3ds/i).test(files[i].name) || (/md2/i).test(files[i].name) || (/obj/i).test(files[i].name)) {
-            tokenHtml = '<canvas id="' + id + '" width="60" height="25"></canvas>';
+            tokenHtml = '<canvas id="' + id + '" width="60" height="25" data-type="' + type + '" "data-subtype="' + files[i].subtype + '"></canvas>';
             //WebGL 3D data must be uploaded before it can be displayed
             supportDirectData = false;
           }
 
-          $("#query-field").tokenInput('add',{id:id,name:tokenHtml});
+          $('#query-field').tokenInput('add',{id:id,name:tokenHtml});
           
           //Use the file reader API to display the uploaded data before it was actually uploaded
-          if(supportDirectData && typeof FileReader !== "undefined") {
+          if(supportDirectData && typeof FileReader !== 'undefined') {
 
             var dataToken = document.getElementById(id),
 
@@ -165,7 +266,7 @@ define("mylibs/query", ["mylibs/config",], function(config) {
           }
 
           //Upload file to server
-          processXHR(files[i], id);
+          uploadFile(files[i], id, callback);
           //Increase query item count
           itemCount++;
 
@@ -260,8 +361,8 @@ define("mylibs/query", ["mylibs/config",], function(config) {
           
         } else {
           
-          queryItem.Type     = queryToken.attr('data-mode');
-          queryItem.RealType = queryToken.attr('class');
+          queryItem.Type     = queryToken.attr('data-type');
+          queryItem.RealType = queryToken.attr('data-subtype') || '';
           queryItem.Name     = queryToken.attr('alt');
           queryItem.Content  = queryToken.attr('src');
 		      queryItem.Token    = queryToken.attr('data-token') ;
@@ -338,6 +439,7 @@ define("mylibs/query", ["mylibs/config",], function(config) {
   };
   
   return {
+    types           : queryTypes,
     addItems        : addItems,
     submit          : submit,
     updateItemCount : updateItemCount,

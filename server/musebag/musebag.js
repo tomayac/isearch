@@ -138,7 +138,7 @@ var distributeFile = function(destinationUrl, callParams, fileInfo, callback) {
       } else { 
         fileInfo.originPath = tmpUrl + '/' + fileInfo.path.substring(fileInfo.path.lastIndexOf('\\')+1,fileInfo.path.length);
       }
-      fileInfo.subtype = fileInfo.subtype || '';
+      
       //If there was an error uploading the file to MQF, then the "file" field with the external item URL
       //will not be set and instead of throwing an error the local file path is used
       fileInfo.path = data.file ? data.file : fileInfo.host + fileInfo.originPath.substr(1);
