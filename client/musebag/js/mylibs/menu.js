@@ -1,7 +1,6 @@
 define("mylibs/menu",
   [
     "mylibs/config",
-    "mylibs/filehandler",
     "mylibs/location",
     "mylibs/query",
     "mylibs/recorder",
@@ -9,7 +8,7 @@ define("mylibs/menu",
     "mylibs/jquery.swipePanel",
     "libs/progress-polyfill.min"
   ],
-  function(config, filehandler, location, query) {
+  function(config, location, query) {
     var hasGetUserMedia = function hasGetUserMedia() {
       // Note: Opera builds are unprefixed.
       return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
@@ -22,10 +21,6 @@ define("mylibs/menu",
     var slider = null;
 
     var menu = $('nav.query-composition');
-    
-    var getQueryItemCount = function() {
-      return $(".token-input-list-isearch li").size()-1;
-    };
     
     var reset = function() {
       //hidePanels();
@@ -205,12 +200,12 @@ define("mylibs/menu",
         var searchQuery = textBox.val();
         console.log('Search term is ' + searchQuery);
 
-        //Transfer the query to the main field via tokenInput
-        $("#query-field").tokenInput('add',{id:searchQuery,name:searchQuery});
-        //Remove the "uploading style" | Note: this won't be visible, hopefully
-        textIcon.removeClass('uploading');
-        //Empty the text field of the panel
-        textBox.val('');
+        //Transfer the query to the main field via the query handler
+        query.addItems(searchQuery,query.types.Text,function() {
+          textIcon.removeClass('uploading');
+          //Empty the text field of the panel
+          textBox.val('');
+        }); 
 
         reset();
         attachedModes.push('text');
@@ -228,20 +223,35 @@ define("mylibs/menu",
         geoIcon.addClass('uploading');
 
         location.getCurrentLocation(function(position) {
-          $("#query-field").tokenInput('add',{id:"geo",name:'<img src="img/fake/fake-geolocation.jpg" title="'+position.coords.latitude+" "+position.coords.longitude+'" class="Location" data-mode="Image" />'});
-          geoIcon.removeClass('uploading');
+          
+          var data = {
+            'image'        : 'img/fake/fake-geolocation.jpg', //if image if given, then it is used as replacement instead of showing the text value
+            'text'         : position.coords.latitude + ' ' + position.coords.longitude,
+            'data-subtype' : 'Location'
+          };
+          
+          query.addItems(data,query.types.Text,function() {
+            geoIcon.removeClass('uploading');
+          }); 
+
           reset();
           attachedModes.push('geolocation');
         });
 
       });
 
-	  $('.panel.geolocation #chooseLocation').click(function(){
-    	location.showMap(function(lat, lon){
-    	  $("#query-field").tokenInput('add',{id:"geo",name:'<img src="img/fake/fake-geolocation.jpg" title="'+lat+" "+lon+'" class="Location" data-mode="Image" />'});
+      $('.panel.geolocation #chooseLocation').click(function(){
+      	location.showMap(function(lat, lon){
+      	  var data = {
+              'image'   : 'img/fake/fake-geolocation.jpg', //if image if given, then it is used as replacement instead of showing the text value
+              'text' : lat + ' ' + lon,
+              'data-subtype' : 'Location'
+            };
+      	  query.addItems(data,query.types.Text); 
+      	  
           reset();
           attachedModes.push('geolocation');
-    	});
+      	});
       });
 
     };
@@ -265,9 +275,14 @@ define("mylibs/menu",
             clearTimeout(emotionTimeout);
           }
           emotionTimeout = setTimeout(function() {
-            $("#query-field").tokenInput("remove", {id: "emotion"});
-            $("#query-field").tokenInput('add',{id:"emotion",name:'<img src="' +
-                canvas.toDataURL("image/png") + '" title="' + p + '" class="Emotion" data-mode="Image" />'});
+            
+            var data = {
+              'image'        : canvas.toDataURL("image/png"), //if image if given, then it is used as replacement instead of showing the text value
+              'text'         : p,
+              'data-subtype' : 'Emotion'
+            };
+            query.updateItem('emotion',data,query.types.Text); 
+            
           }, 200);
         }
 
@@ -285,14 +300,15 @@ define("mylibs/menu",
     var attach3dEvents = function() {
 
     	//Drag and Drop of files
-	    var handler = new filehandler.FileHandler('threedDrop',['dae','3ds'],config.constants.fileUploadServer,getQueryItemCount());
 	    var pictureIcon = $('nav li[data-mode="3d"]');
 	    
 	    $('#threedDrop').uiiface({ 
         events : 'drop',  
         callback : function(event){
           pictureIcon.addClass('uploading');
-          $.proxy(handler.handleFiles(event.originalEvent),handler);
+          query.addItems(event.originalEvent,query.types.Threed,function(fileInfo) {
+            pictureIcon.removeClass('uploading');
+          });
           reset();
           attachedModes.push('3d');
         }
@@ -300,11 +316,13 @@ define("mylibs/menu",
 
 	    //Invisible file input
 	    $('#threedUpload').change(function(event) {
+	      
+	      query.addItems(event,query.types.Threed,function(fileInfo) {
+          pictureIcon.removeClass('uploading');
+        });
 
-	    	$.proxy(handler.handleFiles(event),handler);
-
-			event.preventDefault();
-			return false;
+	    	event.preventDefault();
+	    	return false;
 	    });
 
 	    //Trigger button for file input
@@ -335,9 +353,8 @@ define("mylibs/menu",
           //add Items takes the following parameters: fileDrop event || canvas element id, 
           //type of uploaded media, callback function when upload is complete
           query.addItems(event.originalEvent,query.types.Image,function(fileInfo) {
-            $('nav li[data-mode="image"]').removeClass('uploading');
+            pictureIcon.removeClass('uploading');
           });
-          //$.proxy(handler.handleFiles(event.originalEvent),handler);
           reset();
           attachedModes.push('image');
         }
@@ -345,12 +362,15 @@ define("mylibs/menu",
 	    
 	    //Invisible file input
 	    $('#imageUpload').change(function(event) {
-
-	    	$.proxy(handler.handleFiles(event),handler);
+	      
+	      query.addItems(event,query.types.Image,function(fileInfo) {
+	        pictureIcon.removeClass('uploading');
+	      });
 	    	event.preventDefault();
 	    	return false;
 
 	    });
+	    
 	    //Trigger button for file input
 	    $('.panel.image button.upload').click(function(){
 
@@ -367,7 +387,6 @@ define("mylibs/menu",
     var attachVideoEvents = function() {
 
     	//Drag and Drop of files
-	    var handler = new filehandler.FileHandler('videoDrop',['webm','mp4','avi','ogv'],config.constants.fileUploadServer,getQueryItemCount());
 	    var videoIcon = $('nav li[data-mode="video"]');
 
 	    //Drop trigger for video upload
@@ -375,7 +394,9 @@ define("mylibs/menu",
         events : 'drop',  
         callback : function(event){
           pictureIcon.addClass('uploading');
-          $.proxy(handler.handleFiles(event.originalEvent),handler);
+          query.addItems(event.originalEvent,query.types.Video,function(fileInfo) {
+            videoIcon.removeClass('uploading');
+          });
           reset();
           attachedModes.push('video');
         }
@@ -384,7 +405,9 @@ define("mylibs/menu",
 	    //Invisible file input
 	    $('#videoUpload').change(function(event) {
 
-	    	$.proxy(handler.handleFiles(event),handler);
+	      query.addItems(event,query.types.Video,function(fileInfo) {
+          pictureIcon.removeClass('uploading');
+        });
 
 	    	event.preventDefault();
 	    	return false;
@@ -392,12 +415,11 @@ define("mylibs/menu",
 	    //Trigger button for file input
 	    $('.panel.video button.upload').click(function(){
 
-	        videoIcon.addClass('uploading');
-
+	      videoIcon.addClass('uploading');
 	    	$('#videoUpload').click();
 
 	    	//reset();
-	        attachedModes.push('video');
+	      attachedModes.push('video');
 	    });
 
 	    addMediaCapture('video');
@@ -419,17 +441,14 @@ define("mylibs/menu",
       $('.panel.sketch button.done').click(function(event){
 
         console.log('Button "sketch done" pressed');
-        //We don't need to bind it to
-        //var handler = new filehandler.FileHandler('sketch',['png'],config.constants.fileUploadServer,getQueryItemCount());
-
+        
         var sketchIcon = $('nav li[data-mode="sketch"]');
         sketchIcon.addClass('uploading');
 
         //----
         query.addItems('#sketch',query.types.Image,function(fileInfo) {
-          $('nav li[data-mode="sketch"]').removeClass('uploading');
+          sketchIcon.removeClass('uploading');
         });
-        //$.proxy(handler.handleCanvasData(),handler);
 
         reset();
         attachedModes.push('sketch');
@@ -440,18 +459,19 @@ define("mylibs/menu",
 
       });
     };
-
+    
     var attachSoundEvents = function() {
 
     	//Drag and Drop of files
-	    var handler = new filehandler.FileHandler('soundDrop',['oga','ogg','mp3','wav'],config.constants.fileUploadServer,getQueryItemCount());
 	    var pictureIcon = $('nav li[data-mode="sound"]');
 	    
 	    $('#soundDrop').uiiface({ 
         events : 'drop',  
         callback : function(event){
           pictureIcon.addClass('uploading');
-          $.proxy(handler.handleFiles(event.originalEvent),handler);
+          query.addItems(event.originalEvent,query.types.Audio,function(fileInfo) {
+            pictureIcon.removeClass('uploading');
+          });
           reset();
           attachedModes.push('sound');
         }
@@ -459,11 +479,13 @@ define("mylibs/menu",
 
 	    //Invisible file input
 	    $('#soundUpload').change(function(event) {
+	      
+	      query.addItems(event,query.types.Audio,function(fileInfo) {
+          pictureIcon.removeClass('uploading');
+        });
 
-	    	$.proxy(handler.handleFiles(event),handler);
-
-			event.preventDefault();
-			return false;
+	    	event.preventDefault();
+	    	return false;
 	    });
 
 	    //Trigger button for file input
@@ -481,46 +503,19 @@ define("mylibs/menu",
   		$('.panel.sound button.record').click(function(){
 
   			pictureIcon.addClass('uploading');
-  			if ( $(this).text() == "Start" )
-  			{
+  			
+        Wami.setUploadCallback(function(data){
+          var fileInfo = JSON.parse(data[0]);
+          query.addItems(fileInfo,query.types.Audio);
+          pictureIcon.removeClass('uploading');
+          reset();
+          attachedModes.push('sound');
+        });
+  			
+  			if($(this).text() === "Start") {
   				$(this).text("Stop") ;
-  				Wami.startRecording(config.constants.fileUploadServer + "?" + "audiorec") ;
-  			}
-  			else
-  			{
-  				Wami.setUploadCallback(
-  					function(data)
-  					{
-  						var fileInfo = $.parseJSON(data[0]) ;
-
-  						var id = "fileQueryItem" + getQueryItemCount();
-  						var token = '<audio controls="controls" id="' + id + '" ></audio>';
-
-  						$("#query-field").tokenInput('add',{id:id, name:token});
-
-  						//set the appropriate data tags for the html element
-  						var ele = $('#' + id) ;
-  						ele.attr({
-  							'alt'       : fileInfo.name,
-  							'class'     : fileInfo.subtype,
-  							'data-mode' : "SoundType",
-  							'preload': 'auto',
-  							'data-token':fileInfo.token
-  						});
-
-    					for ( var i=0 ; i<fileInfo.path.length ; i++ )
-    					{
-    						var url = fileInfo.path[i].url ;
-    						var mime = fileInfo.path[i].mime ;
-
-    						$('<source/>', { src: url, type: mime }).appendTo(ele) ;
-    					}
-
-  						reset();
-  						attachedModes.push('sound');
-  					}
-  				) ;
-
+  				Wami.startRecording(config.constants.fileUploadServer);
+  			} else {
   				Wami.stopRecording() ;
   				$(this).text("Start") ;
   			}
@@ -531,14 +526,15 @@ define("mylibs/menu",
     var attachRhythmEvents = function() {
 
     	//Drag and Drop of files
-	    var handler = new filehandler.FileHandler('rhythmDrop',['oga','ogg','mp3','wav'],config.constants.fileUploadServer,getQueryItemCount());
 	    var rhythmIcon = $('nav li[data-mode="rhythm"]');
 	    
 	    $('#rhythmDrop').uiiface({ 
         events : 'drop',  
         callback : function(event){
           pictureIcon.addClass('uploading');
-          $.proxy(handler.handleFiles(event.originalEvent),handler);
+          query.addItems(event.originalEvent,query.types.Audio,function(fileInfo) {
+            pictureIcon.removeClass('uploading');
+          });
           reset();
           attachedModes.push('rhythm');
         }
@@ -547,10 +543,12 @@ define("mylibs/menu",
 	    //Invisible file input
 	    $('#rhythmUpload').change(function(event) {
 
-	    	$.proxy(handler.handleFiles(event),handler);
+	      query.addItems(event,query.types.Audio,function(fileInfo) {
+          pictureIcon.removeClass('uploading');
+        });
 
-			event.preventDefault();
-			return false;
+	      event.preventDefault();
+	      return false;
 	    });
 
 	    //Trigger button for file input
@@ -673,8 +671,13 @@ define("mylibs/menu",
 
              console.log(tapRhythm.data);
              //Append rhythm to search bar
-             $("#query-field").tokenInput('add',{id:"rhythm",name:'<img src="' +
-               $('#rhythm-canvas')[0].toDataURL("image/png") + '" title="' + tapRhythm.data.intervals.join(',') + '" class="Rhythm" data-mode="text" data-duration="' + tapRhythm.data.duration + '" />'});
+             var data = {
+               'image'        : $('#rhythm-canvas')[0].toDataURL("image/png"), //if image if given, then it is used as replacement instead of showing the text value
+               'text'         : tapRhythm.data.intervals.join(','),
+               'data-subtype' : 'Rhythm',
+               'data-duration': tapRhythm.data.duration 
+             };
+             query.addItems(data,query.types.Text); 
            }
          }, 1000);
        // if state is "running"
@@ -691,49 +694,21 @@ define("mylibs/menu",
 	   });
 
 		 // rhythm recording
-     $('.panel.rhythm button.record').click(function(){
+     $('.panel.rhythm button.record').click(function() {
 
       rhythmIcon.addClass('uploading');
 
-      if ( $(this).text() == "Start" )
-      {
+      if ($(this).text() === "Start") {
       	$(this).text("Stop") ;
-      	Wami.startRecording(config.constants.fileUploadServer + "?" + "audiorec") ;
-      }
-      else
-      {
-      	Wami.setUploadCallback(
-      		function(data)
-      		{
-      			var fileInfo = $.parseJSON(data[0]) ;
+      	Wami.startRecording(config.constants.fileUploadServer) ;
+      } else {
+      	Wami.setUploadCallback(function(data){
+    		  console.log(data);
+    		  query.addItems(JSON.parse(data[0]),query.types.Audio);
 
-      			var id = "fileQueryItem" + getQueryItemCount();
-      			var token = '<audio controls="controls" id="' + id + '" ></audio>';
-
-      			$("#query-field").tokenInput('add',{id:id, name:token});
-
-      			//set the appropriate data tags for the html element
-      			var ele = $('#' + id) ;
-      			ele.attr({
-      				'alt'       : fileInfo.name,
-      				'class'     : fileInfo.subtype,
-      				'data-mode' : "SoundType",
-      				'preload': 'auto',
-      				'data-token':fileInfo.token
-      			});
-
-      			for ( var i=0 ; i<fileInfo.path.length ; i++ )
-      			{
-      				var url = fileInfo.path[i].url ;
-      				var mime = fileInfo.path[i].mime ;
-
-      				$('<source/>', { src: url, type: mime }).appendTo(ele) ;
-      			}
-
-      			reset();
-      			attachedModes.push('rhythm');
-      		}
-      	);
+    			reset();
+    			attachedModes.push('rhythm');
+    		});
 
       	Wami.stopRecording() ;
       	$(this).text("Start") ;
@@ -818,9 +793,11 @@ define("mylibs/menu",
               if(type === 'image') {
                 icon.addClass('uploading');
 
-                //For images use the good old file uploader
-                var handler = new filehandler.FileHandler('imageCapture',['png'],config.constants.fileUploadServer,getQueryItemCount());
-                $.proxy(handler.handleCanvasData('capturedImage.png','image/png',''),handler);
+                //For images use the new query class
+                query.addItems('#imageCapture',query.types.Image,function(fileInfo) {
+                  icon.removeClass('uploading');
+                });
+                
               } else if(type === 'video') {
                 //For we videos we now stop sending data to the server
                 localStream.stop();

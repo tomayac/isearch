@@ -6,6 +6,7 @@ define("mylibs/query",
   function(config,loader) {
   
   var queryTypes = {
+    'Text'   : 'Text',  
     'Image'  : 'ImageType',
     'Video'  : 'VideoType',
     'Audio'  : 'SoundType',
@@ -40,10 +41,10 @@ define("mylibs/query",
     try {
       //Create a file object for the actual canvas data
       file = new Array({
-        name    : (new Date().getTime()) + '-' + 'sketch.png',
-        type    : 'image/png',
-        subtype : 'sketch',
-        base64  : $(element)[0].toDataURL('image/png')
+        'name'    : (new Date().getTime()) + '-' + 'sketch.png',
+        'type'    : 'image/png',
+        'data-subtype' : 'sketch',
+        'base64'  : $(element)[0].toDataURL('image/png')
       });
 
     } catch(e) {
@@ -53,6 +54,127 @@ define("mylibs/query",
     
     //Go on, handle it like a normal file upload/drop
     return file;
+  };
+  
+  /**
+   * Creates an query item token within the token input
+   */
+  var createItem = function(id,type,data) {
+    
+    var tokenHtml = '';
+    
+    //Generate token html for query item
+    if(typeof data === 'string') {
+      tokenHtml += data;
+    } else if (typeof data === 'object'){
+      
+      //Check if a specific query item id is wanted
+      if(data.id) {
+        id = data.id;
+      }
+      
+      //Add appropriate opening tags depending on the query item type
+      switch(type) {
+        case queryTypes.Text  : 
+          //If an object is provided for text type, then meta data is added to the text
+          //or overlay it with an provided image   
+          tokenHtml += data.image ? '<img src="' + data.image + '" title="' + data.text + '"' : '<span';
+          break;
+        case queryTypes.Image : 
+          tokenHtml += '<img src="" alt="' + data.name + '"';
+          break;
+        case queryTypes.Audio : 
+          tokenHtml += '<audio src="" controls="controls"';
+          break;
+        case queryTypes.Video : 
+          tokenHtml += '<video src="" controls="controls"';
+          break;
+        case queryTypes.Threed: 
+          tokenHtml += '<canvas width="60" height="25"';
+          break;
+      }
+      
+      //Add basic common attributes (ID and query item type)
+      tokenHtml += ' id="' + id + '" data-type="' + type + '"';
+      //Add custom attributes represented by HTML5 'data-' attributes
+      for(var key in data) {
+        if(key.indexOf('data-') > -1) {
+          tokenHtml += ' ' + key + '="' + data[key] + '"';
+        }
+      }
+      
+      //Add appropriate closing characters or tags
+      switch(type) {
+        case queryTypes.Text  : 
+          tokenHtml += data.image ? ' />' : '>' + data.text + '</span>';
+          break;
+        case queryTypes.Image : 
+          tokenHtml += ' />';
+          break;
+        case queryTypes.Audio : 
+          tokenHtml += '>No audio preview.</audio>';
+          break;
+        case queryTypes.Video : 
+          tokenHtml += '>No video preview.</video>';
+          break;
+        case queryTypes.Threed: 
+          tokenHtml += '></canvas>"';
+          break;
+      } 
+    } 
+    //DEBUG
+    console.log(tokenHtml);
+     
+    //Add the generated query item to the query field
+    $('#query-field').tokenInput('add',{id:id,name:tokenHtml});
+    
+  };
+  
+  /**
+   * Sets data attributes for a given query item identified with the query item id
+   */
+  var setItemData = function(id,data) {
+    
+    var $queryItem = $('#' + id);
+    
+    if($queryItem.length < 1) {
+      return false;
+    }
+    
+    if($queryItem.attr('data-type') === queryTypes.Image) {
+      $queryItem.attr('alt',data.name);
+    } else {
+      $queryItem.attr('title',data.name);
+    }
+    
+    //Add custom attributes represented by HTML5 'data-' attributes
+    for(var key in data) {
+      if(key.indexOf('data-') > -1) {
+        $queryItem.attr(key,data[key]);
+      }
+    }
+    
+    if(data.path) {
+      // Sotiris: special handling for multiple audio formats
+      // The path element may contain multiple objects pointing to files in different formats
+      // Also a token attribute is returned to allow for reusing temporary files on the server during the query
+      if ( !$.isArray(data.path) )
+      {
+        $queryItem.attr('src', data.path) ;
+      }
+      else
+      {
+        $queryItem.removeAttr('src').attr('preload', 'auto') ;
+  
+        for ( var i=0 ; i<data.path.length ; i++ )
+        {
+          var url = data.path[i].url ;
+          var mime = data.path[i].mime ;
+  
+          $('<source/>', { src: url, type: mime }).appendTo($queryItem) ;
+        }
+      }
+    }
   };
   
   var uploadFile = function(file, id, callback) {
@@ -101,6 +223,7 @@ define("mylibs/query",
       
       try {
         fileInfo = JSON.parse(data);
+        console.dir(fileInfo);
       } catch(e) {
         fileInfo.error = 'Error while parsing result JSON from file upload.';
       }
@@ -109,10 +232,7 @@ define("mylibs/query",
         return;
       }
       
-      //Set the picture icon for the uploaded file type
-      pictureIcon = $('nav li[data-mode="picture"]');
-      
-      //Check if need special treatment for displaying 3D content
+      //Check if there's a need for special treatment of 3D content
       if($('#' + id).attr('data-type') === queryTypes.Threed) {
         //for 3D first check if an preview image is available
         if(fileInfo.preview) {
@@ -126,13 +246,10 @@ define("mylibs/query",
 
               var thumbw, thumbh;
 
-              if (ratioW > ratioH)
-              {
+              if (ratioW > ratioH) {
                 thumbw = canvas.width;
                 thumbh = canvas.width*(img.height/img.width);
-              }
-              else
-              {
+              } else {
                 thumbh = canvas.height;
                 thumbw = canvas.height*(img.width/img.height);
               }
@@ -143,37 +260,12 @@ define("mylibs/query",
         } else {
           //Use WebGL for presentation of 3D model
         }
-      } else {
-        
-        //For all other types just set the received data to the HTML query item token       
-        $('#' + id).attr({
-          'alt'          : fileInfo.name,
-          'src'          : fileInfo.path,
-          'data-token'   : fileInfo.token
-        });
-        
-        // Sotiris: special handling for multiple audio formats
-        // The path element may contain multiple objects pointing to files in different formats
-        // Also a token attribute is returned to allow for reusing temporary files on the server during the query
-        if ( !$.isArray(fileInfo.path) )
-        {
-          $('#' + id).attr({'src': fileInfo.path, 'data-token': fileInfo.token}) ;
-        }
-        else
-        {
-          $('#' + id).empty().removeAttr('src').attr({'preload':'auto', 'data-token':fileInfo.token }) ;
-
-          for ( var i=0 ; i<fileInfo.path.length ; i++ )
-          {
-            var url = fileInfo.path[i].url ;
-            var mime = fileInfo.path[i].mime ;
-
-            $('<source/>', { src: url, type: mime }).appendTo('#' + id) ;
-          }
-        }
-        
+        //remove the path after setting the 3d data source or preview 
+        fileInfo.path = false;
       }
-      console.dir(data);
+        
+      //For all other types just set the received data to the HTML query item token
+      setItemData(id,fileInfo);
       
       //Hide user uploading message upon upload complete event
       //loader.stop();
@@ -208,76 +300,117 @@ define("mylibs/query",
     });
   };
   
-  var addItems = function(event,type,callback) {
+  /**
+   * addItems function
+   * Adds query items to the current query.
+   * 
+   * @param data Contains the data or a reference to an HTML element which contains data 
+   *             to be used for generating a query element.
+   *             - If it contains an String it can either represent an ID of a Canvas element holding base64 
+   *               encoded data or the text used for an textual query item, if used with type types.Text
+   *             - or it can contain an object with meta-data for textual query items, if used with type 
+   *               types.Text
+   *             - It can represent a file information object which contains information about an
+   *               already existing file
+   *             - It can contain an event object including a files object which provide binary 
+   *               data for uploading and generating query items.  
+   * @param type The type of the payload data for the element can be one of the types defined in field @reference types
+   * @param callback a function which is called after the query item(s) are successfully generated            
+   *             
+   */
+  var addItems = function(data,type,callback) {
 
-    if(typeof event === 'string') {
-      var files = getBase64File(event);
+    //Basic vars for query item generation
+    var id = 'queryItem' + itemCount;
+    var tokenHtml = '';
+    
+    //a text item can be added directly via the token input...
+    //no file upload needed
+    if(type === queryTypes.Text) {
+      
+      //Generate token html for query item
+      createItem(id,type,data);
+      //Increase query item count
+      itemCount++;
+     
     } else {
-      var files = event.files || event.target.files || event.dataTransfer.files;
-    }
-    
-    
-    //Test if browser supports the File API
-    if (typeof files !== 'undefined') {
-      //iterate through the uploaded files
-      for (var i=0; i < files.length; i++) {
-        //test if current file is allowed to be uploaded
-        if(isAllowedExtension(files[i].name,type)) {
-          
-          //Create the query item token for the search bar
-          var id = "fileQueryItem" + itemCount;
-          var tokenHtml = "";
-          var supportDirectData = true;
-
-          //Create token content dependend from the media input
-          console.log(files[i].type);
-          if((/image/i).test(files[i].type)) {
-            tokenHtml = '<img id="' + id + '" alt="" src="" data-type="' + type + '" />';
-          } else if((/audio/i).test(files[i].type) || (/ogg/i).test(files[i].name)) {
-            tokenHtml = '<audio controls="controls" id="' + id + '" data-type="' + type + '">No audio preview.</audio>';
-          } else if((/video/i).test(files[i].type)) {
-            tokenHtml = '<video src="" controls="controls" id="' + id + '" width="60" height="25" data-type="' + type + '">No video preview.</video>';
-          } else if((/dae/i).test(files[i].name) || (/3ds/i).test(files[i].name) || (/md2/i).test(files[i].name) || (/obj/i).test(files[i].name)) {
-            tokenHtml = '<canvas id="' + id + '" width="60" height="25" data-type="' + type + '" "data-subtype="' + files[i].subtype + '"></canvas>';
-            //WebGL 3D data must be uploaded before it can be displayed
-            supportDirectData = false;
-          }
-
-          $('#query-field').tokenInput('add',{id:id,name:tokenHtml});
-          
-          //Use the file reader API to display the uploaded data before it was actually uploaded
-          if(supportDirectData && typeof FileReader !== 'undefined') {
-
-            var dataToken = document.getElementById(id),
-
-            //Create Filereader instance
-            reader = new FileReader();
-            reader.onload = (function (theDataToken) {
-              return function (event) {
-                theDataToken.src = event.target.result;
-              };
-            }(dataToken));
-            //Read media data from file into img, audio, video - DOM element
-            if(!files[i].base64) {
-              reader.readAsDataURL(files[i]);
-            } else {
-              dataToken.src = files[i].base64;
+      
+      //Process non textual query items via upload of binary or base64 data or via referenced files
+      if(typeof data === 'string' && $(data).length) {
+        //Data is an ID for an Canvas element
+        var files = getBase64File(data);
+      } else if(typeof data === 'object' && data.path) {
+        //Data is an file information object which references an already exiting binary file
+        //Format: { path : [url], name : [filename], type : [queryType], subtype : [sketch|recording|rythm], size : [bytes] }
+        data.link = true; 
+        var files = [data];
+      } else {
+        //Data is an event object
+        var files = data.files || data.target.files || data.dataTransfer.files;
+      }    
+      
+      //Test if browser supports the File API
+      if (typeof files !== 'undefined') {
+        //iterate through the (uploaded) files
+        for (var i=0; i < files.length; i++) {
+          //test if current file is allowed to be uploaded
+          if(isAllowedExtension(files[i].name,type)) {
+            
+            //Create the query item token for the search bar        
+            createItem(id,type,files[i]);
+            
+            //Use the file reader API to display the uploaded data before it was actually uploaded
+            if(type !== queryTypes.Threed && typeof FileReader !== 'undefined') {
+  
+              var dataToken = document.getElementById(id),
+  
+              //Create Filereader instance
+              reader = new FileReader();
+              reader.onload = (function (theDataToken) {
+                return function (event) {
+                  theDataToken.src = event.target.result;
+                };
+              }(dataToken));
+              
+              //Read media data from file into img, audio, video - DOM element
+              if(!files[i].base64) {
+                reader.readAsDataURL(files[i]);
+              } else {
+                dataToken.src = files[i].base64;
+              }
             }
+            
+            if(!files[i].path) {
+              //Upload file to server
+              uploadFile(files[i], id, i === (files.length -1) ? callback : null);
+            } else {
+              //all needed data is available, add it to query item
+              setItemData(id, files[i]);
+            }
+            //Increase query item count
+            itemCount++;
+  
+          } else {
+            alert("Sorry, the submitted file " + files[i].name + " is not supported. Please use one of the following file types: " + allowedTypes[type].join(','));
           }
-
-          //Upload file to server
-          uploadFile(files[i], id, callback);
-          //Increase query item count
-          itemCount++;
-
-        } else {
-          alert("Sorry, the submitted file " + files[i].name + " is not supported. Please use one of the following file types: " + allowedTypes[type].join(','));
-        }
-      } //end file for loop 
-    } else {
-      //Send message if File API is not available
-      alert("No files to handle. Maybe this web browser does not support the File API");
-    }   
+        } //end file for loop 
+      } else {
+        //Send message if File API is not available
+        alert("No files to handle. Maybe this web browser does not support the File API");
+      } 
+    } //end text type else
+    
+    if(typeof callback === 'function') {
+      callback(files);
+    }
+  };
+  
+  var updateItem = function(id,event,type,callback) {
+    if(id) {
+      $("#query-field").tokenInput("remove", {id: id});
+      event.id = id;
+      addItems(event,type,callback);
+    }
   };
   
   var getItems = function() {
@@ -317,7 +450,7 @@ define("mylibs/query",
         
         var queryToken = $(this).find('p:first').children(':first');
 
-        if(queryToken.attr('class') == 'Emotion') {
+        if(queryToken.attr('data-subtype') == 'Emotion') {
           
           var intensity = parseFloat(queryToken.attr('title'));
           var localIntensity = 0;
@@ -337,20 +470,20 @@ define("mylibs/query",
             queryJson.emotion = {name : 'Sad', intensity : localIntensity, "valence": valence};
           }
           
-        } else if(queryToken.attr('class') == 'Location') {
+        } else if(queryToken.attr('data-subtype') == 'Location') {
           
           var location = queryToken.attr('title');
           queryJson.location = location || false;
           console.log('found location with pos ' + location);
           
-        } else if(queryToken.attr('class') == 'Rhythm') {
+        } else if(queryToken.attr('data-subtype') == 'Rhythm') {
           
           queryJson.rhythm = {
               'duration'  :  parseInt(queryToken.attr('data-duration')),
               'intervals' :  queryToken.attr('title').split(',')
           };
           
-        } else if(queryToken.attr('class') == 'Tag') {
+        } else if(queryToken.attr('data-subtype') == 'Tag') {
           
           var recommendedTag = queryToken.text();
           if(!queryJson.tags) {
@@ -441,6 +574,7 @@ define("mylibs/query",
   return {
     types           : queryTypes,
     addItems        : addItems,
+    updateItem      : updateItem,
     submit          : submit,
     updateItemCount : updateItemCount,
     reset           : reset

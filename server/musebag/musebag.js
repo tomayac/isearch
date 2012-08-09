@@ -134,14 +134,14 @@ var distributeFile = function(destinationUrl, callParams, fileInfo, callback) {
       
       //Add the public path, move the original local file system path
       if(fileInfo.path.lastIndexOf('/') > -1) {
-        fileInfo.originPath = tmpUrl + '/' + fileInfo.path.substring(fileInfo.path.lastIndexOf('/'),fileInfo.path.length);
+        fileInfo.originPath = tmpUrl + fileInfo.path.substring(fileInfo.path.lastIndexOf('/'),fileInfo.path.length);
       } else { 
         fileInfo.originPath = tmpUrl + '/' + fileInfo.path.substring(fileInfo.path.lastIndexOf('\\')+1,fileInfo.path.length);
       }
       
       //If there was an error uploading the file to MQF, then the "file" field with the external item URL
       //will not be set and instead of throwing an error the local file path is used
-      fileInfo.path = data.file ? data.file : fileInfo.host + fileInfo.originPath.substr(1);
+      fileInfo.path = data.file ? data.file : fileInfo.host + fileInfo.originPath;
 
       callback(null,fileInfo);
     })
@@ -810,14 +810,14 @@ exports.queryItem = function(req, res) {
 	var sid = getExternalSessionId(req);
 	//Create the initial file meta information object
 	var uploadItem = {
-	  'host' : req.headers.referer  
+	  'host' : 'http://' + req.headers.host  
 	};
 	
 	//Check if we have a file item as query item
 	if(req.files.files) {
 	  
     var file = req.files.files;
-    
+
     //Set the temporary information about the uploaded file
     uploadItem['path'] = file.path;
     uploadItem['name'] = file.name; 
@@ -865,5 +865,5 @@ exports.queryItem = function(req, res) {
 exports.queryStream = function(req, res) {
   
   console.log("QueryStream function called...");
-  
+
 }; //end function queryStream
