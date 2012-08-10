@@ -119,21 +119,18 @@ require(["jquery",
       		    
       		    //Tokenize text input
       		    if (searchQuery) {
-      		      $("#query-field").tokenInput('add',{id:searchQuery,name:searchQuery});
+      		      query.addItems(searchQuery,query.types.Text);
       		    } else {
-      		      $("#query-submit").trigger('click');
+      		      $('#query-submit').trigger('click');
       		    }
       		    return false;  
       		  });
     		 
     				//Page behaviour when the query is submitted
-    				$( "#query-submit").click(function (e) {
-    		  
+    				$('#query-submit').click(function (e) {
+    				  //prevent the page to reload
+              e.preventDefault() ;
     					var resubmit = $(this).hasClass('resubmit') ;
-    					
-    					//prevent the page to reload
-    					e.preventDefault() ;
-    					
     					var relevant = []  ;
     					
     					if ( resubmit ) // gather user relevance feedback from the current document list

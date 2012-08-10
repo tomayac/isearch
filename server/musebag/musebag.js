@@ -86,8 +86,11 @@ var queryWeatherTpl = '<Weather>'
                     + '</Weather>';
 
 /**
- * private functions
+ *  -----------------------------------------------------------------------------
+ *  Private Functions
+ *  -----------------------------------------------------------------------------
  */
+
 var distributeFile = function(destinationUrl, callParams, fileInfo, callback) {
   
   var context = this;
@@ -271,7 +274,7 @@ var getSessionStore = function(req) {
     req.session.user = { 
       userId : 'guest',
       settings : '{"maxResults" : 100, "clusterType" : "3D", "numClusters" : 5, "transMethod" : "rand"}',
-      querycounter: 0
+      queries : new Array()
     };
   };    
   return req.session.user;
@@ -305,11 +308,16 @@ var isNumber = function(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 };
 
+/**
+ *  -----------------------------------------------------------------------------
+ *  Public Functions
+ *  -----------------------------------------------------------------------------
+ */
 
 /**
  * login function
  */
-exports.login = function(req, res){
+var login = function(req, res){
 	
 	console.log("Login function called...");
 	
@@ -413,7 +421,7 @@ exports.login = function(req, res){
 	
 };
 
-exports.logout = function(req, res) {	
+var logout = function(req, res) {	
 	console.log("Logout function called...");
 	
 	//Destroy the session
@@ -429,7 +437,7 @@ exports.logout = function(req, res) {
 	});
 };
 
-exports.profile = function(req, res) {
+var profile = function(req, res) {
 	
 	var attrib = req.params.attrib;
 	//Get the right session storage (depending on log in status - guest if not, user if yes)
@@ -458,7 +466,7 @@ exports.profile = function(req, res) {
 	}
 };
 
-exports.setProfile = function(req, res) {
+var setProfile = function(req, res) {
   
   console.log("Set profile function called...");
   
@@ -563,7 +571,7 @@ exports.setProfile = function(req, res) {
   }//end if requested profile attribute is available
 };
 
-exports.getProfileHistory = function(req, res) {
+var getProfileHistory = function(req, res) {
   
   console.log("get profile history function called...");
   
@@ -602,7 +610,7 @@ exports.getProfileHistory = function(req, res) {
   }//end if
 };
 
-exports.updateProfileHistory = function(req, res) {
+var updateProfileHistory = function(req, res) {
   
   console.log("Update profile history function called...");
   
@@ -661,7 +669,7 @@ exports.updateProfileHistory = function(req, res) {
   }//end if
 };
 
-exports.query = function(req, res) {
+var query = function(req, res) {
 	
 	console.log("Query function called...");
 	
@@ -678,8 +686,11 @@ exports.query = function(req, res) {
   var result = {};
   
   try {
-    //store the used query tags in the session
-    sessionStore.tags = data.tags ? data.tags.join() : '';
+    
+    var queryId = -1 + sessionStore.queries.push({
+      'tags'  : data.tags ? data.tags.join() : '', //store the used query tags in the session
+      'query' : data //store query in session
+    });
     
     //set the query parameters from the user settings
     var settings = JSON.parse(sessionStore.settings);
@@ -689,7 +700,7 @@ exports.query = function(req, res) {
     if ( settings.transMethod )   queryFormulatorURL += '&tr=' + settings.transMethod ;
     if ( !settings.smatrix )      queryFormulatorURL += '&smat=true' ;
     
-   
+   console.log(queryFormulatorURL);
     //Submit the query to MQF
     restler
     .post(queryFormulatorURL, { 
@@ -704,6 +715,9 @@ exports.query = function(req, res) {
       } else {
         result = data.result;
       }
+      
+      //store result in session
+      sessionStore.queries[queryId]['result'] = data;
       
       res.send(result);
       //After successful submission of query increase the query counter
@@ -782,7 +796,7 @@ exports.query = function(req, res) {
 	
 };
 
-exports.queryItem = function(req, res) {
+var queryItem = function(req, res) {
 	
 	console.log("Queryitem function called...");
 
@@ -862,8 +876,21 @@ exports.queryItem = function(req, res) {
 	
 }; //end function queryItem
 
-exports.queryStream = function(req, res) {
+var queryStream = function(req, res) {
   
   console.log("QueryStream function called...");
 
 }; //end function queryStream
+
+//Export all public available functions
+exports.login  = login;
+exports.logout = logout;
+
+exports.profile              = profile;
+exports.setProfile           = setProfile;
+exports.getProfileHistory    = getProfileHistory;
+exports.updateProfileHistory = updateProfileHistory;
+
+exports.query       = query;
+exports.queryItem   = queryItem;
+exports.queryStream = queryStream;

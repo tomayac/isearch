@@ -123,7 +123,7 @@ define("mylibs/query",
       } 
     } 
     //DEBUG
-    console.log(tokenHtml);
+    //console.log(tokenHtml);
      
     //Add the generated query item to the query field
     $('#query-field').tokenInput('add',{id:id,name:tokenHtml});
@@ -428,12 +428,9 @@ define("mylibs/query",
     
     //Check if the user has entered something which is not tokenized yet
     var remainingInput = $(".token-input-list-isearch li input").val();
-    console.log('remaining input: ');
-    console.log(remainingInput);
     //Tokenize remaining input
     if (remainingInput) {
-      $("#query-field").tokenInput('add',{id:remainingInput,name:remainingInput});
-      console.log(remainingInput);
+      addItems(remainingInput,queryTypes.Text);
     }
     
     //get all elements of the query
@@ -542,7 +539,7 @@ define("mylibs/query",
         dataType : "json",
         success: function(data) {
           //parse the result
-          console.log("Search query submitted.");
+          console.log("Query result:");
           console.dir(data);
           callback(true, data) ;
         },
