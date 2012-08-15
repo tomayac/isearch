@@ -147,11 +147,11 @@ var fetchSound = function(query, isGeo, page, callback) {
       }
       step.apply(step, newArguments);
     } catch (error) {
-      callback(error, null);
+      callback(error, results);
     }
   })
   .on('error', function(data,response) {
-    callback(response.message, null);
+    callback(response.message, results);
   });
 };
 

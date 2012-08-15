@@ -92,16 +92,15 @@ app.post('/query'           , musebag.query);
 
 //Routes for pTag
 app.get  ('/ptag/tagRecommendations/:userid', ptag.tagRecommendations);
-app.get  ('/ptag/filterTags/:userid', ptag.filterTags);
-app.get  ('/ptag/resultTagRecommendations/:userid', ptag.resultTagRecommendations);
-app.post ('/ptag/tag/:userid', ptag.tag);
-app.post ('/ptag/implicitTags/:userid', ptag.implicitTags);
+app.get  ('/ptag/filterTags/:userid/:query/:resultSetTags', ptag.filterTags);
+app.get  ('/ptag/resultTagRecommendations/:userid/:query/:resultItemTags', ptag.resultTagRecommendations);
+app.post ('/ptag/tag', ptag.tag);
+app.post ('/ptag/implicitTags', ptag.implicitTags);
 
 app.listen(8081);
 
 //Start CoFind for collaborative search
 cofind.initialize(app,sess);
-
 
 console.log("MuseBag Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 

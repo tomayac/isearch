@@ -36,21 +36,17 @@ var tags = [[['flight',1.0],['travel',1.5],['airplane',2.8],['sky',0.8],['rocket
  * This method generates tag recommendations for search queries based on a user profile. 
  * The user profile is gathered through the provided user ID.
  * 
- * @param options object containing keys: userId
- * @param callback 
+ * @param request object containing get key: userId
+ * @param repsonse object 
  */
-var tagRecommendations = function(options, callback){
+var tagRecommendations = function(req, res){
 	
 	var id = 0;
 	
-	if(options.userId.length > 3) {
-	  id = user[options.userId] || 0;
+	if(req.params.userid.length > 3) {
+	  id = user[req.params.userid] || 0;
 	} 
-	/*
-	if(options.userId) {
-    id = options.userId || 0;
-  }
-  */
+	
 	var userTags = tags[id];
 	callback(null, userTags);
 };
@@ -62,14 +58,14 @@ var tagRecommendations = function(options, callback){
  * based on a user profile. A user ID as well as the textual parts of the user query 
  * needs to be provided.
  * 
- * @param options object containing keys: userId, query, resultSetTags
- * @param callback
+ * @param request object containing get keys: userId, query, resultSetTags
+ * @param repsonse object
  */
-var filterTags = function(options, callback){
+var filterTags = function(req, res){
 	
 	var id = 1;
-	if(options.userId > 0 && options.userId <= 6) {
-		id = (options.userId-1);
+	if(req.params.userid > 0 && req.params.userid <= 6) {
+		id = (req.params.userid-1);
 	} 
 	var userTags = tags[id];
 	var filterTags = [];
@@ -87,11 +83,12 @@ var filterTags = function(options, callback){
  * Serves a personalised tag list, specific for the requested result item. 
  * To be used before the �Download� event of a result item.
  * 
- * @param options object containing keys: userId, query, resultItemTags
- * @param callback 
+ * @param request object containing keys: userId, query, resultItemTags
+ * @param repsonse object 
  */
-var resultTagRecommendations = function(options, callback){
-	var tags = ['tag1','tag2','tag3','tag4','tag5','tag6','tag7','tag8','tag9','tag10'];
+var resultTagRecommendations = function(req, res){
+  
+	var tags = ['tag1','tag2','tag3','tag4','tag5','tag6','tag7','tag8','tag9','tag10'];	
 	callback(null, tags);
 };
 
@@ -101,15 +98,18 @@ var resultTagRecommendations = function(options, callback){
  * Stores the provided tag in the RUCoD header for the provided Content Object provided 
  * via the resultItemID. To be used if a user supplies tags.
  * 
- * @param options object containing keys: userId, tags, resultItemId
- * @param callback 
+ * @param request object containing get keys: userId, tags, resultItemId
+ * @param repsonse object 
  */
-var tag = function(options, callback){
+var tag = function(req, res){
+  
+  var data = req.body;
+  
 	var stored = false;
-	//storeUserTags(RUCoDID,Tags) options.tags
+	//storeUserTags(RUCoDID,Tags) data.tags
 	var rucodMangerUrl = "http://www.isearch-project.eu/rmn/storeUserTags?" 
-		                 + "rucodid=" + options.resultItemId 
-		                 + "&tags=" + options.tags;
+		                 + "rucodid=" + data.resultItemId 
+		                 + "&tags=" + data.tags;
 	
 	//Use restler to post the data to external RUCoD manager
 	
@@ -123,20 +123,23 @@ var tag = function(options, callback){
  * Derives a tag for the resultItem based on the query and user profile and stores it in the 
  * referring RUCoD. To be used if a �Download� event occurs without a user specified tag.
  * 
- * @param options object containing keys: userId, query, resultItemId
- * @param callback
+ * @param request object containing keys: userId, query, resultItemId
+ * @param repsonse object
  */
-var implicitTags = function(options, callback){
-	var stored = false;
+var implicitTags = function(req, res){
+	
+  var stored = false;
+	var data = req.body;
+	
 	//Extract the tags
-	//var queryTags = options.query.split(',');
+	//var queryTags = data.query.split(',');
 	//Filter user relevant tags
 	//...
 	
 	//Store tags with RUCoD Manager 
 	var rucodMangerURL = "http://www.isearch-project.eu/rmn/storeUserTags?" 
-		               + "rucodid=" + options.resultItemId + "&" 
-		               + "tags=" + options.tags;
+		               + "rucodid=" + data.resultItemId + "&" 
+		               + "tags=" + data.tags;
 	
 	//Use restler to post the data to external RUCoD manager
 	
