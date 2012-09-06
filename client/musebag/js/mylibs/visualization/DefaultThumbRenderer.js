@@ -208,7 +208,35 @@ p.renderContents = function(tooltip, thumb, mediaType)
 		}
 	}
 		
+	$('.tooltip-header', tooltip).remove() ;
+	var header = $('<div/>', { "class": "tooltip-header" }).appendTo(tooltip);
+	var findSimilar = $('<a/>', {text: "Find similar", href: "javascript:void(0);"}).appendTo(header) ;
 	
+	findSimilar.click(function(){
+		var path = document.location.pathname ;
+		var args = document.location.search.substring(1).split('&');
+
+		argsParsed = {};
+
+		for (i=0; i < args.length; i++)
+		{
+    		arg = unescape(args[i]);
+
+		    if (arg.indexOf('=') == -1)
+    		{
+        		argsParsed[arg.trim()] = true;
+    		}
+    		else
+    		{
+		        kvp = arg.split('=');
+        		argsParsed[kvp[0].trim()] = kvp[1].trim();
+		    }
+		}
+
+	
+		window.location.href = path + '?idx=' + argsParsed['idx'] + '&mode=vis' + '&s=' + thumb.doc.id ;
+		return false ;
+	}) ;
 	
 	$('.media-preview', tooltip).remove() ;
 	var tooltipContents = $('<div/>', { "class": "media-preview", "id": mediaType  }).appendTo(tooltip) ;
@@ -357,6 +385,10 @@ p.renderContents = function(tooltip, thumb, mediaType)
 	  });
 	}
 	else tooltipContents.append("<br><p>Location: unavailable</p>");
+	
+	
+
+	
 }
 
 p.getMediaTypes = function(thumb)

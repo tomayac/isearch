@@ -639,25 +639,37 @@ p.createThumbnail = function(i, x, y, sw, tclass)
 						
 						$(popupDiv).dialog( { 
 							close: 	function(event, ui) {
-								var tags = item.doc.tags ;
+								
+							},
+							buttons: {
+								Ok: function() {
+									$( this ).dialog( "close" );
+									
+									var tags = item.doc.tags ;
 					
-								if ( !tags ) tags = [] ;
+									if ( !tags ) tags = [] ;
 				
-								// get user provided tags ;
-								var _tags = tagEditor.tags ;
+									// get user provided tags ;
+									var _tags = tagEditor.tags ;
 						
-								// update tags of selected items based on the user provided tags
-								for( tag in _tags )
-								{	
-									var idx = $.inArray(tag, tags) ;
-									if ( _tags[tag] == 1 && idx >= 0 ) delete tags.splice(idx,1) ;
-									else if ( _tags[tag] == 2  && idx == -1 ) tags.push(tag) ;
+									// update tags of selected items based on the user provided tags
+									for( tag in _tags )
+									{	
+										var idx = $.inArray(tag, tags) ;
+										if ( _tags[tag] == 1 && idx >= 0 ) delete tags.splice(idx,1) ;
+										else if ( _tags[tag] == 2  && idx == -1 ) tags.push(tag) ;
+									}
+						
+									item.doc.tags = tags ;
+									// save tags into permanent storage
+						
+									that.ctx.tagManager.store(item.doc) ;
+								},
+								Cancel: function() {
+									$( this ).dialog( "close" );
+									
+									
 								}
-					
-								item.doc.tags = tags ;
-								// save tags into permanent storage
-					
-								that.ctx.tagManager.store(item.doc) ;
 							}
 						}) ; 
 						
@@ -783,7 +795,7 @@ p.createThumbnail = function(i, x, y, sw, tclass)
     });
 	
 	// use the thumbRenderer to actually render the item in the box
-	this.thumbRenderer.render(item, imgOut, { viewport: this.thumbViewport, selected: this.ctx.filterBar.modalities(), modalities: this.ctx.modalities, hover: (this.navMode=='browse')?true:false }) ;
+	this.thumbRenderer.render(item, imgOut, { viewport: this.thumbViewport, selected: this.ctx.filterBar.modalities(), modalities: this.ctx.modalities, hover: (this.navMode=='browse')?true:false, config: this.ctx.config }) ;
 	
 	
 	
@@ -1118,7 +1130,7 @@ p.showTimeline = function()
 		iconDiv.style.width = iconData.width + "px" ;
 		iconDiv.style.height = iconData.height + "px" ;
 		
-		obj.thumbRenderer.render(iconData.data, $(iconDiv), { viewport: $(this._eventLayer), selected: obj.ctx.filterBar.modalities(), modalities: obj.ctx.modalities }) ;
+		obj.thumbRenderer.render(iconData.data, $(iconDiv), { viewport: $(this._eventLayer), selected: obj.ctx.filterBar.modalities(), modalities: obj.ctx.modalities, config: this.ctx.config }) ;
 		//iconDiv.appendChild(img);
     
 		//if ("tooltip" in commonData && typeof commonData.tooltip == "string") {
@@ -1279,7 +1291,7 @@ p.showTimeline = function()
 	//iconDiv.style.width = iconData.width + "px" ;
 	//	iconDiv.style.height = iconData.height + "px" ;
 		
-	obj.thumbRenderer.render(iconData.data, $(iconStackDiv), { viewport: $(this._eventLayer), selected: obj.ctx.filterBar.modalities(), modalities: obj.ctx.modalities, square: true }) ;
+	obj.thumbRenderer.render(iconData.data, $(iconStackDiv), { viewport: $(this._eventLayer), selected: obj.ctx.filterBar.modalities(), modalities: obj.ctx.modalities, square: true, config: this.ctx.config }) ;
 		
    // iconStackDiv.innerHTML = "<div style='position: relative'></div>";
     this._eventLayer.appendChild(iconStackDiv);
@@ -1329,7 +1341,7 @@ p.showTimeline = function()
 	  
        // iconDiv.setAttribute("index", index);
      //   iconDiv.onmouseover = onMouseOver;
-		obj.thumbRenderer.render(iconData.data, $(imgDiv), { viewport: $(self._eventLayer), selected: obj.ctx.filterBar.modalities(), modalities: obj.ctx.modalities }) ;
+		obj.thumbRenderer.render(iconData.data, $(imgDiv), { viewport: $(self._eventLayer), selected: obj.ctx.filterBar.modalities(), modalities: obj.ctx.modalities, config: this.ctx.config }) ;
 		//obj.thumbRenderer.render(iconData.data, $(imgDiv), $(self._eventLayer), { modalities: obj.ctx.filterBar.modalities() }) ;
         
         iconStackDiv.firstChild.appendChild(iconDiv);

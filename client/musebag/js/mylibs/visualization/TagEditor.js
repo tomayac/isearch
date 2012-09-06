@@ -45,10 +45,14 @@ p.create = function()
    $(tagInput).focus(function(event) {
 		$(this).attr("value", "") ;
 	}) ;
-
+/*
 	var tagsClear = $('<div/>', { "class": "tags-clear" }).appendTo(addTagDiv) ;
 		
+	var tagsButtons = $('<div/>', { "class": "tags-dialog-button-box", css: { margin-top: "10px"} }).appendTo(this.ele) ;
 	
+	var tagsButtonOk = $('<a/>', { text: "Ok"}).appendTo(tagsButtons).button().click(function() { that.dialog}) ;
+	var tagsButtonCancel = $('<a/>', { text: "Cancel"}).appendTo(tagsButtons).button() ;
+*/	
 
 } ;
 
