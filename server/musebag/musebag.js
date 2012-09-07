@@ -91,6 +91,15 @@ var queryWeatherTpl = '<Weather>'
  *  -----------------------------------------------------------------------------
  */
 
+var clone = function(obj) {
+  if (null == obj || "object" != typeof obj) return obj;
+  var copy = obj.constructor();
+  for (var attr in obj) {
+    if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+  }
+  return copy;
+};
+
 var distributeFile = function(destinationUrl, callParams, fileInfo, callback) {
   
   var context = this;
@@ -276,8 +285,9 @@ var getSessionStore = function(req) {
       settings : '{"maxResults" : 100, "clusterType" : "3D", "numClusters" : 5, "transMethod" : "rand"}',
       queries : new Array()
     };
-  };    
-  return req.session.user;
+  };
+
+  return clone(req.session.user);
 };
 
 var setSessionStore = function(req,user) {
@@ -333,15 +343,16 @@ var login = function(req, res){
 	
 	restler
 	.get(verifyURL, { parser: restler.parsers.json })
-	.on('complete', function(data) {		
+	.on('success', function(data) {		
 		
 		//Check if return data is ok
     if(!data.profile) {
     	msg.error = data.err.msg;
     	res.send(JSON.stringify(msg));
     } else {
-      //Get initial user data
+      //Collect initial user data
       var user = getSessionStore(req);
+      
       //Set real user data
       user.userId = data.profile.verifiedEmail;
       user.name = data.profile.name.givenName || '';
@@ -349,16 +360,13 @@ var login = function(req, res){
       user.email = data.profile.verifiedEmail;
       user.username = data.profile.displayName || '';
       
-      //Store user data in session
-      setSessionStore(req,user); 
-			
 			//Test if the user is known by the personalisation component
 			var checkUrl = apcPath + 'resources/users/profileFor/' + user.userId + '/withRole/Consumer';
 			
 			restler
 		  .get(checkUrl)
-		  .on('complete', function(data, response) { 
-
+		  .on('success', function(data, response) { 
+		    
 		    if(data) {		      
 		      //assign retrieved data to local user profile
 		      var name = data.user.name.split(' ');
@@ -393,23 +401,33 @@ var login = function(req, res){
 	        
 	        restler
 	        .postJson(setUrl, callData)
-	        .on('complete', function(data,response) {
+	        .on('success', function(data,response) {
 	           if (response.statusCode == 201) {
 	             console.log("User " + user.userId + " has been successfully created in personalisation component.");
 	           } else {
 	             console.log("Error during user creation of " + user.userId + " in personalisation component.");
 	           }
 	        })
+	        .on('fail', function(data,response) {
+            console.log("Personalisation component query error: response error " + response.statusCode);
+          })
 	        .on('error', function(data,response) {
 	          console.log("Personalisation component query error: " + data.toString());
 	        });	      
 		    }
 		    
+		    //Store user data in session
+        setSessionStore(req,user);
+		    
 		    //Return user data to client
         res.send(JSON.stringify(user));
 		  })
+		  .on('fail', function(data,response) {
+		    msg.error = 'Error ' + response.statusCode;
+        res.send(JSON.stringify(msg));
+      })
 		  .on('error', function(data, response) {
-		    msg.error = data.toString();
+		    msg.error = 'The authentication service refuses connection (' + data.toString() + ')';
 		    res.send(JSON.stringify(msg));
 		  });    
     }
@@ -439,11 +457,13 @@ var logout = function(req, res) {
 
 var profile = function(req, res) {
 	
+  console.log("get profile function called...");
+  
 	var attrib = req.params.attrib;
 	//Get the right session storage (depending on log in status - guest if not, user if yes)
 	var sessionStore = getSessionStore(req);
-
-	if(sessionStore['userId'] === 'guest') {
+	
+	if(!sessionStore['userId'] || sessionStore['userId'] === 'guest') {
 	  res.send(JSON.stringify({
 	    error : 'User is not logged in!',
 	    settings : sessionStore['settings']
@@ -545,20 +565,19 @@ var setProfile = function(req, res) {
       //save the user data in the user profile
       restler
       .postJson(storeURL, sessionStore)
-      .on('complete', function(data,response) {         
-        //Check if return data is ok
-        if (response.statusCode == 201) {
-          data = {success : attrib};
-          sessionStore['state'] = 'member';
-          console.log('Profile data sucessfully transmitted to personalisation web service.');
-          //set the changed temporary profile data to the session profile data
-          setSessionStore(req,sessionStore);
-          //Notify client about success full save
-          res.send(JSON.stringify(data));
-        } else {
-          msg.error = 'Error ' + response.statusCode;
-          res.send(JSON.stringify(msg));
-        }
+      .on('success', function(data,response) {         
+        //use return data if it's there
+        data = {success : attrib};
+        sessionStore['state'] = 'member';
+        console.log('Profile data sucessfully transmitted to personalisation web service.');
+        //set the changed temporary profile data to the session profile data
+        setSessionStore(req,sessionStore);
+        //Notify client about success full save
+        res.send(JSON.stringify(data));
+      })
+      .on('fail', function(data,response) {
+        msg.error = 'Error ' + response.statusCode;
+        res.send(JSON.stringify(msg));
       })
       .on('error', function(data,response) {
         msg.error = data.toString();
@@ -587,23 +606,18 @@ var getProfileHistory = function(req, res) {
     
     restler
     .get(getURL)
-    .on('complete', function(data, response) { 
-      console.log(data);
-      console.log(response.statusCode);
-      
-      //Check if result is ok
-      if (response.statusCode == 200) {
-        //Notify client about successful save
-        res.send(JSON.stringify(data));
-      } else {
-        result.error = 'Error ' + response.statusCode;
-        res.send(JSON.stringify(result));
-      }
-   })
-   .on('error', function(data,response) {
-     result.error = data.toString();
-     res.send(JSON.stringify(result));
-   });
+    .on('success', function(data, response) { 
+      //Notify client about successful save
+      res.send(JSON.stringify(data));
+    })
+    .on('fail', function(data,response) {
+      msg.error = 'Error ' + response.statusCode;
+      res.send(JSON.stringify(msg));
+    })
+    .on('error', function(data,response) {
+      result.error = data.toString();
+      res.send(JSON.stringify(result));
+    })
   } else {
     result.error = 'No history data available for guest users.';
     res.send(JSON.stringify(result));

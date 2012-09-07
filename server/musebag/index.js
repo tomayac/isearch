@@ -91,12 +91,15 @@ app.post('/query/item'      , musebag.queryItem);
 app.post('/query'           , musebag.query);
 
 //Routes for pTag
+console.log("Register pTag functions...");
+
 app.get  ('/ptag/tagRecommendations/:userid', ptag.tagRecommendations);
 app.get  ('/ptag/filterTags/:userid/:query/:resultSetTags', ptag.filterTags);
 app.get  ('/ptag/resultTagRecommendations/:userid/:query/:resultItemTags', ptag.resultTagRecommendations);
 app.post ('/ptag/tag', ptag.tag);
 app.post ('/ptag/implicitTags', ptag.implicitTags);
 
+//Start listening
 app.listen(8081);
 
 //Start CoFind for collaborative search
