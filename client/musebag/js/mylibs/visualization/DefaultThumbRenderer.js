@@ -51,7 +51,7 @@ p.render = function(item, container, options)
 	if ( options.hover ) this.hover = options.hover ;
 	else this.hover = true ;
 	
-	
+	this.onSimilar = options.onSimilar ;
 		
 	var docid = ( item.doc.coid ) ? item.doc.coid : item.doc.id ;
 	
@@ -159,8 +159,8 @@ p.renderDocument = function(doc, mediaType)
 		.appendTo(docPreview) ;
 	
 	docPreview.dialog({
-			width: sw,
-			height: sh,
+			width: 0.9*sw,
+			height: 0.9*sh,
 			modal: true,
 			close: function() {
 				docPreview.empty() ;
@@ -212,7 +212,10 @@ p.renderContents = function(tooltip, thumb, mediaType)
 	var header = $('<div/>', { "class": "tooltip-header" }).appendTo(tooltip);
 	var findSimilar = $('<a/>', {text: "Find similar", href: "javascript:void(0);"}).appendTo(header) ;
 	
-	findSimilar.click(function(){
+	findSimilar.click(
+	
+	function(){
+	/*
 		var path = document.location.pathname ;
 		var args = document.location.search.substring(1).split('&');
 
@@ -235,6 +238,8 @@ p.renderContents = function(tooltip, thumb, mediaType)
 
 	
 		window.location.href = path + '?idx=' + argsParsed['idx'] + '&mode=vis' + '&s=' + thumb.doc.id ;
+		*/
+		that.onSimilar(thumb.doc.id) ;
 		return false ;
 	}) ;
 	
@@ -254,6 +259,7 @@ p.renderContents = function(tooltip, thumb, mediaType)
 		.appendTo(slideShow)
 		.click(function() {
 				that.renderDocument(thumb.doc, mediaType) ;
+				return false ;
 		}) ;		
 		
 				

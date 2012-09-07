@@ -1,6 +1,6 @@
-require(["jquery", "mylibs/visualization/ThumbRendererFactory", "libs/timeline_2.3.0/timeline_js/timeline-api", "!js/libs/jquery.mousewheel.min.js"
+require(["jquery", "mylibs/query", "mylibs/visualization/ThumbRendererFactory", "libs/timeline_2.3.0/timeline_js/timeline-api", "!js/libs/jquery.mousewheel.min.js"
 	],
-    function($, rf) {
+    function($, query, rf) {
 ThumbContainer = function(containerDiv, data, options, ctx) {	
   
 	$(containerDiv).empty() ;	
@@ -89,8 +89,13 @@ p.thumbRenderer = null ;
 p.navMode = null ;
 
 
+
 ThumbContainer.zoomScales = [0.25, 0.5, 1.0, 1.5, 2.0, 3.0, 4.0] ;	
+
+
+
   	
+ 		  
 p.createCanvas = function()	{	
 	
 	var obj = this ;	
@@ -157,7 +162,7 @@ p.createCanvas = function()	{
 	$(this.thumbViewport).droppable({
 		drop: function(e, ui) {
 		var draggable = ui.draggable;
-			alert( 'The square with ID "' + draggable.attr('docid') + '" was dropped onto me!' );
+			console.log( 'The square with ID "' + draggable.attr('docid') + '" was dropped onto me!' );
 		}
 	} );
 	// add thumbnail view that may be larger than viewport when zoomed
@@ -193,6 +198,13 @@ p.createCanvas = function()	{
 	}
 };
 
+// what happens when the user presses find similar button
+
+p.findSimilar = function(id) {
+
+	query.similar(id) ;
+
+};
 // Handles rubber-banding and thumbnail selection
 
 p.handleSelection = function(e)
@@ -322,48 +334,7 @@ p.updateSelection = function(rx, ry, rw, rh)
 		
 	}) ;
 };
-/*
-p.handleTranslate = function(e) {
 
-	var that = this;
-		
-	this.startTransX = e.pageX ;
-	this.startTransY = e.pageY ;
-	
-	this.currentTransX = e.pageX ;
-	this.currentTransY = e.pageY ;
-	
-	var handleMouseMove = function(e) {
-		var cx = e.pageX ;
-		var cy = e.pageY ;
-		
-		var ox = cx - that.currentTransX ;
-		var oy = cy - that.currentTransY ;
-		
-		that.currentTransX = e.pageX ;
-	    that.currentTransY = e.pageY ;
-		
-		$('.thumbnail', that.containerDiv).each(function() {
-			var _ox = $(this).position().left ;
-			var _oy = $(this).position().top ;
-			$(this).css("left", _ox + ox + "px") ;
-			$(this).css("top", _oy + oy + "px") ;
-		});
-	};
-	
-	var handleMouseUp  = function(e) {
-		$(that.containerDiv).unbind("mousemove", handleMouseMove) ;
-		$(that.containerDiv).unbind("mouseup", handleMouseUp) ;
-		that.offsetX += that.currentTransX - that.startTransX ;
-		that.offsetY += that.currentTransY - that.startTransY ;
-	};
-	
-	$(this.containerDiv).bind("mousemove", handleMouseMove) ;
-	$(this.containerDiv).bind("mouseup", handleMouseUp) ;
-	
-
-} ;
-*/
 
 // navigation (paging) bar drawing
 p.redrawNavBar = function(page, maxPage, width)	
@@ -391,8 +362,6 @@ p.redrawNavBar = function(page, maxPage, width)
 		}	
 	}	
 
-		
-			
 	if ( page > 1 ) 	
 	{	
 		p = page - 1 ;	
@@ -795,7 +764,7 @@ p.createThumbnail = function(i, x, y, sw, tclass)
     });
 	
 	// use the thumbRenderer to actually render the item in the box
-	this.thumbRenderer.render(item, imgOut, { viewport: this.thumbViewport, selected: this.ctx.filterBar.modalities(), modalities: this.ctx.modalities, hover: (this.navMode=='browse')?true:false, config: this.ctx.config }) ;
+	this.thumbRenderer.render(item, imgOut, { viewport: this.thumbViewport, selected: this.ctx.filterBar.modalities(), modalities: 			this.ctx.modalities, hover: (this.navMode=='browse')?true:false, onSimilar: this.findSimilar }) ;
 	
 	
 	
@@ -1130,7 +1099,7 @@ p.showTimeline = function()
 		iconDiv.style.width = iconData.width + "px" ;
 		iconDiv.style.height = iconData.height + "px" ;
 		
-		obj.thumbRenderer.render(iconData.data, $(iconDiv), { viewport: $(this._eventLayer), selected: obj.ctx.filterBar.modalities(), modalities: obj.ctx.modalities, config: this.ctx.config }) ;
+		obj.thumbRenderer.render(iconData.data, $(iconDiv), { viewport: $(this._eventLayer), selected: obj.ctx.filterBar.modalities(), modalities: obj.ctx.modalities, onSimilar: obj.findSimilar }) ;
 		//iconDiv.appendChild(img);
     
 		//if ("tooltip" in commonData && typeof commonData.tooltip == "string") {
@@ -1291,7 +1260,7 @@ p.showTimeline = function()
 	//iconDiv.style.width = iconData.width + "px" ;
 	//	iconDiv.style.height = iconData.height + "px" ;
 		
-	obj.thumbRenderer.render(iconData.data, $(iconStackDiv), { viewport: $(this._eventLayer), selected: obj.ctx.filterBar.modalities(), modalities: obj.ctx.modalities, square: true, config: this.ctx.config }) ;
+	obj.thumbRenderer.render(iconData.data, $(iconStackDiv), { viewport: $(this._eventLayer), selected: obj.ctx.filterBar.modalities(), modalities: obj.ctx.modalities, square: true, onSimilar: obj.findSimilar }) ;
 		
    // iconStackDiv.innerHTML = "<div style='position: relative'></div>";
     this._eventLayer.appendChild(iconStackDiv);

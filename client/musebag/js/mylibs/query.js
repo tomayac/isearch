@@ -1,4 +1,4 @@
-define("mylibs/query", ["mylibs/config",], function(config) {
+define("mylibs/query", ["mylibs/config", "mylibs/results"], function(config, results) {
   
   var getQueryItems = function() {
     
@@ -153,13 +153,52 @@ define("mylibs/query", ["mylibs/config",], function(config) {
     }
   };
   
+  
+   var similar = function(id) {
+    
+      var query = { similarTo: id  } ;
+	  
+      //Send it to the server
+	  
+	  var mqfUrl = config.constants.queryFormulatorUrl || 'query' ;
+	  
+	  if ( config.constants.queryOptions.maxNumResults ) mqfUrl += '&total=' + config.constants.queryOptions.maxNumResults ;
+	  if ( config.constants.queryOptions.clusters0 ) mqfUrl += '&cls=' + config.constants.queryOptions.clusters0 ;
+	  if ( config.constants.queryOptions.trans ) mqfUrl += '&tr=' + config.constants.queryOptions.trans ;
+	  if ( config.constants.queryOptions.smatrix === true ) mqfUrl += '&smat=true' ;
+	  
+      $.ajax({
+        type: "POST",
+        crossDomain: true,
+        url:  mqfUrl,
+        data: JSON.stringify(query),
+        contentType : "application/json; charset=utf-8",
+        dataType : "json",
+        success: function(data) {
+          //parse the result
+          console.log("Search query submitted.");
+          console.dir(data);
+          results.display(data) ;
+        },
+        error: function(jqXHR, error, object) {
+          alert("the server gave me an invalid result."); 
+          console.log("Error during submitting query: " + data.error);
+        },
+        complete: function() {
+          $.event.trigger( "ajaxStop" );
+        }
+      });
+      
+  };
+  
   var reset = function() {
     
   };
   
   return {
     submit: submit,
-    reset: reset
+    reset: reset,
+    similar: similar
   };
     
 });
