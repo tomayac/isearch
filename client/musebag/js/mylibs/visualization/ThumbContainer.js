@@ -604,7 +604,7 @@ p.createThumbnail = function(i, x, y, sw, tclass)
 							}
 						}
 									
-						var tagEditor = new TagEditor(popupDiv, allTags, that.ctx.tagManager.tags) ;
+						var tagEditor = new TagEditor(popupDiv, allTags, that.ctx.tagManager.tags, function(){}) ;
 						
 						$(popupDiv).dialog( { 
 							close: 	function(event, ui) {

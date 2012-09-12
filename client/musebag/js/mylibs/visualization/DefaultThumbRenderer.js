@@ -176,10 +176,12 @@ p.renderContents = function(tooltip, thumb, mediaType)
 		
 	// if multi-media display toolbar
 		
+	$('.tooltip-toolbar', tooltip).remove() ;
+	
 	var that = this;
 	if ( mediaTypes.count > 1 )
 	{
-		$('.tooltip-toolbar', tooltip).remove() ;
+		
 		var tb = $('<div/>', { "class": "tooltip-toolbar" }).appendTo(tooltip) ;
 			
 		for ( var i=0 ; i<mediaTypes.types.length ; i++ )
