@@ -9,8 +9,8 @@ function localConfig(data)
 	{ "image": { label: "Images"}, "3d": { label: "3D models" }, "audio": { label: "Audio"}, "video": { label: "Video"}  }	;
 
 	data.fileUploadServer = "http://vision.iti.gr/isearch/server/scripts/upload.php";
-	//data.queryFormulatorUrl = "http://vision.iti.gr/isearch/server/scripts/mqf.php?index=uc6";
-	data.queryFormulatorUrl = "http://vision.iti.gr/isearch/server/scripts/proxy.php?index=uc6&t=" + Math.floor(Math.random()*83483) ; 
+	data.queryFormulatorUrl = "http://vision.iti.gr/isearch/server/scripts/mqf.php?index=uc6";
+	//data.queryFormulatorUrl = "http://vision.iti.gr/isearch/server/scripts/proxy.php?index=uc6&t=" + Math.floor(Math.random()*83483) ; 
 	data.userProfileServerUrl = "http://vision.iti.gr/isearch/server/scripts/user.php?mode=Profile&key=";
 	data.userLoginServerUrl = "http://vision.iti.gr/isearch/server/scripts/user.php?mode=login";
 	data.userLogoutServerUrl = "http://vision.iti.gr/isearch/server/scripts/user.php?mode=logout";

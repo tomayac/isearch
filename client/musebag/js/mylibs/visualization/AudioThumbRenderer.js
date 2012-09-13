@@ -31,7 +31,7 @@ p.render = function(item, container, options)
 	
 	var textDiv = $('<div/>', { "class": "audio-description", css: { position: "absolute", left: tw + tm, top: tm, width: w - tw - tm, height: th - tm - tm }}).appendTo(img) ;
 
-	var desc = item.doc.tags['TableViewLabel'] ;
+	var desc = item.doc.tableDesc ;
 	
 	if ( !desc ) desc = ThumbContainer.selectTooltipText(item.doc) ;
 	var textSpan = $('<span/>', { text: desc  }).appendTo(textDiv) ;
