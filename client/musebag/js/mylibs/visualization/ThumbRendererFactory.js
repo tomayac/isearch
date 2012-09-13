@@ -8,6 +8,7 @@ define("mylibs/visualization/ThumbRendererFactory",
     
        	var create = function(name)
     	{
+    	
     		if ( name == "default" )
     			return defaultThumbRenderer ;			 	
 			else if ( name == "audio" )

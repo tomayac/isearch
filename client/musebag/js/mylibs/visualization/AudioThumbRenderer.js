@@ -4,12 +4,14 @@ AudioThumbRenderer = function() {
 	
 };	
 
+
 var p = AudioThumbRenderer.prototype;	
 
 AudioThumbRenderer.thumbMargin = 4 ;
 
 p.render = function(item, container, options)
 {
+
 	this.selected = options.selected ;
 
 	var tm = DefaultThumbRenderer.thumbMargin ;
@@ -17,7 +19,7 @@ p.render = function(item, container, options)
 	var h = $(container).height() ;
 	
 	var tw = h, th = h ;
-		
+		;
 	var visBox = options.viewport ;
 		
 	var docid = ( item.doc.coid ) ? item.doc.coid : item.doc.id ;
@@ -29,7 +31,10 @@ p.render = function(item, container, options)
 	
 	var textDiv = $('<div/>', { "class": "audio-description", css: { position: "absolute", left: tw + tm, top: tm, width: w - tw - tm, height: th - tm - tm }}).appendTo(img) ;
 
-	var textDiv = $('<span/>', { text: "Hello"  }).appendTo(textDiv) ;
+	var desc = item.doc.tags['TableViewLabel'] ;
+	
+	if ( !desc ) desc = ThumbContainer.selectTooltipText(item.doc) ;
+	var textSpan = $('<span/>', { text: desc  }).appendTo(textDiv) ;
 		
 	this.img = thumbDiv ;
 

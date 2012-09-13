@@ -2,7 +2,7 @@ function localConfig(data) {
 	data.visOptions.method = 'classic';
 	data.visOptions.thumbOptions.thumbSize = 128;
 	data.visOptions.thumbOptions.iconArrange = "list";
-	data.visOptions.thumbRender = "audio";
+	data.visOptions.thumbOptions.thumbRenderer = "audio";
 
 	data.visOptions.filterBar.modalities = {
 		"audio": {
