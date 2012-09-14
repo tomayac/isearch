@@ -34,7 +34,8 @@ p.render = function(item, container, options)
 	var desc = item.doc.tableDesc ;
 	
 	if ( !desc ) desc = ThumbContainer.selectTooltipText(item.doc) ;
-	var textSpan = $('<span/>', { text: desc  }).appendTo(textDiv) ;
+		
+	textDiv.html(desc) ;
 		
 	this.img = thumbDiv ;
 
@@ -149,8 +150,15 @@ p.renderContents = function(tooltip, thumb)
 	{
 		var media = thumb.doc.media[i] ;
 							
-		var urlOgg, urlMp3, urlPng, urlSvg, urlJpg, urlImg ;
+		var urlOgg, urlMp3, urlPng, urlSvg, urlJpg, urlImg, urlUnknown ;
 			
+		if ( media.format == "image/png" ) urlPng = media.url ;
+		else if ( media.format == "image/jpg" ||  media.format == "image/jpeg" ) urlJpg = media.url ;
+		else if ( media.format == "image/svg+xml" ) urlSvg = media.url ;
+		else if ( media.format == "audio/mpeg" ) urlMp3 = media.url ;
+		else if ( media.format == "audio/ogg" ) urlOgg = media.url ;
+		else if ( media.format == "" ) urlUnknown = media.url ;
+
 		for(var j=0 ; j<media.previews.length ; j++ )
 		{
 			var  preview = media.previews[j] ;

@@ -420,19 +420,22 @@ var AudioRenderer = function(containerDiv, urlMp3, urlOgg, urlImg, mediaUrl, vis
 
 	function fallbackSM2() 
 	{
-	
 
 		$.getScript("js/mylibs/visualization/audio/soundmanager/soundmanager2.js", function(data, textStatus) {
 		
 			soundManager.flashVersion = 9;
 			soundManager.flash9Options.useEQData = true;
 			soundManager.flash9Options.useWaveformData = true;
+		//	soundManager.useHTML5Audio = true ;
+		//	soundManager.preferFlash = false ;
+			
 			//soundManager.useHighPerformance = true;
 			soundManager.allowPolling = true;
-			soundManager.url = 'http://localhost/isearch/client/musebag/js/mylibs/visualization/audio/soundmanager/'; // path to directory containing SoundManager2 .SWF file
+			soundManager.url = '/isearch/client/musebag/js/mylibs/visualization/audio/soundmanager/'; // path to directory containing SoundManager2 .SWF file
 			soundManager.onload = function() {
 			
 				soundManagerLoaded = true;
+			
 			
 			
 				var audioElement = $('<div/>', { "class": "sm2-audio-fallback" }).appendTo(containerDiv) ;
@@ -446,7 +449,7 @@ var AudioRenderer = function(containerDiv, urlMp3, urlOgg, urlImg, mediaUrl, vis
 					
 					if ( sm2sound.playState == 0 || sm2sound.paused ) 
 					{
-						sm2sound.play(); 
+						sm2sound.play(	{ position: (startTime && startTime > 0) ? startTime * 1000 : 0 } ); 
 						
 					}
 					else {
@@ -491,11 +494,18 @@ var AudioRenderer = function(containerDiv, urlMp3, urlOgg, urlImg, mediaUrl, vis
 					
 				});
 				
+			//	if (startTime && startTime > 0)
+			//	{
+				
+			//	}
+				
+				
+				
 				
 				
 			};
-			soundManager.debugMode = false;
-			soundManager.debugFlash = false;
+			soundManager.debugMode = true;
+			soundManager.debugFlash = true;
 			soundManager.beginDelayedInit();
 		
 		});
@@ -586,7 +596,7 @@ var AudioRenderer = function(containerDiv, urlMp3, urlOgg, urlImg, mediaUrl, vis
 					if ( urlMp3 )
 						$('<source>').attr('src', urlMp3).appendTo(audioElement);  
 				}
-					
+
 				audio.addEventListener('MozAudioAvailable', audioAvailable, false);
 				audio.addEventListener('loadedmetadata', loadedMetadata, false);
 				
@@ -617,12 +627,13 @@ var AudioRenderer = function(containerDiv, urlMp3, urlOgg, urlImg, mediaUrl, vis
 	
 	function terminate()
 	{
-		if ( sm2obj ) sm2obj.stop() ;
+		if ( sm2sound ) sm2sound.stop() ;
 		else audio.pause() ;
 	}
 
-	if ( mode ) init(mode) ;
-	else init("html5") ;
+	if ( !mode ) mode = "html5" ;
+	init(mode) ;
+	
 	
 	return { 'terminate': terminate } ;
 }
