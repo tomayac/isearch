@@ -16,8 +16,6 @@ define("mylibs/menu",
     };
 
     var hasNav = false;
-    var attachedModes = []; //Stock the attached events
-                            //(we don't want to attach them each time a panel is displayed)
     var slider = null;
 
     var menu = $('nav.query-composition');
@@ -153,567 +151,524 @@ define("mylibs/menu",
     };
 
     var attachEvents = function(mode) {
-
-      if (mode === 'text' && !isAttached('text')) {
-        attachTextEvents();
-      } else if (mode === 'geolocation' && !isAttached('geolocation')) {
-        attachGeolocationEvents();
-      } else if (mode === '3d' && !isAttached('3d')) {
-        attach3dEvents();
-      } else if (mode === 'image' && !isAttached('image')) {
-        attachImageEvents();
-      } else if (mode === 'video' && !isAttached('video')) {
-        attachVideoEvents();
-      } else if (mode === 'emotion' && !isAttached('emotion')) {
-        attachEmotionEvents();
-      } else if (mode === 'sketch' && !isAttached('sketch')) {
-        attachSketchEvents();
-      } else if (mode === 'sound' && !isAttached('sound')) {
-        attachSoundEvents();
-      } else if (mode === 'rhythm' && !isAttached('rhythm')) {
-        attachRhythmEvents();
-      } else {
-        console.log('Didn\'t attach the event for mode ' + mode);
-        return;
+      if (!handledEvents[mode]) {
+        console.log('No events handle for `'+mode+'`');
+      } else if (!handledEvents[mode].isAttached) {
+        handledEvents[mode]();
+        handledEvents[mode].isAttached = true;
       }
     };
 
-    var isAttached = function(mode) {
-      //is a mode attached to the menu? (i.e events bound)
-      if($.inArray(mode, attachedModes) === -1) {
-        return false;
-      }
-      return true;
-    };
-
-    var attachTextEvents = function() {
-      $('.panel.text input').click(function(){
-        $(this).val('');
-      });
-      $('.panel.text button').click(function(){
-        console.log('Text button clicked');
-
-        var textIcon = $('nav li[data-mode="text"]');
-        textIcon.addClass('uploading');
-
-        var textBox = $('.panel.text input');
-        var searchQuery = textBox.val();
-        console.log('Search term is ' + searchQuery);
-
-        //Transfer the query to the main field via the query handler
-        query.addItems(searchQuery,query.types.Text,function() {
-          textIcon.removeClass('uploading');
-          //Empty the text field of the panel
-          textBox.val('');
+    // Collection of all available events
+    var handledEvents = {
+      text: function() {
+        $('.panel.text input').click(function(){
+          $(this).val('');
         });
+        $('.panel.text button').click(function(){
+          console.log('Text button clicked');
 
-        reset();
-        attachedModes.push('text');
-      });
-    };
+          var textIcon = $('nav li[data-mode="text"]');
+          textIcon.addClass('uploading');
 
-    /**
-     * Triantafillos: find real location with HTML5 geo-location API.
-     */
-    var attachGeolocationEvents = function() {
-      $('.panel.geolocation #getCurrentLocation').click(function(){
-        console.log('Button geolocation pressed');
+          var textBox = $('.panel.text input');
+          var searchQuery = textBox.val();
+          console.log('Search term is ' + searchQuery);
 
-        var geoIcon = $('nav li[data-mode="geolocation"]');
-        geoIcon.addClass('uploading');
-
-        location.getCurrentLocation(function(position) {
-
-          var data = {
-            'image'        : 'img/fake/fake-geolocation.jpg', //if image if given, then it is used as replacement instead of showing the text value
-            'text'         : position.coords.latitude + ' ' + position.coords.longitude,
-            'data-subtype' : 'Location'
-          };
-
-          query.addItems(data,query.types.Text,function() {
-            geoIcon.removeClass('uploading');
+          //Transfer the query to the main field via the query handler
+          query.addItems(searchQuery,query.types.Text,function() {
+            textIcon.removeClass('uploading');
+            //Empty the text field of the panel
+            textBox.val('');
           });
 
           reset();
-          attachedModes.push('geolocation');
         });
+      },
 
-      });
+      /**
+       * Triantafillos: find real location with HTML5 geo-location API.
+       */
+      geolocation: function() {
+        $('.panel.geolocation #getCurrentLocation').click(function(){
+          console.log('Button geolocation pressed');
 
-      $('.panel.geolocation #chooseLocation').click(function(){
-      	location.showMap(function(lat, lon){
-      	  var data = {
-              'image'   : 'img/fake/fake-geolocation.jpg', //if image if given, then it is used as replacement instead of showing the text value
-              'text' : lat + ' ' + lon,
-              'data-subtype' : 'Location'
-            };
-      	  query.addItems(data,query.types.Text);
+          var geoIcon = $('nav li[data-mode="geolocation"]');
+          geoIcon.addClass('uploading');
 
-          reset();
-          attachedModes.push('geolocation');
-      	});
-      });
-
-    };
-
-    var attachEmotionEvents = function() {
-
-      // emotions slider initialization
-      var div = document.getElementById("emotion-slider");
-      slider = new SmileySlider(div);
-      var first = true;
-      // start with neutral emotions
-      slider.position(0.5);
-      var emotionIcon = $('nav li[data-mode="emotion"]');
-      // get the smiley canvas
-      var canvas = $("#emotion-slider canvas:first")[0];
-      var emotionTimeout = null;
-      slider.position(function(p) {
-        emotionIcon.addClass('uploading');
-        if (!first && p != 0.5) {
-          if (emotionTimeout) {
-            clearTimeout(emotionTimeout);
-          }
-          emotionTimeout = setTimeout(function() {
+          location.getCurrentLocation(function(position) {
 
             var data = {
-              'image'        : canvas.toDataURL("image/png"), //if image if given, then it is used as replacement instead of showing the text value
-              'text'         : p,
-              'data-subtype' : 'Emotion'
+              'image'        : 'img/fake/fake-geolocation.jpg', //if image if given, then it is used as replacement instead of showing the text value
+              'text'         : position.coords.latitude + ' ' + position.coords.longitude,
+              'data-subtype' : 'Location'
             };
-            query.updateItem('emotion',data,query.types.Text);
 
-          }, 200);
-        }
+            query.addItems(data,query.types.Text,function() {
+              geoIcon.removeClass('uploading');
+            });
 
-        first = false;
-        //Remove the "uploading style" | Note: this won't be visible, hopefully
-        emotionIcon.removeClass('uploading');
-
-        //reset();
-        attachedModes.push('emotion');
-
-      });
-    };
-
-
-    var attach3dEvents = function() {
-
-    	//Drag and Drop of files
-	    var pictureIcon = $('nav li[data-mode="3d"]');
-
-	    $('#threedDrop').uiiface({
-        events : 'drop',
-        callback : function(event){
-          pictureIcon.addClass('uploading');
-          query.addItems(event.originalEvent,query.types.Threed,function(fileInfo) {
-            pictureIcon.removeClass('uploading');
+            reset();
           });
-          reset();
-          attachedModes.push('3d');
-        }
-      });
 
-	    //Invisible file input
-	    $('#threedUpload').change(function(event) {
-
-	      query.addItems(event,query.types.Threed,function(fileInfo) {
-          pictureIcon.removeClass('uploading');
         });
 
-	    	event.preventDefault();
-	    	return false;
-	    });
+        $('.panel.geolocation #chooseLocation').click(function(){
+        	location.showMap(function(lat, lon){
+        	  var data = {
+                'image'   : 'img/fake/fake-geolocation.jpg', //if image if given, then it is used as replacement instead of showing the text value
+                'text' : lat + ' ' + lon,
+                'data-subtype' : 'Location'
+              };
+        	  query.addItems(data,query.types.Text);
 
-	    //Trigger button for file input
-	    $('.panel.3d button').click(function(){
-        console.log('Button 3d pressed');
-        pictureIcon.addClass('uploading');
+            reset();
+        	});
+        });
+      },
 
-        $('#threedUpload').click();
+      emotion: function() {
 
-        reset();
-        attachedModes.push('3d');
+        // emotions slider initialization
+        var div = document.getElementById("emotion-slider");
+        slider = new SmileySlider(div);
+        var first = true;
+        // start with neutral emotions
+        slider.position(0.5);
+        var emotionIcon = $('nav li[data-mode="emotion"]');
+        // get the smiley canvas
+        var canvas = $("#emotion-slider canvas:first")[0];
+        var emotionTimeout = null;
+        slider.position(function(p) {
+          emotionIcon.addClass('uploading');
+          if (!first && p != 0.5) {
+            if (emotionTimeout) {
+              clearTimeout(emotionTimeout);
+            }
+            emotionTimeout = setTimeout(function() {
 
-      });
-    };
+              var data = {
+                'image'        : canvas.toDataURL("image/png"), //if image if given, then it is used as replacement instead of showing the text value
+                'text'         : p,
+                'data-subtype' : 'Emotion'
+              };
+              query.updateItem('emotion',data,query.types.Text);
 
-    var attachImageEvents = function() {
+            }, 200);
+          }
 
-    	//Drag and Drop of files
-	    //var handler = new filehandler.FileHandler('imageDrop',['jpg','png','gif'],config.constants.fileUploadServer,getQueryItemCount());
-	    var pictureIcon = $('nav li[data-mode="image"]');
+          first = false;
+          //Remove the "uploading style" | Note: this won't be visible, hopefully
+          emotionIcon.removeClass('uploading');
 
-	    //Drop trigger for image upload
-	    $('#imageDrop').uiiface({
-        events : 'drop',
-        callback : function(event){
+          //reset();
+        });
+      },
 
-          pictureIcon.addClass('uploading');
-          //add Items takes the following parameters: fileDrop event || canvas element id,
-          //type of uploaded media, callback function when upload is complete
-          query.addItems(event.originalEvent,query.types.Image,function(fileInfo) {
+
+      '3d': function() {
+
+      	//Drag and Drop of files
+  	    var pictureIcon = $('nav li[data-mode="3d"]');
+
+  	    $('#threedDrop').uiiface({
+          events : 'drop',
+          callback : function(event){
+            pictureIcon.addClass('uploading');
+            query.addItems(event.originalEvent,query.types.Threed,function(fileInfo) {
+              pictureIcon.removeClass('uploading');
+            });
+            reset();
+          }
+        });
+
+  	    //Invisible file input
+  	    $('#threedUpload').change(function(event) {
+
+  	      query.addItems(event,query.types.Threed,function(fileInfo) {
             pictureIcon.removeClass('uploading');
           });
+
+  	    	event.preventDefault();
+  	    	return false;
+  	    });
+
+  	    //Trigger button for file input
+  	    $('.panel.3d button').click(function(){
+          console.log('Button 3d pressed');
+          pictureIcon.addClass('uploading');
+
+          $('#threedUpload').click();
+
           reset();
-          attachedModes.push('image');
-        }
-	    });
+        });
+      },
 
-	    //Invisible file input
-	    $('#imageUpload').change(function(event) {
+      image: function() {
 
-	      query.addItems(event,query.types.Image,function(fileInfo) {
-	        pictureIcon.removeClass('uploading');
-	      });
-	    	event.preventDefault();
-	    	return false;
+      	//Drag and Drop of files
+  	    //var handler = new filehandler.FileHandler('imageDrop',['jpg','png','gif'],config.constants.fileUploadServer,getQueryItemCount());
+  	    var pictureIcon = $('nav li[data-mode="image"]');
 
-	    });
+  	    //Drop trigger for image upload
+  	    $('#imageDrop').uiiface({
+          events : 'drop',
+          callback : function(event){
 
-	    //Trigger button for file input
-	    $('.panel.image button.upload').click(function(){
+            pictureIcon.addClass('uploading');
+            //add Items takes the following parameters: fileDrop event || canvas element id,
+            //type of uploaded media, callback function when upload is complete
+            query.addItems(event.originalEvent,query.types.Image,function(fileInfo) {
+              pictureIcon.removeClass('uploading');
+            });
+            reset();
+          }
+  	    });
 
-	      pictureIcon.addClass('uploading');
-	    	$('#imageUpload').click();
+  	    //Invisible file input
+  	    $('#imageUpload').change(function(event) {
 
-	    	reset();
-	      attachedModes.push('image');
-	    });
+  	      query.addItems(event,query.types.Image,function(fileInfo) {
+  	        pictureIcon.removeClass('uploading');
+  	      });
+  	    	event.preventDefault();
+  	    	return false;
 
-	    addMediaCapture('image');
-    };
+  	    });
 
-    var attachVideoEvents = function() {
+  	    //Trigger button for file input
+  	    $('.panel.image button.upload').click(function(){
 
-    	//Drag and Drop of files
-	    var videoIcon = $('nav li[data-mode="video"]');
+  	      pictureIcon.addClass('uploading');
+  	    	$('#imageUpload').click();
 
-	    //Drop trigger for video upload
-	    $('#videoDrop').uiiface({
-        events : 'drop',
-        callback : function(event){
-          videoIcon.addClass('uploading');
-          query.addItems(event.originalEvent,query.types.Video,function(fileInfo) {
+  	    	reset();
+  	    });
+
+  	    addMediaCapture('image');
+      },
+
+      video: function() {
+
+      	//Drag and Drop of files
+  	    var videoIcon = $('nav li[data-mode="video"]');
+
+  	    //Drop trigger for video upload
+  	    $('#videoDrop').uiiface({
+          events : 'drop',
+          callback : function(event){
+            videoIcon.addClass('uploading');
+            query.addItems(event.originalEvent,query.types.Video,function(fileInfo) {
+              videoIcon.removeClass('uploading');
+            });
+            reset();
+          }
+        });
+
+  	    //Invisible file input
+  	    $('#videoUpload').change(function(event) {
+
+  	      query.addItems(event,query.types.Video,function(fileInfo) {
             videoIcon.removeClass('uploading');
           });
+
+  	    	event.preventDefault();
+  	    	return false;
+  	    });
+  	    //Trigger button for file input
+  	    $('.panel.video button.upload').click(function(){
+
+  	      videoIcon.addClass('uploading');
+  	    	$('#videoUpload').click();
+
+  	    	//reset();
+  	    });
+
+  	    addMediaCapture('video');
+      },
+
+      sketch: function() {
+
+        $('#sketch').uiiface('sketch');
+
+        $('#sketch').uiiface({
+          events : 'reset',
+          callback : function(event){
+            var canvas = $('#sketch')[0];
+            var context = canvas.getContext('2d');
+            context.clearRect(0, 0, canvas.width, canvas.height);
+          }
+        });
+
+        $('.panel.sketch button.done').click(function(event){
+
+          console.log('Button "sketch done" pressed');
+
+          var sketchIcon = $('nav li[data-mode="sketch"]');
+          sketchIcon.addClass('uploading');
+
+          //----
+          query.addItems('#sketch',query.types.Image,function(fileInfo) {
+            sketchIcon.removeClass('uploading');
+          });
+
           reset();
-          attachedModes.push('video');
-        }
-      });
+          //----
 
-	    //Invisible file input
-	    $('#videoUpload').change(function(event) {
+          event.preventDefault();
+          return false;
 
-	      query.addItems(event,query.types.Video,function(fileInfo) {
-          videoIcon.removeClass('uploading');
+        });
+      },
+
+      sound: function() {
+
+      	//Drag and Drop of files
+  	    var pictureIcon = $('nav li[data-mode="sound"]');
+
+  	    $('#soundDrop').uiiface({
+          events : 'drop',
+          callback : function(event){
+            pictureIcon.addClass('uploading');
+            query.addItems(event.originalEvent,query.types.Audio,function(fileInfo) {
+              pictureIcon.removeClass('uploading');
+            });
+            reset();
+          }
         });
 
-	    	event.preventDefault();
-	    	return false;
-	    });
-	    //Trigger button for file input
-	    $('.panel.video button.upload').click(function(){
+  	    //Invisible file input
+  	    $('#soundUpload').change(function(event) {
 
-	      videoIcon.addClass('uploading');
-	    	$('#videoUpload').click();
-
-	    	//reset();
-	      attachedModes.push('video');
-	    });
-
-	    addMediaCapture('video');
-    };
-
-    var attachSketchEvents = function() {
-
-      $('#sketch').uiiface('sketch');
-
-      $('#sketch').uiiface({
-        events : 'reset',
-        callback : function(event){
-          var canvas = $('#sketch')[0];
-          var context = canvas.getContext('2d');
-          context.clearRect(0, 0, canvas.width, canvas.height);
-        }
-      });
-
-      $('.panel.sketch button.done').click(function(event){
-
-        console.log('Button "sketch done" pressed');
-
-        var sketchIcon = $('nav li[data-mode="sketch"]');
-        sketchIcon.addClass('uploading');
-
-        //----
-        query.addItems('#sketch',query.types.Image,function(fileInfo) {
-          sketchIcon.removeClass('uploading');
-        });
-
-        reset();
-        attachedModes.push('sketch');
-        //----
-
-        event.preventDefault();
-        return false;
-
-      });
-    };
-
-    var attachSoundEvents = function() {
-
-    	//Drag and Drop of files
-	    var pictureIcon = $('nav li[data-mode="sound"]');
-
-	    $('#soundDrop').uiiface({
-        events : 'drop',
-        callback : function(event){
-          pictureIcon.addClass('uploading');
-          query.addItems(event.originalEvent,query.types.Audio,function(fileInfo) {
+  	      query.addItems(event,query.types.Audio,function(fileInfo) {
             pictureIcon.removeClass('uploading');
           });
-          reset();
-          attachedModes.push('sound');
-        }
-      });
 
-	    //Invisible file input
-	    $('#soundUpload').change(function(event) {
+  	    	event.preventDefault();
+  	    	return false;
+  	    });
 
-	      query.addItems(event,query.types.Audio,function(fileInfo) {
-          pictureIcon.removeClass('uploading');
+  	    //Trigger button for file input
+  	    $('.panel.sound button.upload').click(function(){
+
+  	      pictureIcon.addClass('uploading');
+
+  	    	$('#soundUpload').click();
+
+  	    	reset();
+  	    });
+
+    		// sound recording
+    		$('.panel.sound button.record').click(function(){
+
+    			pictureIcon.addClass('uploading');
+
+          Wami.setUploadCallback(function(data){
+            var fileInfo = JSON.parse(data[0]);
+            query.addItems(fileInfo,query.types.Audio);
+            pictureIcon.removeClass('uploading');
+            reset();
+          });
+
+    			if($(this).text() === "Start") {
+    				$(this).text("Stop") ;
+    				Wami.startRecording(config.constants.fileUploadServer);
+    			} else {
+    				Wami.stopRecording() ;
+    				$(this).text("Start") ;
+    			}
+    	  });
+      },
+
+      rhythm: function() {
+
+      	//Drag and Drop of files
+  	    var rhythmIcon = $('nav li[data-mode="rhythm"]');
+
+  	    $('#rhythmDrop').uiiface({
+          events : 'drop',
+          callback : function(event){
+            pictureIcon.addClass('uploading');
+            query.addItems(event.originalEvent,query.types.Audio,function(fileInfo) {
+              pictureIcon.removeClass('uploading');
+            });
+            reset();
+          }
         });
 
-	    	event.preventDefault();
-	    	return false;
-	    });
+  	    //Invisible file input
+  	    $('#rhythmUpload').change(function(event) {
 
-	    //Trigger button for file input
-	    $('.panel.sound button.upload').click(function(){
-
-	      pictureIcon.addClass('uploading');
-
-	    	$('#soundUpload').click();
-
-	    	reset();
-	      attachedModes.push('sound');
-	    });
-
-  		// sound recording
-  		$('.panel.sound button.record').click(function(){
-
-  			pictureIcon.addClass('uploading');
-
-        Wami.setUploadCallback(function(data){
-          var fileInfo = JSON.parse(data[0]);
-          query.addItems(fileInfo,query.types.Audio);
-          pictureIcon.removeClass('uploading');
-          reset();
-          attachedModes.push('sound');
-        });
-
-  			if($(this).text() === "Start") {
-  				$(this).text("Stop") ;
-  				Wami.startRecording(config.constants.fileUploadServer);
-  			} else {
-  				Wami.stopRecording() ;
-  				$(this).text("Start") ;
-  			}
-  	  });
-
-    };
-
-    var attachRhythmEvents = function() {
-
-    	//Drag and Drop of files
-	    var rhythmIcon = $('nav li[data-mode="rhythm"]');
-
-	    $('#rhythmDrop').uiiface({
-        events : 'drop',
-        callback : function(event){
-          pictureIcon.addClass('uploading');
-          query.addItems(event.originalEvent,query.types.Audio,function(fileInfo) {
+  	      query.addItems(event,query.types.Audio,function(fileInfo) {
             pictureIcon.removeClass('uploading');
           });
-          reset();
-          attachedModes.push('rhythm');
-        }
-      });
 
-	    //Invisible file input
-	    $('#rhythmUpload').change(function(event) {
+  	      event.preventDefault();
+  	      return false;
+  	    });
 
-	      query.addItems(event,query.types.Audio,function(fileInfo) {
-          pictureIcon.removeClass('uploading');
-        });
+  	    //Trigger button for file input
+  	    $('.panel.rhythm button.upload').click(function(){
 
-	      event.preventDefault();
-	      return false;
-	    });
+  	      rhythmIcon.addClass('uploading');
 
-	    //Trigger button for file input
-	    $('.panel.rhythm button.upload').click(function(){
+  	    	$('#rhythmUpload').click();
 
-	      rhythmIcon.addClass('uploading');
+  	    	reset();
+  	    });
 
-	    	$('#rhythmUpload').click();
+  	   //Rhythm tapping initialization
+  	   $('#rhythm-progress').attr({
+  	     'value' : 0,
+  	     'max'   : 10
+  	   });
+  	   $('#rhythm-canvas').attr({
+         'width'  : 200,
+         'height' : 20
+       });
 
-	    	reset();
-	      attachedModes.push('rhythm');
-	    });
+  	   // initial state
+  	   var tapRhythm = {
+  	     disabled : false,
+  	     running  : false,
+  	     start    : 0,
+  	     timer    : false,
+  	     scalef   : parseInt($('#rhythm-canvas').attr('width')) / parseInt($('#rhythm-progress').attr('max')),
+  	     context  : $('#rhythm-canvas')[0].getContext('2d'),
+  	     data     : {
+  	       duration : 0,
+  	       taps : [],
+  	       intervals : []
+  	     }
+  	   };
 
-	   //Rhythm tapping initialization
-	   $('#rhythm-progress').attr({
-	     'value' : 0,
-	     'max'   : 10
-	   });
-	   $('#rhythm-canvas').attr({
-       'width'  : 200,
-       'height' : 20
-     });
+  	   // draw scale function
+       var drawScale = function() {
+         tapRhythm.context.fillStyle = 'rgb(200,0,0)';
+         tapRhythm.context.clearRect (0 , 0, parseInt($('#rhythm-canvas').attr('width')), parseInt($('#rhythm-canvas').attr('height')));
+         var i = 0;
+         var x = 0;
+         tapRhythm.context.fillStyle = 'rgb(0,0,0)';
+         while(x <= $('#rhythm-canvas').attr('width')) {
+           x = tapRhythm.scalef * i;
+           tapRhythm.context.fillRect (x, 18, 1, 2);
+           i++;
+         }
+         tapRhythm.context.fillStyle = 'rgb(200,0,0)';
+       };
 
-	   // initial state
-	   var tapRhythm = {
-	     disabled : false,
-	     running  : false,
-	     start    : 0,
-	     timer    : false,
-	     scalef   : parseInt($('#rhythm-canvas').attr('width')) / parseInt($('#rhythm-progress').attr('max')),
-	     context  : $('#rhythm-canvas')[0].getContext('2d'),
-	     data     : {
-	       duration : 0,
-	       taps : [],
-	       intervals : []
-	     }
-	   };
+       //initially draw the scale
+       drawScale();
 
-	   // draw scale function
-     var drawScale = function() {
-       tapRhythm.context.fillStyle = 'rgb(200,0,0)';
-       tapRhythm.context.clearRect (0 , 0, parseInt($('#rhythm-canvas').attr('width')), parseInt($('#rhythm-canvas').attr('height')));
-       var i = 0;
-       var x = 0;
-       tapRhythm.context.fillStyle = 'rgb(0,0,0)';
-       while(x <= $('#rhythm-canvas').attr('width')) {
-         x = tapRhythm.scalef * i;
-         tapRhythm.context.fillRect (x, 18, 1, 2);
-         i++;
-       }
-       tapRhythm.context.fillStyle = 'rgb(200,0,0)';
-     };
+       $('.panel.rhythm #rhythm-div').dblclick(function() {
+         return false; // no-op
+       });
 
-     //initially draw the scale
-     drawScale();
-
-     $('.panel.rhythm #rhythm-div').dblclick(function() {
-       return false; // no-op
-     });
-
-     $('.panel.rhythm #duration-spinner').on('change', function(e) {
-       $('#rhythm-progress').attr('max', $(this).val());
-       $('#rhythm-progress').attr('value', 0);
-     });
-
-	   $('.panel.rhythm #rhythm-div').click(function() {
-       // on rhythm div click
-       if (tapRhythm.disabled) {
-         return;
-       }
-       // if state is "not running"
-       if (!tapRhythm.running) {
-         // set state to "running"
-         $(this).text('Tap');
-         //Reset rhythm elements
-         tapRhythm.running = true;
+       $('.panel.rhythm #duration-spinner').on('change', function(e) {
+         $('#rhythm-progress').attr('max', $(this).val());
          $('#rhythm-progress').attr('value', 0);
-         drawScale();
-         $('#duration-spinner').attr('disabled','disabled');
-         tapRhythm.start = new Date().getTime();
-         tapRhythm.scalef = parseInt($('#rhythm-canvas').attr('width')) / parseInt($('#rhythm-progress').attr('max'));
+       });
 
-         //set data duration
-         tapRhythm.data.duration = parseInt($('#rhythm-progress').attr('max'));
+  	   $('.panel.rhythm #rhythm-div').click(function() {
+         // on rhythm div click
+         if (tapRhythm.disabled) {
+           return;
+         }
+         // if state is "not running"
+         if (!tapRhythm.running) {
+           // set state to "running"
+           $(this).text('Tap');
+           //Reset rhythm elements
+           tapRhythm.running = true;
+           $('#rhythm-progress').attr('value', 0);
+           drawScale();
+           $('#duration-spinner').attr('disabled','disabled');
+           tapRhythm.start = new Date().getTime();
+           tapRhythm.scalef = parseInt($('#rhythm-canvas').attr('width')) / parseInt($('#rhythm-progress').attr('max'));
 
-         // set timer
-         tapRhythm.timer = setInterval(function() {
-           // calculate the elapsed time since the beginning of the timer
-           var elapsed = Math.floor((new Date().getTime() - tapRhythm.start) / 1000);
-           $('#elapsed-span').text(elapsed);
-           $('#rhythm-progress').attr('value',elapsed);
+           //set data duration
+           tapRhythm.data.duration = parseInt($('#rhythm-progress').attr('max'));
 
-           // if the timer has ended
-           if (elapsed >= tapRhythm.data.duration) {
-             // set state to "not running"
-             clearInterval(tapRhythm.timer);
-             tapRhythm.disabled = true;
-             $(this).text('Finished');
+           // set timer
+           tapRhythm.timer = setInterval(function() {
+             // calculate the elapsed time since the beginning of the timer
+             var elapsed = Math.floor((new Date().getTime() - tapRhythm.start) / 1000);
+             $('#elapsed-span').text(elapsed);
+             $('#rhythm-progress').attr('value',elapsed);
 
-             setTimeout(function() {
-               tapRhythm.disabled = false;
-               $('#rhythm-div').text('Start');
-             }, 5000);
+             // if the timer has ended
+             if (elapsed >= tapRhythm.data.duration) {
+               // set state to "not running"
+               clearInterval(tapRhythm.timer);
+               tapRhythm.disabled = true;
+               $(this).text('Finished');
 
-             $('#duration-spinner').attr('disabled','');
-             tapRhythm.running = false;
-             tapRhythm.start = 0;
-             tapRhythm.timer = false;
+               setTimeout(function() {
+                 tapRhythm.disabled = false;
+                 $('#rhythm-div').text('Start');
+               }, 5000);
 
-             //Calculate relative intervals from taps
-             var oldInterval = false;
+               $('#duration-spinner').attr('disabled','');
+               tapRhythm.running = false;
+               tapRhythm.start = 0;
+               tapRhythm.timer = false;
 
-             for(var i=1; i < tapRhythm.data.taps.length; i++) {
-               var interval = tapRhythm.data.taps[i] - tapRhythm.data.taps[i-1];
-               if(oldInterval) {
-                 tapRhythm.data.intervals.push(interval / oldInterval);
+               //Calculate relative intervals from taps
+               var oldInterval = false;
+
+               for(var i=1; i < tapRhythm.data.taps.length; i++) {
+                 var interval = tapRhythm.data.taps[i] - tapRhythm.data.taps[i-1];
+                 if(oldInterval) {
+                   tapRhythm.data.intervals.push(interval / oldInterval);
+                 }
+                 oldInterval = interval;
                }
-               oldInterval = interval;
+
+               console.log(tapRhythm.data);
+               //Append rhythm to search bar
+               var data = {
+                 'image'        : $('#rhythm-canvas')[0].toDataURL("image/png"), //if image if given, then it is used as replacement instead of showing the text value
+                 'text'         : tapRhythm.data.intervals.join(','),
+                 'data-subtype' : 'Rhythm',
+                 'data-duration': tapRhythm.data.duration
+               };
+               query.addItems(data,query.types.Text);
              }
+           }, 1000);
+         // if state is "running"
+         } else {
+           $(this).toggleClass('tapped');
+           setTimeout(function() {
+             $('#rhythm-div').toggleClass('tapped');
+           }, 100);
+           var heartBeat = (new Date().getTime() - tapRhythm.start) / 1000;
+           tapRhythm.data.taps.push(heartBeat);
+           var x = Math.floor(tapRhythm.scalef * heartBeat);
+           tapRhythm.context.fillRect(x, 0, 1, parseInt($('#rhythm-canvas').attr('height')));
+         }
+  	   });
 
-             console.log(tapRhythm.data);
-             //Append rhythm to search bar
-             var data = {
-               'image'        : $('#rhythm-canvas')[0].toDataURL("image/png"), //if image if given, then it is used as replacement instead of showing the text value
-               'text'         : tapRhythm.data.intervals.join(','),
-               'data-subtype' : 'Rhythm',
-               'data-duration': tapRhythm.data.duration
-             };
-             query.addItems(data,query.types.Text);
-           }
-         }, 1000);
-       // if state is "running"
-       } else {
-         $(this).toggleClass('tapped');
-         setTimeout(function() {
-           $('#rhythm-div').toggleClass('tapped');
-         }, 100);
-         var heartBeat = (new Date().getTime() - tapRhythm.start) / 1000;
-         tapRhythm.data.taps.push(heartBeat);
-         var x = Math.floor(tapRhythm.scalef * heartBeat);
-         tapRhythm.context.fillRect(x, 0, 1, parseInt($('#rhythm-canvas').attr('height')));
-       }
-	   });
+  		 // rhythm recording
+       $('.panel.rhythm button.record').click(function() {
 
-		 // rhythm recording
-     $('.panel.rhythm button.record').click(function() {
+        rhythmIcon.addClass('uploading');
 
-      rhythmIcon.addClass('uploading');
+        if ($(this).text() === "Start") {
+        	$(this).text("Stop") ;
+        	Wami.startRecording(config.constants.fileUploadServer) ;
+        } else {
+        	Wami.setUploadCallback(function(data){
+      		  console.log(data);
+      		  query.addItems(JSON.parse(data[0]),query.types.Audio);
 
-      if ($(this).text() === "Start") {
-      	$(this).text("Stop") ;
-      	Wami.startRecording(config.constants.fileUploadServer) ;
-      } else {
-      	Wami.setUploadCallback(function(data){
-    		  console.log(data);
-    		  query.addItems(JSON.parse(data[0]),query.types.Audio);
+      			reset();
+      		});
 
-    			reset();
-    			attachedModes.push('rhythm');
-    		});
-
-      	Wami.stopRecording() ;
-      	$(this).text("Start") ;
+        	Wami.stopRecording() ;
+        	$(this).text("Start") ;
+        }
+       });
       }
-     });
     };
 
     /*
@@ -803,7 +758,7 @@ define("mylibs/menu",
                 localStream.stop();
               }
               reset();
-              attachedModes.push(type);
+              handledEvents[mode].isAttached = true;
               icon.removeClass('uploading');
 
               ctx.clearRect(0,0,canvas[0].width, canvas[0].height);
