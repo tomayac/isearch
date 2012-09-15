@@ -21,12 +21,12 @@ define("mylibs/menu",
     var slider = null;
 
     var menu = $('nav.query-composition');
-    
+
     var reset = function() {
       //hidePanels();
       $('nav li').removeClass('active');
     };
-    
+
     var adjust = function() {
       console.log('entered adjust function');
 
@@ -205,7 +205,7 @@ define("mylibs/menu",
           textIcon.removeClass('uploading');
           //Empty the text field of the panel
           textBox.val('');
-        }); 
+        });
 
         reset();
         attachedModes.push('text');
@@ -223,16 +223,16 @@ define("mylibs/menu",
         geoIcon.addClass('uploading');
 
         location.getCurrentLocation(function(position) {
-          
+
           var data = {
             'image'        : 'img/fake/fake-geolocation.jpg', //if image if given, then it is used as replacement instead of showing the text value
             'text'         : position.coords.latitude + ' ' + position.coords.longitude,
             'data-subtype' : 'Location'
           };
-          
+
           query.addItems(data,query.types.Text,function() {
             geoIcon.removeClass('uploading');
-          }); 
+          });
 
           reset();
           attachedModes.push('geolocation');
@@ -247,8 +247,8 @@ define("mylibs/menu",
               'text' : lat + ' ' + lon,
               'data-subtype' : 'Location'
             };
-      	  query.addItems(data,query.types.Text); 
-      	  
+      	  query.addItems(data,query.types.Text);
+
           reset();
           attachedModes.push('geolocation');
       	});
@@ -275,14 +275,14 @@ define("mylibs/menu",
             clearTimeout(emotionTimeout);
           }
           emotionTimeout = setTimeout(function() {
-            
+
             var data = {
               'image'        : canvas.toDataURL("image/png"), //if image if given, then it is used as replacement instead of showing the text value
               'text'         : p,
               'data-subtype' : 'Emotion'
             };
-            query.updateItem('emotion',data,query.types.Text); 
-            
+            query.updateItem('emotion',data,query.types.Text);
+
           }, 200);
         }
 
@@ -301,9 +301,9 @@ define("mylibs/menu",
 
     	//Drag and Drop of files
 	    var pictureIcon = $('nav li[data-mode="3d"]');
-	    
-	    $('#threedDrop').uiiface({ 
-        events : 'drop',  
+
+	    $('#threedDrop').uiiface({
+        events : 'drop',
         callback : function(event){
           pictureIcon.addClass('uploading');
           query.addItems(event.originalEvent,query.types.Threed,function(fileInfo) {
@@ -316,7 +316,7 @@ define("mylibs/menu",
 
 	    //Invisible file input
 	    $('#threedUpload').change(function(event) {
-	      
+
 	      query.addItems(event,query.types.Threed,function(fileInfo) {
           pictureIcon.removeClass('uploading');
         });
@@ -343,14 +343,14 @@ define("mylibs/menu",
     	//Drag and Drop of files
 	    //var handler = new filehandler.FileHandler('imageDrop',['jpg','png','gif'],config.constants.fileUploadServer,getQueryItemCount());
 	    var pictureIcon = $('nav li[data-mode="image"]');
-	    
+
 	    //Drop trigger for image upload
-	    $('#imageDrop').uiiface({ 
-        events : 'drop',  
+	    $('#imageDrop').uiiface({
+        events : 'drop',
         callback : function(event){
-          
+
           pictureIcon.addClass('uploading');
-          //add Items takes the following parameters: fileDrop event || canvas element id, 
+          //add Items takes the following parameters: fileDrop event || canvas element id,
           //type of uploaded media, callback function when upload is complete
           query.addItems(event.originalEvent,query.types.Image,function(fileInfo) {
             pictureIcon.removeClass('uploading');
@@ -359,10 +359,10 @@ define("mylibs/menu",
           attachedModes.push('image');
         }
 	    });
-	    
+
 	    //Invisible file input
 	    $('#imageUpload').change(function(event) {
-	      
+
 	      query.addItems(event,query.types.Image,function(fileInfo) {
 	        pictureIcon.removeClass('uploading');
 	      });
@@ -370,7 +370,7 @@ define("mylibs/menu",
 	    	return false;
 
 	    });
-	    
+
 	    //Trigger button for file input
 	    $('.panel.image button.upload').click(function(){
 
@@ -390,10 +390,10 @@ define("mylibs/menu",
 	    var videoIcon = $('nav li[data-mode="video"]');
 
 	    //Drop trigger for video upload
-	    $('#videoDrop').uiiface({ 
-        events : 'drop',  
+	    $('#videoDrop').uiiface({
+        events : 'drop',
         callback : function(event){
-          pictureIcon.addClass('uploading');
+          videoIcon.addClass('uploading');
           query.addItems(event.originalEvent,query.types.Video,function(fileInfo) {
             videoIcon.removeClass('uploading');
           });
@@ -406,7 +406,7 @@ define("mylibs/menu",
 	    $('#videoUpload').change(function(event) {
 
 	      query.addItems(event,query.types.Video,function(fileInfo) {
-          pictureIcon.removeClass('uploading');
+          videoIcon.removeClass('uploading');
         });
 
 	    	event.preventDefault();
@@ -428,9 +428,9 @@ define("mylibs/menu",
     var attachSketchEvents = function() {
 
       $('#sketch').uiiface('sketch');
-      
-      $('#sketch').uiiface({ 
-        events : 'reset',  
+
+      $('#sketch').uiiface({
+        events : 'reset',
         callback : function(event){
           var canvas = $('#sketch')[0];
           var context = canvas.getContext('2d');
@@ -441,7 +441,7 @@ define("mylibs/menu",
       $('.panel.sketch button.done').click(function(event){
 
         console.log('Button "sketch done" pressed');
-        
+
         var sketchIcon = $('nav li[data-mode="sketch"]');
         sketchIcon.addClass('uploading');
 
@@ -459,14 +459,14 @@ define("mylibs/menu",
 
       });
     };
-    
+
     var attachSoundEvents = function() {
 
     	//Drag and Drop of files
 	    var pictureIcon = $('nav li[data-mode="sound"]');
-	    
-	    $('#soundDrop').uiiface({ 
-        events : 'drop',  
+
+	    $('#soundDrop').uiiface({
+        events : 'drop',
         callback : function(event){
           pictureIcon.addClass('uploading');
           query.addItems(event.originalEvent,query.types.Audio,function(fileInfo) {
@@ -479,7 +479,7 @@ define("mylibs/menu",
 
 	    //Invisible file input
 	    $('#soundUpload').change(function(event) {
-	      
+
 	      query.addItems(event,query.types.Audio,function(fileInfo) {
           pictureIcon.removeClass('uploading');
         });
@@ -503,7 +503,7 @@ define("mylibs/menu",
   		$('.panel.sound button.record').click(function(){
 
   			pictureIcon.addClass('uploading');
-  			
+
         Wami.setUploadCallback(function(data){
           var fileInfo = JSON.parse(data[0]);
           query.addItems(fileInfo,query.types.Audio);
@@ -511,7 +511,7 @@ define("mylibs/menu",
           reset();
           attachedModes.push('sound');
         });
-  			
+
   			if($(this).text() === "Start") {
   				$(this).text("Stop") ;
   				Wami.startRecording(config.constants.fileUploadServer);
@@ -527,9 +527,9 @@ define("mylibs/menu",
 
     	//Drag and Drop of files
 	    var rhythmIcon = $('nav li[data-mode="rhythm"]');
-	    
-	    $('#rhythmDrop').uiiface({ 
-        events : 'drop',  
+
+	    $('#rhythmDrop').uiiface({
+        events : 'drop',
         callback : function(event){
           pictureIcon.addClass('uploading');
           query.addItems(event.originalEvent,query.types.Audio,function(fileInfo) {
@@ -675,9 +675,9 @@ define("mylibs/menu",
                'image'        : $('#rhythm-canvas')[0].toDataURL("image/png"), //if image if given, then it is used as replacement instead of showing the text value
                'text'         : tapRhythm.data.intervals.join(','),
                'data-subtype' : 'Rhythm',
-               'data-duration': tapRhythm.data.duration 
+               'data-duration': tapRhythm.data.duration
              };
-             query.addItems(data,query.types.Text); 
+             query.addItems(data,query.types.Text);
            }
          }, 1000);
        // if state is "running"
@@ -797,7 +797,7 @@ define("mylibs/menu",
                 query.addItems('#imageCapture',query.types.Image,function(fileInfo) {
                   icon.removeClass('uploading');
                 });
-                
+
               } else if(type === 'video') {
                 //For we videos we now stop sending data to the server
                 localStream.stop();
