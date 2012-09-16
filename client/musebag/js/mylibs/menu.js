@@ -168,6 +168,40 @@ define("mylibs/menu",
     // Collection of all available events
     var handledEvents = {
 
+      query: function() {
+        $('#query').uiiface({
+          events : 'drop',
+          callback : function(event){
+            var e = event.originalEvent;
+            var files = e.files || e.target.files || e.dataTransfer.files;
+            var types = {};
+
+            var getAllowedType = function (name) {
+              for (var type in query.allowedTypes) {
+                if (query.isAllowedExtension(files[i].name, type)) {
+                  return type;
+                }
+              }
+              return null;
+            };
+
+            for (var i=0; i<files.length; ++i) {
+              var type = getAllowedType(files[i].name);
+              if (type) {
+                types[type] = types[type] || [];
+                types[type].push(files[i]);
+              }
+            }
+
+            for (var type in types) {
+              query.addItems({files:types[type]}, type, function (fileInfo) {
+                //do something?
+              });
+            }
+          }
+        });
+      },
+
       text: function() {
         $('.panel.text input').click(function(){
           $(this).val('');
@@ -321,7 +355,6 @@ define("mylibs/menu",
   	    $('#imageDrop').uiiface({
           events : 'drop',
           callback : function(event){
-
             pictureIcon.addClass('uploading');
             //add Items takes the following parameters: fileDrop event || canvas element id,
             //type of uploaded media, callback function when upload is complete
