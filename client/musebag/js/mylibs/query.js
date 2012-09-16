@@ -351,7 +351,6 @@ define("mylibs/query",
 
       //Test if browser supports the File API
       if (typeof files !== 'undefined') {
-        console.log(files);
         //iterate through the (uploaded) files
         for (var i=0; i < files.length; i++) {
           //test if current file is allowed to be uploaded
