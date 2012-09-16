@@ -23,20 +23,20 @@ if( typeof self.options.callback === 'function' ) {
 }
  */
 
-define("mylibs/uiiface-v1", 
+define("mylibs/uiiface-v1",
   [
     "jquery",
     "libs/jquery.elementFromPoint.min",
     "libs/modernizr.min",
     "libs/wami-2.0"
-  ], 
-  function($, undefined) {  
-  
+  ],
+  function($, undefined) {
+
     /**
      *  -------------------------------------------
      *  Core UIIFace object
      *  -------------------------------------------
-     */ 
+     */
     var UIIFace = {
       //is UIIFace ready to work?
       isReady : false,
@@ -49,8 +49,8 @@ define("mylibs/uiiface-v1",
           'touch'    : false,
           'kinect'   : false
         },
-        //Array for storing available touch events if applicable 
-        touchEvents : {}, 
+        //Array for storing available touch events if applicable
+        touchEvents : {},
         //Stores the last clicked/selected/used element
         activeElement : undefined,
         //Stores the current reference cursor position (not only the current mouse)
@@ -58,9 +58,9 @@ define("mylibs/uiiface-v1",
         //Predefined custom events with their basic handlers
         eventRegister : {
           'move'      : {
-            'keyboard' : { 
+            'keyboard' : {
               'keys'    : '37-40', //[from]-[to] or [a],[b],... combinations with [a]+[b] (with OR connections for multiple keys between +), and * for any key
-              'context' : 'this' //context element for which the event should be triggered //values: this = default || active || cursor 
+              'context' : 'this' //context element for which the event should be triggered //values: this = default || active || cursor
             },
             'handler'  : function(event) { console.log('move handler'); }
           },
@@ -68,7 +68,7 @@ define("mylibs/uiiface-v1",
             'keyboard' : { 'keys' : '16+13', 'context' : 'cursor' },
             'trigger'  : { 'events': 'up', 'context' : 'this' },
             'handler'  : function(event) { console.log('select handler'); console.log(event); console.log(this); }
-          }, 
+          },
           'selection' : {
             'keyboard' : { 'keys' : '16+37-40', 'context' : 'active' },
             'handler'  : function(event) { console.log('selection handler'); console.log(arguments); console.log(this); }
@@ -83,13 +83,32 @@ define("mylibs/uiiface-v1",
           },
           'drop'      : {
             'mouse'    : { 'events' : 'drop dragenter dragleave', 'context' : 'this' },
-            'handler'  : function(event) { 
+            'handler'  : function(event) {
               switch(event.type) {
-                case 'dragenter' : $(event.target).addClass('over'); break;
-                case 'dragleave' : $(event.target).removeClass("over"); break;
-                case 'drop' : 
+                case 'dragenter' :
+                  var elem = $(event.currentTarget);
+                  var count = elem.data('dragenter-count');
+                  count = (count || 0) + 1;
+                  elem.data('dragenter-count', count);
+                  if (count === 1) {
+                    elem.addClass('over');
+                  }
+                  break;
+                case 'dragleave' :
+                  var elem = $(event.currentTarget);
+                  var count = elem.data('dragenter-count');
+                  --count;
+                  elem.data('dragenter-count', count);
+                  if (!count) {
+                    elem.removeClass('over');
+                  }
+                  break;
+                case 'drop' :
                   //check if there is an custom handler which should be called for this event
                   event.preventDefault();
+                  var elem = $(event.currentTarget);
+                  elem.data('dragenter-count', 0);
+                  elem.removeClass('over');
                   $(event.target).removeClass("over");
                   if(typeof event.data.customHandler === 'function') {
                     event.data.customHandler.apply(this, [event]);
@@ -101,7 +120,7 @@ define("mylibs/uiiface-v1",
           },
           'pan'       : {
             'trigger'    : { 'events' : 'down move up', 'context' : 'this' },
-            'handler'  : function(event) { 
+            'handler'  : function(event) {
               var self = this;
               try {
               var first = event.epoints.first();
@@ -113,7 +132,7 @@ define("mylibs/uiiface-v1",
               event.epoints.foreach(function(index, point) {
                 console.log(index,point);
               });
-              
+
               if($(self).css('background-color') == 'rgb(170, 0, 0)') {
                 $(self).css({'background-color' : 'transparent'});
               } else {
@@ -122,7 +141,7 @@ define("mylibs/uiiface-v1",
               /*$(this).css({
                 'position' : 'absolute',
                 'left' : $(this).data('left') + event.pan.x + 'px',
-                'top'  : $(this).data('top') + event.pan.y + 'px'  
+                'top'  : $(this).data('top') + event.pan.y + 'px'
                });*/
             }
           },
@@ -170,21 +189,21 @@ define("mylibs/uiiface-v1",
             'mouse'    : { 'events' : 'down', 'context' : 'active' },
             'handler'  : function(event) { console.log('hold handler'); }
           },
-          'sketch'    : { 
-            'trigger'  : { 'events' : 'move', 'context' : 'this' }, 
-            'handler'  : function(event) { 
-              var canvas = this;             
+          'sketch'    : {
+            'trigger'  : { 'events' : 'move', 'context' : 'this' },
+            'handler'  : function(event) {
+              var canvas = this;
               if(!canvas.getContext || !event.epoints) {
                 return;
               }
-              
+
               var offset = $(this).offset();
               var context = canvas.getContext('2d');
-             
+
               event.epoints.foreach(function(key, point) {
                 //console.log(key + '= x:'+parseFloat(point.x - offset.left)+' y:'+parseFloat(point.y - offset.top));
                 context.strokeStyle = 'rgba(40,0,0,.3)';
-                context.lineWidth = 3;  
+                context.lineWidth = 3;
                 context.lineCap = 'round';
                 context.lineJoin = 'round';
                 context.beginPath();
@@ -196,55 +215,55 @@ define("mylibs/uiiface-v1",
             }
           }
         } // end eventRegister object
-      }, 
+      },
       /**
        * Initialize function
-       * 
+       *
        * @param options
        * @param element
        */
       initialize : function( options, element ) {
         var self = this;
-        
+
         self.element = $( element );
-        
+
         //Parsing the options
         self.events = typeof options === 'string'
           ? options
           : options.events;
-        
+
         if(!self.events) {
           return;
         }
-        
+
         self.events = self.events.indexOf(' ') > -1
-          ? self.events.split(' ') 
+          ? self.events.split(' ')
           : [self.events];
-        
+
         //taking the passed options and preserving the defaults
         self.options = $.extend( {}, $.fn.uiiface.options, options);
-        
+
         if(!self.isReady) {
           self.setup();
         }
-        self.register();     
+        self.register();
         self.config.index++;
       },
       register : function() {
         var self = this;
 
         $.each(self.events, function(index, event) {
-          
+
           var eventDefinition = self.config.eventRegister[event];
-          
+
           if(eventDefinition) {
             //add element to event
-            if(self.config.eventRegister[event].elements) { 
+            if(self.config.eventRegister[event].elements) {
               self.config.eventRegister[event].elements.push(self.element);
-            } else {      
+            } else {
               self.config.eventRegister[event].elements = [self.element];
             }
-            //call handler  
+            //call handler
             self.commandMapper(event,eventDefinition);
           }
         });
@@ -257,17 +276,17 @@ define("mylibs/uiiface-v1",
         var customHandler = false;
         if(typeof self.options.callback === 'function') {
           if(eventDefinition.internalHandlerCall) {
-            customHandler = self.options.callback; 
+            customHandler = self.options.callback;
           } else {
             handler = self.options.callback;
-          }     
+          }
         }
         //always assign custom event to element for reference
         $(self.element).on(event, { customHandler : customHandler }, handler);
 
         var getEventElement = function(element) {
           var foundItem = false;
-          
+
           if(element) {
             $.each(self.config.eventRegister[event].elements, function() {
               if($(this).find(element).length > 0) {
@@ -278,8 +297,8 @@ define("mylibs/uiiface-v1",
           }
           return foundItem;
         };
-        
-        /** 
+
+        /**
          * @param referrer
          * @param data
          * @param context
@@ -287,7 +306,7 @@ define("mylibs/uiiface-v1",
          * @returns
          */
         var assignEvent = function(referrer,data,context,callback) {
-          
+
           //Determine the context and assign event
           switch(context) {
             case 'active':
@@ -303,7 +322,7 @@ define("mylibs/uiiface-v1",
               break;
             case 'cursor':
               if(self.config.index > 0) { break; }
-              
+
               $(document).on(referrer, function(e) {
                 //Get element at mouse position
                 var element = $.elementFromPoint(UIIFace.config.cursorPosition.x, UIIFace.config.cursorPosition.y);
@@ -319,12 +338,12 @@ define("mylibs/uiiface-v1",
               //this context
               $(self.element).on(referrer, data, callback);
           }
-        }; 
-        
+        };
+
         //Parse all the modality trigger conditions for the given event definition
         $.each(eventDefinition, function(modality, value) {
           if(modality !== 'handler') {
-            
+
             switch(modality) {
               case 'keyboard':
                 //Parse trigger rule
@@ -332,7 +351,7 @@ define("mylibs/uiiface-v1",
                   operator : false,
                   keys : []
                 };
-                
+
                 //Range and list parser function
                 var parseKeys = function(keyDefinition) {
                   var keys = [];
@@ -353,24 +372,24 @@ define("mylibs/uiiface-v1",
                   }
                   return keys;
                 };
-                
+
                 //has 'all keys' (*) place holder?
                 if(value.keys.indexOf('*') > -1) {
                   rule.keys = ['*'];
                 }
                 //has 'and' (+) operator?
                 else if(value.keys.indexOf('+') > -1) {
-                  var keys = value.keys.split('+'); 
-                  rule.prekeys  = parseKeys(keys[0]); 
+                  var keys = value.keys.split('+');
+                  rule.prekeys  = parseKeys(keys[0]);
                   rule.operator = '+';
-                  rule.keys     = parseKeys(keys[1]); 
+                  rule.keys     = parseKeys(keys[1]);
                 } else {
-                  rule.keys = parseKeys(value.keys); 
+                  rule.keys = parseKeys(value.keys);
                 }
-                
+
                 //Determining the desired trigger combination
                 var parseHandler = function(event) {
-                  
+
                   //Should trigger on every key?
                   if(rule.keys[0] === '*') {
                     handler.apply(this, [event]);
@@ -385,30 +404,30 @@ define("mylibs/uiiface-v1",
                     //Should trigger on specific combinations
                     $.each(rule.prekeys, function(i, k) {
                       if(event.which == k) {
-                        //As soon as one pre-key is pressed the precondition is met  
+                        //As soon as one pre-key is pressed the precondition is met
                         rule.prepressed = true;
                         return false;
                       }
                     });
                     $.each(rule.keys, function(i, k) {
                       if(event.which == k) {
-                        //As soon as one key from the keys array is pressed the 2nd part of the condition is met  
+                        //As soon as one key from the keys array is pressed the 2nd part of the condition is met
                         rule.pressed = true;
                         return false;
                       }
                     });
                     //Test if combination rule is met
                     if(rule.prepressed && rule.pressed) {
-                      handler.apply(this, [event]); 
+                      handler.apply(this, [event]);
                       delete rule.prepressed;
                       delete rule.pressed;
                     }
                   }
                 };
-                
+
                 assignEvent('keydown', {}, value.context, parseHandler);
                 break;
-                
+
               case 'speech':
                 //Parse phrase
                 break;
@@ -422,14 +441,14 @@ define("mylibs/uiiface-v1",
                   assignEvent(value.events, {}, value.context, mergeHandler);
                   var listener = new self.basicInterpreter(self.element);
                   listener.initialize();
-                }                
-            }    
+                }
+            }
           } // end if
         }); //end modality each
-        
+
       },
       setup : function() {
-        var self = this; 
+        var self = this;
         self.tools.setModalities();
         self.tools.setHelperEvents();
         self.isReady = true;
@@ -445,22 +464,22 @@ define("mylibs/uiiface-v1",
               //If it's a mozilla browser with touch, assign the specialized touch events
               UIIFace.config.touchEvents['down'] = 'MozTouchDown';
               UIIFace.config.touchEvents['move'] = 'MozTouchMove';
-              UIIFace.config.touchEvents['up']   = 'MozTouchUp'; 
+              UIIFace.config.touchEvents['up']   = 'MozTouchUp';
             } else {
               //Assign the basic touch events (all mobile devices I guess)
-              UIIFace.config.touchEvents['down'] = 'touchstart'; 
-              UIIFace.config.touchEvents['move'] = 'touchmove'; 
-              UIIFace.config.touchEvents['up']   = 'touchend'; 
+              UIIFace.config.touchEvents['down'] = 'touchstart';
+              UIIFace.config.touchEvents['move'] = 'touchmove';
+              UIIFace.config.touchEvents['up']   = 'touchend';
             }
             UIIFace.config.modalities['touch'] = true;
           }
-          
+
           //Need a working test for this
           UIIFace.config.modalities['speech'] = true;
-           
+
           //Kinect test
           //UIIFace.websocketConnector.kinect();
-          
+
         },
         hasModality : function(modality) {
           if( UIIFace.config.modalities[modality] !== undefined ) {
@@ -472,16 +491,16 @@ define("mylibs/uiiface-v1",
           $(document).on('click', function(event) {
             UIIFace.config.activeElement = event.target;
             //cursorPosition refers to the event position
-            UIIFace.config.cursorPosition = {  
+            UIIFace.config.cursorPosition = {
               'x' : event.pageX || 0,
               'y' : event.pageY || 0
             };
           });
           var getMousePosition = function(timeout) {
-            // "one" attaches the handler to the event and removes it after it has executed once 
+            // "one" attaches the handler to the event and removes it after it has executed once
             $(document).one('mousemove', function (event) {
               //epoint '0' always refers to the mouse cursor position
-              UIIFace.config.cursorPosition = { 
+              UIIFace.config.cursorPosition = {
                 'x' : event.pageX || 0,
                 'y' : event.pageY || 0
               };
@@ -493,7 +512,7 @@ define("mylibs/uiiface-v1",
         }
       },
       basicInterpreter : function(element) {
-        
+
         var PointList = function() {};
         PointList.prototype = {
           size : function() {
@@ -510,7 +529,7 @@ define("mylibs/uiiface-v1",
             for (key in this) {
               if (key === 'size' || key === 'first') continue;
               if (this.hasOwnProperty(key)) {
-                first = this[key]; 
+                first = this[key];
                 break;
               }
             }
@@ -531,11 +550,11 @@ define("mylibs/uiiface-v1",
             }
           }
         };
-        
+
         var PointEventListener = function(element) {
           this.element = element;
           //Stores the current mouse/touch/hand event positions
-          this.epoints = new PointList(); 
+          this.epoints = new PointList();
           this.interval = false;
           this.test = {
             'running'   : false,
@@ -543,7 +562,7 @@ define("mylibs/uiiface-v1",
             'refPoints' : false
           };
         };
-        
+
         PointEventListener.prototype = {
             initializeElementData : function() {
               if(element.data('lastPan')) {
@@ -558,7 +577,7 @@ define("mylibs/uiiface-v1",
                 element.data('rotation', element.data('lastRotation'));
                 element.removeData('lastRotation');
               }
-              
+
               element.data('rotation', element.data('rotation') || false);
               element.data('scale', element.data('scale') || false);
               element.data('pan', element.data('pan') || { x : false, y : false});
@@ -566,17 +585,17 @@ define("mylibs/uiiface-v1",
               element.data('initialRotation', 0);
               element.data('offsetX', 0);
               element.data('offsetY', 0);
-            
+
             },
             testMove : function() {
               var self = this;
               var d = new Date();
               self.test.lastMove = d.getTime();
-              
+
               if(self.test.running) {
                 return;
               }
-              
+
               var testFunc = function() {
                 var d = new Date();
                 var c = d.getTime();
@@ -588,9 +607,9 @@ define("mylibs/uiiface-v1",
                   self.initializeElementData();
                 } else {
                   setTimeout(testFunc,505);
-                } 
+                }
               };
-              
+
               setTimeout(testFunc,505);
               self.test.running = true;
             },
@@ -617,17 +636,17 @@ define("mylibs/uiiface-v1",
               //ignore if nothing changed
               if(eq == self.epoints.size()) {
                 return false;
-              }  
+              }
               self.test.refPoints = $.extend({},self.epoints);
               return true;
             },
             handlePoints : function(e,mode) {
-              //Normalizing different touch API data to the 
+              //Normalizing different touch API data to the
               //basic touch API
               if(!e.originalEvent.changedTouches ) {
                 return;
               }
-              
+
               var self = this;
               var i = e.originalEvent.changedTouches.length;
               var touch = 0;
@@ -645,7 +664,7 @@ define("mylibs/uiiface-v1",
               //Mode dependend point handling
               if(mode === 1) {
                 $(element).trigger('down',self.epoints);
-                //calculateManipulation(1);                    
+                //calculateManipulation(1);
               } else if(mode === 2){
                 $(element).trigger('move',self.epoints);
                 /*if(!interval) {
@@ -671,7 +690,7 @@ define("mylibs/uiiface-v1",
               var self = this;
               //init
               self.initializeElementData();
-              
+
               //set events
               $(element).on('touchstart kinectstart', function(e, kinectData) {
                 e.preventDefault();
@@ -680,18 +699,18 @@ define("mylibs/uiiface-v1",
                 }
                 self.handlePoints(e,1);
               });
-              
+
               $(element).on('touchmove kinectmove', function(e, kinectData) {
                 e.preventDefault();
                 if(kinectData) {
                   e.originalEvent = kinectData;
-                }                
-                //ensure resetting 
+                }
+                //ensure resetting
                 self.testMove();
 
                 self.handlePoints(e,2);
               });
-              
+
               $(element).on('touchend kinectend', function(e, kinectData) {
                 e.preventDefault();
                 if(kinectData) {
@@ -699,14 +718,14 @@ define("mylibs/uiiface-v1",
                 }
                 self.handlePoints(e,3);
               });
-              
+
               //Mouse and Mozilla touch handler
               $(element).on('mousedown MozTouchDown', function(e) {
                 e.preventDefault();
                 e.originalEvent.changedTouches = [{
                   'identifier' : e.originalEvent.streamId || 0,
                   'pageX' : e.originalEvent.pageX,
-                  'pageY' : e.originalEvent.pageY  
+                  'pageY' : e.originalEvent.pageY
                 }];
                 self.handlePoints(e,1);
                 //If mouse is down then we listen to mousemove events
@@ -715,7 +734,7 @@ define("mylibs/uiiface-v1",
                   e.originalEvent.changedTouches = [{
                     'identifier' : e.originalEvent.streamId || 0,
                     'pageX' : e.originalEvent.pageX,
-                    'pageY' : e.originalEvent.pageY  
+                    'pageY' : e.originalEvent.pageY
                   }];
                   self.handlePoints(e,2);
                 });
@@ -725,7 +744,7 @@ define("mylibs/uiiface-v1",
                 e.originalEvent.changedTouches = [{
                   'identifier' : e.originalEvent.streamId || 0,
                   'pageX' : e.originalEvent.pageX,
-                  'pageY' : e.originalEvent.pageY  
+                  'pageY' : e.originalEvent.pageY
                 }];
                 self.handlePoints(e,3);
                 //Unbind mouse move on mouse up
@@ -733,7 +752,7 @@ define("mylibs/uiiface-v1",
               });
             }
         };
-        
+
         if(!element) { return null; }
         return new PointEventListener(element);
       },
@@ -741,37 +760,37 @@ define("mylibs/uiiface-v1",
         /**
          * Determines websocket capabilities and tries to establish
          * a web socket connection
-         * 
+         *
          * @param uri
          * @returns the socket object or false
          */
         connect : function(uri) {
           var socket = false;
-          
+
           if (Modernizr.websockets){
-            
+
             if(window.MozWebSocket) {
               window.WebSocket = window.MozWebSocket;
             }
-            socket = new window.WebSocket(uri);        
+            socket = new window.WebSocket(uri);
           }
-          
+
           return socket;
         },
         /**
-         * Initializes a websocket connection to a locally running 
+         * Initializes a websocket connection to a locally running
          * Kinect skeleton broadcast service.
          * @returns {Boolean}
          */
         kinect : function() {
           var self = this;
           var socket = self.connect('ws://localhost:8181/KinectHtml5');
-          
+
           if (!socket){
             console.log('No websockets available.');
             return false;
           }
-          
+
           // Stores relevant data for Kinect hands
           var hands = [{
             'cur'   : {z : 0},
@@ -782,14 +801,14 @@ define("mylibs/uiiface-v1",
             'old'   : {z : 0},
             'state' : 'free'
           }];
-          
+
           var dispatchKinectEvent = function(type,data) {
             var kinectData = {};
             var touches = [];
-            
+
             if(data.length < 1) {
               return;
-            }           
+            }
             //Make Kinect event behave like a standard touch event
             for(var h=0; h < data.length; h++) {
               $('.kinectHand').hide();
@@ -818,35 +837,35 @@ define("mylibs/uiiface-v1",
             kinectData.touches = touches;
             kinectData.targetTouches = touches;
             kinectData.changedTouches = touches;
-            
+
             $(touches[0].target).trigger('kinect'+type, kinectData);
           };
-          
+
           // Observer function which determines "click" events based on Kinect hand joints
           var eventObserver = function() {
-            
-            //Stores z delta value between two hand z values 
+
+            //Stores z delta value between two hand z values
             var deltaZ,deltaX,deltaY;
             var type = false;
             var data = [];
-            
+
             var inter = setInterval(function() {
-              
+
               if(hands[0].old.z == 0 || hands[1].old.z == 0) {
                 if(hands[0].cur.z != 0 && hands[1].cur.z !=0) {
                   hands[0].old = hands[0].cur;
                   hands[1].old = hands[1].cur;
                   return;
                 }
-              }          
+              }
               type = false;
               data = [];
-              
+
               for(var h=0; h < 2; h++) {
                 deltaX = Math.abs(hands[h].old.x - hands[h].cur.x);
                 deltaY = Math.abs(hands[h].old.y - hands[h].cur.y);
                 deltaZ = (hands[h].old.z - hands[h].cur.z);
-                
+
                 if((hands[h].state === 'start' || hands[h].state === 'move') && (deltaX > 3 || deltaY > 3)) {
                   //Trigger hand move (while down)
                   type = 'move';
@@ -856,7 +875,7 @@ define("mylibs/uiiface-v1",
                 if(hands[h].state === 'end') {
                   hands[h].state = 'free';
                 }
-                
+
                 if(deltaZ > 0.05) {
                   if(hands[h].state === 'free' && deltaX < 15 && deltaY < 15) {
                     //Trigger hand start
@@ -875,23 +894,23 @@ define("mylibs/uiiface-v1",
                     data.push(hands[h].cur);
                   }
                 }
-              }             
+              }
               hands[0].old = hands[0].cur;
               hands[1].old = hands[1].cur;
-              
+
               if(type != false) {
                 dispatchKinectEvent(type,data);
-              }              
+              }
             }, 150);
           };
-          
+
           //Preparing visual helpers
           if(UIIFace.options.gestureHints) {
             $('<div/>', {
               'class' : 'kinectHand',
               'id'  : 'handLeft',
               'css' : {
-                'position': 'fixed', 
+                'position': 'fixed',
                 'top': 0,
                 'left': 0,
                 'height': '15px',
@@ -906,7 +925,7 @@ define("mylibs/uiiface-v1",
               'class' : 'kinectHand',
               'id'  : 'handRight',
               'css' : {
-                'position': 'fixed', 
+                'position': 'fixed',
                 'top': 0,
                 'left': 0,
                 'height': '15px',
@@ -918,12 +937,12 @@ define("mylibs/uiiface-v1",
               }
             }).appendTo($('body'));
           }
-          
+
           //Attach an Kinect ready visual helper
           $('<div/>', {
             'id'  : 'kinectReady',
             'css' : {
-              'position': 'fixed', 
+              'position': 'fixed',
               'top': ($(window).outerHeight() / 2) - 50 + 'px',
               'left': ($(window).outerWidth() / 2) - 100 + 'px',
               'height': '100px',
@@ -937,27 +956,27 @@ define("mylibs/uiiface-v1",
             },
             'text' : 'Kinect is ready to use'
           }).appendTo($('body'));
-          
+
           socket.onerror = function(error) {
             console.log('Kinect connection could not be established',error);
           };
-          
+
           socket.onopen = function () {
             console.log('Kinect connection established');
             UIIFace.config.modalities['kinect'] = true;
-            
+
             //Showing a message that Kinect can be used
             $('#kinectReady').fadeIn(200).delay(3000).fadeOut(200);
-            
+
             //Initialize the Kinect event observer
             eventObserver();
-            
+
             //Sending initial scale command to Kinect server
             socket.send('ScaleTo ' + $(document).width() + ' ' + $(document).height());
-            
+
             //Making sure that window size changes are reflected in the transmitted Kinect data
             var resizeTimer;
-            
+
             $(document).on('DOMSubtreeModified',function(e) {
               clearTimeout(resizeTimer);
               resizeTimer = setTimeout(function() {
@@ -971,20 +990,20 @@ define("mylibs/uiiface-v1",
               }, 200);
             });
           };
-          
+
           var hideTimer;
-          
+
           socket.onmessage =  function (msg) {
             //console.log('Kinect data received.');
-            
+
             // Get the data in JSON format.
             var jsonObject = JSON.parse(msg.data);
-                
+
             // Display the skeleton hand joints if wanted.
             if(UIIFace.options.gestureHints) {
               $('.kinectHand').show(200);
             }
-            
+
             for (var i = 0; i < jsonObject.skeletons.length; i++) {
                 for (var j = 0; j < jsonObject.skeletons[i].joints.length; j++) {
                     var joint = jsonObject.skeletons[i].joints[j];
@@ -994,7 +1013,7 @@ define("mylibs/uiiface-v1",
                         'top'    : joint.y + 'px',
                         'left'   : joint.x + 'px',
                         'width'  : 15 + (10 * joint.z) + 'px',
-                        'height' : 15 + (10 * joint.z) + 'px'  
+                        'height' : 15 + (10 * joint.z) + 'px'
                       });
                     }
                     if(joint.name == 'handright') {
@@ -1003,14 +1022,14 @@ define("mylibs/uiiface-v1",
                         'top'    : joint.y + 'px',
                         'left'   : joint.x + 'px',
                         'width'  : 15 + (10 * joint.z) + 'px',
-                        'height' : 15 + (10 * joint.z) + 'px'  
+                        'height' : 15 + (10 * joint.z) + 'px'
                       });
-                    } 
+                    }
                 }
                 //Only process the first skeleton
                 break;
             }
-            
+
             //Making sure visual helpers disappear if no changes are transmitted
             if(UIIFace.options.gestureHints) {
               clearTimeout(hideTimer);
@@ -1021,38 +1040,38 @@ define("mylibs/uiiface-v1",
             // Inform the server about the update.
             //socket.send("Skeleton updated on: " + (new Date()).toDateString() + ", " + (new Date()).toTimeString());
           };
-          
+
           socket.onclose = function() {
             console.log('Kinect connection closed');
             if(UIIFace.options.gestureHints) {
               $('.kinectHand').hide();
             }
           };
-          
-        } //end kinect function 
+
+        } //end kinect function
       } //end webSocketConnector namespace
-      
+
     };
-  
+
     /**
      * -------------------------------------------
      * Jquery Plugin Entry
      * -------------------------------------------
-     */ 
-    $.fn.uiiface = function( options ) { 
+     */
+    $.fn.uiiface = function( options ) {
       UIIFace.config.index = 0; //Processed element index
       UIIFace.config.elements = this; //All jquery selected elements
-      
+
       return this.each(function() {
         UIIFace.initialize( options, this );
       });
     };
-    
+
     /**
      * -------------------------------------------
      * Global default options
      * -------------------------------------------
-     */ 
+     */
     $.fn.uiiface.options = {
         //Event which should be triggered on given element
         events : '',
@@ -1060,6 +1079,6 @@ define("mylibs/uiiface-v1",
         callback : null,
         //Displaying visual hints for gestures
         gestureHints: true
-    };  
+    };
   }
 );
