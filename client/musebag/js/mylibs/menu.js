@@ -151,7 +151,11 @@ define("mylibs/menu",
     };
 
     var attachEvents = function(mode) {
-      if (!handledEvents[mode]) {
+      if (mode === undefined) {
+        for (var name in handledEvents) {
+          attachEvents(name);
+        }
+      } else if (!handledEvents[mode]) {
         console.log('No events handle for `'+mode+'`');
       } else if (!handledEvents[mode].isAttached) {
         handledEvents[mode]();
@@ -161,6 +165,7 @@ define("mylibs/menu",
 
     // Collection of all available events
     var handledEvents = {
+
       text: function() {
         $('.panel.text input').click(function(){
           $(this).val('');
