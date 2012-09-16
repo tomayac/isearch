@@ -153,7 +153,9 @@ define("mylibs/menu",
     var attachEvents = function(mode) {
       if (mode === undefined) {
         for (var name in handledEvents) {
-          attachEvents(name);
+          if (!handledEvents[name].isAttached) {
+            attachEvents(name);
+          }
         }
       } else if (!handledEvents[mode]) {
         console.log('No events handle for `'+mode+'`');
