@@ -603,6 +603,10 @@ nav {
   padding: 10px 0;
 }
 
+#query.over{
+  border: 0;
+}
+
 #query input[type="submit"] {
   display: none;
 }
