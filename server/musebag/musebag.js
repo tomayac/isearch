@@ -13,6 +13,7 @@
  */
 var fs       = require('fs'),
     restler  = require('restler'),
+    config   = require('./config'),
     wunder   = require('./wunderground');
 
 /**
@@ -100,6 +101,43 @@ var clone = function(obj) {
   return copy;
 };
 
+var generateVideoLLDescriptors = function(fileInfo,extSessionId) {
+  
+  var callData = {
+    'mediaURL' : fileInfo.path,
+    'fileFormat' : fileInfo.type.substr(fileInfo.type.indexOf('/')+1),
+    'ContentObjectID' : extSessionId,
+    'mediaName' : fileInfo.name
+  };
+  
+  console.log('generateVideoLLDescriptors called');
+  console.dir(callData);
+  
+  //Initiate special treatment for video files
+  restler
+  .post(config.videoLLdPath, { 
+    data : callData
+  })
+  .on('success', function(data, response) { 
+    if(data) {
+     console.log(data); 
+    }
+  })
+  .on('fail', function(data,response) {
+    console.log(response.rawEncoded);
+    console.log('VideoDescriptorExtractor failed: ' + response.statusCode);
+  })
+  .on('error', function(data,response) {
+    console.log('VideoDescriptorExtractor error: ' + data.toString());
+  });
+};
+
+/**
+ * @description distributes a media file to the Multimodal Query Formulator and 
+ * for video files to the VideoDescriptorExtractor component in order to get
+ * visual words for the user to select from. 
+ *  
+ */
 var distributeFile = function(destinationUrl, callParams, fileInfo, callback) {
   
   var context = this;
@@ -154,7 +192,13 @@ var distributeFile = function(destinationUrl, callParams, fileInfo, callback) {
       //If there was an error uploading the file to MQF, then the "file" field with the external item URL
       //will not be set and instead of throwing an error the local file path is used
       fileInfo.path = data.file ? data.file : fileInfo.host + fileInfo.originPath;
-
+      
+      //Initiate the low-level descriptor extractor if the file was a video
+      console.dir(fileInfo);
+      if((/video/i).test(fileInfo.type)) {
+        generateVideoLLDescriptors(fileInfo,callParams.session);
+      }
+      
       callback(null,fileInfo);
     })
    .on('error', function(data,response) {
@@ -267,48 +311,70 @@ var getQueryRucod = function(query,sessionId,sessionStore,callback) {
   }
 };
 
+var getSessionStore = function(req,asCopy) {
+  //Does a user is logged in?
+  if(!req.session.musebag) {
+    //If not create an guest session store
+    req.session.musebag = {
+      'user' : { 
+        'userId'   : 'guest',
+        'settings' : '{"maxNumResults" : 100, "clusterType" : "3D", "numClusters" : 5, "transMethod" : "rand"}'
+      },
+      'queries' : new Array(),
+      'querycount' : 0
+    };
+  };
+
+  return asCopy === true ? clone(req.session.musebag) : req.session.musebag;
+};
+
+var setSessionStore = function(req,store) {
+  try {
+    req.session.musebag = store;
+  } catch(e) {
+    console.error('Session store could not be set due to an error: ' + e.message);
+  }
+};
+
 var isGuest = function(req) {
   //Does a user is logged in?
-  if(req.session.user.userId == 'guest') {
+  var sessionStore = getSessionStore(req,false);
+  
+  if(sessionStore.user.userId == 'guest') {
     return true;
   } else {
     return false;
   }
 };
 
-var getSessionStore = function(req) {
-  //Does a user is logged in?
-  if(!req.session.user) {
-    //If not create an guest session store
-    req.session.user = { 
-      userId : 'guest',
-      settings : '{"maxResults" : 100, "clusterType" : "3D", "numClusters" : 5, "transMethod" : "rand"}',
-      queries : new Array()
-    };
-  };
-
-  return clone(req.session.user);
-};
-
-var setSessionStore = function(req,user) {
-  try {
-    req.session.user = user;
-  } catch(e) {
-    console.error('Session store could not be set due to an error: ' + e.message);
-  }
-};
-
-var getExternalSessionId = function(req,renew) {  
+var getExternalSessionId = function(req) {  
   if(req) {
-    var sessionStore = getSessionStore(req);
-    if(!req.session.user.extSessionId) {
-      var sid = req.sessionID.substring(req.sessionID.length-32,req.sessionID.length) + '-' + sessionStore.querycounter;
+    var sessionStore = getSessionStore(req,false);
+    if(!sessionStore.user.extSessionId) {
+      var sid = req.sessionID.substring(req.sessionID.length-32,req.sessionID.length) + '-' + sessionStore.querycount;
       //remove illegal characters
       sid = sid.replace(/[|&;$%@"<>()+,\/]/g, '0');
-      req.session.user.extSessionId = sid;
+      sessionStore.extSessionId = sid;
     } 
-    return req.session.user.extSessionId;
+    return sessionStore.extSessionId;
   } 
+};
+
+var getQueryId = function(req) {
+  if(req) {
+    var sessionStore = getSessionStore(req,false);
+    if(req.body.queryId && sessionStore.queries[req.body.queryId]) {
+      return req.body.queryId;
+    } else {
+      return -1 + sessionStore.queries.push({
+        'query'  : null,        //storage for the query JSON object
+        'result' : {            //initial result object
+          'raw'      : null,
+          'relevant' : new Array()
+        } 
+      });
+    }
+  }
 };
 
 /**
@@ -344,68 +410,67 @@ var login = function(req, res){
 	restler
 	.get(verifyURL, { parser: restler.parsers.json })
 	.on('success', function(data) {		
-		
 		//Check if return data is ok
     if(!data.profile) {
     	msg.error = data.err.msg;
     	res.send(JSON.stringify(msg));
     } else {
       //Collect initial user data
-      var user = getSessionStore(req);
+      var sessionStore = getSessionStore(req,true);
       
       //Set real user data
-      user.userId = data.profile.verifiedEmail;
-      user.name = data.profile.name.givenName || '';
-      user.familyname = data.profile.name.familyName || '';
-      user.email = data.profile.verifiedEmail;
-      user.username = data.profile.displayName || '';
+      sessionStore.user.userId = data.profile.verifiedEmail;
+      sessionStore.user.name = data.profile.name.givenName || '';
+      sessionStore.user.familyname = data.profile.name.familyName || '';
+      sessionStore.user.email = data.profile.verifiedEmail;
+      sessionStore.user.username = data.profile.displayName || '';
       
 			//Test if the user is known by the personalisation component
-			var checkUrl = apcPath + 'resources/users/profileFor/' + user.userId + '/withRole/Consumer';
-			
+			var checkUrl = config.apcPath + 'resources/users/profileFor/' + sessionStore.user.userId + '/withRole/Consumer';
+		
 			restler
 		  .get(checkUrl)
 		  .on('success', function(data, response) { 
-		    
 		    if(data) {		      
 		      //assign retrieved data to local user profile
 		      var name = data.user.name.split(' ');
-		      user.name = name[0];
-          user.familyname = name[1];
+		      sessionStore.user.name = name[0];
+		      sessionStore.user.familyname = name[1];
 		      for(var key in data.user) {
 		        if(key === 'name') {
 		          continue;
 		        }
 		        //Special treatment for date of birth key
 	          if(key === 'dateOfBirth') {
-	            user[key] = data.user[key].substring(0,data.user[key].indexOf('T'));
+	            sessionStore.user[key] = data.user[key].substring(0,data.user[key].indexOf('T'));
 	            continue;
 	          }
-		        user[key] = data.user[key];
+	          sessionStore.user[key] = data.user[key];
 		      }
 		      console.log('User data received:');
           console.log(data.user);
 		      
 		    } else {
 		      console.log('User does not exist, request additional user information...');
-		      user.state = 'new';
+		      sessionStore.user.state = 'new';
 		      
 		      //Lets create the user in the personalisation service
-		      var setUrl = apcPath + 'resources/users/setProfileDataFor/' + user.userId;
+		      var setUrl = config.apcPath + 'resources/users/setProfileDataFor/' + session.user.userId;
 	        var callData = {
-	          "name"   : user.name+' '+user.familyname,
-	          "settings" : user.settings,
+	          "name"   : sessionStore.user.name+' '+session.user.familyname,
+	          "settings" : sessionStore.user.settings,
 	          "role"   : "Consumer",
-	          "userId" : user.userId
+	          "userId" : sessionStore.user.userId
 	        };
-	        
+	        console.log(setUrl);
+	        console.dir(callData);
 	        restler
 	        .postJson(setUrl, callData)
 	        .on('success', function(data,response) {
 	           if (response.statusCode == 201) {
-	             console.log("User " + user.userId + " has been successfully created in personalisation component.");
+	             console.log("User " + sessionStore.user.userId + " has been successfully created in personalisation component.");
 	           } else {
-	             console.log("Error during user creation of " + user.userId + " in personalisation component.");
+	             console.log("Error during user creation of " + sessionStore.user.userId + " in personalisation component.");
 	           }
 	        })
 	        .on('fail', function(data,response) {
@@ -417,10 +482,10 @@ var login = function(req, res){
 		    }
 		    
 		    //Store user data in session
-        setSessionStore(req,user);
+        setSessionStore(req,sessionStore);
 		    
 		    //Return user data to client
-        res.send(JSON.stringify(user));
+        res.send(JSON.stringify(sessionStore.user));
 		  })
 		  .on('fail', function(data,response) {
 		    msg.error = 'Error ' + response.statusCode;
@@ -461,24 +526,24 @@ var profile = function(req, res) {
   
 	var attrib = req.params.attrib;
 	//Get the right session storage (depending on log in status - guest if not, user if yes)
-	var sessionStore = getSessionStore(req);
+	var sessionStore = getSessionStore(req,false);
 	
-	if(!sessionStore['userId'] || sessionStore['userId'] === 'guest') {
+	if(!sessionStore.user['userId'] || sessionStore.user['userId'] === 'guest') {
 	  res.send(JSON.stringify({
 	    error : 'User is not logged in!',
-	    settings : sessionStore['settings']
+	    settings : sessionStore.user['settings']
 	  }));
 	  return;
 	}
 	
 	//If no key attribute is supplied, we simply return the whole profile
 	if(!attrib) {
-	  res.send(JSON.stringify(sessionStore));
+	  res.send(JSON.stringify(sessionStore.user));
 	} else {
   	//Does the requested profile attribute is available
-  	if(sessionStore[attrib]) {
+  	if(sessionStore.user[attrib]) {
   		var data = {};
-  		data[attrib] = sessionStore[attrib];
+  		data[attrib] = sessionStore.user[attrib];
   		res.send(JSON.stringify(data));
   	} else {
   		res.send(JSON.stringify({error : 'The requested user profile attribute is not available!'}));
@@ -493,7 +558,7 @@ var setProfile = function(req, res) {
   //get post data
   var data = req.body.data;
   //Get the right session storage (depending on log in status - guest if not, user if yes)
-  var sessionStore = getSessionStore(req);
+  var sessionStore = getSessionStore(req,false);
   //Does the requested profile attribute is available
   if(data) {
     
@@ -505,18 +570,23 @@ var setProfile = function(req, res) {
         //threat user settings in JSON format
         try {
           //check if new settings are already in the session storage
-          var newSettings = data[attrib];
-          var settings = JSON.parse(sessionStore[attrib]);
-          
+          var newSettings = typeof data[attrib] === 'object' ? data[attrib] : JSON.parse(data[attrib]);
+          var settings = JSON.parse(sessionStore.user[attrib]);
+        
           for (var key in newSettings) {
             if(!settings[key] || settings[key] !== newSettings[key]) {
               settings[key] = newSettings[key];
               changed = true;
             }
           }        
+          
+          delete settings['maxResults'];
+          delete settings['numClusters'];
+          delete settings['transMethod'];
+          
           //ok, the settings object is updated, so transform it back to a JSON string
           //and store it in the session
-          sessionStore[attrib] = JSON.stringify(settings);
+          sessionStore.user[attrib] = JSON.stringify(settings);
           
         } catch(e) {
           res.send(JSON.stringify({error : 'malformed'}));
@@ -524,12 +594,9 @@ var setProfile = function(req, res) {
         }
       } else {
 
-        if(attrib === 'dateOfBirth') {
-          data[attrib] += 'T00:00:00+02:00';
-        }
         //Set the profile attribute to the new value as long as it is a logged in user
-        if(sessionStore[attrib] !== data[attrib] && !isGuest(req)) {
-          sessionStore[attrib] = data[attrib];
+        if(sessionStore.user[attrib] !== data[attrib] && !isGuest(req)) {
+          sessionStore.user[attrib] = data[attrib];
           changed = true;
         }
       }
@@ -542,7 +609,7 @@ var setProfile = function(req, res) {
     }
     
     //set the changed temporary profile data to the session profile data
-    setSessionStore(req,sessionStore);
+    //setSessionStore(req,sessionStore);
     
     if(isGuest(req)) {
       //if it's a guest user we don't store the information in the profile (it is stored already in the session)
@@ -552,26 +619,30 @@ var setProfile = function(req, res) {
     } else { 
   
       //if we have a logged in user, we store everything in the profile
-      var storeURL = apcPath + 'resources/users/setProfileDataFor/' + sessionStore['userId'];
+      var storeURL = config.apcPath + 'resources/users/setProfileDataFor/' + sessionStore.user['userId'];
       var callData = {};
       
-      for( var key in sessionStore ) {
-        if(key === 'name') {
-          callData['name'] = sessionStore['name']+' '+sessionStore['familyname']; 
+      for( var key in sessionStore.user ) {
+        if(key === 'name' || key === 'familyname') {
+          callData['name'] = sessionStore.user['name']+' '+sessionStore.user['familyname']; 
+        } else if(key === 'dateOfBirth') {
+          callData[key] = sessionStore.user[key] + 'T00:00:00+02:00';
         } else {
-          callData[key] = sessionStore[key];
+          callData[key] = sessionStore.user[key];
         }
       }
+      console.log(storeURL);
+      console.dir(callData);
       //save the user data in the user profile
       restler
-      .postJson(storeURL, sessionStore)
+      .postJson(storeURL, callData)
       .on('success', function(data,response) {         
         //use return data if it's there
         data = {success : attrib};
-        sessionStore['state'] = 'member';
+        sessionStore.user['state'] = 'member';
         console.log('Profile data sucessfully transmitted to personalisation web service.');
         //set the changed temporary profile data to the session profile data
-        setSessionStore(req,sessionStore);
+        //setSessionStore(req,sessionStore);
         //Notify client about success full save
         res.send(JSON.stringify(data));
       })
@@ -602,7 +673,7 @@ var getProfileHistory = function(req, res) {
   //Check if history update data is complete 
   if(!isGuest(req)) {
     //Submit the query to authentication/personalisation component
-    var getURL = apcPath + 'resources/historydatas/getSearchHistoryFor/'  + sessionStore.userId + '/limit/5';
+    var getURL = config.apcPath + 'resources/historydatas/getSearchHistoryFor/'  + sessionStore.user.userId + '/limit/5';
     
     restler
     .get(getURL)
@@ -617,7 +688,8 @@ var getProfileHistory = function(req, res) {
     .on('error', function(data,response) {
       result.error = data.toString();
       res.send(JSON.stringify(result));
-    })
+    });
+    
   } else {
     result.error = 'No history data available for guest users.';
     res.send(JSON.stringify(result));
@@ -629,58 +701,78 @@ var updateProfileHistory = function(req, res) {
   console.log("Update profile history function called...");
   
   //get post data
-  var data = req.body;
-  
+  var data = req.body; 
   //Get the right session storage (depending on log in status - guest if not, user if yes)
-  var sessionStore = getSessionStore(req);
-  
-  //Check what we got with this POST request
-  if(data.items) {
-    sessionStore.items = sessionStore.items ? data.items.concat(sessionStore.items) : data.items;
-  }
-  
+  var sessionStore = getSessionStore(req,false);
   var result = {};
   
-  //Check if history update data is complete 
-  if(isNumber(sessionStore.userId) && sessionStore.query && sessionStore.items) {
-    //Submit the query to authentication/personalisation component
-    var storeURL = apcPath + 'resources/historydatas/updateSearchHistoryFor/'  + sessionStore.userId;
+  //Check what we got with this POST request
+  if(data.items && sessionStore.queries[data.queryId]) {
+    console.log('add relevant result items from post resquest');
+    sessionStore.queries[data.queryId].result.relevant = sessionStore.queries[data.queryId].result.relevant ? data.items.concat(sessionStore.queries[data.queryId].result.relevant) : data.items;
+  }
+  
+  //We iterate through all remaining queries in the session to make sure we also
+  //store queries which havn't been finished or have been interrupted in the past
+  for(var index in sessionStore.queries) {
+    var queryData = sessionStore.queries[index];
     
-    var callData = {
-        "userid" : sessionStore.userId,
-        "query"  : JSON.stringify(sessionStore.query),
-        "items"  : JSON.stringify(sessionStore.items)
-    };
-    
-    console.log('callData:');
-    console.log(callData);
-    
-    restler
-    .postJson(storeURL, callData)
-    .on('complete', function(data,repsonse) { 
-      //Check if result is ok
-      if(data.error) {
-        result.error = data.error;
-        console.log(result.error);
-      } else {
-        result.success = 'History entry saved.';
-        console.log(result);
-        //After successful storing of search history entry reset session data
-        sessionStore.query = undefined;
-        sessionStore.items = undefined;
-        sessionStore.tags  = undefined;
+    //Check if history update data is complete 
+    if(!isGuest(req) && queryData.query && queryData.result.relevant) {
+      //Submit the query to authentication/personalisation component
+      var storeURL = config.apcPath + 'resources/historydatas/updateSearchHistory';
+     
+      var items = [];
+      var time = new Date().getTime() + "";
+      time = time.substr(6);
+      for(var i in queryData.result.relevant) {
+        items.push({
+          'id' : parseInt(time + i + 1, 10),
+          'tags' : queryData.result.relevant[i].tags
+        });
       }
       
-      res.send(JSON.stringify(result));
-   })
-   .on('error', function(data,response) {
-     result.error = data.toString();
-     res.send(JSON.stringify(result));
-   });
-  } else {
-    result.error = 'History data cannot be saved because of insufficient data.';
-    res.send(JSON.stringify(result));
-  }//end if
+      var time = new Date().getTime() + "";
+      time = time.substr(6);
+      var callData = {
+          "userid" : sessionStore.user.userId,
+          "query"  : { 
+            'id'    : parseInt(time + queryData.query.id.substr(queryData.query.id.lastIndexOf('-')+1), 10),
+            'rucod' : queryData.query.rucod
+          },
+          "items"  :  items //[{'id' : 1, 'tags' : ['test','first','item']},{'id' : 3, 'tags' : ['another','second','item']}]
+      };
+      
+      console.log(storeURL);
+      console.log('callData:');
+      console.log(callData);
+      
+      restler
+      .postJson(storeURL, callData)
+      .on('success', function(data,response) {
+        //Check if result is ok
+        if(data.error) {
+          console.log(data.error);
+        } else {
+          console.log('History entry for query with index '+ index +' has been saved.');
+        }
+      })
+      .on('fail', function(data,response) {
+        //console.dir(response.rawEncoded);
+        console.log('Error ' + response.statusCode);
+      })
+      .on('error', function(data,response) {
+        console.log(data.toString());  
+      });
+    } else {  
+      console.log('History data cannot be saved for query with index '+ index +' because of insufficient data.');
+    }//end if
+    
+    //reset each session query entry after save request was sent
+    sessionStore.queries.splice(index, 1);
+  }//end for
+  
+  res.send({'success' : true});
 };
 
 var query = function(req, res) {
@@ -692,122 +784,102 @@ var query = function(req, res) {
   console.log(data);
   //Get the external session id of the MQF
   var extSessionId = getExternalSessionId(req);
+  //Get the actual queryId
+  var queryId = getQueryId(req);
   //Get the right session storage (depending on log in status - guest if not, user if yes)
-  var sessionStore = getSessionStore(req);
+  //Second parameter determines if we get a copy of the session storage or the original
+  var sessionStore = getSessionStore(req,false);
   //Url of MQF component
-  var queryFormulatorURL = mqfPath + 'mqf.php?index=uc6';
+  var queryFormulatorURL = config.mqfPath + 'mqf.php?index='; //'submitQuery/';
   
-  var result = {};
-  
-  try {
+  var result = {};  
     
-    var queryId = -1 + sessionStore.queries.push({
-      'tags'  : data.tags ? data.tags.join() : '', //store the used query tags in the session
-      'query' : data //store query in session
-    });
-    
-    //set the query parameters from the user settings
-    var settings = JSON.parse(sessionStore.settings);
-    
-    if ( settings.maxNumResults ) queryFormulatorURL += '&total=' + settings.maxNumResults ;
-    if ( settings.numClusters )   queryFormulatorURL += '&cls=' + settings.numClusters ;
-    if ( settings.transMethod )   queryFormulatorURL += '&tr=' + settings.transMethod ;
-    if ( !settings.smatrix )      queryFormulatorURL += '&smat=true' ;
-    
-   console.log(queryFormulatorURL);
-    //Submit the query to MQF
-    restler
-    .post(queryFormulatorURL, { 
-      data : JSON.stringify(data)
-    })
-    .on('complete', function(data) { 
-
-      //Check if result is ok
-      if(data.error) {
-        result.error = data.error;
-        console.log(result.error);
-      } else {
-        result = data.result;
-      }
-      
-      //store result in session
-      sessionStore.queries[queryId]['result'] = data;
-      
-      res.send(result);
-      //After successful submission of query increase the query counter
-      sessionStore.querycounter++;
-    })
-    .on('error', function(data,response) {
-      console.log(response.client['_httpMessage']['res']['rawEncoded']);
-      result.error = data.toString();
+  //Compose the query in the specification conform MQF way which generates a query RUCoD and RWML
+  getQueryRucod(data, extSessionId, sessionStore, function(error,queryData) {
+    if(error) {   
+      result.error = 'Query error: ' + error;
+      console.log(result.error);
       res.send(JSON.stringify(result));
-    });
-    
-    //Compose the query
-    //This would be the specification conform MQF querying
-    //but since it isn't ready we use the CERTH version which works without
-    //RUCoD as query format
-    /*
-    getQueryRucod(data, extSessionId, sessionStore, function(error,queryData) {
-      if(error) {
-        result.error = 'Query error: ' + error;
-        console.log(result.error);
-        res.send(JSON.stringify(result));
-
-      } else {
-        
-        var queryOptions = sessionStore['Settings'];
+    } else {
+      
+      try {
+       
+        //set the query parameters from the user settings
+        var settings = JSON.parse(sessionStore.user.settings);
         
         //store the query in the session
-        sessionStore.query = {
-            id: extSessionId,
-            rucod: queryData.rucod
+        sessionStore.queries[queryId].query = {
+            'id'   : extSessionId,
+            'rucod': queryData.rucod,
+            'rwml' : queryData.rwml,
+            'json' : data
         };
         
+        //increase query counter for the current session (used to create unique extSessionId)
+        sessionStore.querycount++;
+        
         //creating the call parameters
-        var callData = {
+        //This would be the specification conform MQF querying
+        //but since it isn't ready we use the CERTH version which works without
+        //RUCoD as query format
+        /*var callData = {
             "f"       : "submitQuery",
             "rucod"   : queryData.rucod,
             "rwml"    : queryData.rwml,
             "session" : extSessionId,
-            "options" : queryOptions
-        };
+            "options" : settings
+        };*/
         
+        queryFormulatorURL += (settings.useCase ? settings.useCase : 'uc6');
+        
+        if ( settings.maxNumResults ) queryFormulatorURL += '&total=' + settings.maxNumResults ;
+        if ( settings.numClusters )   queryFormulatorURL += '&cls=' + settings.numClusters ;
+        if ( settings.transMethod )   queryFormulatorURL += '&tr=' + settings.transMethod ;
+        if ( !settings.smatrix )      queryFormulatorURL += '&smat=true' ;
+        
+        console.log(queryFormulatorURL);
+  
         //Submit the query to MQF
         restler
         .post(queryFormulatorURL, { 
-          data : callData
+          data : JSON.stringify(data)
         })
         .on('complete', function(data) { 
-
+          //console.log(data);
+          try {
+            data = JSON.parse(data);
+          } catch(e) {
+            data = {'error' : 'the server gave me an invalid result.'};
+          }
+          
           //Check if result is ok
           if(data.error) {
             result.error = data.error;
             console.log(result.error);
           } else {
-            result = data.result;
+            result = data;
+            result.queryId = queryId;
           }
           
+          //store result in session
+          sessionStore.queries[queryId].result.raw = result;
+          //send the result back to the client
           res.send(result);
-          //After successful submission of query increase the query counter
-          sessionStore.querycounter++;
-       })
-       .on('error', function(data,response) {
+        })
+        .on('error', function(data,response) {
           console.log(response.client['_httpMessage']['res']['rawEncoded']);
           result.error = data.toString();
           res.send(JSON.stringify(result));
-       });
+        });
         
-      } //End no error else
-    }); //End getQueryRucod
-    */
-    
-  } catch(error) {
-    result.error = 'Error while query processing: ' + error.message;
-    console.log(result.error);
-    res.send(JSON.stringify(result));
-  }
-	
+      } catch(error) {
+        result.error = 'Error while query processing: ' + error.message;
+        console.log(result.error);
+        res.send(JSON.stringify(result));
+      }  
+    } //End no error else
+  }); //End getQueryRucod
+  
 };
 
 var queryItem = function(req, res) {
@@ -815,27 +887,23 @@ var queryItem = function(req, res) {
 	console.log("Queryitem function called...");
 
 	//Url for forwarding the uploaded file to the multimodal query formulator
-  var queryFormulatorURL = mqfPath + '/upload.php';
-	
+  var queryFormulatorURL = config.mqfPath + '/upload.php';
+  //Get the external service session id
+  var sid = getExternalSessionId(req);
+  //Get the actual queryId
+  var queryId = getQueryId(req);
+  
   //Callback function for external webservice calls
   var externalCallback = function(error,data) {
     if(error) {
       res.send(JSON.stringify(error));
       return;
     }   
-    //Store query item data in session
-    req.session.query.items.push(data);
     //Return query item path to client
+    data.queryId = queryId;
     res.send(JSON.stringify(data));
   };
-  
-	//Check if a query object exists in this session
-	if(!req.session.query) {
-		req.session.query = { 'items' : [] };
-	}
 	
-	//Store the session id
-	var sid = getExternalSessionId(req);
 	//Create the initial file meta information object
 	var uploadItem = {
 	  'host' : 'http://' + req.headers.host  
@@ -896,6 +964,66 @@ var queryStream = function(req, res) {
 
 }; //end function queryStream
 
+var addResultItem = function(req, res) {
+  
+  console.log("addResultItem function called...");
+
+  //get post data
+  var data = req.body;  
+  //Get the right session storage (depending on log in status - guest if not, user if yes)
+  var sessionStore = getSessionStore(req,false);
+  
+  //Check what we got with this POST request
+  if(data.item && sessionStore.queries[data.queryId]) {    
+    
+    var itemExists = false;
+    
+    if(sessionStore.queries[data.queryId].result.relevant.length > 1) {
+      for(var index in sessionStore.queries[data.queryId].result.relevant) {
+        var testItem = sessionStore.queries[data.queryId].result.relevant[index];
+        if(testItem.id === data.item.id) {
+          itemExists = true;
+          break;
+        }
+      }
+    }
+    if(!itemExists) {
+      sessionStore.queries[data.queryId].result.relevant.push(data.item);
+    }
+
+    res.send({'success' : true});
+  } else {
+    res.send({'success' : false});
+  }
+  
+}; //end function addResultItem
+
+var deleteResultItem = function(req, res) {
+  
+  console.log("deleteResultItem function called...");
+  
+  //get post data
+  var data = req.body;
+  
+  //Get the right session storage (depending on log in status - guest if not, user if yes)
+  var sessionStore = getSessionStore(req,false);
+  
+  //Check what we got with this POST request
+  if(data.item && sessionStore.queries[data.queryId]) { 
+    
+    for(var index in sessionStore.queries[data.queryId].result.relevant) {
+      if(sessionStore.queries[data.queryId].result.relevant[index].id === data.item.id) {
+        sessionStore.queries[data.queryId].result.relevant.splice(index, 1);
+        break;
+      }
+    }
+    res.send({'success' : true});
+  } else {
+    res.send({'success' : false});
+  }
+  
+}; //end function deleteResultItem
+
 //Export all public available functions
 exports.login  = login;
 exports.logout = logout;
@@ -908,3 +1036,6 @@ exports.updateProfileHistory = updateProfileHistory;
 exports.query       = query;
 exports.queryItem   = queryItem;
 exports.queryStream = queryStream;
+
+exports.addResultItem    = addResultItem;
+exports.deleteResultItem = deleteResultItem;

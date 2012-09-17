@@ -2,7 +2,9 @@
 * Class to represent the user tags
 */
 
-define("mylibs/tags", function(){
+define("mylibs/tags", [
+    "mylibs/config"
+  ], function(config){
   
   var tags = []; 
   
@@ -42,9 +44,50 @@ define("mylibs/tags", function(){
     return tokens;
   };
   
+  //Get tag recommendations for the user which is logged in
+  var getUserTags = function(userId) {
+
+    //Ask for tag recommendations
+    $.ajax({
+      type: "GET",
+      url: config.constants.tagRecomUrl,
+      success: function(data) {
+        
+        try {
+          data = JSON.parse(data);
+          
+          var html = '';
+          console.dir(data);
+          for(var t=0; t < data.length; t++) {
+            html += '<a href="#" data-rank="' + data[t][1] + '">' + data[t][0] + '</a>';
+          }
+            
+          $(".tags").html(html);
+          
+          //Initializes the tagging system
+          init();
+          //Get tokens and load them as auto suggestions for the user
+          var tokens = getTokens();
+          $(".token-input-list-isearch").remove();
+          $("#query-field").tokenInput("clear");
+          $("#query-field").tokenInput('init',tokens, {theme: "isearch", preventDuplicates: true} );
+          
+        } catch(e) {
+          console.log('Error parsing tag recommendations: ' + e.toString());
+        }
+      },
+      error: function(jqXHR, error, object) {
+        console.log("Error getting tag recommendations: " + error);
+      },
+      dataType: "text",
+      contentType : "application/json; charset=utf-8"
+    });
+  };
+  
   return {
     init: init,
     getTags: getTags, 
-    getTokens: getTokens
+    getTokens: getTokens,
+    getUserTags : getUserTags
   };
 });

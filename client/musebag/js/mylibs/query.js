@@ -20,6 +20,7 @@ define("mylibs/query",
     'SoundType' : ['oga','ogg','mp3','wav']
   };
   
+  var queryId = false;
   var itemCount = 0;
   
   var isAllowedExtension = function(fileName, type) {
@@ -191,6 +192,9 @@ define("mylibs/query",
         formData.append('canvas', file.base64);
         formData.append('name', file.name);
       }
+      if(queryId) {
+        formData.append('queryId', queryId);
+      }
     } catch(e) {
       console.error('Browser does not support the creation of FormData! Exiting...');
       return;
@@ -223,6 +227,11 @@ define("mylibs/query",
       
       try {
         fileInfo = JSON.parse(data);
+        //Adding an fileItem to the query will trigger the server to produce
+        //a queryId, which is stored locally and send with every future upload 
+        //query item and query submit event in order to identify what belongs to
+        //a query
+        queryId = queryId !== fileInfo.queryId ? fileInfo.queryId : queryId;
         console.dir(fileInfo);
       } catch(e) {
         fileInfo.error = 'Error while parsing result JSON from file upload.';
@@ -521,10 +530,14 @@ define("mylibs/query",
         query.location != false    || query.rhythm  != false || 
         query.tags != false        || relevant.length > 0 ) 
     { 
+      //Add the queryId if available (means: if file items have been uploaded before)
+      if(queryId) {
+        query.queryId = queryId;
+      }
       
       console.log('searching for query data: ');
       console.log(query);
-	
+
       query.relevant = relevant ;
 	  
       //Send it to the server  
@@ -539,9 +552,16 @@ define("mylibs/query",
         dataType : "json",
         success: function(data) {
           //parse the result
-          console.log("Query result:");
-          console.dir(data);
-          callback(true, data) ;
+          if(!data.error) {
+            console.log("Query result:");
+            console.dir(data);
+            if(data.queryId) {
+              queryId = data.queryId;
+            }
+            callback(true, data) ;
+          } else {
+            callback(false, data) ;
+          }
         },
         error: function(jqXHR, error, object) {
           data = {error: "the server gave me an invalid result."}; 
@@ -570,6 +590,7 @@ define("mylibs/query",
   
   return {
     types           : queryTypes,
+    queryId         : queryId,
     addItems        : addItems,
     updateItem      : updateItem,
     submit          : submit,

@@ -11,20 +11,20 @@
 var express    = require('express'),
     redisStore = require('connect-redis')(express),
     fs         = require('fs'),
+    config     = require('./config'),
     musebag    = require('./musebag'),
     ptag       = require('./ptag'),
     cofind     = require('./cofind');
 
 var sess  = new redisStore;
 var app   = module.exports = express.createServer();
-var tempPath = '../../client/musebag/tmp';
 
 // Configuration
 app.configure(function(){
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
-  app.use(express.bodyParser({uploadDir: tempPath, encoding: 'binary', keepExtensions: true}));
-  app.use (function(req, res, next) {
+  app.use(express.bodyParser({uploadDir: config.tempPath, encoding: 'binary', keepExtensions: true}));
+  app.use(function(req, res, next) {
     //Special handling for recorded raw audio data
     if(req.headers['content-type'] === 'audio/x-wav') {
       var start = 0;
@@ -36,14 +36,14 @@ app.configure(function(){
       });
       req.on('end', function() {
         var fileName = new Date().getTime() + '-recording.wav';
-        fs.writeFile(tempPath + '/' + fileName, dataBuffer, function(error) {
+        fs.writeFile(config.tempPath + '/' + fileName, dataBuffer, function(error) {
           if(error) {
             console.log(error);
           } else {
             console.log('wav uploaded and stored');
             req.files = { 
               'files' : {
-                'path' : tempPath + '/' + fileName,
+                'path' : config.tempPath + '/' + fileName,
                 'name' : fileName,
                 'type' : req.headers['content-type'],
                 'size' : dataBuffer.length,
@@ -90,12 +90,15 @@ app.post('/query/stream'    , musebag.queryStream);
 app.post('/query/item'      , musebag.queryItem);
 app.post('/query'           , musebag.query);
 
+app.post('/result/item'     , musebag.addResultItem);
+app.del ('/result/item'     , musebag.deleteResultItem);
+
 //Routes for pTag
 console.log("Register pTag functions...");
 
-app.get  ('/ptag/tagRecommendations/:userid', ptag.tagRecommendations);
-app.get  ('/ptag/filterTags/:userid/:query/:resultSetTags', ptag.filterTags);
-app.get  ('/ptag/resultTagRecommendations/:userid/:query/:resultItemTags', ptag.resultTagRecommendations);
+app.get  ('/ptag/tagRecommendations', ptag.tagRecommendations);
+app.get  ('/ptag/filterTags/:queryId/:resultSetTags', ptag.filterTags);
+app.get  ('/ptag/resultTagRecommendations/:queryId/:resultItemTags', ptag.resultTagRecommendations);
 app.post ('/ptag/tag', ptag.tag);
 app.post ('/ptag/implicitTags', ptag.implicitTags);
 

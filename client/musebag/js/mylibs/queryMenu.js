@@ -1,14 +1,15 @@
-define("mylibs/menu",
+define("mylibs/queryMenu",
   [
     "mylibs/config",
     "mylibs/location",
     "mylibs/query",
+    "mylibs/queryTools",
     "mylibs/recorder",
     "mylibs/jquery.uiiface",
     "mylibs/jquery.swipePanel",
     "libs/progress-polyfill.min"
   ],
-  function(config, location, query) {
+  function(config, location, query, queryTools) {
     var hasGetUserMedia = function hasGetUserMedia() {
       // Note: Opera builds are unprefixed.
       return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
@@ -388,14 +389,16 @@ define("mylibs/menu",
 
     	//Drag and Drop of files
 	    var videoIcon = $('nav li[data-mode="video"]');
-
+	    
 	    //Drop trigger for video upload
 	    $('#videoDrop').uiiface({ 
         events : 'drop',  
         callback : function(event){
-          pictureIcon.addClass('uploading');
+          videoIcon.addClass('uploading');
           query.addItems(event.originalEvent,query.types.Video,function(fileInfo) {
             videoIcon.removeClass('uploading');
+            //Try to get the keyframes after 45 seconds...
+            //setTimeout(queryTools.setupVideoKeyframeSelector,45000);
           });
           reset();
           attachedModes.push('video');
@@ -406,7 +409,7 @@ define("mylibs/menu",
 	    $('#videoUpload').change(function(event) {
 
 	      query.addItems(event,query.types.Video,function(fileInfo) {
-          pictureIcon.removeClass('uploading');
+	        videoIcon.removeClass('uploading');
         });
 
 	    	event.preventDefault();
@@ -881,7 +884,9 @@ define("mylibs/menu",
         $("#query").append('<a href="#" id="restart">Start from scratch</a>');
 
         $("#restart").button();
-        $("#restart").click(function(){ window.location = ""; });
+        $("#restart").click(function(){ 
+          window.location = ""; 
+        });
       }
     };
 

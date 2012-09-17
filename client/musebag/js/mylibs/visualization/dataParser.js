@@ -15,6 +15,7 @@ define("mylibs/visualization/dataParser", function(){
     
     //Return a result object containing clusters and docs
     return {
+      queryId : data.queryId,
       clusters: clusters,
       docs: docs
     };

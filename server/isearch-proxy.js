@@ -19,7 +19,6 @@ var httpProxy = require('http-proxy');
 var port = 80;
 var options = {
   router: {
-    'localhost/ptag'    : '127.0.0.1:8083',
     'localhost/cofetch' : '127.0.0.1:8085',
     'localhost'         : '127.0.0.1:8081'	
   }

@@ -538,9 +538,19 @@ var cofetchHandler = (function() {
     var sound = sounds[index];
     
     //Update the preview
-    $('#sound-previewOGG').attr(
-      {'src': sound['PreviewOGG']}
-    );
+    if(!Modernizr.audio.mp3) {
+      //console.log('using ogg');
+      $('#sound-preview').attr({
+        'src': sound['PreviewOGG'],
+        'type' : 'audio/ogg'
+      });   
+    } else {
+      //console.log('using mp3');
+      $('#sound-preview').attr({
+        'src': sound['PreviewMP3'],
+        'type' : 'audio/mp3'
+      }); 
+    }
     
     //Let's prepare the array of changes
     var changes = [

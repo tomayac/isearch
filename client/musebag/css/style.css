@@ -493,6 +493,8 @@ nav {
   width: 22px;
   height: 22px;
   background-color: #fff;
+  float: right;
+  margin-top: 1px;
 }
 
 .settings-panel .checkbox.checked {
