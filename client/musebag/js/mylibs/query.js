@@ -525,7 +525,6 @@ define("mylibs/query",
   var submit = function(relevant, callback) {
 
     var query = getItems();
-<<<<<<< HEAD
     
     if (query.fileItems.length > 0 || query.emotion != false || 
         query.location != false    || query.rhythm  != false || 
@@ -535,15 +534,7 @@ define("mylibs/query",
       if(queryId) {
         query.queryId = queryId;
       }
-      
-=======
 
-    if (query.fileItems.length > 0 || query.emotion != false ||
-        query.location != false    || query.rhythm  != false ||
-        query.tags != false        || relevant.length > 0 )
-    {
-
->>>>>>> refs/remotes/org.eclipse.jgit.transport.RemoteConfig@66b067/gui-refactor
       console.log('searching for query data: ');
       console.log(query);
 
@@ -598,7 +589,6 @@ define("mylibs/query",
   };
 
   return {
-<<<<<<< HEAD
     types           : queryTypes,
     queryId         : queryId,
     addItems        : addItems,
@@ -606,16 +596,6 @@ define("mylibs/query",
     submit          : submit,
     updateItemCount : updateItemCount,
     reset           : reset
-=======
-    types               : queryTypes,
-    allowedTypes        : allowedTypes,
-    isAllowedExtension  : isAllowedExtension,
-    addItems            : addItems,
-    updateItem          : updateItem,
-    submit              : submit,
-    updateItemCount     : updateItemCount,
-    reset               : reset
->>>>>>> refs/remotes/org.eclipse.jgit.transport.RemoteConfig@66b067/gui-refactor
   };
 
 });
