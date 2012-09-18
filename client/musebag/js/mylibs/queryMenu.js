@@ -197,7 +197,7 @@ define("mylibs/queryMenu",
                 console.warn('[Menu.query] Cannot handle `'+files[i].name+'`');
               }
             }
-            console.log(types);
+
             for (var type in types) {
               query.addItems({files:types[type]}, type, function (fileInfo) {
                 //do something?
