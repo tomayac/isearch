@@ -10,7 +10,7 @@ define("mylibs/queryMenu",
     "libs/progress-polyfill.min"
   ],
   function(config, location, query, queryTools) {
-  
+
     var hasGetUserMedia = function hasGetUserMedia() {
       // Note: Opera builds are unprefixed.
       return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
@@ -174,6 +174,7 @@ define("mylibs/queryMenu",
         $('#query').uiiface({
           events : 'drop',
           callback : function(event){
+
             var e = event.originalEvent;
             var files = e.files || e.target.files || e.dataTransfer.files;
             var types = {};
@@ -192,9 +193,11 @@ define("mylibs/queryMenu",
               if (type) {
                 types[type] = types[type] || [];
                 types[type].push(files[i]);
+              } else {
+                console.warn('[Menu.query] Cannot handle `'+files[i].name+'`');
               }
             }
-
+            console.log(types);
             for (var type in types) {
               query.addItems({files:types[type]}, type, function (fileInfo) {
                 //do something?
