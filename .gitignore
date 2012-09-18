@@ -1,0 +1,10 @@
+
+#.gitignore
+/node_modules
+/server/redis-db
+/dump.rdb
+/temp*.rdb
+/server/dump.rdb
+
+/client/musebag/tmp/*
+!/client/musebag/tmp/README
