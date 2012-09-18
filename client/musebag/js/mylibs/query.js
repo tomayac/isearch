@@ -228,7 +228,7 @@ define("mylibs/query",
       try {
         fileInfo = JSON.parse(data);
         //Adding an fileItem to the query will trigger the server to produce
-        //a queryId, which is stored locally and send with every future upload 
+        //a queryId, which is stored locally and send with every future upload
         //query item and query submit event in order to identify what belongs to
         //a query
         queryId = queryId !== fileInfo.queryId ? fileInfo.queryId : queryId;
@@ -525,11 +525,11 @@ define("mylibs/query",
   var submit = function(relevant, callback) {
 
     var query = getItems();
-    
-    if (query.fileItems.length > 0 || query.emotion != false || 
-        query.location != false    || query.rhythm  != false || 
-        query.tags != false        || relevant.length > 0 ) 
-    { 
+
+    if (query.fileItems.length > 0 || query.emotion != false ||
+        query.location != false    || query.rhythm  != false ||
+        query.tags != false        || relevant.length > 0 )
+    {
       //Add the queryId if available (means: if file items have been uploaded before)
       if(queryId) {
         query.queryId = queryId;
@@ -589,13 +589,15 @@ define("mylibs/query",
   };
 
   return {
-    types           : queryTypes,
-    queryId         : queryId,
-    addItems        : addItems,
-    updateItem      : updateItem,
-    submit          : submit,
-    updateItemCount : updateItemCount,
-    reset           : reset
+    types               : queryTypes,
+    allowedTypes        : allowedTypes,
+    isAllowedExtension  : isAllowedExtension,
+    queryId             : queryId,
+    addItems            : addItems,
+    updateItem          : updateItem,
+    submit              : submit,
+    updateItemCount     : updateItemCount,
+    reset               : reset
   };
 
 });
