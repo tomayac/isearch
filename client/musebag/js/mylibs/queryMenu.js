@@ -1,14 +1,16 @@
-define("mylibs/menu",
+define("mylibs/queryMenu",
   [
     "mylibs/config",
     "mylibs/location",
     "mylibs/query",
+    "mylibs/queryTools",
     "mylibs/recorder",
     "mylibs/jquery.uiiface",
     "mylibs/jquery.swipePanel",
     "libs/progress-polyfill.min"
   ],
-  function(config, location, query) {
+  function(config, location, query, queryTools) {
+  
     var hasGetUserMedia = function hasGetUserMedia() {
       // Note: Opera builds are unprefixed.
       return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
@@ -54,10 +56,10 @@ define("mylibs/menu",
       if( menu.data('swipePanel') ){
         menu.swipePanel('updateContainerSize');
       } else {
-				menu.swipePanel({
-					container: menu.find('ul'),
-					children: '> ul > li'
-				});
+        menu.swipePanel({
+          container: menu.find('ul'),
+          children: '> ul > li'
+        });
       }
     };
 
@@ -255,16 +257,16 @@ define("mylibs/menu",
         });
 
         $('.panel.geolocation #chooseLocation').click(function(){
-        	location.showMap(function(lat, lon){
-        	  var data = {
+          location.showMap(function(lat, lon){
+            var data = {
                 'image'   : 'img/fake/fake-geolocation.jpg', //if image if given, then it is used as replacement instead of showing the text value
                 'text' : lat + ' ' + lon,
                 'data-subtype' : 'Location'
               };
-        	  query.addItems(data,query.types.Text);
+            query.addItems(data,query.types.Text);
 
             reset();
-        	});
+          });
         });
       },
 
@@ -309,10 +311,10 @@ define("mylibs/menu",
 
       '3d': function() {
 
-      	//Drag and Drop of files
-  	    var pictureIcon = $('nav li[data-mode="3d"]');
+        //Drag and Drop of files
+        var pictureIcon = $('nav li[data-mode="3d"]');
 
-  	    $('#threedDrop').uiiface({
+        $('#threedDrop').uiiface({
           events : 'drop',
           callback : function(event){
             pictureIcon.addClass('uploading');
@@ -323,19 +325,19 @@ define("mylibs/menu",
           }
         });
 
-  	    //Invisible file input
-  	    $('#threedUpload').change(function(event) {
+        //Invisible file input
+        $('#threedUpload').change(function(event) {
 
-  	      query.addItems(event,query.types.Threed,function(fileInfo) {
+          query.addItems(event,query.types.Threed,function(fileInfo) {
             pictureIcon.removeClass('uploading');
           });
 
-  	    	event.preventDefault();
-  	    	return false;
-  	    });
+          event.preventDefault();
+          return false;
+        });
 
-  	    //Trigger button for file input
-  	    $('.panel.3d button').click(function(){
+        //Trigger button for file input
+        $('.panel.3d button').click(function(){
           console.log('Button 3d pressed');
           pictureIcon.addClass('uploading');
 
@@ -347,12 +349,12 @@ define("mylibs/menu",
 
       image: function() {
 
-      	//Drag and Drop of files
-  	    //var handler = new filehandler.FileHandler('imageDrop',['jpg','png','gif'],config.constants.fileUploadServer,getQueryItemCount());
-  	    var pictureIcon = $('nav li[data-mode="image"]');
+        //Drag and Drop of files
+        //var handler = new filehandler.FileHandler('imageDrop',['jpg','png','gif'],config.constants.fileUploadServer,getQueryItemCount());
+        var pictureIcon = $('nav li[data-mode="image"]');
 
-  	    //Drop trigger for image upload
-  	    $('#imageDrop').uiiface({
+        //Drop trigger for image upload
+        $('#imageDrop').uiiface({
           events : 'drop',
           callback : function(event){
             pictureIcon.addClass('uploading');
@@ -363,68 +365,72 @@ define("mylibs/menu",
             });
             reset();
           }
-  	    });
+        });
 
-  	    //Invisible file input
-  	    $('#imageUpload').change(function(event) {
+        //Invisible file input
+        $('#imageUpload').change(function(event) {
 
-  	      query.addItems(event,query.types.Image,function(fileInfo) {
-  	        pictureIcon.removeClass('uploading');
-  	      });
-  	    	event.preventDefault();
-  	    	return false;
+          query.addItems(event,query.types.Image,function(fileInfo) {
+            pictureIcon.removeClass('uploading');
+          });
+          event.preventDefault();
+          return false;
 
-  	    });
+        });
 
-  	    //Trigger button for file input
-  	    $('.panel.image button.upload').click(function(){
+        //Trigger button for file input
+        $('.panel.image button.upload').click(function(){
 
-  	      pictureIcon.addClass('uploading');
-  	    	$('#imageUpload').click();
+          pictureIcon.addClass('uploading');
+          $('#imageUpload').click();
 
-  	    	reset();
-  	    });
+          reset();
+        });
 
-  	    addMediaCapture('image');
+        addMediaCapture('image');
       },
 
       video: function() {
 
-      	//Drag and Drop of files
-  	    var videoIcon = $('nav li[data-mode="video"]');
+        //Drag and Drop of files
+        var videoIcon = $('nav li[data-mode="video"]');
 
-  	    //Drop trigger for video upload
-  	    $('#videoDrop').uiiface({
+        //Drop trigger for video upload
+        $('#videoDrop').uiiface({
           events : 'drop',
           callback : function(event){
             videoIcon.addClass('uploading');
             query.addItems(event.originalEvent,query.types.Video,function(fileInfo) {
               videoIcon.removeClass('uploading');
+              //Try to get the keyframes after 45 seconds...
+              //setTimeout(queryTools.setupVideoKeyframeSelector,45000);
             });
             reset();
           }
         });
 
-  	    //Invisible file input
-  	    $('#videoUpload').change(function(event) {
+        //Invisible file input
+        $('#videoUpload').change(function(event) {
 
-  	      query.addItems(event,query.types.Video,function(fileInfo) {
+          query.addItems(event,query.types.Video,function(fileInfo) {
             videoIcon.removeClass('uploading');
+            //Try to get the keyframes after 45 seconds...
+            //setTimeout(queryTools.setupVideoKeyframeSelector,45000);
           });
 
-  	    	event.preventDefault();
-  	    	return false;
-  	    });
-  	    //Trigger button for file input
-  	    $('.panel.video button.upload').click(function(){
+          event.preventDefault();
+          return false;
+        });
+        //Trigger button for file input
+        $('.panel.video button.upload').click(function(){
 
-  	      videoIcon.addClass('uploading');
-  	    	$('#videoUpload').click();
+          videoIcon.addClass('uploading');
+          $('#videoUpload').click();
 
-  	    	//reset();
-  	    });
+          //reset();
+        });
 
-  	    addMediaCapture('video');
+        addMediaCapture('video');
       },
 
       sketch: function() {
@@ -463,10 +469,10 @@ define("mylibs/menu",
 
       sound: function() {
 
-      	//Drag and Drop of files
-  	    var pictureIcon = $('nav li[data-mode="sound"]');
+        //Drag and Drop of files
+        var pictureIcon = $('nav li[data-mode="sound"]');
 
-  	    $('#soundDrop').uiiface({
+        $('#soundDrop').uiiface({
           events : 'drop',
           callback : function(event){
             pictureIcon.addClass('uploading');
@@ -477,31 +483,31 @@ define("mylibs/menu",
           }
         });
 
-  	    //Invisible file input
-  	    $('#soundUpload').change(function(event) {
+        //Invisible file input
+        $('#soundUpload').change(function(event) {
 
-  	      query.addItems(event,query.types.Audio,function(fileInfo) {
+          query.addItems(event,query.types.Audio,function(fileInfo) {
             pictureIcon.removeClass('uploading');
           });
 
-  	    	event.preventDefault();
-  	    	return false;
-  	    });
+          event.preventDefault();
+          return false;
+        });
 
-  	    //Trigger button for file input
-  	    $('.panel.sound button.upload').click(function(){
+        //Trigger button for file input
+        $('.panel.sound button.upload').click(function(){
 
-  	      pictureIcon.addClass('uploading');
+          pictureIcon.addClass('uploading');
 
-  	    	$('#soundUpload').click();
+          $('#soundUpload').click();
 
-  	    	reset();
-  	    });
+          reset();
+        });
 
-    		// sound recording
-    		$('.panel.sound button.record').click(function(){
+        // sound recording
+        $('.panel.sound button.record').click(function(){
 
-    			pictureIcon.addClass('uploading');
+          pictureIcon.addClass('uploading');
 
           Wami.setUploadCallback(function(data){
             var fileInfo = JSON.parse(data[0]);
@@ -510,22 +516,22 @@ define("mylibs/menu",
             reset();
           });
 
-    			if($(this).text() === "Start") {
-    				$(this).text("Stop") ;
-    				Wami.startRecording(config.constants.fileUploadServer);
-    			} else {
-    				Wami.stopRecording() ;
-    				$(this).text("Start") ;
-    			}
-    	  });
+          if($(this).text() === "Start") {
+            $(this).text("Stop") ;
+            Wami.startRecording(config.constants.fileUploadServer);
+          } else {
+            Wami.stopRecording() ;
+            $(this).text("Start") ;
+          }
+        });
       },
 
       rhythm: function() {
 
-      	//Drag and Drop of files
-  	    var rhythmIcon = $('nav li[data-mode="rhythm"]');
+        //Drag and Drop of files
+        var rhythmIcon = $('nav li[data-mode="rhythm"]');
 
-  	    $('#rhythmDrop').uiiface({
+        $('#rhythmDrop').uiiface({
           events : 'drop',
           callback : function(event){
             pictureIcon.addClass('uploading');
@@ -536,53 +542,53 @@ define("mylibs/menu",
           }
         });
 
-  	    //Invisible file input
-  	    $('#rhythmUpload').change(function(event) {
+        //Invisible file input
+        $('#rhythmUpload').change(function(event) {
 
-  	      query.addItems(event,query.types.Audio,function(fileInfo) {
+          query.addItems(event,query.types.Audio,function(fileInfo) {
             pictureIcon.removeClass('uploading');
           });
 
-  	      event.preventDefault();
-  	      return false;
-  	    });
+          event.preventDefault();
+          return false;
+        });
 
-  	    //Trigger button for file input
-  	    $('.panel.rhythm button.upload').click(function(){
+        //Trigger button for file input
+        $('.panel.rhythm button.upload').click(function(){
 
-  	      rhythmIcon.addClass('uploading');
+          rhythmIcon.addClass('uploading');
 
-  	    	$('#rhythmUpload').click();
+          $('#rhythmUpload').click();
 
-  	    	reset();
-  	    });
+          reset();
+        });
 
-  	   //Rhythm tapping initialization
-  	   $('#rhythm-progress').attr({
-  	     'value' : 0,
-  	     'max'   : 10
-  	   });
-  	   $('#rhythm-canvas').attr({
+       //Rhythm tapping initialization
+       $('#rhythm-progress').attr({
+         'value' : 0,
+         'max'   : 10
+       });
+       $('#rhythm-canvas').attr({
          'width'  : 200,
          'height' : 20
        });
 
-  	   // initial state
-  	   var tapRhythm = {
-  	     disabled : false,
-  	     running  : false,
-  	     start    : 0,
-  	     timer    : false,
-  	     scalef   : parseInt($('#rhythm-canvas').attr('width')) / parseInt($('#rhythm-progress').attr('max')),
-  	     context  : $('#rhythm-canvas')[0].getContext('2d'),
-  	     data     : {
-  	       duration : 0,
-  	       taps : [],
-  	       intervals : []
-  	     }
-  	   };
+       // initial state
+       var tapRhythm = {
+         disabled : false,
+         running  : false,
+         start    : 0,
+         timer    : false,
+         scalef   : parseInt($('#rhythm-canvas').attr('width')) / parseInt($('#rhythm-progress').attr('max')),
+         context  : $('#rhythm-canvas')[0].getContext('2d'),
+         data     : {
+           duration : 0,
+           taps : [],
+           intervals : []
+         }
+       };
 
-  	   // draw scale function
+       // draw scale function
        var drawScale = function() {
          tapRhythm.context.fillStyle = 'rgb(200,0,0)';
          tapRhythm.context.clearRect (0 , 0, parseInt($('#rhythm-canvas').attr('width')), parseInt($('#rhythm-canvas').attr('height')));
@@ -609,7 +615,7 @@ define("mylibs/menu",
          $('#rhythm-progress').attr('value', 0);
        });
 
-  	   $('.panel.rhythm #rhythm-div').click(function() {
+       $('.panel.rhythm #rhythm-div').click(function() {
          // on rhythm div click
          if (tapRhythm.disabled) {
            return;
@@ -686,26 +692,26 @@ define("mylibs/menu",
            var x = Math.floor(tapRhythm.scalef * heartBeat);
            tapRhythm.context.fillRect(x, 0, 1, parseInt($('#rhythm-canvas').attr('height')));
          }
-  	   });
+       });
 
-  		 // rhythm recording
+       // rhythm recording
        $('.panel.rhythm button.record').click(function() {
 
         rhythmIcon.addClass('uploading');
 
         if ($(this).text() === "Start") {
-        	$(this).text("Stop") ;
-        	Wami.startRecording(config.constants.fileUploadServer) ;
+          $(this).text("Stop") ;
+          Wami.startRecording(config.constants.fileUploadServer) ;
         } else {
-        	Wami.setUploadCallback(function(data){
-      		  console.log(data);
-      		  query.addItems(JSON.parse(data[0]),query.types.Audio);
+          Wami.setUploadCallback(function(data){
+            console.log(data);
+            query.addItems(JSON.parse(data[0]),query.types.Audio);
 
-      			reset();
-      		});
+            reset();
+          });
 
-        	Wami.stopRecording() ;
-        	$(this).text("Start") ;
+          Wami.stopRecording() ;
+          $(this).text("Start") ;
         }
        });
       }
@@ -867,11 +873,11 @@ define("mylibs/menu",
        */
       $(".panel").hide();
       /** Triantafillos: added top property so that the query form
-  	   *  on top of visualization is not cropped by the settings bar.
-  	   */
+       *  on top of visualization is not cropped by the settings bar.
+       */
       $("#query").css("top", "2.8em");
        /** Triantafillos: restart button.
-  	   */
+       */
       if($('#restart').length == 0) {
         $("#query").append('<a href="#" id="restart">Start from scratch</a>');
 
@@ -879,8 +885,6 @@ define("mylibs/menu",
         $("#restart").click(function(){ window.location = ""; });
       }
     };
-
-
 
     return {
       attachEvents: attachEvents,

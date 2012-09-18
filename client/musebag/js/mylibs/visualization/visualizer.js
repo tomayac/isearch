@@ -141,11 +141,9 @@ define("mylibs/visualization/visualizer",
 		).appendTo(element) ;
 
 		var hasHierarchy = ( results.clusters.children.length > 1 );
-		
 		var menuPaneHtml = '<form id="vis-options" style="padding-top: 5px">'  ;
 		
-		if ( !hasHierarchy || !options.methods || options.methods.length <= 1 ) ;
-		else
+		if ( hasHierarchy && options.methods && options.methods.length > 1 ) 
 		{
 			menuPaneHtml +=	'<div class="formitem"><span style="margin-right: 5px;">Method</span><div id="method-buttons" style="display:inline;">'  ;
 
@@ -175,13 +173,11 @@ define("mylibs/visualization/visualizer",
 			+	'<label for="ts64">Small</label><input type="radio" name="ts" id="ts64"/>'
 			+ 	'<label for="ts96">Medium</label><input type="radio" name="ts" id="ts96"/>'
 			+	'<label for="ts128">Large</label><input type="radio" name="ts" id="ts128"/>'
-			+	'</div></div>'
+			+	'</div></div>';
 		
-		if ( !options.thumbOptions.iconArrangeMethods || 
-			 options.thumbOptions.iconArrangeMethods.length <= 1 ) ;
-		else
+		if ( options.thumbOptions.iconArrangeMethods && options.thumbOptions.iconArrangeMethods.length > 1 )
 		{
-			menuPaneHtml +=	 '<div class="formitem"><span style="margin-right: 5px;">Layout</span><div id="arrange-buttons" style="display:inline;">'
+			menuPaneHtml +=	 '<div class="formitem"><span style="margin-right: 5px;">Layout</span><div id="arrange-buttons" style="display:inline;">';
 						
 			for (var idx in options.thumbOptions.iconArrangeMethods )
 			{
@@ -203,9 +199,7 @@ define("mylibs/visualization/visualizer",
 			menuPaneHtml +=	'</div></div>' ;
 		}
 		
-		if ( !options.thumbOptions.navModes || 
-			 options.thumbOptions.navModes.length <= 1 ) ;
-		else
+		if ( options.thumbOptions.navModes && options.thumbOptions.navModes.length > 1 ) 
 		{
 			menuPaneHtml +=	'<div class="formitem" style="float: right"><span style="margin-right: 5px;">Navigation Mode</span><div id="nav-buttons" style="display:inline;">' ;
 			

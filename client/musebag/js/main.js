@@ -16,23 +16,27 @@ janrain.settings.tokenUrl = 'http://' + location.host;
 janrain.settings.tokenAction='event';
 //----------------------------------------------------------
 
+//Constant variables for timeline visualisation
 var Timeline_urlPrefix   = "js/libs/timeline_2.3.0/timeline_js/" ;
 var Timeline_parameters  = "bundle=false";
 var SimileAjax_urlPrefix = "js/libs/timeline_2.3.0/timeline_ajax/" ;
 
-require(["jquery",
-         "mylibs/menu",
-         "mylibs/config",
-         "mylibs/tags",
-         "mylibs/results",
-         "mylibs/query",
-		     "mylibs/loader",
-		     "mylibs/jquery.uiiface",
-         "libs/jquery.tokeninput",
-         "libs/smiley-slider",
-         "http://widget-cdn.rpxnow.com/js/lib/isearch/engage.js"
-        ],
-    function($, menu, config, tags, results, query, loader) {
+require([
+     "jquery",
+     "mylibs/config",
+     "mylibs/queryMenu",
+     "mylibs/headerMenu",
+     "mylibs/tags",
+     "mylibs/results",
+     "mylibs/query",
+     "mylibs/profile",
+     "mylibs/loader",
+     "mylibs/jquery.uiiface",
+     "libs/jquery.tokeninput",
+     "libs/smiley-slider",
+     "http://widget-cdn.rpxnow.com/js/lib/isearch/engage.js"
+    ], 
+    function($, config, menu, header, tags, results, query, profile, loader) {
 
       $(function() {
 
@@ -51,9 +55,19 @@ require(["jquery",
                 menu.adjust();
               }, 200);
           });
-
-          //Initializes the settings panel
-          config.initPanel();
+          
+          //register global window close event, in order to store search history data
+          $(window).unload(function(e) {
+            console.log('Window unload...');
+            profile.updateHistory({},function(success) { 
+              console.log('Search history saved on window closed: ' + success);
+              window.location = ""; 
+            });
+            return false;
+          });
+          
+          //Initializes the header with it's panels and setup all event handlers
+          header.init();          
 
           //Initializes the tagging system
           tags.init();
@@ -142,6 +156,11 @@ require(["jquery",
     							if ( docs.docs[i].relevant == true )
     							relevant.push(docs.docs[i].id) ;
     						}
+    					} else {
+    					  // As soon as an new query is submitted, save any eventually previously existing queries 
+    					  // in the search history
+    					  profile.updateHistory({},function(success) { console.log('Search history saved on new query: ' + success); });
+    					  query.queryId = false;
     					}
 
     					// Sotiris: submit takes callback function and a list of document id's that the user has marked as relevant

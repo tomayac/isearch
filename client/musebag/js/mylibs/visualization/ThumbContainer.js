@@ -157,7 +157,7 @@ p.createCanvas = function()	{
 	$(this.thumbViewport).droppable({
 		drop: function(e, ui) {
 		var draggable = ui.draggable;
-			alert( 'The square with ID "' + draggable.attr('docid') + '" was dropped onto me!' );
+			console.log( 'The square with ID "' + draggable.attr('docid') + '" was dropped onto me!' );
 		}
 	} );
 	// add thumbnail view that may be larger than viewport when zoomed

@@ -37,6 +37,7 @@ var getSoundData = function(soundId, callback) {
           "URL": sounddata.serve + "?api_key=" + APIKey,
           "Preview": sounddata.waveform_m,
           "PreviewOGG": sounddata['preview-lq-ogg'],
+          "PreviewMP3": sounddata['preview-lq-mp3'],
           "Length": sounddata.duration,
           "Emotions": [],
           "Location": [],

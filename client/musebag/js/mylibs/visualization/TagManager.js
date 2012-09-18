@@ -1,14 +1,13 @@
-define("mylibs/visualization/TagManager", 
-	[],
-function() {
+define("mylibs/visualization/TagManager", [], function() {
 
-	var index, docs, tagServerUrl, sortedTagList = [] ;
+	var index, docs, queryId, filterTagUrl, sortedTagList = [] ;
 			
 	var init = function(results_, options) {
 		
-		docs = results_.docs ;
-		tagServerUrl = options.tagServerUrl  ;
-		
+		docs = results_.docs;
+		queryId = results_.queryId;
+		filterTagUrl = options.filterTagUrl || 'ptag/filterTags'  ;
+		storeItemUrl = options.resultItemUrl || options.filterTagUrl;
 		
 		load() ;
 	};
@@ -24,8 +23,8 @@ function() {
 		}
 		
 		$.ajax({
-			type: 'POST',
-			url: tagServerUrl + '&a=all',
+			type: 'GET',
+			url: filterTagUrl, //+ '&a=all',
 			data: { "tags":	JSON.stringify(data) },
 			success: function(data) {
 			
@@ -77,16 +76,47 @@ function() {
 	
 	var toggleRelevance = function(doc)
 	{
-  		var docid = doc.id ;
-		
-		var data = { "id": docid, "rel": (doc.relevant ? 'yes' : 'no')  } ;
-		
-		$.ajax({
-			type: 'GET',
-			url: tagServerUrl + '&a=rel',
-			data: data
-		});
-	}
+    var data = {
+      "queryId" : queryId,  
+      "item" : {  
+        "id": doc.coid,
+        "tags" : doc.tags
+      }
+    };
+    
+    if(doc.relevant) {
+      $.ajax({
+        type: "POST",
+        url:  storeItemUrl,
+        data: JSON.stringify(data),
+        contentType : "application/json; charset=utf-8",
+        dataType : "json",
+        success: function(data) {
+          console.log('Item stored, since it was marked relevant.');
+        },
+        error: function(jqXHR, error, object) {
+          console.log("Error:");
+          console.log(error);
+        }
+      });
+    } else {
+      $.ajax({
+        type: "DELETE",
+        url:  storeItemUrl,
+        data: JSON.stringify(data),
+        contentType : "application/json; charset=utf-8",
+        dataType : "json",
+        success: function(data) {
+          console.log('Item removed, since it was marked irrelevant.');
+        },
+        error: function(jqXHR, error, object) {
+          console.log("Error:");
+          console.log(error);
+        }
+      });
+    }
+
+	};
 
 	
 	var store = function(doc)
@@ -97,11 +127,11 @@ function() {
 		var data = { "id": docid, "tags": JSON.stringify(tags)  } ;
 		
 		$.ajax({
-			type: 'GET',
-			url: tagServerUrl + '&a=store',
+			type: 'POST',
+			url: tagServerUrl, // + '&a=store',
 			data: data
 		});
-	}
+	};
 	
 	// this is to download the list of tag assignements. Currently we do this be sending the content
 	// to a server script that mirrors it.
@@ -127,7 +157,7 @@ function() {
 		
 		xml += '</tags>' ;
 		
-		var fileName = 'tags-' + index + '.xml'
+		var fileName = 'tags-' + index + '.xml';
 		$.ajax({
 			type: 'POST',
 			url: "http://vision.iti.gr/sotiris/isearch/download.php",
@@ -161,7 +191,7 @@ function() {
 		tags: sortedTagList,
 		store: store,
 		clear: clear,
-		toggleRelevance: toggleRelevance,
+		toggleRelevance: toggleRelevance
 	} ;
 
 }) ;
