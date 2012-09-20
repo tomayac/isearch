@@ -32,6 +32,9 @@ ThumbContainer = function(containerDiv, data, options, ctx) {
 	if ( options.feedback )
 		this.feedback = options.feedback ;
 		
+	if ( options.documentPreview )
+		this.docPreview = options.documentPreview ;
+		
 	this.containerDiv = containerDiv ;	
 
 	this.ctx = ctx ;
@@ -128,7 +131,7 @@ p.createCanvas = function()	{
 					  css: { 	"position": "absolute", 	
 								"width": 20, 	
 								"height": ThumbContainer.menuItems.length * 36,	
-								"display": "none" ,	
+							//	"display": "none" ,	
 								"overflow": "hidden",	
 								"padding" : "4px",	
 								"top": "10%",	
@@ -150,7 +153,7 @@ p.createCanvas = function()	{
 		}
 	
 		
-		$(this.containerDiv).hover(function() { mb.toggle() ; }) ;
+		//$(this.containerDiv).hover(function() { mb.toggle() ; }) ;
 		
 		this.menuBar = mb ;
 	
@@ -764,7 +767,7 @@ p.createThumbnail = function(i, x, y, sw, tclass)
     });
 	
 	// use the thumbRenderer to actually render the item in the box
-	this.thumbRenderer.render(item, imgOut, { viewport: this.thumbViewport, selected: this.ctx.filterBar.modalities(), modalities: 			this.ctx.modalities, hover: (this.navMode=='browse')?true:false, onSimilar: this.findSimilar }) ;
+	this.thumbRenderer.render(item, imgOut, { viewport: this.thumbViewport, selected: this.ctx.filterBar.modalities(), modalities: 			this.ctx.modalities, hover: (this.navMode=='browse')?true:false, onSimilar: this.findSimilar, docPreview: this.docPreview }) ;
 	
 	
 	
@@ -1099,7 +1102,7 @@ p.showTimeline = function()
 		iconDiv.style.width = iconData.width + "px" ;
 		iconDiv.style.height = iconData.height + "px" ;
 		
-		obj.thumbRenderer.render(iconData.data, $(iconDiv), { viewport: $(this._eventLayer), selected: obj.ctx.filterBar.modalities(), modalities: obj.ctx.modalities, onSimilar: obj.findSimilar }) ;
+		obj.thumbRenderer.render(iconData.data, $(iconDiv), { viewport: $(this._eventLayer), selected: obj.ctx.filterBar.modalities(), modalities: obj.ctx.modalities, onSimilar: obj.findSimilar, docPreview: obj.docPreview }) ;
 		//iconDiv.appendChild(img);
     
 		//if ("tooltip" in commonData && typeof commonData.tooltip == "string") {
@@ -1260,7 +1263,7 @@ p.showTimeline = function()
 	//iconDiv.style.width = iconData.width + "px" ;
 	//	iconDiv.style.height = iconData.height + "px" ;
 		
-	obj.thumbRenderer.render(iconData.data, $(iconStackDiv), { viewport: $(this._eventLayer), selected: obj.ctx.filterBar.modalities(), modalities: obj.ctx.modalities, square: true, onSimilar: obj.findSimilar }) ;
+	obj.thumbRenderer.render(iconData.data, $(iconStackDiv), { viewport: $(this._eventLayer), selected: obj.ctx.filterBar.modalities(), modalities: obj.ctx.modalities, square: true, onSimilar: obj.findSimilar, docPreview: obj.docPreview }) ;
 		
    // iconStackDiv.innerHTML = "<div style='position: relative'></div>";
     this._eventLayer.appendChild(iconStackDiv);
@@ -1310,7 +1313,7 @@ p.showTimeline = function()
 	  
        // iconDiv.setAttribute("index", index);
      //   iconDiv.onmouseover = onMouseOver;
-		obj.thumbRenderer.render(iconData.data, $(imgDiv), { viewport: $(self._eventLayer), selected: obj.ctx.filterBar.modalities(), modalities: obj.ctx.modalities, config: this.ctx.config }) ;
+		obj.thumbRenderer.render(iconData.data, $(imgDiv), { viewport: $(self._eventLayer), selected: obj.ctx.filterBar.modalities(), modalities: obj.ctx.modalities, docPreview: obj.docPreview }) ;
 		//obj.thumbRenderer.render(iconData.data, $(imgDiv), $(self._eventLayer), { modalities: obj.ctx.filterBar.modalities() }) ;
         
         iconStackDiv.firstChild.appendChild(iconDiv);

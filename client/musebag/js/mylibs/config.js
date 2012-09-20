@@ -38,7 +38,8 @@ define("mylibs/config",
 	  	      navMode: "browse",	
   		      navModes: ["feedback", "browse"],
   		      feedback: ["tags", "likes"],
-  		      thumbRenderer: "default"
+  		      thumbRenderer: "default",
+  		      documentPreview: "url" // can be one of  ["none", "popup", "url""]
   		  },
   		showFilterPane: true,
   			filterBar: {
@@ -136,20 +137,22 @@ define("mylibs/config",
       
       var userId = profile.get('userId');
       
+      var tagRecommendServerUrl = (constants.tagRecommendServerUrl || "ptag/tagRecommendations?userId=" + userId)  ;
+      
       if(userId) {
         //Ask for tag recommendations
         $.ajax({
           type: "GET",
-          url: "ptag/tagRecommendations?userId=" + userId,
+          url: tagRecommendServerUrl,
           success: function(data) {
             data = JSON.parse(data);
 
             var html = '';
             console.log(data);
             for(var t=0; t < data.length; t++) {
-              html += '<a href="#" data-rank="' + data[t][1] + '">' + data[t][0] + '</a>';
+              html += '<a href="javascript:void(0)" data-rank="' + data[t][1] + '">' + data[t][0] + '</a>';
             }
-              
+            
             $(".tags").html(html);
             
             //Initializes the tagging system

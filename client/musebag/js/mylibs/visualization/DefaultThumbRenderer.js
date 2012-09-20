@@ -52,6 +52,7 @@ p.render = function(item, container, options)
 	else this.hover = true ;
 	
 	this.onSimilar = options.onSimilar ;
+	this.docPreviewMode = options.docPreview ;
 		
 	var docid = ( item.doc.coid ) ? item.doc.coid : item.doc.id ;
 	
@@ -139,34 +140,44 @@ p.renderDocument = function(doc, mediaType)
 			break ;
 		}
 	}
-	var sw = $(window).width() ;	
-	var sh = $(window).height() ;
 	
-	var docPreview = $('<div/>', { title: "Document Preview"}).appendTo('body') ;
+	if ( this.docPreviewMode == "popup")
+	{
+		var sw = $(window).width() ;	
+		var sh = $(window).height() ;
+	
+		var docPreview = $('<div/>', { title: "Document Preview"}).appendTo('body') ;
 	
 	
-	var ytRx = new RegExp("https:\/\/www.youtube.com\/watch\\?v=(.*)") ;
-	var match = ytRx.exec(url) ;
+		var ytRx = new RegExp("https:\/\/www.youtube.com\/watch\\?v=(.*)") ;
+		var match = ytRx.exec(url) ;
 	
-	var contents ;
+		var contents ;
 
-	if ( mediaType == "VideoType"  &&	match.length > 1 )
-		contents = $('<iframe/>', { width: "640", height: "385", marginWidth: "0",  marginHeight:"0",  frameBorder:"0",  scrolling:"auto", 
-			src: "http://www.youtube.com/embed/" + match[1]}).appendTo(docPreview) ;
+		if ( mediaType == "VideoType"  &&	match.length > 1 )
+			contents = $('<iframe/>', { width: "640", height: "385", marginWidth: "0",  marginHeight:"0",  frameBorder:"0",  	scrolling:"auto", 
+				src: "http://www.youtube.com/embed/" + match[1]}).appendTo(docPreview) ;
 
-	else
-	 contents = $('<iframe/>', { width: "100%", height: "100%", marginWidth: "0",  marginHeight:"0",  frameBorder:"0",  scrolling:"auto", src: url})	
-		.appendTo(docPreview) ;
+		else
+			contents = $('<iframe/>', { width: "100%", height: "100%", marginWidth: "0",  marginHeight:"0",  frameBorder:"0",  scrolling:"auto", src: url}).appendTo(docPreview) ;
 	
-	docPreview.dialog({
+		docPreview.dialog({
 			width: 0.9*sw,
 			height: 0.9*sh,
 			modal: true,
 			close: function() {
 				docPreview.empty() ;
 			}
-	});
+		});
+	}
+	else if ( this.docPreviewMode == "url")
+	{
 	
+		window.open(url, '_blank');
+  		window.focus();
+
+	
+	}
 	
 }
 
