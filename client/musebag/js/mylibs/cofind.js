@@ -160,7 +160,7 @@ define("mylibs/cofind",
   var registerUser = function(email) {
 
     if(re.test(email)) {
-      console.log('Now.js register...');
+      console.log('CoFind register user...');
       var groups = options.groups;
       callFunction('registerUser',[email,groups]);
       return true;
@@ -173,7 +173,7 @@ define("mylibs/cofind",
   var inviteUser = function(email) {
 
     if(re.test(email)) {
-      console.log('Now.js login...');
+      console.log('CoFind invite user...');
       callFunction('inviteUser',[email]);
       return true;
     } else {

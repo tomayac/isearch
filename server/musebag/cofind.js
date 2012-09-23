@@ -592,7 +592,7 @@ var setupLogic = function() {
       } 
       userIndex++;  
     }
-    
+
     //console.log(users);
   });
   
@@ -607,7 +607,7 @@ exports.initialize = function(server,sessionStore) {
       server, 
       {
         'socketio': { 
-          //'transports': ['websocket', 'flashsocket', 'htmlfile', 'xhr-polling', 'jsonp-polling'], //, 'htmlfile', 'xhr-polling', 'jsonp-polling' 
+            //'transports': ['websocket', 'flashsocket', 'htmlfile', 'xhr-polling', 'jsonp-polling'], //, 'htmlfile', 'xhr-polling', 'jsonp-polling' 
           'try multiple transports' : true
         },
         'client': {

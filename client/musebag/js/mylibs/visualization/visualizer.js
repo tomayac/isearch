@@ -82,6 +82,7 @@ define("mylibs/visualization/visualizer",
 		ctx.tagManager = tagManager ;
 		ctx.filterBar = filterBar ;
 		ctx.modalities = [] ;
+		ctx.config = config ;
 		
 		for(var mod in config.constants.visOptions.filterBar.modalities )
 		{

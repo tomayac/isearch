@@ -153,9 +153,11 @@ require([
     						var docs = results.get() ;
     						for(var i=0 ; i<docs.docs.length ; i++ )
     						{
-    							if ( docs.docs[i].relevant == true )
-    							relevant.push(docs.docs[i].id) ;
+    							if ( docs.docs[i].relevant == true ) {
+    							  relevant.push(docs.docs[i].id) ;
+    							}
     						}
+    						
     					} else {
     					  // As soon as an new query is submitted, save any eventually previously existing queries 
     					  // in the search history
@@ -163,8 +165,11 @@ require([
     					  query.queryId = false;
     					}
 
-    					// Sotiris: submit takes callback function and a list of document id's that the user has marked as relevant
-    					query.submit( relevant,
+    					/**
+    					 * @description submit function takes an refine options object for refining a search result
+    					 * (e.g. a list of document id's that the user has marked as relevant) as well as a callback function 
+    					 */
+    					query.submit( { 'relevant' : relevant },
     						function(result, data)
     						{
     							if (result)

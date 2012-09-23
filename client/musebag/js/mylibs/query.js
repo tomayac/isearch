@@ -228,7 +228,7 @@ define("mylibs/query",
       try {
         fileInfo = JSON.parse(data);
         //Adding an fileItem to the query will trigger the server to produce
-        //a queryId, which is stored locally and send with every future upload
+        //a queryId, which is stored locally and send with every future upload 
         //query item and query submit event in order to identify what belongs to
         //a query
         queryId = queryId !== fileInfo.queryId ? fileInfo.queryId : queryId;
@@ -462,6 +462,7 @@ define("mylibs/query",
           var localIntensity = 0;
 		      var valence = 2*(intensity - 0.5) ;
           console.log('found emotion with intensity ' + intensity);
+          
           if(intensity >= 0.8) {
             localIntensity = (1 / 0.19) * (intensity - 0.8);
             queryJson.emotion = {name : 'Happy', intensity : localIntensity, "valence": valence };
@@ -508,8 +509,8 @@ define("mylibs/query",
 
           console.log('found file item with name ' + queryItem.Name);
           queryJson.fileItems.push(queryItem);
-
         }
+        
       } else if($(this).find('p:first').text().length > 2){
         queryItem.Content  = $(this).find('p:first').text();
         queryJson.fileItems.push(queryItem);
@@ -521,15 +522,40 @@ define("mylibs/query",
 
     return queryJson;
   };
+  
+  var isValidQuery = function(query) {
+    var valid = false;
+    
+    if(query.fileItems && query.fileItems.length > 0) {
+      valid = true;
+    } else if (query.relevant && query.relevant.length > 0) {
+      valid = true;
+    } else if(
+      query.emotion  != false    || 
+      query.location != false    || 
+      query.rhythm   != false    || 
+      query.tags     != false    || 
+      query.similarTo     
+    ) {
+      valid = true;
+    } 
+    
+    return valid;
+  };
 
-  var submit = function(relevant, callback) {
-
+  var submit = function(refineOptions, callback) {
+    
     var query = getItems();
-
-    if (query.fileItems.length > 0 || query.emotion != false ||
-        query.location != false    || query.rhythm  != false ||
-        query.tags != false        || relevant.length > 0 )
-    {
+    
+    if(typeof refineOptions === 'object') {
+      var keys = Object.keys(refineOptions);
+      for(var i in keys) {
+        query[keys[i]] = refineOptions[keys[i]];
+      }
+    }
+  
+    if(isValidQuery(query)) 
+    { 
       //Add the queryId if available (means: if file items have been uploaded before)
       if(queryId) {
         query.queryId = queryId;
@@ -537,8 +563,6 @@ define("mylibs/query",
 
       console.log('searching for query data: ');
       console.log(query);
-
-      query.relevant = relevant ;
 
       //Send it to the server
 	    var mqfUrl = config.constants.queryFormulatorUrl || 'query';
@@ -566,7 +590,9 @@ define("mylibs/query",
         error: function(jqXHR, error, object) {
           data = {error: "the server gave me an invalid result."};
           console.log("Error during submitting query: " + data.error);
-          callback(false, data) ;
+          if(typeof callback === 'function') {
+            callback(false, data) ;
+          }
         },
         complete: function() {
           $.event.trigger( "ajaxStop" );
@@ -575,29 +601,29 @@ define("mylibs/query",
 
     } else {
       var data = {error: "the query seems to be a bit too short."};
-      callback(false, data) ;
+      if(typeof callback === 'function') {
+        callback(false, data) ;
+      }  
     }
   };
 
   var updateItemCount = function() {
     itemCount = $(".token-input-list-isearch li").size()-1;
   };
-
+  
   var reset = function() {
     $("#query-field").tokenInput("clear");
     itemCount = 0;
   };
 
   return {
-    types               : queryTypes,
-    allowedTypes        : allowedTypes,
-    isAllowedExtension  : isAllowedExtension,
-    queryId             : queryId,
-    addItems            : addItems,
-    updateItem          : updateItem,
-    submit              : submit,
-    updateItemCount     : updateItemCount,
-    reset               : reset
+    types           : queryTypes,
+    queryId         : queryId,
+    addItems        : addItems,
+    updateItem      : updateItem,
+    updateItemCount : updateItemCount,
+    submit          : submit,
+    reset           : reset
   };
 
 });

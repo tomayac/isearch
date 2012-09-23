@@ -4,7 +4,7 @@
 define("mylibs/config", [
     "mylibs/profile"
   ],
-  function(profile) {
+  function(cofind, profile) {
 
     var constants = {
       //Menu parameters
@@ -35,7 +35,8 @@ define("mylibs/config", [
 	  	      navMode: "browse",	
   		      navModes: ["feedback", "browse"],
   		      feedback: ["tags", "likes"],
-  		      thumbRenderer: "default"
+  		      thumbRenderer: "default",
+  		      documentPreview: "url" // can be one of  ["none", "popup", "url""]
   		  },
   		showFilterPane: true,
   			filterBar: {

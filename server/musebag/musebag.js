@@ -406,7 +406,7 @@ var login = function(req, res){
 	var verifyURL = "https://rpxnow.com/api/v2/auth_info?"
     + 'apiKey=' + authApi
     + '&token=' + req.body.token;
-	
+
 	restler
 	.get(verifyURL, { parser: restler.parsers.json })
 	.on('success', function(data) {		
@@ -427,17 +427,18 @@ var login = function(req, res){
       
 			//Test if the user is known by the personalisation component
 			var checkUrl = config.apcPath + 'resources/users/profileFor/' + sessionStore.user.userId + '/withRole/Consumer';
-		
+			console.log(checkUrl);
 			restler
 		  .get(checkUrl)
-		  .on('success', function(data, response) { 
-		    if(data) {		      
+		  .on('complete', function(data, response) { 
+		    
+		    if(data && data.user) {		      
 		      //assign retrieved data to local user profile
-		      var name = data.user.name.split(' ');
-		      sessionStore.user.name = name[0];
-		      sessionStore.user.familyname = name[1];
 		      for(var key in data.user) {
 		        if(key === 'name') {
+		          var name = data.user[key].split(' ');
+		          sessionStore.user.name = name[0];
+		          sessionStore.user.familyname = name[1];
 		          continue;
 		        }
 		        //Special treatment for date of birth key
@@ -455,9 +456,9 @@ var login = function(req, res){
 		      sessionStore.user.state = 'new';
 		      
 		      //Lets create the user in the personalisation service
-		      var setUrl = config.apcPath + 'resources/users/setProfileDataFor/' + session.user.userId;
+		      var setUrl = config.apcPath + 'resources/users/setProfileDataFor/' + sessionStore.user.userId;
 	        var callData = {
-	          "name"   : sessionStore.user.name+' '+session.user.familyname,
+	          "name"   : sessionStore.user.name+' '+sessionStore.user.familyname,
 	          "settings" : sessionStore.user.settings,
 	          "role"   : "Consumer",
 	          "userId" : sessionStore.user.userId
@@ -488,13 +489,9 @@ var login = function(req, res){
         res.send(JSON.stringify(sessionStore.user));
 		  })
 		  .on('fail', function(data,response) {
-		    msg.error = 'Error ' + response.statusCode;
+		    msg.error = 'The authentication service refuses connection (Error ' + response.statusCode + ')';
         res.send(JSON.stringify(msg));
-      })
-		  .on('error', function(data, response) {
-		    msg.error = 'The authentication service refuses connection (' + data.toString() + ')';
-		    res.send(JSON.stringify(msg));
-		  });    
+      });    
     }
 	})
 	.on('error', function(data,response) {
@@ -721,7 +718,7 @@ var updateProfileHistory = function(req, res) {
     if(!isGuest(req) && queryData.query && queryData.result.relevant) {
       //Submit the query to authentication/personalisation component
       var storeURL = config.apcPath + 'resources/historydatas/updateSearchHistory';
-     
+      /*
       var items = [];
       var time = new Date().getTime() + "";
       time = time.substr(6);
@@ -730,17 +727,17 @@ var updateProfileHistory = function(req, res) {
           'id' : parseInt(time + i + 1, 10),
           'tags' : queryData.result.relevant[i].tags
         });
-      }
+      }*/
       
       var time = new Date().getTime() + "";
       time = time.substr(6);
       var callData = {
           "userid" : sessionStore.user.userId,
           "query"  : { 
-            'id'    : parseInt(time + queryData.query.id.substr(queryData.query.id.lastIndexOf('-')+1), 10),
+            'id'    : queryData.query.id,
             'rucod' : queryData.query.rucod
           },
-          "items"  :  items //[{'id' : 1, 'tags' : ['test','first','item']},{'id' : 3, 'tags' : ['another','second','item']}]
+          "items"  :  queryData.result.relevant //[{'id' : 1, 'tags' : ['test','first','item']},{'id' : 3, 'tags' : ['another','second','item']}]
       };
       
       console.log(storeURL);
@@ -758,7 +755,7 @@ var updateProfileHistory = function(req, res) {
         }
       })
       .on('fail', function(data,response) {
-        //console.dir(response.rawEncoded);
+        console.dir(response.rawEncoded);
         console.log('Error ' + response.statusCode);
       })
       .on('error', function(data,response) {
@@ -855,7 +852,7 @@ var query = function(req, res) {
           //Check if result is ok
           if(data.error) {
             result.error = data.error;
-            console.log(result.error);
+            console.log('Error: ' + result.error);
           } else {
             result = data;
             result.queryId = queryId;

@@ -41,6 +41,16 @@
 <link rel="stylesheet" href="css/progress-polyfill.css" />
 
 <body>
+  
+  <!--[if lt IE 10]>
+  <section class="chromeframe">
+    <div class="container">
+      <h1><a href="http://www.isearch-project.eu/isearch/" title="Go to project website..."><img src="img/logo-alternative.png" alt="I-SEARCH - A multi-modal search engine" style="width: 100%" /></a></h1>
+      <h3>Dear Visitor,</h3>
+      <p>This is a research page which makes use of new standards which are not supported by your current browser<p>You could try another <a href="http://browsehappy.com/">supported browser</a> or you can use <a href="http://www.google.com/chromeframe/?redirect=true">Google Chrome Frame</a> with your current browser in order to make it work with this page.</p>
+    </div>
+  </section><![endif]-->
+  <!--[if gt IE 9]> -->
 	<div id="settings">
 		<span id="login-status">Hello Guest</span>
 		<ul class="clearfix">
@@ -394,6 +404,7 @@
 		<div id="main" role="main">
 
 			<div id="cofind"></div>
+			<div id="itemRecom"><img class="pointer" src="img/arrow-down.png" /><span></span></div>
 
 			<div id="queryContainer">
 				<form id="query" action="#" method="post">
@@ -405,14 +416,14 @@
 
 			<nav class="query-composition">
 				<ul>
-					<li data-mode="sound"><a> <img src="img/icon-isearch-sound.png" alt="Sound" /> </a></li>
-					<li data-mode="rhythm"><a> <img src="img/icon-isearch-rhythm.png" alt="Rhythm" /> </a></li>
-					<li data-mode="image"><a> <img src="img/icon-isearch-image.png" alt="Image" /> </a></li>
-          <li data-mode="video"><a> <img src="img/icon-isearch-video.png" alt="Video" /> </a></li>
-					<li data-mode="sketch"><a> <img src="img/icon-isearch-sketch.png" alt="Sketch" /> </a></li>
-					<li data-mode="3d"><a> <img src="img/icon-isearch-3d.png" alt="3D" /> </a></li>
-          <li data-mode="emotion"><a> <img src="img/icon-isearch-emotion.png" alt="Emotion" /> </a></li>
-					<li data-mode="geolocation"><a> <img src="img/icon-isearch-geolocation.png" alt="Geolocation" /> </a></li>
+					<li data-mode="sound"><a title="Add sound/music"> <img src="img/icon-isearch-sound.png" alt="Sound" /> </a></li>
+					<li data-mode="rhythm"><a title="Add rhythm"> <img src="img/icon-isearch-rhythm.png" alt="Rhythm" /> </a></li>
+					<li data-mode="image"><a title="Add image"> <img src="img/icon-isearch-image.png" alt="Image" /> </a></li>
+          <li data-mode="video"><a title="Add video"> <img src="img/icon-isearch-video.png" alt="Video" /> </a></li>
+					<li data-mode="sketch"><a title="Add sketch"> <img src="img/icon-isearch-sketch.png" alt="Sketch" /> </a></li>
+					<li data-mode="3d"><a title="Add 3D model"> <img src="img/icon-isearch-3d.png" alt="3D" /> </a></li>
+          <li data-mode="emotion"><a title="Add an emotion"> <img src="img/icon-isearch-emotion.png" alt="Emotion" /> </a></li>
+					<li data-mode="geolocation"><a title="Add a location"> <img src="img/icon-isearch-geolocation.png" alt="Geolocation" /> </a></li>
 					<!--<li data-mode="text"><a> <img src="img/icon-isearch-text.png" alt="text" /> </a></li>-->
 				</ul>
 			</nav>

@@ -1,6 +1,6 @@
-require(["jquery", "mylibs/visualization/ThumbRendererFactory", "libs/timeline_2.3.0/timeline_js/timeline-api", "!js/libs/jquery.mousewheel.min.js"
+require(["jquery", "mylibs/query", "mylibs/visualization/ThumbRendererFactory", "libs/timeline_2.3.0/timeline_js/timeline-api", "!js/libs/jquery.mousewheel.min.js"
 	],
-    function($, rf) {
+    function($, query, rf) {
 ThumbContainer = function(containerDiv, data, options, ctx) {	
   
 	$(containerDiv).empty() ;	
@@ -31,6 +31,9 @@ ThumbContainer = function(containerDiv, data, options, ctx) {
 		
 	if ( options.feedback )
 		this.feedback = options.feedback ;
+		
+	if ( options.documentPreview )
+		this.docPreview = options.documentPreview ;
 		
 	this.containerDiv = containerDiv ;	
 
@@ -89,8 +92,13 @@ p.thumbRenderer = null ;
 p.navMode = null ;
 
 
+
 ThumbContainer.zoomScales = [0.25, 0.5, 1.0, 1.5, 2.0, 3.0, 4.0] ;	
+
+
+
   	
+ 		  
 p.createCanvas = function()	{	
 	
 	var obj = this ;	
@@ -123,7 +131,7 @@ p.createCanvas = function()	{
 					  css: { 	"position": "absolute", 	
 								"width": 20, 	
 								"height": ThumbContainer.menuItems.length * 36,	
-								"display": "none" ,	
+							//	"display": "none" ,	
 								"overflow": "hidden",	
 								"padding" : "4px",	
 								"top": "10%",	
@@ -145,7 +153,7 @@ p.createCanvas = function()	{
 		}
 	
 		
-		$(this.containerDiv).hover(function() { mb.toggle() ; }) ;
+		//$(this.containerDiv).hover(function() { mb.toggle() ; }) ;
 		
 		this.menuBar = mb ;
 	
@@ -193,6 +201,13 @@ p.createCanvas = function()	{
 	}
 };
 
+// what happens when the user presses find similar button
+
+p.findSimilar = function(id) {
+
+	query.submit({ similarTo: id  }) ;
+
+};
 // Handles rubber-banding and thumbnail selection
 
 p.handleSelection = function(e)
@@ -322,48 +337,7 @@ p.updateSelection = function(rx, ry, rw, rh)
 		
 	}) ;
 };
-/*
-p.handleTranslate = function(e) {
 
-	var that = this;
-		
-	this.startTransX = e.pageX ;
-	this.startTransY = e.pageY ;
-	
-	this.currentTransX = e.pageX ;
-	this.currentTransY = e.pageY ;
-	
-	var handleMouseMove = function(e) {
-		var cx = e.pageX ;
-		var cy = e.pageY ;
-		
-		var ox = cx - that.currentTransX ;
-		var oy = cy - that.currentTransY ;
-		
-		that.currentTransX = e.pageX ;
-	    that.currentTransY = e.pageY ;
-		
-		$('.thumbnail', that.containerDiv).each(function() {
-			var _ox = $(this).position().left ;
-			var _oy = $(this).position().top ;
-			$(this).css("left", _ox + ox + "px") ;
-			$(this).css("top", _oy + oy + "px") ;
-		});
-	};
-	
-	var handleMouseUp  = function(e) {
-		$(that.containerDiv).unbind("mousemove", handleMouseMove) ;
-		$(that.containerDiv).unbind("mouseup", handleMouseUp) ;
-		that.offsetX += that.currentTransX - that.startTransX ;
-		that.offsetY += that.currentTransY - that.startTransY ;
-	};
-	
-	$(this.containerDiv).bind("mousemove", handleMouseMove) ;
-	$(this.containerDiv).bind("mouseup", handleMouseUp) ;
-	
-
-} ;
-*/
 
 // navigation (paging) bar drawing
 p.redrawNavBar = function(page, maxPage, width)	
@@ -391,8 +365,6 @@ p.redrawNavBar = function(page, maxPage, width)
 		}	
 	}	
 
-		
-			
 	if ( page > 1 ) 	
 	{	
 		p = page - 1 ;	
@@ -635,29 +607,41 @@ p.createThumbnail = function(i, x, y, sw, tclass)
 							}
 						}
 									
-						var tagEditor = new TagEditor(popupDiv, allTags, that.ctx.tagManager.tags) ;
+						var tagEditor = new TagEditor(popupDiv, allTags, that.ctx.tagManager.tags, function(){}) ;
 						
 						$(popupDiv).dialog( { 
 							close: 	function(event, ui) {
-								var tags = item.doc.tags ;
+								
+							},
+							buttons: {
+								Ok: function() {
+									$( this ).dialog( "close" );
+									
+									var tags = item.doc.tags ;
 					
-								if ( !tags ) tags = [] ;
+									if ( !tags ) tags = [] ;
 				
-								// get user provided tags ;
-								var _tags = tagEditor.tags ;
+									// get user provided tags ;
+									var _tags = tagEditor.tags ;
 						
-								// update tags of selected items based on the user provided tags
-								for( tag in _tags )
-								{	
-									var idx = $.inArray(tag, tags) ;
-									if ( _tags[tag] == 1 && idx >= 0 ) delete tags.splice(idx,1) ;
-									else if ( _tags[tag] == 2  && idx == -1 ) tags.push(tag) ;
+									// update tags of selected items based on the user provided tags
+									for( tag in _tags )
+									{	
+										var idx = $.inArray(tag, tags) ;
+										if ( _tags[tag] == 1 && idx >= 0 ) delete tags.splice(idx,1) ;
+										else if ( _tags[tag] == 2  && idx == -1 ) tags.push(tag) ;
+									}
+						
+									item.doc.tags = tags ;
+									// save tags into permanent storage
+						
+									that.ctx.tagManager.store(item.doc) ;
+								},
+								Cancel: function() {
+									$( this ).dialog( "close" );
+									
+									
 								}
-					
-								item.doc.tags = tags ;
-								// save tags into permanent storage
-					
-								that.ctx.tagManager.store(item.doc) ;
 							}
 						}) ; 
 						
@@ -783,7 +767,7 @@ p.createThumbnail = function(i, x, y, sw, tclass)
     });
 	
 	// use the thumbRenderer to actually render the item in the box
-	this.thumbRenderer.render(item, imgOut, { viewport: this.thumbViewport, selected: this.ctx.filterBar.modalities(), modalities: this.ctx.modalities, hover: (this.navMode=='browse')?true:false }) ;
+	this.thumbRenderer.render(item, imgOut, { viewport: this.thumbViewport, selected: this.ctx.filterBar.modalities(), modalities: 			this.ctx.modalities, hover: (this.navMode=='browse')?true:false, onSimilar: this.findSimilar, docPreview: this.docPreview }) ;
 	
 	
 	
@@ -1118,7 +1102,7 @@ p.showTimeline = function()
 		iconDiv.style.width = iconData.width + "px" ;
 		iconDiv.style.height = iconData.height + "px" ;
 		
-		obj.thumbRenderer.render(iconData.data, $(iconDiv), { viewport: $(this._eventLayer), selected: obj.ctx.filterBar.modalities(), modalities: obj.ctx.modalities }) ;
+		obj.thumbRenderer.render(iconData.data, $(iconDiv), { viewport: $(this._eventLayer), selected: obj.ctx.filterBar.modalities(), modalities: obj.ctx.modalities, onSimilar: obj.findSimilar, docPreview: obj.docPreview }) ;
 		//iconDiv.appendChild(img);
     
 		//if ("tooltip" in commonData && typeof commonData.tooltip == "string") {
@@ -1279,7 +1263,7 @@ p.showTimeline = function()
 	//iconDiv.style.width = iconData.width + "px" ;
 	//	iconDiv.style.height = iconData.height + "px" ;
 		
-	obj.thumbRenderer.render(iconData.data, $(iconStackDiv), { viewport: $(this._eventLayer), selected: obj.ctx.filterBar.modalities(), modalities: obj.ctx.modalities, square: true }) ;
+	obj.thumbRenderer.render(iconData.data, $(iconStackDiv), { viewport: $(this._eventLayer), selected: obj.ctx.filterBar.modalities(), modalities: obj.ctx.modalities, square: true, onSimilar: obj.findSimilar, docPreview: obj.docPreview }) ;
 		
    // iconStackDiv.innerHTML = "<div style='position: relative'></div>";
     this._eventLayer.appendChild(iconStackDiv);
@@ -1329,7 +1313,7 @@ p.showTimeline = function()
 	  
        // iconDiv.setAttribute("index", index);
      //   iconDiv.onmouseover = onMouseOver;
-		obj.thumbRenderer.render(iconData.data, $(imgDiv), { viewport: $(self._eventLayer), selected: obj.ctx.filterBar.modalities(), modalities: obj.ctx.modalities }) ;
+		obj.thumbRenderer.render(iconData.data, $(imgDiv), { viewport: $(self._eventLayer), selected: obj.ctx.filterBar.modalities(), modalities: obj.ctx.modalities, docPreview: obj.docPreview }) ;
 		//obj.thumbRenderer.render(iconData.data, $(imgDiv), $(self._eventLayer), { modalities: obj.ctx.filterBar.modalities() }) ;
         
         iconStackDiv.firstChild.appendChild(iconDiv);

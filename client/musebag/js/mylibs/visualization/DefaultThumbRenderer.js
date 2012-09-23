@@ -51,7 +51,8 @@ p.render = function(item, container, options)
 	if ( options.hover ) this.hover = options.hover ;
 	else this.hover = true ;
 	
-	
+	this.onSimilar = options.onSimilar ;
+	this.docPreviewMode = options.docPreview ;
 		
 	var docid = ( item.doc.coid ) ? item.doc.coid : item.doc.id ;
 	
@@ -139,34 +140,44 @@ p.renderDocument = function(doc, mediaType)
 			break ;
 		}
 	}
-	var sw = $(window).width() ;	
-	var sh = $(window).height() ;
 	
-	var docPreview = $('<div/>', { title: "Document Preview"}).appendTo('body') ;
+	if ( this.docPreviewMode == "popup")
+	{
+		var sw = $(window).width() ;	
+		var sh = $(window).height() ;
+	
+		var docPreview = $('<div/>', { title: "Document Preview"}).appendTo('body') ;
 	
 	
-	var ytRx = new RegExp("https:\/\/www.youtube.com\/watch\\?v=(.*)") ;
-	var match = ytRx.exec(url) ;
+		var ytRx = new RegExp("https:\/\/www.youtube.com\/watch\\?v=(.*)") ;
+		var match = ytRx.exec(url) ;
 	
-	var contents ;
+		var contents ;
 
-	if ( mediaType == "VideoType"  &&	match.length > 1 )
-		contents = $('<iframe/>', { width: "640", height: "385", marginWidth: "0",  marginHeight:"0",  frameBorder:"0",  scrolling:"auto", 
-			src: "http://www.youtube.com/embed/" + match[1]}).appendTo(docPreview) ;
+		if ( mediaType == "VideoType"  &&	match.length > 1 )
+			contents = $('<iframe/>', { width: "640", height: "385", marginWidth: "0",  marginHeight:"0",  frameBorder:"0",  	scrolling:"auto", 
+				src: "http://www.youtube.com/embed/" + match[1]}).appendTo(docPreview) ;
 
-	else
-	 contents = $('<iframe/>', { width: "100%", height: "100%", marginWidth: "0",  marginHeight:"0",  frameBorder:"0",  scrolling:"auto", src: url})	
-		.appendTo(docPreview) ;
+		else
+			contents = $('<iframe/>', { width: "100%", height: "100%", marginWidth: "0",  marginHeight:"0",  frameBorder:"0",  scrolling:"auto", src: url}).appendTo(docPreview) ;
 	
-	docPreview.dialog({
-			width: sw,
-			height: sh,
+		docPreview.dialog({
+			width: 0.9*sw,
+			height: 0.9*sh,
 			modal: true,
 			close: function() {
 				docPreview.empty() ;
 			}
-	});
+		});
+	}
+	else if ( this.docPreviewMode == "url")
+	{
 	
+		window.open(url, '_blank');
+  		window.focus();
+
+	
+	}
 	
 }
 
@@ -176,10 +187,12 @@ p.renderContents = function(tooltip, thumb, mediaType)
 		
 	// if multi-media display toolbar
 		
+	$('.tooltip-toolbar', tooltip).remove() ;
+	
 	var that = this;
 	if ( mediaTypes.count > 1 )
 	{
-		$('.tooltip-toolbar', tooltip).remove() ;
+		
 		var tb = $('<div/>', { "class": "tooltip-toolbar" }).appendTo(tooltip) ;
 			
 		for ( var i=0 ; i<mediaTypes.types.length ; i++ )
@@ -208,7 +221,40 @@ p.renderContents = function(tooltip, thumb, mediaType)
 		}
 	}
 		
+	$('.tooltip-header', tooltip).remove() ;
+	var header = $('<div/>', { "class": "tooltip-header" }).appendTo(tooltip);
+	var findSimilar = $('<a/>', {text: "Find similar", href: "javascript:void(0);"}).appendTo(header) ;
 	
+	findSimilar.click(
+	
+	function(){
+	/*
+		var path = document.location.pathname ;
+		var args = document.location.search.substring(1).split('&');
+
+		argsParsed = {};
+
+		for (i=0; i < args.length; i++)
+		{
+    		arg = unescape(args[i]);
+
+		    if (arg.indexOf('=') == -1)
+    		{
+        		argsParsed[arg.trim()] = true;
+    		}
+    		else
+    		{
+		        kvp = arg.split('=');
+        		argsParsed[kvp[0].trim()] = kvp[1].trim();
+		    }
+		}
+
+	
+		window.location.href = path + '?idx=' + argsParsed['idx'] + '&mode=vis' + '&s=' + thumb.doc.id ;
+		*/
+		that.onSimilar(thumb.doc.id) ;
+		return false ;
+	}) ;
 	
 	$('.media-preview', tooltip).remove() ;
 	var tooltipContents = $('<div/>', { "class": "media-preview", "id": mediaType  }).appendTo(tooltip) ;
@@ -226,6 +272,7 @@ p.renderContents = function(tooltip, thumb, mediaType)
 		.appendTo(slideShow)
 		.click(function() {
 				that.renderDocument(thumb.doc, mediaType) ;
+				return false ;
 		}) ;		
 		
 				
@@ -357,6 +404,10 @@ p.renderContents = function(tooltip, thumb, mediaType)
 	  });
 	}
 	else tooltipContents.append("<br><p>Location: unavailable</p>");
+	
+	
+
+	
 }
 
 p.getMediaTypes = function(thumb)

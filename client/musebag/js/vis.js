@@ -48,17 +48,24 @@ require(["jquery",
     
       	var mqfUrl = config.constants.queryFormulatorUrl || 'query' ;
 	  
-		  if ( __queryParams.q )  mqfUrl += "&q=" + __queryParams.q ;
-		  if ( __queryParams.total ) mqfUrl += '&total=' + __queryParams.total ;
-		  if ( __queryParams.cls ) mqfUrl += '&cls=' + __queryParams.cls ;
-		  if ( __queryParams.tr ) mqfUrl += '&tr=' + __queryParams.tr ;
+		if ( __queryParams.total ) mqfUrl += '&total=' + __queryParams.total ;
+		if ( __queryParams.cls ) mqfUrl += '&cls=' + __queryParams.cls ;
+		if ( __queryParams.tr ) mqfUrl += '&tr=' + __queryParams.tr ;
+		if ( __queryParams.smatrix === true ) mqfUrl += '&smat=true' ;
 		  
+		
+		if ( __queryParams.q )
+			var query = { emotion: false, location: false, bluetooth: false, fileItems: [ {"Type":"Text","RealType":"Text","Name":"","Content":  __queryParams.q  }]} ;
+		else if ( __queryParams.s )
+			var query = { similarTo: __queryParams.s  } ;
+				  
     	  $.ajax({
     	    type: "POST",
     	    crossDomain: true,
     	    url:  mqfUrl,
     	    contentType : "application/json; charset=utf-8",
     	    dataType : "json",
+    	    data: JSON.stringify(query),
     	    success: function(data) {
     	     	results.display(data) ;
     	    },
@@ -70,6 +77,7 @@ require(["jquery",
     	    }
     	  });
       
+      	$('#restart').button() ;
     	
  	      		
         }); //end document.ready()

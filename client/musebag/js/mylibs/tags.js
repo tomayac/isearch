@@ -19,11 +19,34 @@ define("mylibs/tags", [
       tags.push($thisTag.text());
     });
     
+    $(".tags a").hover(function() {
+      var itemHtml = '<a href="http://www.google.com"><img src="img/fake/11.png" /></a>'
+                   + '<a href="http://www.google.com"><img src="img/fake/12.png" /></a>'
+                   + '<a href="http://www.google.com"><img src="img/fake/13.png" /></a>';
+      
+      $('#itemRecom span').html(itemHtml);
+      
+      var offset = $(this).offset();
+      var newPos = {
+        top  : (offset.top - $('#itemRecom').height() - 22),
+        left : (offset.left - ($('#itemRecom').width()/2) + ($(this).width()/2)) 
+      };
+      
+      $('#itemRecom').show();
+      $('#itemRecom').offset(newPos);
+      
+    },
+    function(){
+      $('#itemRecom').hide();
+    });
+        
     $(".tags a").click(function() {
       var tagText = $(this).text();
       var query = $('#query-field').val();
       //Recommended tags will get a special behaviour for search, unlike normal text input
-      $("#query-field").tokenInput('add',{id: tagText,name: '<span class="Tag" data-subtype="Tag">' + tagText + '</span>'});    
+      $("#query-field").tokenInput('add',{id: tagText, name: '<span class="Tag" data-subtype="Tag">' + tagText + '</span>'});    
+    
+      return false ;
     });
   };
   
@@ -58,6 +81,8 @@ define("mylibs/tags", [
           
           var html = '';
           console.dir(data);
+          tags = data;
+          
           for(var t=0; t < data.length; t++) {
             html += '<a href="#" data-rank="' + data[t][1] + '">' + data[t][0] + '</a>';
           }
