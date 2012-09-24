@@ -1,6 +1,7 @@
 define("mylibs/queryMenu",
   [
     "mylibs/config",
+    "mylibs/profile",
     "mylibs/location",
     "mylibs/query",
     "mylibs/queryTools",
@@ -9,7 +10,7 @@ define("mylibs/queryMenu",
     "mylibs/jquery.swipePanel",
     "libs/progress-polyfill.min"
   ],
-  function(config, location, query, queryTools) {
+  function(config, profile, location, query, queryTools) {
   
     var hasGetUserMedia = function hasGetUserMedia() {
       // Note: Opera builds are unprefixed.
@@ -151,7 +152,7 @@ define("mylibs/queryMenu",
     var hidePanels = function() {
       $('.panel').slideUp(config.constants.slideUpAnimationTime);
     };
-
+    
     var attachEvents = function(mode) {
       if (mode === undefined) {
         for (var name in handledEvents) {
@@ -174,6 +175,7 @@ define("mylibs/queryMenu",
         $('#query').uiiface({
           events : 'drop',
           callback : function(event){
+            console.log(event);
             var e = event.originalEvent;
             var files = e.files || e.target.files || e.dataTransfer.files;
             var types = {};
@@ -885,10 +887,85 @@ define("mylibs/queryMenu",
         $("#restart").click(function(){ window.location = ""; });
       }
     };
+    
+    /*
+     * Use case related query options
+     */
+    var setupQueryOptions = function() {
+      
+      var pathArray = window.location.pathname.split( '/' );
+      var uc = pathArray[pathArray.length-1];
+      
+      var setOptionVisibility = function(uc) {
+        
+        $('#queryUseCase li').removeClass();
+        $('.query-composition li').show();
+        
+        switch(uc) {
+          case 'music' : 
+            $('#queryUseCase li:eq(1)').removeClass().addClass('enabled');
+            $('.query-composition li[data-mode="video"]').hide();
+            $('.query-composition li[data-mode="image"]').hide();
+            $('.query-composition li[data-mode="sketch"]').hide();
+            $('.query-composition li[data-mode="3d"]').hide();
+            break;
+          case 'furniture' :
+            $('#queryUseCase li:eq(2)').removeClass().addClass('enabled');
+            $('.query-composition li[data-mode="sound"]').hide();
+            $('.query-composition li[data-mode="rhythm"]').hide();
+            $('.query-composition li[data-mode="video"]').hide();
+            $('.query-composition li[data-mode="emotion"]').hide();
+            break;
+          case 'video' :
+            $('#queryUseCase li:eq(3)').removeClass().addClass('enabled');
+            $('.query-composition li[data-mode="sound"]').hide();
+            $('.query-composition li[data-mode="rhythm"]').hide();
+            $('.query-composition li[data-mode="3d"]').hide();
+            $('.query-composition li[data-mode="sketch"]').hide();
+            $('.query-composition li[data-mode="emotion"]').hide();
+            break;
+          default :
+            $('#queryUseCase li:eq(0)').removeClass().addClass('enabled');
+            $('.query-composition li[data-mode="rhythm"]').hide();
+            $('.query-composition li[data-mode="video"]').hide();
+            $('.query-composition li[data-mode="emotion"]').hide();
+            break;
+        }
+      };
+      
+      //This is more or less a fallback so that the page does not need to be reloaded
+      //as soon as a user switches to another use case
+      $('#queryUseCase a').on('click', function(e){
+        
+        setOptionVisibility($(this).attr('href').substr(1));
+        
+        switch($(this).attr('href')) {
+          case '/music' :
+            config.constants.queryOptions.useCase = 'uc1';
+            break;
+          case '/furniture' : 
+            config.constants.queryOptions.useCase = 'uc3';
+            break;
+          default:
+            config.constants.queryOptions.useCase = 'uc6';
+            break;
+        }
+        
+        profile.set('settings',{'useCase' : config.constants.queryOptions.useCase});
+        
+        e.stopPropagation();
+        e.preventDefault();
+        return false;
+      });
+      
+      //go on
+      setOptionVisibility(uc);
+    };
 
     return {
       attachEvents: attachEvents,
       collapse: collapse,
+      setupQueryOptions : setupQueryOptions,
       showPanel: showPanel,
       hidePanels: hidePanels,
       getRequestedMode: getRequestedMode,

@@ -70,23 +70,8 @@ define("mylibs/headerMenu", [
         }
       }
      
-      //replace specific settings with changes give via URL query parameters
-      var uc = config.getURLParameter('useCase');
-      if(uc) {
-        config.set('queryOptions.useCase', uc);
-        profile.set('settings',{"useCase":uc});
-      } 
-     
       //Initialize the form with the default values
       $("#max-num-results").val(config.constants.queryOptions.maxNumResults);
-      
-      if(config.constants.queryOptions.clusterType === '3D') {
-        $("#audio-cluster-type").parent().removeClass('checked');
-        $("#audio-cluster-type").attr('checked', false);
-      } else {
-        $("#audio-cluster-type").parent().addClass('checked');
-        $("#audio-cluster-type").attr('checked', true);
-      }
       
       $("#num-clusters").val(config.constants.queryOptions.clusters0);
       $("#trans-method option[value=" + config.constants.queryOptions.trans + "]").attr('selected','selected');
@@ -160,26 +145,26 @@ define("mylibs/headerMenu", [
       console.log('handleSettingSave...');
       
       var mr = parseInt(panels.settings.find("#max-num-results").val() || config.constants.queryOptions.maxNumResults);
-      var ct = $("#audio-cluster-type").attr('checked') ? 'Audio' : '3D';
+      //var ct = $("#audio-cluster-type").attr('checked') ? 'Audio' : '3D';
       //Not displayed in GUI
       var nc = parseInt(panels.settings.find("#num-clusters").val() || config.constants.queryOptions.clusters0) ;
       var tm = panels.settings.find("#trans-method option:selected").val() || config.constants.queryOptions.trans ;
       
+      //config.constants.queryOptions.clusterType   === ct &&
       if(config.constants.queryOptions.maxNumResults === mr &&
-         config.constants.queryOptions.clusterType   === ct &&
          config.constants.queryOptions.clusters0     === nc &&
          config.constants.queryOptions.trans         === tm ){
         return;
       }  
             
       config.set('queryOptions.maxNumResults', mr);
-      config.set('queryOptions.clusterType', ct);
+      //config.set('queryOptions.clusterType', ct);
       config.set('queryOptions.cluster0', nc);
       config.set('queryOptions.trans', tm) ;
       
       var settings = {
         "maxNumResults" : mr, 
-        "clusterType" : ct, 
+        //"clusterType" : ct, 
         "numClusters" : nc,
         "transMethod" : tm
       };

@@ -362,11 +362,6 @@
   <div class="settings-panel" id="global-settings">
     <form method="post" action="#">
 
-      <section class="setting">
-        <label for="audio-cluster-type">Audio Use Case?</label>
-        <div class="checkbox"><input type="checkbox" id="audio-cluster-type" /></div>
-      </section>
-
       <section class="setting clearfix">
         <label for="max-num-results">Size of result</label>
         <input type="text" id="max-num-results" size="8" />
@@ -390,6 +385,11 @@
           <option value="hpanel">Hierarchy Panels</option>
         </select>
       </section>
+      
+      <section class="setting">
+        <label for="audio-cluster-type">Audio Use Case?</label>
+        <div class="checkbox"><input type="checkbox" id="audio-cluster-type" /></div>
+      </section>
 -->
     </form>
   </div>
@@ -405,8 +405,14 @@
 
 			<div id="cofind"></div>
 			<div id="itemRecom"><img class="pointer" src="img/arrow-down.png" /><span></span></div>
-
+         
 			<div id="queryContainer">
+        <ul id="queryUseCase">
+          <li><a href="/">Generic</a></li>
+          <li><a href="/music">Music</a></li>
+          <li><a href="/furniture">Furniture</a></li>
+          <li><a href="/video">Video</a></li>
+        </ul>
 				<form id="query" action="#" method="post">
 					<input type="text" name="query" id="query-field" />
 					<input type="button" name="query-submit" id="query-submit" value=">" />

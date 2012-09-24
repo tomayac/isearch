@@ -12,6 +12,7 @@
  * Required node modules
  */
 var fs       = require('fs'),
+    path     = require('path'),
     restler  = require('restler'),
     config   = require('./config'),
     wunder   = require('./wunderground');
@@ -577,10 +578,6 @@ var setProfile = function(req, res) {
             }
           }        
           
-          delete settings['maxResults'];
-          delete settings['numClusters'];
-          delete settings['transMethod'];
-          
           //ok, the settings object is updated, so transform it back to a JSON string
           //and store it in the session
           sessionStore.user[attrib] = JSON.stringify(settings);
@@ -842,7 +839,7 @@ var query = function(req, res) {
           data : JSON.stringify(data)
         })
         .on('complete', function(data) { 
-          //console.log(data);
+          console.log(data);
           try {
             data = JSON.parse(data);
           } catch(e) {
@@ -1021,6 +1018,25 @@ var deleteResultItem = function(req, res) {
   
 }; //end function deleteResultItem
 
+var setUseCase = function(req, res) {
+  console.log('set use case to ' + req.route.params[0]);
+  
+  var sessionStore = getSessionStore(req,false);
+  var settings = JSON.parse(sessionStore.user.settings);
+  
+  switch(req.route.params[0]) {
+    case 'music'     : settings.useCase = 'uc1'; break;
+    case 'furniture' : settings.useCase = 'uc3'; break;
+    case 'video'     : settings.useCase = 'uc6'; break;
+    default : settings.useCase = 'uc6'; break;
+  }
+  
+  sessionStore.user.settings = JSON.stringify(settings);
+  
+  var filepath = path.normalize(__dirname + '/../../client/musebag/index.html');
+  res.sendfile(filepath);
+};
+
 //Export all public available functions
 exports.login  = login;
 exports.logout = logout;
@@ -1036,3 +1052,5 @@ exports.queryStream = queryStream;
 
 exports.addResultItem    = addResultItem;
 exports.deleteResultItem = deleteResultItem;
+
+exports.setUseCase = setUseCase;

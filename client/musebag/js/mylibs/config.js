@@ -1,10 +1,11 @@
-//  define("mylibs/config", ["mylibs/tags", "mylibs/profile", "!js/mylibs/visualization/DefaultThumbRenderer.js", "libs/jquery.select-to-autocomplete"],
-//  function(tags, profile, cofind) {
-    
+/* 
+ * Author: Arnaud Brousseau, Jonas Etzold, Sotiris Malassiotis
+ *  
+ */
 define("mylibs/config", [
     "mylibs/profile"
   ],
-  function(cofind, profile) {
+  function(profile) {
 
     var constants = {
       //Menu parameters

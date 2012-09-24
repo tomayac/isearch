@@ -93,6 +93,10 @@ app.post('/query'           , musebag.query);
 app.post('/result/item'     , musebag.addResultItem);
 app.del ('/result/item'     , musebag.deleteResultItem);
 
+//use case specific routes
+app.get('/'                         , musebag.setUseCase);
+app.get(/\/(music|furniture|video)/ , musebag.setUseCase);
+
 //Routes for pTag
 console.log("Register pTag functions...");
 

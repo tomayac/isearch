@@ -633,10 +633,42 @@ nav {
  * Begin of query input and assembling styles
  */
 
+#queryUseCase {
+  list-style-type: none;
+  margin: 0 auto;
+  width: 90%;
+  position: relative;
+  top: 1px;
+}
+
+#queryUseCase li {
+  display: inline-block;
+  border: 1px #CCC solid;
+  box-shadow: 0px 0px 2px 2px rgba(99, 99, 99, 0.2);
+  padding: 5px 10px;
+  margin: 0 5px 0 0;
+  background-color: #fff;
+}
+
+#queryUseCase li a {
+  text-decoration: none;
+}
+
+#queryUseCase li.enabled,
+#queryUseCase li:hover {
+  background-color: #E0E0E0;
+  font-weight: bold;
+  
+  position: relative;
+  z-index: 2;
+  box-shadow: 0px -3px 2px -1px rgba(99, 99, 99, 0.2)
+}
+
+
 #query {
 	position: relative;
   margin-bottom: 30px;
-  padding: 10px 0;
+  padding: 0 0 10px 0;
 }
 
 #query.over{
@@ -652,11 +684,11 @@ nav {
 	position: absolute;
   top: 0;
   bottom: 0;
-  right: 5%;
+  right: 4.7%;
 	border: 1px #CCC solid;
 	background-color: #e0e0e0;
   width: 100px;
-  margin: 10px 0;
+  margin: 0 0 10px 0;
   font-weight: bold;
 }
 
@@ -844,8 +876,9 @@ div.token-input-dropdown-isearch ul li.token-input-selected-dropdown-item-isearc
 nav ul {
 	padding: 0 20px;
 	height: 70px;
-	width: 630px; /* 630 + 2*20 = 470 <= real width of our menu */
+	width: 630px; /* 630 + 2*20 = 670 <= real width of our menu */
 	margin: auto;
+	text-align: center;
 }
 
 nav li {

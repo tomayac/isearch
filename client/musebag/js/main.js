@@ -71,10 +71,13 @@ require([
 
           //Initializes the tagging system
           tags.init();
-
+          
           //$('nav > ul > li').uiiface('select');
           //$('#logo').uiiface('pan');
 
+          //Register use case change
+          menu.setupQueryOptions();
+          
           menu.attachEvents('query');
 
           //Behaviour of the menu (panels, etc)
