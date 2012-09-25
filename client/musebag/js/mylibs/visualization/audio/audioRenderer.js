@@ -504,8 +504,8 @@ var AudioRenderer = function(containerDiv, urlMp3, urlOgg, urlImg, mediaUrl, vis
 				
 				
 			};
-			soundManager.debugMode = true;
-			soundManager.debugFlash = true;
+			soundManager.debugMode = false;
+			soundManager.debugFlash = false;
 			soundManager.beginDelayedInit();
 		
 		});

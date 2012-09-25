@@ -55,6 +55,7 @@ ThumbContainer.LIST_MODE = 3 ;
 ThumbContainer.NAVBAR_FIXED = 0 ;	
 ThumbContainer.NAVBAR_HOVER = 1 ;	
 ThumbContainer.NAVBAR_HIDDEN = 2 ;	
+ThumbContainer.NAVBAR_INFINITE = 2 ;
 
 ThumbContainer.margin = 4 ;	
 ThumbContainer.navBarSize = 32 ;	
@@ -781,6 +782,9 @@ p.redraw = function(contentWidth, contentHeight)
 	
 	this.thumbView.width(contentWidth) ;
 	this.thumbView.height(contentHeight) ;
+	
+	this.thumbView.empty() ;
+	
 		
 	if ( this.mode == ThumbContainer.GRID_MODE )	
 	{	
@@ -792,12 +796,6 @@ p.redraw = function(contentWidth, contentHeight)
 		var sh = ( this.navBarMode != ThumbContainer.NAVBAR_HIDDEN ) ? (contentHeight - ThumbContainer.navBarSize - m ) : contentHeight - m ;	
 		var sw = contentWidth - m ;	
 
-		var nc = Math.floor(sw/of) ;	
-		var nr = Math.floor(sh/of) ;	
-		this.pageCount = nr * nc ;	
-		this.offset = this.pageCount * Math.floor(this.offset / this.pageCount) ;	
-
-		if ( this.pageCount == 0 ) return ;	
 
 		var x = m, y = m ;	
 		var r = 0, c = 0 ;	
@@ -811,8 +809,18 @@ p.redraw = function(contentWidth, contentHeight)
 			itemCount++ ;
 		}
 			
+			
+		var nc = Math.floor(sw/of) ;	
+		//var nr = Math.floor(sh/of) ;	
+		var nr = Math.floor(itemCount/nc) ;
+		
+		this.pageCount = nr * nc ;	
+		this.offset = this.pageCount * Math.floor(this.offset / this.pageCount) ;	
 
-		for( var i=this.offset ; i<Math.min(this.offset + this.pageCount, this.thumbs.length) ; i++ )	
+		if ( this.pageCount == 0 ) return ;	
+
+	//	for( var i=this.offset ; i<Math.min(this.offset + this.pageCount, this.thumbs.length) ; i++ )
+		for( var i=0 ; i<this.thumbs.length ; i++ )		
 		{	
 			var item = this.thumbs[i] ;	
 			
@@ -844,6 +852,8 @@ p.redraw = function(contentWidth, contentHeight)
 	}	
 	else if ( this.mode == ThumbContainer.LIST_MODE )	
 	{	
+		
+		
 		// compute layout	
 		
 		var m = ThumbContainer.margin ;	

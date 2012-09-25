@@ -558,7 +558,8 @@ define("mylibs/menu",
         'rhythmDrop',
         extensions.rhythm,
         config.constants.fileUploadServer,
-        getQueryItemCount()
+        getQueryItemCount(),
+        "rhythm"
       );
 
 	    var rhythmIcon = $('nav li[data-mode="rhythm"]');

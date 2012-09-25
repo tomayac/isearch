@@ -3,11 +3,12 @@
  */
 define("mylibs/filehandler", ["mylibs/loader", "libs/glge-compiled-min"], function(loader, GLGE){
 
-	FileHandler = function(dataElementID,accept,serverURL,startCount) {
+	FileHandler = function(dataElementID,accept,serverURL,startCount, dataMode) {
 		this.dataContainer = document.getElementById(dataElementID) || false;
 		this.accept = accept || [];
 		this.serverURL = serverURL || 'query/item';
 		this.count = startCount || 0;
+		this.dataMode = dataMode || false ;
 
 		this.ModelHandler = function(model,canvas) {
 			this.model  = model;
@@ -227,10 +228,16 @@ define("mylibs/filehandler", ["mylibs/loader", "libs/glge-compiled-min"], functi
       					//Sound display in query field
       					if((/audio/i).test(fileInfo.type)) {
       						console.log("Audio uploaded...");
-      						pictureIcon = $('nav li[data-mode="sound"]');
-							if ( !pictureIcon.hasClass("uploading") )
-								pictureIcon = $('nav li[data-mode="rhythm"]');
-      						genericItemType = 'SoundType';
+      						if ( that.dataMode == 'rhythm')
+      						{
+	      						pictureIcon = $('nav li[data-mode="rhythm"]');
+	      						genericItemType = 'RhythmType' ;
+	      					}
+							else
+							{
+								pictureIcon = $('nav li[data-mode="sound"]');
+      							genericItemType = 'SoundType';
+      						}
       					}
 
       					//Video display in query field

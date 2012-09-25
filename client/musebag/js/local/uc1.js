@@ -1,13 +1,18 @@
 function localConfig(data) {
 	data.visOptions.method = 'classic';
-	data.visOptions.thumbOptions.thumbSize = 128;
+	data.visOptions.thumbOptions.thumbSize = 64;
 	data.visOptions.thumbOptions.iconArrange = "list";
+	data.visOptions.thumbOptions.iconArrangeMethods = [ "list" ] ;
 	data.visOptions.thumbOptions.thumbRenderer = "audio";
 
 	data.visOptions.filterBar.modalities = {
 		"audio": {
 			label: "Audio Files"
+		},
+		"image": {
+			label: "Images"
 		}
+		
 	};
 
 	data.fileUploadServer = "http://vision.iti.gr/isearch/server/scripts/upload.php";

@@ -71,7 +71,8 @@ Wami.setup = function(options) {
 			onSecurity : checkSecurity,
 			onError : function(error) {
 				alert(error);
-			}
+			},
+			noSecurityCheck: true
 			
 		};
 
@@ -110,7 +111,7 @@ Wami.setup = function(options) {
 		// Create a DIV for the SWF under _options.id
 		
 		var container = document.createElement('div');
-		container.style.cssText = "position: absolute;";
+		container.style.cssText = "position: absolute";
 
 		var swfdiv = document.createElement('div');
 		var id = Wami.createID();
@@ -150,6 +151,8 @@ Wami.setup = function(options) {
 			params.wmode = "transparent";
 		}
 
+		params.wmode = "transparent";
+		
 		if (typeof console !== 'undefined') {
 			flashVars.console = true;
 		}
@@ -281,6 +284,6 @@ Wami.setUploadCallback = function(cb) {
 };
 
 Wami.setup({"swfUrl": "js/libs/Wami.swf", "id": "rwami"}) ;
-Wami.setup({"swfUrl": "js/libs/Wami.swf", "id": "swami"}) ;
+//Wami.setup({"swfUrl": "js/libs/Wami.swf", "id": "swami"}) ;
 window.Wami = Wami ;
 });

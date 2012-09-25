@@ -137,6 +137,26 @@ p.showTooltip = function(item, container, visBox, showNow)
 
 };	
 
+p.renderDocument = function(doc)
+{
+	var url = '' ;
+	for( var i=0 ; i<doc.media.length ; i++ )
+	{
+		var media = doc.media[i] ;
+		
+		if ( media.type != "SoundType" ) continue ;
+		else {
+			url = media.url ;
+			break ;
+		}
+	}
+	
+	window.open(url, '_blank');
+  	window.focus();
+}
+	
+
+
 p.renderContents = function(tooltip, thumb)
 {
 		
@@ -180,10 +200,11 @@ p.renderContents = function(tooltip, thumb)
 		var anim = $('<div/>', { css: { width: tooltip.width() }}).appendTo(tooltipContents) ;
 		var audioRdr = new AudioRenderer(anim, urlMp3, urlOgg, urlImg, media.url, "waveform", thumb.doc.startTime, "sm2") ;
 			
-	/*	$("#audiovis", anim).click(function() {
+		$("#audiovis", anim).click(function() {
 			that.renderDocument(thumb.doc) ;
+			return false ;
 		}) ;
-	*/		
+		
 			
 		tooltip.bind('thide', function() { 
 			audioRdr.terminate() ; 
