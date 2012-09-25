@@ -1,10 +1,16 @@
 
 #.gitignore
+.gitignore
+/.project
 /node_modules
 /server/redis-db
 /dump.rdb
 /temp*.rdb
 /server/dump.rdb
-
+/.settings
+/client/*/.gitignore
+/client/musebag/css/img/.gitignore
+/client/musebag/js/.gitignore
+/client/musebag/img/*.svg
 /client/musebag/tmp/*
-!/client/musebag/tmp/README
+/client/musebag/tmp/README
