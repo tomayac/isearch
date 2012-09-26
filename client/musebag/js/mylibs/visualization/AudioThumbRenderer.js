@@ -13,6 +13,7 @@ p.render = function(item, container, options)
 {
 
 	this.selected = options.selected ;
+	this.modalities = options.modalities ;
 
 	var tm = DefaultThumbRenderer.thumbMargin ;
 	var w = $(container).width() ;
@@ -24,10 +25,15 @@ p.render = function(item, container, options)
 		
 	var docid = ( item.doc.coid ) ? item.doc.coid : item.doc.id ;
 	
+	var mediaType = this.getMediaType(item) ;
+
+	
 	var img = $('<div/>', { "docid": docid, css: {   width: tw, height: th }   }).appendTo(container) ;
 	var thumbDiv = $('<div/>', { css: {  position: "absolute", left: tm, top: tm, width: tw - tm - tm, height: th - tm - tm }}).appendTo(img) ;
-	thumbDiv.thumb(ThumbContainer.selectThumbUrl(item.doc, options.selected)) ;
-	var thumbDivOverlay = $('<div/>', { "class": "play-hover", css: { position: "absolute", left: tm, top: tm, width: tw - tm - tm, height: th - tm - tm }}).appendTo(img) ;
+	var thumbUrl = ThumbContainer.selectThumbUrl(item.doc, options.selected) ;
+	thumbDiv.thumb(thumbUrl) ;
+	
+	var thumbDivOverlay = $('<div/>', { "class": (mediaType == "SoundType") ? "play-hover" : "image-preview-hover", css: { position: "absolute", left: tm, top: tm, width: tw - tm - tm, height: th - tm - tm }}).appendTo(img) ;
 	
 	var textDiv = $('<div/>', { "class": "audio-description", css: { position: "absolute", left: tw + tm, top: tm, width: w - tw - tm, height: th - tm - tm }}).appendTo(img) ;
 
@@ -144,8 +150,7 @@ p.renderDocument = function(doc)
 	{
 		var media = doc.media[i] ;
 		
-		if ( media.type != "SoundType" ) continue ;
-		else {
+		if ( media.type == "SoundType" || media.type == "ImageType" ) {
 			url = media.url ;
 			break ;
 		}
@@ -161,7 +166,7 @@ p.renderContents = function(tooltip, thumb)
 {
 		
 	$('.media-preview', tooltip).remove() ;
-	var tooltipContents = $('<div/>', { "class": "media-preview", "id": "SoundType"  }).appendTo(tooltip) ;
+	var tooltipContents = $('<div/>', { "class": "media-preview", "id": this.getMediaType(thumb)  }).appendTo(tooltip) ;
 	
 	var desc = ThumbContainer.selectTooltipText(thumb.doc) ;
 		
@@ -196,20 +201,36 @@ p.renderContents = function(tooltip, thumb)
 		else if ( urlJpg ) urlImg = urlJpg ;
 		else if ( urlUnknown ) urlImg = urlUnknown ;
 		
-			
-		var anim = $('<div/>', { css: { width: tooltip.width() }}).appendTo(tooltipContents) ;
-		var audioRdr = new AudioRenderer(anim, urlMp3, urlOgg, urlImg, media.url, "waveform", thumb.doc.startTime, "sm2") ;
-			
-		$("#audiovis", anim).click(function() {
-			that.renderDocument(thumb.doc) ;
-			return false ;
-		}) ;
 		
+		if ( media.type == "SoundType" )
+		{
+			var anim = $('<div/>', { css: { width: tooltip.width() }}).appendTo(tooltipContents) ;
+			var audioRdr = new AudioRenderer(anim, urlMp3, urlOgg, urlImg, media.url, "waveform", thumb.doc.startTime, "sm2") ;
 			
-		tooltip.bind('thide', function() { 
-			audioRdr.terminate() ; 
-		}) ;
+			tooltip.bind('thide', function() { 
+				audioRdr.terminate() ; 
+			}) ;
+			
+			$("#audiovis", anim).click(function() {
+				that.renderDocument(thumb.doc) ;
+				return false ;
+			}) ;
+	
+		}
+		else if ( media.type == "ImageType" )
+		{
+			var img = $('<div/>', { css: {   width: tooltip.width(), height: tooltip.width() }   }).appendTo(tooltipContents) ;
+			img.thumb(urlImg) ;
+			
+			$(img).click(function() {
+				that.renderDocument(thumb.doc) ;
+				return false ;
+			}) ;
 		
+		}
+			
+		
+				
 		break ;
 	}
 		
@@ -221,6 +242,29 @@ p.renderContents = function(tooltip, thumb)
 	
 }
 
+p.getMediaType = function(thumb)
+{
+	var mediaTypes  = [] ;
+	var mcount = 0 ;
+	
+	for(var i=0 ; i<this.modalities.length ; i++ )
+	{
+		var mod = this.modalities[i] ;
+		for( var j=0 ; j < thumb.doc.media.length ; j++ )
+		{
+			var media = thumb.doc.media[j] ;
+			
+			if ( media.type == "Text" ) continue ;
+		
+	
+			if ( mod == "image" && media.type == "ImageType" ) return media.type ;
+			if ( mod == "audio" && media.type == "SoundType" ) return media.type ;
+		}
+		
+	}
+	
+	return "" ;
+};	
 return new AudioThumbRenderer ;
 
 }) ;

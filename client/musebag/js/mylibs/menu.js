@@ -748,7 +748,7 @@ define("mylibs/menu",
       			ele.attr({
       				'alt'       : fileInfo.name,
       				'class'     : fileInfo.subtype,
-      				'data-mode' : "SoundType",
+      				'data-mode' : "RhythmType",
       				'preload': 'auto',
       				'data-token':fileInfo.token
       			});
