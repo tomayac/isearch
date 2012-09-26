@@ -24,7 +24,7 @@ define("mylibs/queryMenu",
     var menu = $('nav.query-composition');
 
     var reset = function() {
-      //hidePanels();
+      hidePanels();
       $('nav li').removeClass('active');
     };
 
@@ -145,6 +145,9 @@ define("mylibs/queryMenu",
     };
 
     var showPanel = function(mode) {
+      if(typeof mode === 'object') {
+        mode = getRequestedMode(mode);
+      }
       $('.' + mode).slideDown(config.constants.slideDownAnimationTime);
       attachEvents(mode);
     };
@@ -868,6 +871,7 @@ define("mylibs/queryMenu",
      * Menu behaviour when the query is submitted
      */
     var collapse = function() {
+      $("#queryUseCase").hide();
       $(".query-composition").hide();
       $("header h1").hide();
       /**
@@ -877,14 +881,51 @@ define("mylibs/queryMenu",
       /** Triantafillos: added top property so that the query form
        *  on top of visualization is not cropped by the settings bar.
        */
-      $("#query").css("top", "2.8em");
-       /** Triantafillos: restart button.
+      $("#queryContainer").css("top", "3.8em");
+       /** Jonas: added query options menu open/close button.
        */
-      if($('#restart').length == 0) {
-        $("#query").append('<a href="#" id="restart">Start from scratch</a>');
+      if($('#menuTrigger').length === 0) {
+        $(".tags").before('<button id="menuTrigger">Open options</button>');
 
-        $("#restart").button();
-        $("#restart").click(function(){ window.location = ""; });
+        $("#menuTrigger").click(function(e){
+          if(!$(".query-composition").is(":visible")) {
+            $(".query-composition").addClass('resultView');
+            $('#menuTrigger').css({
+              'margin' : '0 auto 0 50%',
+              'top'    : '-0.1em'
+            });  
+          } else {
+            $('.panel').hide();
+            $(".query-composition li").removeClass('active');
+          }
+          
+          $('.panel').toggleClass('resultView');
+           
+          $(".query-composition").slideToggle(200,function(){
+            if($(this).is(":visible")) {
+              $("#menuTrigger").text('Close options');
+            } else {
+              $('#menuTrigger').css({
+               'margin' : '0 auto 1em 50%',
+               'top'    : '-0.3em' 
+              });
+              
+              $("#menuTrigger").text('Open menu');
+              $(".query-composition").removeClass('resultView'); 
+            }
+          });
+          
+          e.preventDefault();
+          return false;
+        });
+      }
+      /**
+       * Jonas: added search result i-search logo, which also deals as home button
+       */
+      if($('#resultLogo').length === 0) {
+        $("#query").prepend('<a href="/" title="Restart I-SEARCH" id="resultLogo"><img src="img/logo-result.png"/></a>');
+        $("#query ul").addClass('resultView');
+        $("#query-submit").addClass('resultView');    
       }
     };
     

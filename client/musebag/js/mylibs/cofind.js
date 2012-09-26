@@ -9,7 +9,7 @@ define("mylibs/cofind",
     "libs/jquery.hoverIntent.min",
     "/nowjs/now.js",
     "order!js/libs/jquery-ui-1.8.17.custom.min.js",
-    "libs/jquery.ui.touch-punch.min"
+    "order!libs/jquery.ui.touch-punch.min"
   ],
   function(query,profile){
 

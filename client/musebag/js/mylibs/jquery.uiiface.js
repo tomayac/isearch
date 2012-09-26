@@ -332,7 +332,6 @@ define("mylibs/uiiface-v1",
                   e.currentTarget = element;
                   callback.apply(element, [e]);
                 }
-                return false;
               });
               break;
             default:

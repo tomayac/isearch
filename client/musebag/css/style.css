@@ -287,18 +287,6 @@ header img {
 	width: 100%;
 }
 
-nav {
-	width: 100%;
-	overflow: hidden;
-	position: relative;
-	background-color: #e0e0e0;
-	border-top: 1px solid #b1b1b1;
-	border-bottom: 1px solid #b1b1b1;
-	-moz-box-shadow: 0 2px 6px #ccc;
-	-webkit-box-shadow: 0 2px 6px #ccc;
-	box-shadow: 0 2px 6px #ccc;
-}
-
 #messages {
   text-align: center;
 }
@@ -633,6 +621,20 @@ nav {
  * Begin of query input and assembling styles
  */
 
+#resultLogo {
+  display: inline-block;
+  position: relative;
+  margin-left: 5%; 
+}
+
+#resultLogo img {
+  height: 5em;
+}
+
+#queryContainer {
+  position: relative;
+}
+
 #queryUseCase {
   list-style-type: none;
   margin: 0 auto;
@@ -664,7 +666,6 @@ nav {
   box-shadow: 0px -3px 2px -1px rgba(99, 99, 99, 0.2)
 }
 
-
 #query {
 	position: relative;
   margin-bottom: 30px;
@@ -683,13 +684,15 @@ nav {
 	display: block;
 	position: absolute;
   top: 0;
-  bottom: 0;
+  /*bottom: 0;*/
   right: 4.7%;
 	border: 1px #CCC solid;
 	background-color: #e0e0e0;
   width: 100px;
+  height: 3.8em;
   margin: 0 0 10px 0;
   font-weight: bold;
+  z-index: 2;
 }
 
 #query-submit:hover {
@@ -698,11 +701,17 @@ nav {
   color: #222;
 }
 
+#query-submit.resultView {
+  top: 0.5em;
+  right: 4.6%;
+}
+
 /* Token input styles for query input */
 #query ul.token-input-list-isearch {
+  position: relative;
   overflow: hidden;
   cursor: text;
-  z-index: 999;
+  z-index: 1;
   padding: 0;
   background-color: #fff;
   list-style-type: none;
@@ -713,6 +722,13 @@ nav {
   height: 3.2em;
   border: 1px #CCC solid;
   box-shadow: 0px 0px 2px 2px rgba(99, 99, 99, 0.2);
+}
+
+#query ul.token-input-list-isearch.resultView {
+  display: inline-block;
+  width: 80%;
+  margin: 0.5em auto 0 2.5%;
+  vertical-align: top;
 }
 
 #query ul.token-input-list-isearch li input {
@@ -873,12 +889,37 @@ div.token-input-dropdown-isearch ul li.token-input-selected-dropdown-item-isearc
 
 /* query assembling menu styles */
 
+nav {  
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background-color: #e0e0e0;
+  border-top: 1px solid #b1b1b1;
+  border-bottom: 1px solid #b1b1b1;
+  -moz-box-shadow: 0 2px 6px #ccc;
+  -webkit-box-shadow: 0 2px 6px #ccc;
+  box-shadow: 0 2px 6px #ccc;
+}
+
+nav.resultView {
+  width: 80%;
+  margin: -0.3em auto 0 15%;
+  border: 1px solid #b1b1b1;
+  border-top: none;
+  
+  background-color: #e0e0e0;
+}
+
 nav ul {
 	padding: 0 20px;
 	height: 70px;
 	width: 630px; /* 630 + 2*20 = 670 <= real width of our menu */
 	margin: auto;
 	text-align: center;
+}
+
+nav.resultView ul {
+  width: auto;
 }
 
 nav li {
@@ -936,6 +977,25 @@ nav a img {
 	height: 46px;
 }
 
+#menuTrigger {
+  display: block;
+  position: relative;
+  z-index: 0;
+  
+  width: 10%;
+  height: 2em;
+  
+  margin: -0.3em auto 1em 50%;
+  padding: 4px;
+  
+  background-color: #e0e0e0;
+  box-shadow: 0 1px 3px 0px #C1C1C1;
+  border: 1px solid #b1b1b1;
+  border-top: none;
+
+  font-size: 90%;
+}
+
 .uploading a {
 	background-color: red;
 	background-image: none;
@@ -955,6 +1015,11 @@ nav a img {
 .panel.visible {
 	display: block;
 }
+
+.panel.resultView {
+  width: 80%;
+  margin: -2px auto 0 15%;
+} 
 
 .panel .instruction {
 	text-align: center;
@@ -999,6 +1064,8 @@ nav a img {
 	background-image: -ms-linear-gradient(top, #b5b5b5, #575757);
 	background-image: -o-linear-gradient(top, #b5b5b5, #575757);
 	background-image: linear-gradient(top, #b5b5b5, #575757);
+	
+	padding: 10px 15px;
 }
 
 .panel button:active {
@@ -1015,7 +1082,7 @@ nav a img {
 .panel footer {
 	border-top: 1px solid #aeaeae;
 	border-bottom: 1px solid #aeaeae;
-	background-color: #d3d3d3;
+	background-color: #e0e0e0;
 	text-align: center;
 	color: #686868;
 	margin-top: -5px;
@@ -1259,12 +1326,6 @@ footer {
 }
 
 /* --------------- */
-
-
-#restart {
-	float: right;
-	margin-right:4.75em;
-}
 
 /**
  * UIIFace styles

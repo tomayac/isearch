@@ -607,7 +607,7 @@ define("mylibs/query",
     }
   };
 
-  var updateItemCount = function() {
+  var updateItemCount = function(p1,p2) {
     itemCount = $(".token-input-list-isearch li").size()-1;
   };
   
