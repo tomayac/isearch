@@ -68,9 +68,6 @@ require([
           
           //Initializes the header with it's panels and setup all event handlers
           header.init();          
-
-          //Initializes the tagging system
-          tags.init();
           
           //Get tokens and load them as auto suggestions for the user
           var tokens = tags.getTokens();

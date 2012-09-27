@@ -16,7 +16,6 @@ define("mylibs/tags", [
       var fontSize = $thisTag.attr('data-rank');
       $thisTag.css('font-size', fontSize + 'em');
       $thisTag.css('margin-right', '0.4em');
-      tags.push($thisTag.text());
     });
     
     $(".tags a").hover(function() {
@@ -26,22 +25,30 @@ define("mylibs/tags", [
       
       $('#itemRecom span').html(itemHtml);
       
+      /** @TODO: Bind click events on links in item recommendation HTML */
+      
       var offset = $(this).offset();
       var newPos = {
         top  : (offset.top - $('#itemRecom').height() - 22),
         left : (offset.left - ($('#itemRecom').width()/2) + ($(this).width()/2)) 
       };
       
-      $('#itemRecom').show();
+      $('#itemRecom').stop(true).show();
       $('#itemRecom').offset(newPos);
+      $('#itemRecom').off('mouseenter').on('mouseenter',function() {
+        $(this).stop(true).show();
+        $('#itemRecom').one('mouseleave',function() {
+          $('#itemRecom').delay(400).fadeOut(200);
+        });
+      });
       
     },
     function(){
-      $('#itemRecom').hide();
+      $('#itemRecom').delay(400).fadeOut(200);
     });
         
     $(".tags a").click(function() {
-      var tagText = $(this).text();
+      var tagText = $(this).text().replace('&nbsp;',' ');
       var query = $('#query-field').val();
       //Recommended tags will get a special behaviour for search, unlike normal text input
       $("#query-field").tokenInput('add',{id: tagText, name: '<span class="Tag" data-subtype="Tag">' + tagText + '</span>'});    
@@ -81,21 +88,25 @@ define("mylibs/tags", [
           
           var html = '';
           console.dir(data);
-          tags = data;
+          tags = [];
           
+          //Create the tag cloud html for the user interface and store the retrieved tags
+          //setting up the token input
           for(var t=0; t < data.length; t++) {
-            html += '<a href="#" data-rank="' + data[t][1] + '">' + data[t][0] + '</a>';
+            html += '<a href="#" data-rank="' + data[t][1] + '">' + data[t][0].replace(' ', '&nbsp;') + '</a>';
+            tags.push(data[t][0]);
           }
             
           $(".tags").html(html);
           
-          //Initializes the tagging system
-          init();
           //Get tokens and load them as auto suggestions for the user
           var tokens = getTokens();
-          $(".token-input-list-isearch").remove();
-          $("#query-field").tokenInput("clear");
-          $("#query-field").tokenInput('init',tokens, {theme: "isearch", preventDuplicates: true} );
+          //$(".token-input-list-isearch").remove();
+          //$("#query-field").tokenInput("clear");
+          $("#query-field").tokenInput('setOptions', { 'local_data' : tokens });
+          
+          //Initializes the tagging system
+          init();
           
         } catch(e) {
           console.log('Error parsing tag recommendations: ' + e.toString());

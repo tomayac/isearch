@@ -1154,6 +1154,10 @@ nav a img {
 	text-align: center;
 }
 
+.tags a {
+  display: inline-block; 
+}
+
 #itemRecom {
   position: absolute;
   display: none;
