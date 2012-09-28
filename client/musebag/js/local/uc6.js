@@ -18,8 +18,8 @@ function localConfig(data)
   data.userRegisterServerUrl = "http://vision.iti.gr/isearch/server/scripts/register.php";
 	
   data.tagRecomUrl           = "http://vision.iti.gr/isearch/server/scripts/user.php?mode=tags&index=uc6&a=rec";
-  data.filterTagUrl          = "http://vision.iti.gr/isearch/server/scripts/user.php?mode=tags&index=uc1&a=all";
-  data.storeTagUrl           = "http://vision.iti.gr/isearch/server/scripts/user.php?mode=tags&index=uc1&a=store";
+  data.filterTagUrl          = "http://vision.iti.gr/isearch/server/scripts/user.php?mode=tags&index=uc6&a=all";
+  data.storeTagUrl           = "http://vision.iti.gr/isearch/server/scripts/user.php?mode=tags&index=uc6&a=store";
 
 	data.useOldAuthentication = true;
 }

@@ -52,7 +52,7 @@ define("mylibs/tags", [
       var query = $('#query-field').val();
       //Recommended tags will get a special behaviour for search, unlike normal text input
       $("#query-field").tokenInput('add',{id: tagText, name: '<span class="Tag" data-subtype="Tag">' + tagText + '</span>'});    
-    
+
       return false ;
     });
   };

@@ -1,3 +1,4 @@
+
 define("mylibs/query",
   [
     "mylibs/config",
@@ -510,7 +511,7 @@ define("mylibs/query",
           console.log('found file item with name ' + queryItem.Name);
           queryJson.fileItems.push(queryItem);
         }
-        
+
       } else if($(this).find('p:first').text().length > 2){
         queryItem.Content  = $(this).find('p:first').text();
         queryJson.fileItems.push(queryItem);

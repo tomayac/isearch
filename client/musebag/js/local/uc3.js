@@ -11,6 +11,7 @@ function localConfig(data)
 	data.userLogoutServerUrl   = "http://vision.iti.gr/isearch/server/scripts/user.php?mode=logout";
   data.userRegisterServerUrl = "http://vision.iti.gr/isearch/server/scripts/register.php";
 	
-  data.filterTagUrl          = "http://vision.iti.gr/isearch/server/scripts/user.php?mode=tags&index=uc1&a=all";
-  data.storeTagUrl           = "http://vision.iti.gr/isearch/server/scripts/user.php?mode=tags&index=uc1&a=store";
+  data.tagRecomUrl           = "http://vision.iti.gr/isearch/server/scripts/user.php?mode=tags&index=uc3&a=rec";
+  data.filterTagUrl          = "http://vision.iti.gr/isearch/server/scripts/user.php?mode=tags&index=uc3&a=all";
+  data.storeTagUrl           = "http://vision.iti.gr/isearch/server/scripts/user.php?mode=tags&index=uc3&a=store";
 }

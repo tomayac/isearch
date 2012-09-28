@@ -1,7 +1,13 @@
-require(["jquery", "mylibs/query", "mylibs/visualization/ThumbRendererFactory", "libs/timeline_2.3.0/timeline_js/timeline-api", "!js/libs/jquery.mousewheel.min.js"
-	],
-    function($, query, rf) {
-ThumbContainer = function(containerDiv, data, options, ctx) {	
+require([
+  "jquery", 
+  "mylibs/query", 
+  "mylibs/visualization/ThumbRendererFactory", 
+  "libs/timeline_2.3.0/timeline_js/timeline-api", 
+  "!js/libs/jquery.mousewheel.min.js"
+],
+function($, query, rf) {
+  
+  ThumbContainer = function(containerDiv, data, options, ctx) {	
   
 	$(containerDiv).empty() ;	
 
@@ -55,6 +61,7 @@ ThumbContainer.LIST_MODE = 3 ;
 ThumbContainer.NAVBAR_FIXED = 0 ;	
 ThumbContainer.NAVBAR_HOVER = 1 ;	
 ThumbContainer.NAVBAR_HIDDEN = 2 ;	
+ThumbContainer.NAVBAR_INFINITE = 2 ;
 
 ThumbContainer.margin = 4 ;	
 ThumbContainer.navBarSize = 32 ;	
@@ -91,22 +98,15 @@ p.menuBar = null ;
 p.thumbRenderer = null ;
 p.navMode = null ;
 
-
-
 ThumbContainer.zoomScales = [0.25, 0.5, 1.0, 1.5, 2.0, 3.0, 4.0] ;	
-
-
-
-  	
- 		  
+		  
 p.createCanvas = function()	{	
 	
 	var obj = this ;	
 
 	$(this.containerDiv).empty() ;	
 
-	// add navigation bar	
-	
+	// add navigation bar		
 	if ( ( this.mode == ThumbContainer.GRID_MODE || this.mode == ThumbContainer.LIST_MODE ) 
 			&& this.navBarMode != ThumbContainer.NAV_HIDDEN ) {	
 		this.navBar = $("<div/>", { "class": "thumb-container-nav-bar", 	
@@ -128,18 +128,17 @@ p.createCanvas = function()	{
 	if ( ThumbContainer.menuItems.length > 0 ) 
 	{
 		var mb = $("<div/>", { 	
-					  css: { 	"position": "absolute", 	
+				css: { 	"position": "absolute", 	
 								"width": 20, 	
 								"height": ThumbContainer.menuItems.length * 36,	
-							//	"display": "none" ,	
+							//"display": "none" ,	
 								"overflow": "hidden",	
 								"padding" : "4px",	
 								"top": "10%",	
 								"right" : 0,
 								"z-index": 100
 							} 	
-					}).
-			appendTo($(this.containerDiv)) ;
+					}).appendTo($(this.containerDiv)) ;
 		
 		
 		
@@ -495,7 +494,7 @@ ThumbContainer.selectDefaultMediaType = function(doc, modalities)
 	}
 
 	return "" ;
-}
+};
 
 ThumbContainer.selectTooltipText = function(doc)
 {
@@ -511,7 +510,7 @@ ThumbContainer.selectTooltipText = function(doc)
 	
 	return null ;
 
-} ;
+};
 
 ThumbContainer.modalFilter = function(doc, modalities)
 {
@@ -631,24 +630,19 @@ p.createThumbnail = function(i, x, y, sw, tclass)
 										if ( _tags[tag] == 1 && idx >= 0 ) delete tags.splice(idx,1) ;
 										else if ( _tags[tag] == 2  && idx == -1 ) tags.push(tag) ;
 									}
-						
+
 									item.doc.tags = tags ;
 									// save tags into permanent storage
-						
 									that.ctx.tagManager.store(item.doc) ;
 								},
 								Cancel: function() {
-									$( this ).dialog( "close" );
-									
-									
+									$( this ).dialog( "close" );		
 								}
 							}
 						}) ; 
 						
 						return false ;
-					};
-					
-					
+					};					
 				}
 				
 			)(item)
@@ -677,101 +671,88 @@ p.createThumbnail = function(i, x, y, sw, tclass)
 	imgOut.contextMenu("vis-context-menu", {
 	  bindings: {
         'relevant': function(t) {
-			$(".thumbnail.selected", that.containerDiv).each( function(item) {
-				var id = $(this).attr('id').substr(6) ;
-				that.thumbs[id].doc.relevant = !that.thumbs[id].doc.relevant ;
-				$(".thumbnail-overlay", this).toggle() ;
-			}) ;
-	    },
+    			$(".thumbnail.selected", that.containerDiv).each( function(item) {
+    				var id = $(this).attr('id').substr(6) ;
+    				that.thumbs[id].doc.relevant = !that.thumbs[id].doc.relevant ;
+    				$(".thumbnail-overlay", this).toggle() ;
+    			}) ;
+  	    },
         'tags': function(t) {
-			//collect all common tags from selected items
-			
-			var allTags = {} ;
-						
-			var count = 0 ;
-			
-			$(".thumbnail.selected", that.containerDiv).each( function(item) {
-				var id = $(this).attr('id').substr(6) ;
-				var tags = that.thumbs[id].doc.tags ;
-			
-				count ++ ;
-				
-				if ( tags ) 
-				{
-					for( var i=0 ; i<tags.length ; i++ )
-					{
-						var tag = tags[i] ;
-						if ( allTags.hasOwnProperty(tag) )	allTags[tag] ++ ;
-						else allTags[tag] = 1 ;
-					}
-				}
-						
-			}) ;
-			
-			for( var tag in allTags )
-			{
-				if ( allTags[tag] < count ) delete allTags[tag] ;
-				else allTags[tag] = 0 ;
-			}
-
-			// open the tag editor
-			
-			var popupDiv = $('<div/>', { id: "tags-popup", "class": "tag-editor", title: "Add/Edit Tags"} ) ;
-			
-			var tagEditor = new TagEditor(popupDiv, allTags, that.ctx.tagManager.tags) ;
-						
-			$(popupDiv).dialog( { 
-				close: function(event, ui) 	{ // we will be here when the user closes the tag editor				
-					$(".thumbnail.selected", that.containerDiv).each( function(item) {
-						var id = $(this).attr('id').substr(6) ;
-						var tags = that.thumbs[id].doc.tags ;
-					
-						if ( !tags ) tags = [] ;
-				
-						// get user provided tags ;
-						var _tags = tagEditor.tags ;
-						
-						// update tags of selected items based on the user provided tags
-						for( tag in _tags )
-						{	
-							var idx = $.inArray(tag, tags) ;
-							if ( _tags[tag] == 1 && idx >= 0 ) delete tags.splice(idx,1) ;
-							else if ( _tags[tag] == 2  && idx == -1 ) tags.push(tag) ;
-						}
-					
-						that.thumbs[id].doc.tags = tags ;
-						// save tags into permanent storage
-					
-						that.ctx.tagManager.store(that.thumbs[id].doc) ;
-					}) ;
-				
-					
-				}
-			}) ;
-		},
-
-        'remove': function(t) {
-
-          alert('Trigger was '+t.id+'\nAction was Save');
-
-        },
-
-        'close': function(t) {
-
-          alert('Trigger was '+t.id+'\nAction was Delete');
-
-        }
-	}
-	  
-
-    });
+    			//collect all common tags from selected items
+    			var allTags = {} ;
+    						
+    			var count = 0 ;
+    			
+    			$(".thumbnail.selected", that.containerDiv).each( function(item) {
+    				var id = $(this).attr('id').substr(6) ;
+    				var tags = that.thumbs[id].doc.tags ;
+    			
+    				count ++ ;
+    				
+    				if ( tags ) 
+    				{
+    					for( var i=0 ; i<tags.length ; i++ )
+    					{
+    						var tag = tags[i] ;
+    						if ( allTags.hasOwnProperty(tag) )	allTags[tag] ++ ;
+    						else allTags[tag] = 1 ;
+    					}
+    				}
+    						
+    			}) ;
+    			
+    			for( var tag in allTags )
+    			{
+    				if ( allTags[tag] < count ) delete allTags[tag] ;
+    				else allTags[tag] = 0 ;
+    			}
+    
+    			// open the tag editor
+    			
+    			var popupDiv = $('<div/>', { id: "tags-popup", "class": "tag-editor", title: "Add/Edit Tags"} ) ;
+    			
+    			var tagEditor = new TagEditor(popupDiv, allTags, that.ctx.tagManager.tags) ;
+    						
+    			$(popupDiv).dialog( { 
+    				close: function(event, ui) 	{ // we will be here when the user closes the tag editor				
+    					$(".thumbnail.selected", that.containerDiv).each( function(item) {
+    						var id = $(this).attr('id').substr(6) ;
+    						var tags = that.thumbs[id].doc.tags ;
+    					
+    						if ( !tags ) tags = [] ;
+    				
+    						// get user provided tags ;
+    						var _tags = tagEditor.tags ;
+    						
+    						// update tags of selected items based on the user provided tags
+    						for( tag in _tags )
+    						{	
+    							var idx = $.inArray(tag, tags) ;
+    							if ( _tags[tag] == 1 && idx >= 0 ) delete tags.splice(idx,1) ;
+    							else if ( _tags[tag] == 2  && idx == -1 ) tags.push(tag) ;
+    						}
+    					
+    						that.thumbs[id].doc.tags = tags ;
+    						// save tags into permanent storage
+    					
+    						that.ctx.tagManager.store(that.thumbs[id].doc) ;
+    					}) ;
+    				
+    					
+    				}
+    			}) ;
+    		},
+      'remove': function(t) {
+        alert('Trigger was '+t.id+'\nAction was Save');
+      },
+      'close': function(t) {
+        alert('Trigger was '+t.id+'\nAction was Delete');
+      }
+	  }
+	});
 	
 	// use the thumbRenderer to actually render the item in the box
 	this.thumbRenderer.render(item, imgOut, { viewport: this.thumbViewport, selected: this.ctx.filterBar.modalities(), modalities: 			this.ctx.modalities, hover: (this.navMode=='browse')?true:false, onSimilar: this.findSimilar, docPreview: this.docPreview }) ;
-	
-	
-	
-	
 };
 
 // main function for icon arrangement
@@ -781,6 +762,9 @@ p.redraw = function(contentWidth, contentHeight)
 	
 	this.thumbView.width(contentWidth) ;
 	this.thumbView.height(contentHeight) ;
+	
+	this.thumbView.empty() ;
+	
 		
 	if ( this.mode == ThumbContainer.GRID_MODE )	
 	{	
@@ -792,12 +776,6 @@ p.redraw = function(contentWidth, contentHeight)
 		var sh = ( this.navBarMode != ThumbContainer.NAVBAR_HIDDEN ) ? (contentHeight - ThumbContainer.navBarSize - m ) : contentHeight - m ;	
 		var sw = contentWidth - m ;	
 
-		var nc = Math.floor(sw/of) ;	
-		var nr = Math.floor(sh/of) ;	
-		this.pageCount = nr * nc ;	
-		this.offset = this.pageCount * Math.floor(this.offset / this.pageCount) ;	
-
-		if ( this.pageCount == 0 ) return ;	
 
 		var x = m, y = m ;	
 		var r = 0, c = 0 ;	
@@ -811,8 +789,18 @@ p.redraw = function(contentWidth, contentHeight)
 			itemCount++ ;
 		}
 			
+			
+		var nc = Math.floor(sw/of) ;	
+		//var nr = Math.floor(sh/of) ;	
+		var nr = Math.floor(itemCount/nc) ;
+		
+		this.pageCount = nr * nc ;	
+		this.offset = this.pageCount * Math.floor(this.offset / this.pageCount) ;	
 
-		for( var i=this.offset ; i<Math.min(this.offset + this.pageCount, this.thumbs.length) ; i++ )	
+		if ( this.pageCount == 0 ) return ;	
+
+	//	for( var i=this.offset ; i<Math.min(this.offset + this.pageCount, this.thumbs.length) ; i++ )
+		for( var i=0 ; i<this.thumbs.length ; i++ )		
 		{	
 			var item = this.thumbs[i] ;	
 			
@@ -844,6 +832,8 @@ p.redraw = function(contentWidth, contentHeight)
 	}	
 	else if ( this.mode == ThumbContainer.LIST_MODE )	
 	{	
+		
+		
 		// compute layout	
 		
 		var m = ThumbContainer.margin ;	
@@ -933,9 +923,6 @@ p.redraw = function(contentWidth, contentHeight)
 
 		delete lmanager ;	
 	}	
-	
-	
-
 };	
 
 p.doResize = function()	
@@ -1417,12 +1404,8 @@ var cDate = new Date(parseInt((mindate.getTime() + maxdate.getTime())/2)) ;
 	bandInfos[1].highlight = true;
   
 	var tl = Timeline.create(timelineDialog.get(0), bandInfos);
-	
-	
-	
+		
 	eventSource.loadJSON(event_data, document.location.href); 
-	
-	
 
 	timelineDialog.dialog({
 		width: sw*2/3,

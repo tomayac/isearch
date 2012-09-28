@@ -193,6 +193,9 @@ define("mylibs/visualization/visualizer",
 					case "smart-grid":
 						menuPaneHtml +=	'<input type="radio" name="ia" id="ia-smart-grid"/><label for="ia-smart-grid">Smart Grid</label>' ;
 						break ;
+					case "list":
+						menuPaneHtml +=	'<input type="radio" name="ia" id="ia-list"/><label for="ia-list">List</label>' ;
+						break ;
 				}
 				
 			}
