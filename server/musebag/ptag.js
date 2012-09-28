@@ -26,13 +26,72 @@ var tags = {
     'familie.etzold': [['shark',2.0],['fish',2.5],['dolphin',1.5],['Atlantic',1.0],['Fishing',0.8],['Diving',1.5],['dive license',0.6],['Pacific',1.5],['Hammerhead',2.0],['Hawaii',3.0],['Marlin',1.0],['Seahorse',1.8],['Best diving grounds',2.3]]
 };
 
+var userTagSet = [];
+
 /**
  *  -----------------------------------------------------------------------------
  *  Private Functions
  *  -----------------------------------------------------------------------------
  */
 
-var queryPersComponent = function(userId, what) {
+var addUserTag = function(tag) {
+  if(!tag) {
+    return;
+  }
+  
+  var exists = false;
+  for(var t in userTagSet) {
+    if(userTagSet[t].name === tag.toLowerCase()) {
+      userTagSet[t].relevance += 0.2;
+      exists = true;
+      break;
+    }
+  }
+  
+  if(!exits) {
+    userTagSet.push({
+      'name' : tag,
+      'relevance' : 1.0
+    });
+  }
+};
+
+/**
+ * Implements the automatic tag extraction algorithm per user 
+ * @param req
+ * @returns personalized user tag set
+ */
+var getUserTagSet = function(req) {
+  //Check if a user tag set is already created for this user
+  if(req.session.musebag.user.tagSet) {
+    return req.session.musebag.user.tagSet;
+  } else {
+    //if not create it
+    var userId = req.session.musebag.user.userId;
+    var getAllQueryTagsUrl = config.apcPath + 'tags/tagsFor/' + userId + '/query/all';
+    
+    restler
+    .get(getAllQueryTagsUrl)
+    .on('success', function(data,response) {         
+      if(data && data.tag) {
+        console.dir(data.tag);
+        for(var t in data.tag) {
+          addUserTag(data.tag[t].tagText);
+        }
+        //Store user tag set in session for later use
+        req.session.musebag.user.tagSet = userTagSet;
+      } else {
+        console.log('Malformed or empty data during tag retrieval ' + userId );
+      }
+    })
+    .on('fail', function(data,response) {
+      console.log('Server error ' + response.statusCode + ' during query tags retrieval for ' + userId);
+    })
+    .on('error', function(data,response) {
+      console.log('pTag error ' + data.toString() + ' during query tags retrieval for ' + userId);
+    });
+ 
+  }
   
 };
 
@@ -53,6 +112,7 @@ var queryPersComponent = function(userId, what) {
  */
 var tagRecommendations = function(req, res){
 	console.log('tagRecommendations function called...');
+	//Dummy code
 	var id = 0;
 	var userKey = '';
 	
@@ -62,6 +122,9 @@ var tagRecommendations = function(req, res){
 	
 	var userTags = tags[userKey] ? tags[userKey] : tags['familie.etzold'];
 	res.send(JSON.stringify(userTags));
+	
+	//Original function
+	getUserTagSet(req);
 };
 
 /**
