@@ -703,7 +703,7 @@ header img {
 
 #query-submit.resultView {
   top: 0.5em;
-  right: 4.6%;
+  right: 4%;
 }
 
 /* Token input styles for query input */
@@ -903,7 +903,7 @@ nav {
 
 nav.resultView {
   width: 80%;
-  margin: -0.3em auto 0 15%;
+  margin: -0.3em auto 0 15.5%;
   border: 1px solid #b1b1b1;
   border-top: none;
   

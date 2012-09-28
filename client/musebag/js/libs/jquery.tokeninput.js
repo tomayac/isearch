@@ -42,6 +42,7 @@ var DEFAULT_SETTINGS = {
     },
 
     tokenFormatter: function(item) {
+      console.log(item);
       var string = item[this.propertyToSearch];
       return "<li><p>" + (this.enableHTML ? string : _escapeHTML(string)) + "</p></li>";
     },

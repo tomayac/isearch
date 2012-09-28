@@ -910,7 +910,7 @@ define("mylibs/queryMenu",
                'top'    : '-0.3em' 
               });
               
-              $("#menuTrigger").text('Open menu');
+              $("#menuTrigger").text('Open options');
               $(".query-composition").removeClass('resultView'); 
             }
           });
