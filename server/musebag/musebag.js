@@ -710,31 +710,19 @@ var updateProfileHistory = function(req, res) {
   //store queries which havn't been finished or have been interrupted in the past
   for(var index in sessionStore.queries) {
     var queryData = sessionStore.queries[index];
-    
+
     //Check if history update data is complete 
     if(!isGuest(req) && queryData.query && queryData.result.relevant) {
       //Submit the query to authentication/personalisation component
       var storeURL = config.apcPath + 'resources/historydatas/updateSearchHistory';
-      /*
-      var items = [];
-      var time = new Date().getTime() + "";
-      time = time.substr(6);
-      for(var i in queryData.result.relevant) {
-        items.push({
-          'id' : parseInt(time + i + 1, 10),
-          'tags' : queryData.result.relevant[i].tags
-        });
-      }*/
       
-      var time = new Date().getTime() + "";
-      time = time.substr(6);
       var callData = {
           "userid" : sessionStore.user.userId,
           "query"  : { 
             'id'    : queryData.query.id,
-            'rucod' : queryData.query.rucod
+            'rucod' : queryData.query.json
           },
-          "items"  :  queryData.result.relevant //[{'id' : 1, 'tags' : ['test','first','item']},{'id' : 3, 'tags' : ['another','second','item']}]
+          "items"  :  queryData.result.relevant
       };
       
       console.log(storeURL);
@@ -745,6 +733,8 @@ var updateProfileHistory = function(req, res) {
       .postJson(storeURL, callData)
       .on('success', function(data,response) {
         //Check if result is ok
+        console.log('history save data:');
+        console.log(data);
         if(data.error) {
           console.log(data.error);
         } else {
@@ -839,7 +829,7 @@ var query = function(req, res) {
           data : JSON.stringify(data)
         })
         .on('complete', function(data) { 
-          console.log(data);
+          //console.log(data);
           try {
             data = JSON.parse(data);
           } catch(e) {

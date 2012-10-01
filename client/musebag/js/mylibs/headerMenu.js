@@ -98,7 +98,9 @@ define("mylibs/headerMenu", [
       //get user search history
       profile.getHistory(function(history){
         //Create history table
-        var historyTable = '<table><tr><th>Query</th><th>Tags</th>Items<th></th></tr>';
+        var historyTable = '<table><tr><th>Date</th><th>Query</th><th></th></tr>';
+        
+        
         console.dir(history);
         historyTable += '</table>';
       });

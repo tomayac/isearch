@@ -2,9 +2,10 @@
 define("mylibs/query",
   [
     "mylibs/config",
+    "mylibs/results",
     "mylibs/loader"
   ],
-  function(config,loader) {
+  function(config,results,loader) {
 
   var queryTypes = {
     'Text'   : 'Text',
@@ -543,7 +544,13 @@ define("mylibs/query",
     
     return valid;
   };
-
+  
+  /**
+   * 
+   * @param {Object} refineOptions
+   * @param {Object} callback optional, if provided error and special result data is possible, 
+   * otherwise only a valid result is pushed to the display function of the results module
+   */
   var submit = function(refineOptions, callback) {
     
     var query = getItems();
@@ -551,6 +558,10 @@ define("mylibs/query",
     if(typeof refineOptions === 'object') {
       var keys = Object.keys(refineOptions);
       for(var i in keys) {
+        if(keys[i] == 'similarTo') {
+          query = { 'similarTo' : refineOptions[keys[i]] };
+          break;
+        }
         query[keys[i]] = refineOptions[keys[i]];
       }
     }
@@ -577,15 +588,20 @@ define("mylibs/query",
         dataType : "json",
         success: function(data) {
           //parse the result
+          var success = false;
           if(!data.error) {
             console.log("Query result:");
             console.dir(data);
             if(data.queryId) {
               queryId = data.queryId;
             }
-            callback(true, data) ;
-          } else {
-            callback(false, data) ;
+            success = true;
+          }
+          
+          if(typeof callback === 'function') {
+            callback(success, data) ;
+          } else if(success) {
+            results.display(data);
           }
         },
         error: function(jqXHR, error, object) {

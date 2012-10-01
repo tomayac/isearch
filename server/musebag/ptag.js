@@ -68,8 +68,8 @@ var getUserTagSet = function(req) {
   } else {
     //if not create it
     var userId = req.session.musebag.user.userId;
-    var getAllQueryTagsUrl = config.apcPath + 'tags/tagsFor/' + userId + '/query/all';
-    
+    var getAllQueryTagsUrl = config.apcPath + 'resources/tags/tagsFor/' + userId + '/query/all';
+
     restler
     .get(getAllQueryTagsUrl)
     .on('success', function(data,response) {         
@@ -80,15 +80,17 @@ var getUserTagSet = function(req) {
         }
         //Store user tag set in session for later use
         req.session.musebag.user.tagSet = userTagSet;
+        console.dir(userTagSet);
+        return userTagSet;
       } else {
         console.log('Malformed or empty data during tag retrieval ' + userId );
       }
     })
     .on('fail', function(data,response) {
-      console.log('Server error ' + response.statusCode + ' during query tags retrieval for ' + userId);
+      console.log('pTag: External server error ' + response.statusCode + ' during query tags retrieval for ' + userId);
     })
     .on('error', function(data,response) {
-      console.log('pTag error ' + data.toString() + ' during query tags retrieval for ' + userId);
+      console.log('pTag: Error ' + data.toString() + ' during query tags retrieval for ' + userId);
     });
  
   }
