@@ -53,6 +53,8 @@ p.render = function(item, container, options)
 	
 	this.onSimilar = options.onSimilar ;
 	this.docPreviewMode = options.docPreview ;
+	
+	this.onClick = options.onClick ;
 		
 	var docid = ( item.doc.coid ) ? item.doc.coid : item.doc.id ;
 	
@@ -223,38 +225,18 @@ p.renderContents = function(tooltip, thumb, mediaType)
 		
 	$('.tooltip-header', tooltip).remove() ;
 	var header = $('<div/>', { "class": "tooltip-header" }).appendTo(tooltip);
-	var findSimilar = $('<a/>', {text: "Find similar", href: "javascript:void(0);"}).appendTo(header) ;
 	
-	findSimilar.click(
+	if ( this.onSimilar ) {
 	
-	function(){
-	/*
-		var path = document.location.pathname ;
-		var args = document.location.search.substring(1).split('&');
-
-		argsParsed = {};
-
-		for (i=0; i < args.length; i++)
-		{
-    		arg = unescape(args[i]);
-
-		    if (arg.indexOf('=') == -1)
-    		{
-        		argsParsed[arg.trim()] = true;
-    		}
-    		else
-    		{
-		        kvp = arg.split('=');
-        		argsParsed[kvp[0].trim()] = kvp[1].trim();
-		    }
-		}
-
+		var findSimilar = $('<a/>', {text: "Find similar", href: "javascript:void(0);"}).appendTo(header) ;
 	
-		window.location.href = path + '?idx=' + argsParsed['idx'] + '&mode=vis' + '&s=' + thumb.doc.id ;
-		*/
-		that.onSimilar(thumb.doc.id) ;
-		return false ;
-	}) ;
+		findSimilar.click(
+	
+		function(){
+			that.onSimilar(thumb.doc.id) ;
+			return false ;
+		}) ;
+	}
 	
 	$('.media-preview', tooltip).remove() ;
 	var tooltipContents = $('<div/>', { "class": "media-preview", "id": mediaType  }).appendTo(tooltip) ;
@@ -271,7 +253,12 @@ p.renderContents = function(tooltip, thumb, mediaType)
 		var slideContainer = $('<a/>', { "class": "slides-container", css: { width: tooltip.width() }, "href": "javascript:void(0)"})
 		.appendTo(slideShow)
 		.click(function() {
-				that.renderDocument(thumb.doc, mediaType) ;
+				if ( that.onClick ) {
+					that.onClick(thumb.doc, mediaType) ;
+				
+				}
+				else
+					that.renderDocument(thumb.doc, mediaType) ;
 				return false ;
 		}) ;		
 		
@@ -354,7 +341,14 @@ p.renderContents = function(tooltip, thumb, mediaType)
 			var audioRdr = new AudioRenderer(anim, urlMp3, urlOgg, urlImg, media.url, "flower", thumb.doc.startTime) ;
 			
 			$("#audiovis", anim).click(function() {
-				that.renderDocument(thumb.doc, mediaType) ;
+				if ( that.onClick ) {
+					that.onClick(thumb.doc, mediaType) ;
+				
+				}
+				else
+					that.renderDocument(thumb.doc, mediaType) ;
+					
+				return false ;
 			}) ;
 			
 			

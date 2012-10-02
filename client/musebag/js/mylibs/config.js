@@ -156,7 +156,7 @@ define("mylibs/config",
             $(".tags").html(html);
             
             //Initializes the tagging system
-            tags.init();
+            tags.init(constants);
             //Get tokens and load them as auto suggestions for the user
             var tokens = tags.getTokens();
             $(".token-input-list-isearch").remove();

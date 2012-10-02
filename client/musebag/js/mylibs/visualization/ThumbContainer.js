@@ -29,11 +29,26 @@ ThumbContainer = function(containerDiv, data, options, ctx) {
 	if ( options.navMode )
 		this.navMode = options.navMode ;
 		
+	if ( options.navBarMode )
+	{
+		if ( options.navbarMode == "hidden") this.navBarMode = ThumbContainer.NAVBAR_HIDDEN ;
+		else if ( options.navbarMode == "fixed" ) this.navBarMode = ThumbContainer.NAVBAR_FIXED ;
+		else if ( options.navbarMode == "infinite" ) this.navBarMode = ThumbContainer.NAVBAR_INFINITE ;
+	}
+	
+	if ( options.findSimilar === false )
+		this.findSimilarCallback = null ;
+	else
+		this.findSimilarCallback = this.findSimilar ;
+		
 	if ( options.feedback )
 		this.feedback = options.feedback ;
 		
 	if ( options.documentPreview )
 		this.docPreview = options.documentPreview ;
+		
+	if ( options.showMenu != 'undefined')
+		this.showMenu = options.showMenu ;
 		
 	this.containerDiv = containerDiv ;	
 
@@ -91,6 +106,8 @@ p.navBar = null ;
 p.menuBar = null ;
 p.thumbRenderer = null ;
 p.navMode = null ;
+p.showMenu = true ;
+p.findSimilarCallback = null ;
 
 
 
@@ -126,7 +143,7 @@ p.createCanvas = function()	{
 	
 	// add menu bar
 	
-	if ( ThumbContainer.menuItems.length > 0 ) 
+	if ( ThumbContainer.menuItems.length > 0 && this.showMenu ) 
 	{
 		var mb = $("<div/>", { 	
 					  css: { 	"position": "absolute", 	
@@ -768,7 +785,7 @@ p.createThumbnail = function(i, x, y, sw, tclass)
     });
 	
 	// use the thumbRenderer to actually render the item in the box
-	this.thumbRenderer.render(item, imgOut, { viewport: this.thumbViewport, selected: this.ctx.filterBar.modalities(), modalities: 			this.ctx.modalities, hover: (this.navMode=='browse')?true:false, onSimilar: this.findSimilar, docPreview: this.docPreview }) ;
+	this.thumbRenderer.render(item, imgOut, { viewport: this.thumbViewport, selected: this.ctx.filterBar.modalities(), modalities: 			this.ctx.modalities, hover: (this.navMode=='browse')?true:false, onSimilar: this.findSimilarCallback, docPreview: this.docPreview, onClick: this.onClick }) ;
 	
 	
 	
@@ -796,7 +813,6 @@ p.redraw = function(contentWidth, contentHeight)
 		var sh = ( this.navBarMode != ThumbContainer.NAVBAR_HIDDEN ) ? (contentHeight - ThumbContainer.navBarSize - m ) : contentHeight - m ;	
 		var sw = contentWidth - m ;	
 
-
 		var x = m, y = m ;	
 		var r = 0, c = 0 ;	
 		
@@ -809,6 +825,7 @@ p.redraw = function(contentWidth, contentHeight)
 			itemCount++ ;
 		}
 			
+		if ( itemCount == 0 ) return ;
 			
 		var nc = Math.floor(sw/of) ;	
 		//var nr = Math.floor(sh/of) ;	
@@ -817,7 +834,7 @@ p.redraw = function(contentWidth, contentHeight)
 		this.pageCount = nr * nc ;	
 		this.offset = this.pageCount * Math.floor(this.offset / this.pageCount) ;	
 
-		if ( this.pageCount == 0 ) return ;	
+		
 
 	//	for( var i=this.offset ; i<Math.min(this.offset + this.pageCount, this.thumbs.length) ; i++ )
 		for( var i=0 ; i<this.thumbs.length ; i++ )		
@@ -853,7 +870,6 @@ p.redraw = function(contentWidth, contentHeight)
 	else if ( this.mode == ThumbContainer.LIST_MODE )	
 	{	
 		
-		
 		// compute layout	
 		
 		var m = ThumbContainer.margin ;	
@@ -865,8 +881,6 @@ p.redraw = function(contentWidth, contentHeight)
 		var nr = Math.floor(sh/of) ;	
 		this.pageCount = Math.floor(sh/of) ;
 		this.offset = this.pageCount * Math.floor(this.offset / this.pageCount) ;	
-
-		if ( this.pageCount == 0 ) return ;	
 
 		var x = m, y = m ;	
 		var r = 0, c = 0 ;	
@@ -880,6 +894,7 @@ p.redraw = function(contentWidth, contentHeight)
 			itemCount++ ;
 		}
 			
+		if ( itemCount == 0 ) return ;
 
 		for( var i=this.offset ; i<Math.min(this.offset + this.pageCount, this.thumbs.length) ; i++ )	
 		{	
@@ -1112,7 +1127,7 @@ p.showTimeline = function()
 		iconDiv.style.width = iconData.width + "px" ;
 		iconDiv.style.height = iconData.height + "px" ;
 		
-		obj.thumbRenderer.render(iconData.data, $(iconDiv), { viewport: $(this._eventLayer), selected: obj.ctx.filterBar.modalities(), modalities: obj.ctx.modalities, onSimilar: obj.findSimilar, docPreview: obj.docPreview }) ;
+		obj.thumbRenderer.render(iconData.data, $(iconDiv), { viewport: $(this._eventLayer), selected: obj.ctx.filterBar.modalities(), modalities: obj.ctx.modalities, onSimilar: obj.findSimilarCallback, docPreview: obj.docPreview, onClick: obj.onClick }) ;
 		//iconDiv.appendChild(img);
     
 		//if ("tooltip" in commonData && typeof commonData.tooltip == "string") {
@@ -1273,7 +1288,7 @@ p.showTimeline = function()
 	//iconDiv.style.width = iconData.width + "px" ;
 	//	iconDiv.style.height = iconData.height + "px" ;
 		
-	obj.thumbRenderer.render(iconData.data, $(iconStackDiv), { viewport: $(this._eventLayer), selected: obj.ctx.filterBar.modalities(), modalities: obj.ctx.modalities, square: true, onSimilar: obj.findSimilar, docPreview: obj.docPreview }) ;
+	obj.thumbRenderer.render(iconData.data, $(iconStackDiv), { viewport: $(this._eventLayer), selected: obj.ctx.filterBar.modalities(), modalities: obj.ctx.modalities, square: true, onSimilar: obj.findSimilarCallback, docPreview: obj.docPreview, onClick: obj.onClick }) ;
 		
    // iconStackDiv.innerHTML = "<div style='position: relative'></div>";
     this._eventLayer.appendChild(iconStackDiv);

@@ -1425,6 +1425,10 @@ div.jqmNotice .jqmClose {
 	text-decoration: none;
 }
 
+
+.itemrec .ui-dialog-titlebar {display:none}
+
+
 .ui-icon-method-classic {
     background-image: url("../img/ui-icon-method-classic.png") !important;
 }

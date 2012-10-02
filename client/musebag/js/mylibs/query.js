@@ -86,6 +86,7 @@ define("mylibs/query", ["mylibs/config", "mylibs/results"], function(config, res
           queryItem.Name     = queryToken.attr('alt');
           queryItem.Content  = queryToken.attr('src');
 		      queryItem.Token    = queryToken.attr('data-token') ;
+		      queryItem.Url = queryToken.attr('data-url');
 		  
           console.log('found file item with name ' + queryItem.Name);
           queryJson.fileItems.push(queryItem);

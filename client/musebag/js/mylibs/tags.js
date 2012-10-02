@@ -2,11 +2,116 @@
 * Class to represent the user tags
 */
 
-define("mylibs/tags", function(){
+define("mylibs/tags", ["js/mylibs/visualization/ThumbContainer.js"], function(config){
   
   var tags = []; 
+  var config = {} ;
+  var recItemCount = 0 ;
   
-  var init = function() {  
+  var fetchRecommendedMedia = function(tag, callback) {
+  
+  		var mqfUrl = config.queryFormulatorUrl || 'query' ;
+  		
+  		mqfUrl += "&total=5&cls=1&tr=rand" ;
+	  
+		var now = new Date();
+		 
+		var query = { 
+			emotion: false, 
+			location: false, 
+			bluetooth: false, 
+			tags: [tag],
+		 	datetime  : now.getUTCFullYear() + '-' + ((now.getUTCMonth()+1) < 10 ? '0' + (now.getUTCMonth()+1) : (now.getUTCMonth()+1)) + '-' + (now.getUTCDate() < 10 ? '0' + now.getUTCDate() : now.getUTCDate()) + 'T' + (now.getUTCHours() < 10 ? '0' + now.getUTCHours() : now.getUTCHours()) + ':' + (now.getUTCMinutes() < 10 ? '0' + now.getUTCMinutes() : now.getMinutes()) + ':' + (now.getUTCSeconds() < 10 ? '0' + now.getUTCSeconds() : now.getUTCSeconds()) + '.000Z',
+		 	fileItems: [ {"Type":"Text","RealType":"Text","Name":"","Content":  tag }]
+		} ;
+				  
+    	$.ajax({
+    	    type: "POST",
+    	    crossDomain: true,
+    	    url:  mqfUrl,
+    	    contentType : "application/json; charset=utf-8",
+    	    dataType : "json",
+    	    data: JSON.stringify(query),
+    	    success: function(data) {
+    	      docs = [] ;
+		
+		  		for (var i=0 ; i<data.documentList.length ; i++ ) {
+  					var doc = data.documentList[i] ;
+		  			docs.push({ doc: doc }) ;
+			  	}
+
+    	     	callback(docs) ;
+    	    },
+    	    error: function(jqXHR, error, object) {
+    	      data = {error: "the server gave me an invalid result."}; 
+    	    },
+    	    complete: function() {
+    	      $.event.trigger( "ajaxStop" );
+    	    }
+    	});
+      
+  
+  };
+ 
+  
+  var clickHandler = function(doc, mtype) {
+  
+  	var media = null ;
+  	
+  	for(var i=0 ; i<doc.media.length ; i++ )
+	{
+		var mediaObj = doc.media[i] ;
+		if ( mediaObj.type == mtype ) {
+			media = mediaObj ;
+			break ;
+		}
+	}
+  	
+  	 var query = $('#query-field').val();
+  	  
+  	  //Create the token for the search bar
+	 var id = "recommendItem" + recItemCount;
+	 var token = "";
+      
+     if ( mtype == "ImageType" ) {
+     	token = '<img id="' + id + '" alt="" src="' + media.previews[0].url + '" ' +
+     		'class="picture" data-mode="ImageType" data-url="' + media.url + '" />';
+   	 }
+   	 else if ( mtype == "VideoType") {
+	   	 token = '<img id="' + id + '" alt="" src="' + media.previews[0].url + '" ' +
+     		'class="video" data-mode="VideoType" data-url="' + media.url + '" />';
+   	 
+   	 }
+   	 else if ( mtype == "Object3D") {
+	   	 token = '<img id="' + id + '" alt="" src="' + media.previews[0].url + '" ' +
+     		'class="3d" data-mode="Object3D" data-url="' + media.url + '" />';
+   	 
+   	 }
+   	 else if ( mtype == "SoundType" ) {
+   	 	token = '<audio controls="controls" id="' + id + '" ' + 
+   	 	'class="audio" data-mode="SoundType" data-url="' + media.url + '" >';
+   	 	   	 	
+   	 	for ( var i=0 ; i<media.previews.length ; i++ )
+        {
+        	var url = media.previews[i].url ;
+        	var format = media.previews[i].format ;
+        	
+			if (  (/audio/i).test(format) ) token += '<source src="' + url + '" type="' + format + '" />' ;
+        }
+   	 	
+   	 	token += '</audio>' ;
+   	 
+   	 }
+   	 
+
+      $("#query-field").tokenInput('add',{id: id,name: token});   
+      recItemCount ++ ;
+  
+  }
+  
+  var init = function(config_) {
+  
+  	config = config_ ;  
     
     //Formatting of the tags
     $('.tags a').each(function() {
@@ -18,10 +123,59 @@ define("mylibs/tags", function(){
     });
     
     $(".tags a").click(function() {
+    /*
       var tagText = $(this).text();
       var query = $('#query-field').val();
       //Recommended tags will get a special behaviour for search, unlike normal text input
       $("#query-field").tokenInput('add',{id: tagText,name: '<span class="Tag">' + tagText + '</span>'});    
+      */
+      
+      var tagText = $(this).text();
+      
+      var popup = $("<div/>").appendTo(document.body) ;
+      
+      var tagPos = $(this).offset() ;
+	  popup.dialog({
+		width: 400,
+		height: 120,
+		modal: true,
+		zIndex: 100,
+		closeOnEscape: true,
+		dialogClass: "itemrec",
+		position: [tagPos.left, tagPos.top+10],
+	    open: function ()
+        {
+        	var container = $(this) ;
+        	var that = this ;
+        	
+        	fetchRecommendedMedia(tagText, function(data) {
+      	
+      			var cont = $("<div/>", {css: {left: 0, right:0, top:10, bottom:10, position:"absolute", overflow: "hidden" }}).appendTo(container);
+      			var close = $("<a/>", { href:"javascript:void(0)", text: "close"}).appendTo(cont) ;
+        		var icons = $("<div/>", { css: { width: "100%", height: "100%"}}).appendTo(cont);
+        		
+        		
+        		close.click(function() {
+        			container.remove() ;
+        			return false ;
+        		
+        		}) ;
+        		
+        		if ( data.length == 0 ) 
+        			icons.html("<span>Sorry no recommendations</span>") ;
+        		else {
+        			var modalities = ["image", "3d", "video", "audio"] ;
+					var tc = new ThumbContainer(icons, data, {showMenu: false, navbarMode: "hidden", findSimilar:false, onClick: clickHandler}, { "modalities": modalities, filterBar: { "modalities": function() {return modalities;} }}) ;
+					tc.draw() ;
+				}
+        	}) ;
+        	
+        },     
+		close: function() {
+			//	docPreview.empty() ;
+			}
+		});
+      
       return false ;
     });
   };
