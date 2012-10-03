@@ -1,13 +1,22 @@
 define("mylibs/visualization/TagManager", [], function() {
 
-	var index, docs, queryId, filterTagUrl, sortedTagList = [] ;
+	var index, docs, queryId, filterTagUrl, sortedTagList = [], tagServerUrl ;
 			
 	var init = function(results_, options) {
 		
 		docs = results_.docs;
 		queryId = results_.queryId;
-		filterTagUrl = options.filterTagUrl || 'ptag/filterTags'  ;
-		storeItemUrl = options.resultItemUrl || options.filterTagUrl;
+
+		if ( options.tagServerUrl ) {
+			tagServerUrl = options.tagServerUrl ;
+		}
+		
+		filterTagUrl = options.filterTagUrl ||	tagServerUrl || 'ptag/filterTags'  ;
+		if ( tagServerUrl ) filterTagUrl += "&a=all" ;
+		
+		storeItemUrl = options.resultItemUrl || options.filterTagUrl || tagServerUrl ;
+		if ( tagServerUrl ) storeItemUrl += "&a=store" ;
+		
 		
 		load() ;
 	};
@@ -76,47 +85,62 @@ define("mylibs/visualization/TagManager", [], function() {
 	
 	var toggleRelevance = function(doc)
 	{
-    var data = {
-      "queryId" : queryId,  
-      "item" : {  
-        "id": doc.coid,
-        "tags" : doc.tags
-      }
-    };
+		if ( tagServerUrl )
+		{
+			var docid = doc.id ;
+		
+			var data = { "id": docid, "rel": (doc.relevant ? 'yes' : 'no')  } ;
+		
+			$.ajax({
+				type: 'GET',
+				url: tagServerUrl + '&a=rel',
+				data: data
+			});
+		}
+		else
+		{
+		    var data = {
+      			"queryId" : queryId,  
+			    "item" : {  
+		        "id": doc.coid,
+        		"tags" : doc.tags
+      		}
+    	};
     
-    if(doc.relevant) {
-      $.ajax({
-        type: "POST",
-        url:  storeItemUrl,
-        data: JSON.stringify(data),
-        contentType : "application/json; charset=utf-8",
-        dataType : "json",
-        success: function(data) {
-          console.log('Item stored, since it was marked relevant.');
-        },
-        error: function(jqXHR, error, object) {
-          console.log("Error:");
-          console.log(error);
-        }
-      });
-    } else {
-      $.ajax({
-        type: "DELETE",
-        url:  storeItemUrl,
-        data: JSON.stringify(data),
-        contentType : "application/json; charset=utf-8",
-        dataType : "json",
-        success: function(data) {
-          console.log('Item removed, since it was marked irrelevant.');
-        },
-        error: function(jqXHR, error, object) {
-          console.log("Error:");
-          console.log(error);
-        }
-      });
-    }
+    	if(doc.relevant) {
+	      $.ajax({
+        	type: "POST",
+	        url:  storeItemUrl,
+        	data: JSON.stringify(data),
+	        contentType : "application/json; charset=utf-8",
+        	dataType : "json",
+        	success: function(data) {
+          		console.log('Item stored, since it was marked relevant.');
+	        },
+        	error: function(jqXHR, error, object) {
+	          console.log("Error:");
+         	  console.log(error);
+        	}
+     	 });
+	    } else {
+    	  $.ajax({
+    	    type: "DELETE",
+    	    url:  storeItemUrl,
+    	    data: JSON.stringify(data),
+    	    contentType : "application/json; charset=utf-8",
+    	    dataType : "json",
+    	    success: function(data) {
+    	      console.log('Item removed, since it was marked irrelevant.');
+    	    },
+    	    error: function(jqXHR, error, object) {
+    	      console.log("Error:");
+    	      console.log(error);
+    	    }
+    	  });
+   	 }
 
-	};
+	}
+};
 
 	
 	var store = function(doc)
@@ -127,8 +151,8 @@ define("mylibs/visualization/TagManager", [], function() {
 		var data = { "id": docid, "tags": JSON.stringify(tags)  } ;
 		
 		$.ajax({
-			type: 'POST',
-			url: tagServerUrl, // + '&a=store',
+			type: 'GET',
+			url: storeItemUrl, // + '&a=store',
 			data: data
 		});
 	};
