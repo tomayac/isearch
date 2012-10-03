@@ -145,10 +145,12 @@ define("mylibs/profile", ["libs/modernizr.min"], function(){
       items = {};
     }
     
+     var historyServerUrl = profileServerUrl + "history";
+     
     //Send it to the server
     $.ajax({
       type: "POST",
-      url: "profile/history",
+      url: historyServerUrl,
       data: JSON.stringify(items),
       success: function(data) {
         //parse the result

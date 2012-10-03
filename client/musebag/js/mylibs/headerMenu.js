@@ -381,6 +381,47 @@ define("mylibs/headerMenu", [
         event.preventDefault();
         event.stopPropagation();
       });
+      
+      $('#user-registration').click(function(event) {
+	    	$.ajax({
+	    		type: "POST",
+    			url: config.constants.userRegisterServerUrl,
+    			success: function(data) {
+    			
+    				var frm = $('<div>').html(data) ;
+    				
+    				var onSumbit = function() {
+    					var fields = $(this).serialize();
+	    					
+    					$.ajax({
+    							type: 'POST',
+				    			url: config.constants.userRegisterServerUrl,
+				    			data: fields,
+   								success: function(data) {
+    								frm.html(data) ;
+    							
+    								$('form', frm).submit(onSumbit) ; 
+    							}
+    						}) ;			
+	    					
+						return false;
+	    			} ;
+    				    			
+	     			frm.dialog(
+	     					{ 	modal: true, 
+	     						title: "Registration", 
+	     						width: 800, 
+	     						height: 400,
+	     						autoOpen: false,
+                                maxHeight: 400,
+	     					}).dialog('open');
+	     					
+	     				$('form', frm).submit(onSumbit) ; 
+			    }
+			   
+		  });
+	  
+	  }) ;
     
       //Listen to keypress click to change settings
       $("#global-settings form").keypress(function(event) {
