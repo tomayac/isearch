@@ -817,16 +817,14 @@ p.redraw = function(contentWidth, contentHeight)
 		if ( itemCount == 0 ) return ;
 			
 		var nc = Math.floor(sw/of) ;	
-		//var nr = Math.floor(sh/of) ;	
-		var nr = Math.floor(itemCount/nc) ;
+		var nr = Math.floor(sh/of) ;	
 		
 		this.pageCount = nr * nc ;	
 		this.offset = this.pageCount * Math.floor(this.offset / this.pageCount) ;	
+	
 
-		
-
-	//	for( var i=this.offset ; i<Math.min(this.offset + this.pageCount, this.thumbs.length) ; i++ )
-		for( var i=0 ; i<this.thumbs.length ; i++ )		
+		for( var i=this.offset ; i<Math.min(this.offset + this.pageCount, itemCount) ; i++ )
+//		for( var i=0 ; i<this.thumbs.length ; i++ )		
 		{	
 			var item = this.thumbs[i] ;	
 			

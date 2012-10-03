@@ -307,7 +307,9 @@ define("mylibs/query",
       //Options to tell JQuery not to process data or worry about content-type
       cache: false,
       contentType: false,
-      processData: false
+      processData: false,
+      dataType: "text"
+
     });
   };
 

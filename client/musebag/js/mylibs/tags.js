@@ -2,15 +2,14 @@
 * Class to represent the user tags
 */
 
-define("mylibs/tags", ["js/mylibs/visualization/ThumbContainer.js", "mylibs/config"], function(config){
+define("mylibs/tags", ["mylibs/config", "js/mylibs/visualization/ThumbContainer.js"], function(config){
   
   var tags = []; 
-  var config = {} ;
   var recItemCount = 0 ;
   
   var fetchRecommendedMedia = function(tag, callback) {
   
-  		var mqfUrl = config.queryFormulatorUrl || 'query' ;
+  		var mqfUrl = config.constants.queryFormulatorUrl || 'query' ;
   		
   		mqfUrl += "&total=5&cls=1&tr=rand" ;
 	  
@@ -109,10 +108,8 @@ define("mylibs/tags", ["js/mylibs/visualization/ThumbContainer.js", "mylibs/conf
   
   }
   
-  var init = function(config_) {
+  var init = function() {
   
-  	config = config_ ;  
-    
     //Formatting of the tags
     $('.tags a').each(function() {
       var $thisTag = $(this);
@@ -120,7 +117,7 @@ define("mylibs/tags", ["js/mylibs/visualization/ThumbContainer.js", "mylibs/conf
       $thisTag.css('font-size', fontSize + 'em');
       $thisTag.css('margin-right', '0.4em');
     });
-    
+    /*
     $(".tags a").hover(function() {
       var itemHtml = '<a href="http://www.google.com"><img src="img/fake/11.png" /></a>'
                    + '<a href="http://www.google.com"><img src="img/fake/12.png" /></a>'
@@ -128,7 +125,7 @@ define("mylibs/tags", ["js/mylibs/visualization/ThumbContainer.js", "mylibs/conf
       
       $('#itemRecom span').html(itemHtml);
       
-      /** @TODO: Bind click events on links in item recommendation HTML */
+      // @TODO: Bind click events on links in item recommendation HTML 
       
       var offset = $(this).offset();
       var newPos = {
@@ -149,6 +146,7 @@ define("mylibs/tags", ["js/mylibs/visualization/ThumbContainer.js", "mylibs/conf
     function(){
       $('#itemRecom').delay(400).fadeOut(200);
     });
+        */
         
     $(".tags a").click(function() {
 

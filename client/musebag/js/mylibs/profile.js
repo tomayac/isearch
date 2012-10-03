@@ -175,7 +175,7 @@ define("mylibs/profile", ["libs/modernizr.min"], function(){
   var getHistory = function(callback) {
     var userId = get('userId');     
     
-    var historyServerUrl = profileServerUrl + "/history";
+    var historyServerUrl = profileServerUrl + "history";
     
     if(userId) {
       //Ask for user search history
