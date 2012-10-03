@@ -148,9 +148,7 @@ var fetchImage = function(query, geo, page, callback) {
   
   //Replace spaces
   var query = query.replace(/\s/g,'+');
-  //Store if we search for images with geolocation
-  var geo = geo;
-  
+
   //The array for storing the results
   var results = new Array();
   //maximum count of images to retrieve
@@ -160,8 +158,9 @@ var fetchImage = function(query, geo, page, callback) {
     + 'method=flickr.photos.search'
     + '&api_key=' + apiKey
     + '&text=' + query;
-  
-  if(geo == 1) {
+
+  //Check if we search for images with geolocation
+  if(geo === 1) {
     searchURL += '&has_geo=1';
   }
   

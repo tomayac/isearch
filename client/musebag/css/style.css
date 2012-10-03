@@ -232,6 +232,40 @@ button {
   font-weight: bold;
 }
 
+.chromeframe { 
+  max-width: 500px; 
+  _width: 500px; 
+  padding: 10px 20px 40px; 
+  border: 1px solid #b3b3b3; 
+  border-radius: 4px; 
+  margin: 10% auto 20%; 
+  box-shadow: 0 1px 10px #a7a7a7, inset 0 1px 0 #fff; 
+  background: #fcfcfc;
+  height: 50%;
+}
+
+.chromeframe .container {
+  max-width: 380px; 
+  _width: 380px; 
+  margin: 2em auto 1em auto;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 1.6em; 
+  line-height: 1.4; 
+  color: #737373; 
+  -webkit-text-size-adjust: 100%; 
+  -ms-text-size-adjust: 100%;
+  height: 100%;
+}
+
+.chromeframe .container h1 {
+  margin-bottom: 1em;
+}
+
+.chromeframe .container h3 {
+  margin-bottom: 1em;
+}
+
+
 #container {
 	/**
 	 * Triantafillos: changed max-width from 920 to 1240px
@@ -251,18 +285,6 @@ header h1 {
 /* Make the logo scale */
 header img {
 	width: 100%;
-}
-
-nav {
-	width: 100%;
-	overflow: hidden;
-	position: relative;
-	background-color: #e0e0e0;
-	border-top: 1px solid #b1b1b1;
-	border-bottom: 1px solid #b1b1b1;
-	-moz-box-shadow: 0 2px 6px #ccc;
-	-webkit-box-shadow: 0 2px 6px #ccc;
-	box-shadow: 0 2px 6px #ccc;
 }
 
 #messages {
@@ -493,6 +515,8 @@ nav {
   width: 22px;
   height: 22px;
   background-color: #fff;
+  float: right;
+  margin-top: 1px;
 }
 
 .settings-panel .checkbox.checked {
@@ -597,45 +621,114 @@ nav {
  * Begin of query input and assembling styles
  */
 
+#resultLogo {
+  display: inline-block;
+  position: relative;
+  margin-left: 5%; 
+}
+
+#resultLogo img {
+  height: 5em;
+}
+
+#queryContainer {
+  position: relative;
+}
+
+#queryUseCase {
+  list-style-type: none;
+  margin: 0 auto;
+  width: 90%;
+  position: relative;
+  top: 1px;
+}
+
+#queryUseCase li {
+  display: inline-block;
+  border: 1px #CCC solid;
+  box-shadow: 0px 0px 2px 2px rgba(99, 99, 99, 0.2);
+  padding: 5px 10px;
+  margin: 0 5px 0 0;
+  background-color: #fff;
+}
+
+#queryUseCase li a {
+  text-decoration: none;
+}
+
+#queryUseCase li.enabled,
+#queryUseCase li:hover {
+  background-color: #E0E0E0;
+  font-weight: bold;
+  
+  position: relative;
+  z-index: 2;
+  box-shadow: 0px -3px 2px -1px rgba(99, 99, 99, 0.2)
+}
+
 #query {
 	position: relative;
+  margin-bottom: 30px;
+  padding: 0 0 10px 0;
 }
 
-#query input[type=button] {
+#query.over{
+  border: 0;
+}
+
+#query input[type="submit"] {
+  display: none;
+}
+
+#query-submit {
 	display: block;
 	position: absolute;
-	top: 3px;
-	right: 5%;
-	height: 3.2em;
+  top: 0;
+  /*bottom: 0;*/
+  right: 4.7%;
 	border: 1px #CCC solid;
-	width: 10%;
 	background-color: #e0e0e0;
+  width: 100px;
+  height: 3.8em;
+  margin: 0 0 10px 0;
+  font-weight: bold;
+  z-index: 2;
 }
 
-#query input[type=button]:hover {
-	background-color: #838383;
-	color: #fff;
+#query-submit:hover {
+	border: 1px solid #999;
+  background-color: #CFA;
+  color: #222;
+}
+
+#query-submit.resultView {
+  top: 0.5em;
+  right: 4%;
 }
 
 /* Token input styles for query input */
 #query ul.token-input-list-isearch {
+  position: relative;
   overflow: hidden;
   cursor: text;
-  z-index: 999;
+  z-index: 1;
   padding: 0;
   background-color: #fff;
   list-style-type: none;
   clear: left;
   padding: 0.2em;
-  margin: auto;
-  margin-bottom: 1em;
-  width: 78%;
-  padding-right: 11%;
-  padding-left: 1%;
-  margin: 1em auto;
+  margin: 0 auto;
+  width: 90%;
   height: 3.2em;
   border: 1px #CCC solid;
   box-shadow: 0px 0px 2px 2px rgba(99, 99, 99, 0.2);
+}
+
+#query ul.token-input-list-isearch.resultView {
+  display: inline-block;
+  width: 80%;
+  margin: 0.5em auto 0 2.5%;
+  vertical-align: top;
 }
 
 #query ul.token-input-list-isearch li input {
@@ -796,11 +889,37 @@ div.token-input-dropdown-isearch ul li.token-input-selected-dropdown-item-isearc
 
 /* query assembling menu styles */
 
+nav {  
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background-color: #e0e0e0;
+  border-top: 1px solid #b1b1b1;
+  border-bottom: 1px solid #b1b1b1;
+  -moz-box-shadow: 0 2px 6px #ccc;
+  -webkit-box-shadow: 0 2px 6px #ccc;
+  box-shadow: 0 2px 6px #ccc;
+}
+
+nav.resultView {
+  width: 80%;
+  margin: -0.3em auto 0 15.5%;
+  border: 1px solid #b1b1b1;
+  border-top: none;
+  
+  background-color: #e0e0e0;
+}
+
 nav ul {
 	padding: 0 20px;
 	height: 70px;
-	width: 630px; /* 630 + 2*20 = 470 <= real width of our menu */
+	width: 630px; /* 630 + 2*20 = 670 <= real width of our menu */
 	margin: auto;
+	text-align: center;
+}
+
+nav.resultView ul {
+  width: auto;
 }
 
 nav li {
@@ -858,6 +977,25 @@ nav a img {
 	height: 46px;
 }
 
+#menuTrigger {
+  display: block;
+  position: relative;
+  z-index: 0;
+  
+  width: 10%;
+  height: 2em;
+  
+  margin: -0.3em auto 1em 50%;
+  padding: 4px;
+  
+  background-color: #e0e0e0;
+  box-shadow: 0 1px 3px 0px #C1C1C1;
+  border: 1px solid #b1b1b1;
+  border-top: none;
+
+  font-size: 90%;
+}
+
 .uploading a {
 	background-color: red;
 	background-image: none;
@@ -877,6 +1015,11 @@ nav a img {
 .panel.visible {
 	display: block;
 }
+
+.panel.resultView {
+  width: 80%;
+  margin: -2px auto 0 15%;
+} 
 
 .panel .instruction {
 	text-align: center;
@@ -921,6 +1064,8 @@ nav a img {
 	background-image: -ms-linear-gradient(top, #b5b5b5, #575757);
 	background-image: -o-linear-gradient(top, #b5b5b5, #575757);
 	background-image: linear-gradient(top, #b5b5b5, #575757);
+	
+	padding: 10px 15px;
 }
 
 .panel button:active {
@@ -937,7 +1082,7 @@ nav a img {
 .panel footer {
 	border-top: 1px solid #aeaeae;
 	border-bottom: 1px solid #aeaeae;
-	background-color: #d3d3d3;
+	background-color: #e0e0e0;
 	text-align: center;
 	color: #686868;
 	margin-top: -5px;
@@ -1009,6 +1154,37 @@ nav a img {
 	text-align: center;
 }
 
+.tags a {
+  display: inline-block; 
+}
+
+#itemRecom {
+  position: absolute;
+  display: none;
+  background: #fff;
+  
+  border: 1px solid #B1B1B1;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px #CCC; 
+  
+  min-width: 100px;
+  min-height: 80px;
+  z-index: 20;
+  padding: 2px 4px;
+}
+
+#itemRecom .pointer {
+  position: absolute;
+  bottom: -13px;
+  left: 46%;
+}
+
+#itemRecom span img {
+  width: 80px;
+  border: none;
+  margin: 3px;
+}
+
 footer {
 	font-style: italic;
 	color: #888;
@@ -1040,7 +1216,7 @@ footer {
 }
 
 .bottom-overlay p {
-7  font-weight: bold;
+  font-weight: bold;
   line-height: 2em;
   padding: 0em 1em;
 }
@@ -1154,12 +1330,6 @@ footer {
 }
 
 /* --------------- */
-
-
-#restart {
-	float: right;
-	margin-right:4.75em;
-}
 
 /**
  * UIIFace styles

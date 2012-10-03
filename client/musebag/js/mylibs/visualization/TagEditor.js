@@ -93,7 +93,7 @@ p.addTag = function(tag)
 		
 		this.tags[tag] = 2 ;
 	}
-}
+};
 	
 
 

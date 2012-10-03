@@ -22,11 +22,14 @@ define("mylibs/results",
 
 	var visualize = function() 
 	{
-		$('#visualization-container').remove() ;
-    
-		//Create the container for visualization
-		var visualizationContainer = $('<div />').attr('id', 'visualization-container').appendTo('#main');
 		
+	  if($('#visualization-container').length > 0) {
+	    $('#visualization-container').remove() ;
+	  }
+    
+	  //Create the container for visualization
+		var visualizationContainer = $('<div />').attr('id', 'visualization-container').appendTo('#main');
+	  
 		//console.log("Config visOptions: ", config.constants.visOptions);
     		
 		if (config.constants.visOptions.method == "mst") {

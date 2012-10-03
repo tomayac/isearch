@@ -116,8 +116,7 @@ define("mylibs/visualization/FilterBar",  ["mylibs/location"],
 			for( tag in this.tags )	{	
 				if ( this.tags[tag] == 2 ) 	filterTags.push(tag) ;
 			}
-			
-			
+						
 			filter() ;
 			rerank() ;
 			
@@ -174,10 +173,7 @@ define("mylibs/visualization/FilterBar",  ["mylibs/location"],
 				doc.filtered = filtered ;
 			}
 			
-		}
-		
-		
-		
+		}	
 	};
 	
 	var geodist = function(lat1, lon1, lat2, lon2)

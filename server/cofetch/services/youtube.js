@@ -67,8 +67,6 @@ var fetchVideo = function(query, geo, page, callback) {
   
   //Replace spaces
   var query = query.replace(/\s/g,'+');
-  //Store if we search for videos with geolocation
-  var geo = geo;
   
   //The array for storing the results
   var results = new Array();
@@ -84,10 +82,12 @@ var fetchVideo = function(query, geo, page, callback) {
     + '&v=2'
     + '&alt=json';
   
-  if(geo) {
+  //check if we search for videos with geolocation
+  if(geo === 1) {
     //If we want geotagged videos
     youtubeURL += '&location=';
   }
+  //console.log(youtubeURL);
   
   restler
   .get(youtubeURL, {

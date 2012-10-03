@@ -3,18 +3,18 @@
  */
 define("mylibs/cofind",
   [
+    "mylibs/query",
+    "mylibs/profile",
     "libs/modernizr.min",
     "libs/jquery.hoverIntent.min",
-    //HACK: 2 versions of now.js (conflicts with libs/now.js)
-    //TODO: check which one is needed and resolve conflicts and use only one
     "/nowjs/now.js",
     "order!js/libs/jquery-ui-1.8.17.custom.min.js",
-    "libs/jquery.ui.touch-punch.min"
+    "order!libs/jquery.ui.touch-punch.min"
   ],
-  function(){
+  function(query,profile){
 
   //Static HTML snippets for CoFind interface
-  var buttonSnippet = '<li id="button-cofind-settings"><a href="#"><img src="img/collaborate.png" alt="Collaborate" title="Collaboration panel" style="max-height: 31px;"></a></li>';
+  var buttonSnippet  = '<li id="button-cofind-settings"><a href="#"><img src="img/collaborate.png" alt="Collaborate" title="Collaboration panel" style="max-height: 31px;"></a></li>';
   var settingSnippet = '<div class="settings-panel" id="cofind-settings"><form method="post" action="#" class="clearfix"><section class="setting"><label for="email">Invite a friend to collaborate:</label><input type="text" id="cofind-email" name="Email" value="Email" /></section></form></div>  ';
   var generalSnippet = '<div class="bottom-overlay" id="cofind-resultbasket"><p>Your result basket is empty.<br/>Drop here any results you like to share.</p></div>';
 
@@ -160,7 +160,7 @@ define("mylibs/cofind",
   var registerUser = function(email) {
 
     if(re.test(email)) {
-      console.log('Now.js register...');
+      console.log('CoFind register user...');
       var groups = options.groups;
       callFunction('registerUser',[email,groups]);
       return true;
@@ -173,7 +173,7 @@ define("mylibs/cofind",
   var inviteUser = function(email) {
 
     if(re.test(email)) {
-      console.log('Now.js login...');
+      console.log('CoFind invite user...');
       callFunction('inviteUser',[email]);
       return true;
     } else {
@@ -427,39 +427,20 @@ define("mylibs/cofind",
     }
 
     //Clean up the result basket for storage
-    var resultItems = resultBasket.items;
+    var resultItems = {
+      //add latest queryId stored in query module to identify resultBasket with query
+      'queryId' : query.queryId,
+      'items'   : new Array()
+    };
     //reduce items to only contain the CO id and tags
-    for(var index in resultItems) {
-      resultItems[index] = {
-          id   : resultItems[index].id,
-          tags : resultItems[index].tags
+    for(var index in resultBasket.items) {
+      resultItems.items[index] = {
+          id   : resultBasket.items[index].id,
+          tags : resultBasket.items[index].tags
       };
     }
-
-    //Send it to the server
-    $.ajax({
-      type: "POST",
-      url: "profile/history",
-      data: JSON.stringify(resultItems),
-      success: function(data) {
-        //parse the result
-        try {
-          data = JSON.parse(data);
-        } catch(e) {
-          data = {error: "The server gave me an invalid result."};
-        }
-        //check the result
-        if(data.error) {
-          console.log("Error during save history: " + data.error);
-          callback(false);
-        } else {
-          console.log("History data saved.");
-          callback(true);
-        }
-      },
-      dataType: "text",
-      contentType : "application/json; charset=utf-8"
-    });
+    
+    profile.updateHistory(resultItems,callback);
 
   };
 

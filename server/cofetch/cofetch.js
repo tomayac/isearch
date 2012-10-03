@@ -28,12 +28,12 @@ var handleFetch = function(keywords, category, index, automatic, callback) {
       
       //Check if content object is valid, e.g. contains files
       if(data.Files.length >= 1) {
-        //Add retrieved content object data to result array
-        result.push(data);
         console.log("Content Object Data fetched for query '" + keywords[fIndex] + "' with index " + fIndex + "!");
       } else {
         console.log("No Content Object Data could be fetched for query '" + keywords[fIndex] + "' with index " + fIndex + "!");
       }
+      //Add retrieved content object data to result array even if no data was found in the initial search
+      result.push(data);
       
       //Go for the next search keyword
       fIndex++;

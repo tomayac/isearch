@@ -246,9 +246,13 @@ var cofetchHandler = (function() {
   
   //-------------------------------------------------------------
   var setScraperData = function(index,populatePart) {
-
+    
 	  //Now, let's sort the files according to their type
 	  var files = scraperData[index].Files;
+	  
+	  if(files.length < 1) {
+	    alert("No content object data could be found for '" + scraperData[index].Name + "'. You can try to find data for this keyword by individually searching within the individual modality tabs.");
+	  }
 	  
 	  if(!populatePart) {
 	    
@@ -534,9 +538,19 @@ var cofetchHandler = (function() {
     var sound = sounds[index];
     
     //Update the preview
-    $('#sound-previewOGG').attr(
-      {'src': sound['PreviewOGG']}
-    );
+    if(!Modernizr.audio.mp3) {
+      //console.log('using ogg');
+      $('#sound-preview').attr({
+        'src': sound['PreviewOGG'],
+        'type' : 'audio/ogg'
+      });   
+    } else {
+      //console.log('using mp3');
+      $('#sound-preview').attr({
+        'src': sound['PreviewMP3'],
+        'type' : 'audio/mp3'
+      }); 
+    }
     
     //Let's prepare the array of changes
     var changes = [

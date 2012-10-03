@@ -42,7 +42,7 @@ var getTextContent = function(title, callback) {
       if(errorIndex > -1) {
         basetext = basetext.substring(0,errorIndex);
       }
-      
+
       var result = {
           "Type":"Text",
           "Name": textdata.parse.title,
@@ -91,12 +91,16 @@ var fetchText = function(query, queryClass, callback) {
   })
   .on('success', function(data) {
     try {
-      
       if(data.error) {
         callback(data.error.info, null);
         return;
       }      
       var articles = data[1] || new Array();
+      
+      if(articles.length < 1) {
+        callback(null, articles);
+        return;
+      }
       
       //Adjust the maxResults parameter if there aren't enough results
       if(articles.length < maxResults) {
@@ -125,7 +129,7 @@ var fetchText = function(query, queryClass, callback) {
         }
       };
       
-      for(var t=0; t < articles.length; t++) {
+      for(var t=0; t < maxResults; t++) {
         newArguments.push(
           initializeClosure(articles[t]),
           assembleClosure
@@ -136,7 +140,10 @@ var fetchText = function(query, queryClass, callback) {
     } catch (error) {
       callback(error, null);
     }
-  });
+  })
+  .on('error', function(data,response) {
+    callback(response.message, null);
+  });;
   
 };
 

@@ -37,6 +37,7 @@ var getSoundData = function(soundId, callback) {
           "URL": sounddata.serve + "?api_key=" + APIKey,
           "Preview": sounddata.waveform_m,
           "PreviewOGG": sounddata['preview-lq-ogg'],
+          "PreviewMP3": sounddata['preview-lq-mp3'],
           "Length": sounddata.duration,
           "Emotions": [],
           "Location": [],
@@ -68,8 +69,6 @@ var fetchSound = function(query, isGeo, page, callback) {
 
   //Replace spaces
   var query = query.replace(/\s/g,'+');
-  //Store if we search for sounds with geolocation
-  var isGeo = isGeo;
 
   //The array for storing the results
   var results = new Array();
@@ -85,7 +84,8 @@ var fetchSound = function(query, isGeo, page, callback) {
     + '&p=' + soundPage
     + '&api_key=' + APIKey
     + '&format=json';
-
+  
+  //Check if we search for sounds with geolocation
   if (isGeo === 1) {
     //If we want geotagged sounds
     freesoundURL += '&f=is_geotagged:true';
@@ -148,11 +148,11 @@ var fetchSound = function(query, isGeo, page, callback) {
       }
       step.apply(step, newArguments);
     } catch (error) {
-      callback(error, null);
+      callback(error, results);
     }
   })
   .on('error', function(data,response) {
-    callback(response.message, null);
+    callback(response.message, results);
   });
 };
 
