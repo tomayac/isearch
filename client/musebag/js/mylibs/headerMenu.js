@@ -136,7 +136,7 @@ define("mylibs/headerMenu", [
          messageCallback : sendNotifyMessage  
       };      
       if (cofind) cofind.setup(cofindOptions);
-      
+
       //get user tags from pTag component
       tags.setUserTags(profile.get('userId'));
       

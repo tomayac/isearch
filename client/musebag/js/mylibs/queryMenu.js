@@ -516,11 +516,27 @@ define("mylibs/queryMenu",
 
           Wami.setUploadCallback(function(data){
             var fileInfo = JSON.parse(data[0]);
-            query.addItems(fileInfo,query.types.Audio);
+            var id = query.addItems(fileInfo,query.types.Audio);
+           
+            
+           	//set the appropriate data tags for the html element
+      			var ele = $('#' + id) ;
+      
+      			ele.removeAttr("src") ;
+      			ele.attr("data-subtype", "recording") ;
+      			
+      			for ( var i=0 ; i<fileInfo.path.length ; i++ )
+      			{
+      				var url = fileInfo.path[i].url ;
+      				var mime = fileInfo.path[i].mime ;
+      
+      				$('<source/>', { src: url, type: mime }).appendTo(ele) ;
+      			}
+			
             pictureIcon.removeClass('uploading');
             reset();
-          });
-
+          });         
+		  
           if($(this).text() === "Start") {
             $(this).text("Stop") ;
             Wami.startRecording(config.constants.fileUploadServer);
@@ -540,6 +556,9 @@ define("mylibs/queryMenu",
           events : 'drop',
           callback : function(event){
             rhythmIcon.addClass('uploading');
+            event.originalEvent.extra = {
+              'subtype' : query.subtypes.Rhythm
+            };
             query.addItems(event.originalEvent,query.types.Audio,function(fileInfo) {
               rhythmIcon.removeClass('uploading');
             });
@@ -549,7 +568,12 @@ define("mylibs/queryMenu",
 
         //Invisible file input
         $('#rhythmUpload').change(function(event) {
-
+          //Jonas: added extra meta data to the event object, as this
+          //makes it easier to use the data also for the creation of the html token
+          event.extra = {
+            'subtype' : query.subtypes.Rhythm
+          };
+            
           query.addItems(event,query.types.Audio,function(fileInfo) {
             rhythmIcon.removeClass('uploading');
           });
@@ -709,9 +733,26 @@ define("mylibs/queryMenu",
           Wami.startRecording(config.constants.fileUploadServer) ;
         } else {
           Wami.setUploadCallback(function(data){
-            console.log(data);
-            query.addItems(JSON.parse(data[0]),query.types.Audio);
+          
+            var fileInfo = JSON.parse(data[0]);
+            
+            var id = query.addItems(fileInfo,query.types.Audio);
+                
+                       
+           	//set the appropriate data tags for the html element
+			var ele = $('#' + id) ;
 
+			ele.removeAttr("src") ;
+			ele.attr("data-subtype", "rhythm") ;
+			
+			for ( var i=0 ; i<fileInfo.path.length ; i++ )
+			{
+				var url = fileInfo.path[i].url ;
+				var mime = fileInfo.path[i].mime ;
+
+				$('<source/>', { src: url, type: mime }).appendTo(ele) ;
+			}
+            
             reset();
           });
 
@@ -977,8 +1018,20 @@ define("mylibs/queryMenu",
         }
       };
       
+      profile.set('settings',{'useCase' : config.constants.queryOptions.useCase});
+      
       //This is more or less a fallback so that the page does not need to be reloaded
       //as soon as a user switches to another use case
+      
+      // Sotiris: I comment this out for the moment. I believe page reloading is unavoidable and simpler to implement
+      // also users may want to visit /music url directly
+      // Jonas: I comment it back again, as I refactored the whole use case switch system, you can now:
+      // 1. switch via url call in these ways:
+      //    1. localhost/[useCase] where [useCase] can be: music,furniture,video or nothing
+      //    2. localhost/uc[number].html where [number] can be: 1,3,6 or simply type localhost to get basic setup
+      //    3. localhost/?uc=uc[number] where [number] can be: 1,3,6
+      // 2. switch via the buttons without the need to reload, 
+      //    but if you think it's better to always reload, you can comment this out again
       $('#queryUseCase a').on('click', function(e){
         
         setOptionVisibility($(this).attr('href').substr(1));

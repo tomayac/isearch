@@ -239,6 +239,7 @@ define("mylibs/tags", ["mylibs/config", "js/mylibs/visualization/ThumbContainer.
           //Create the tag cloud html for the user interface and store the retrieved tags
           //setting up the token input
           for(var t=0; t < data.length; t++) {
+          	data[t][0] = data[t][0] + '';
             html += '<a href="#" data-rank="' + data[t][1] + '">' + data[t][0].replace(' ', '&nbsp;') + '</a>';
             tags.push(data[t][0]);
           }

@@ -139,9 +139,11 @@ var generateVideoLLDescriptors = function(fileInfo,extSessionId) {
  * visual words for the user to select from. 
  *  
  */
-var distributeFile = function(destinationUrl, callParams, fileInfo, callback) {
-  
+var distributeFile = function(callParams, fileInfo, callback) {
+
   var context = this;
+  //URL for forwarding the uploaded file to the multimodal query formulator
+  var destinationUrl = config.mqfPath + '/upload.php';
   
   fs.readFile(fileInfo.path, function (error, filedata) {
     if(error) {
@@ -150,14 +152,9 @@ var distributeFile = function(destinationUrl, callParams, fileInfo, callback) {
       return;
     }  
     //creating the call parameter
-    var callData = {
-        "fileName" : fileInfo.name,
-        "name"     : fileInfo.name, //for CERTH MQF
-        "fileSize" : fileInfo.size,
-        "fileType" : fileInfo.type,
-        "subtype"  : fileInfo.type, //for CERTH MQF
-        "files" : restler.file(fileInfo.path, fileInfo.type) //originally this property is called "file"
-    };
+    var callData = fileInfo;
+    callData['files'] = restler.file(fileInfo.path, fileInfo.type); //originally this property is called "file"
+    
     //add the additional call params
     for(var prop in callParams) {
       if(callParams.hasOwnProperty(prop)) {
@@ -827,10 +824,14 @@ var query = function(req, res) {
           data : JSON.stringify(data)
         })
         .on('complete', function(data) { 
-          //console.log(data);
+          
           try {
-            data = JSON.parse(data);
+            //Data cleaning
+            data = data.replace(/^\s+|\s+$/g, '').substring(data.indexOf('{')-1,data.lastIndexOf('}')+1);
+            //Data parsing
+            data = typeof data === 'object' ? data : JSON.parse(data);
           } catch(e) {
+            console.dir(e);
             data = {'error' : 'the server gave me an invalid result.'};
           }
           
@@ -867,9 +868,7 @@ var query = function(req, res) {
 var queryItem = function(req, res) {
 	
 	console.log("Queryitem function called...");
-
-	//Url for forwarding the uploaded file to the multimodal query formulator
-  var queryFormulatorURL = config.mqfPath + '/upload.php';
+	
   //Get the external service session id
   var sid = getExternalSessionId(req);
   //Get the actual queryId
@@ -891,6 +890,13 @@ var queryItem = function(req, res) {
 	  'host' : 'http://' + req.headers.host  
 	};
 	
+	//Create additional call parameter 
+  //Not used with CERTH MQF
+	var callParams = {
+	  "f": "storeQueryItem", 
+	  "session": sid
+	};
+	
 	//Check if we have a file item as query item
 	if(req.files.files) {
 	  
@@ -899,14 +905,22 @@ var queryItem = function(req, res) {
     //Set the temporary information about the uploaded file
     uploadItem['path'] = file.path;
     uploadItem['name'] = file.name; 
+    uploadItem['fileName'] = file.name; //For Exalead MQF
     uploadItem['type'] = file.type;
+    uploadItem['fileType'] = file.type; //For Exalead MQF
     uploadItem['size'] = file.size;
+    uploadItem['fileSize'] = file.size; //For Exalead MQF
+    
+    //add additional meta data to upload item
+    if(typeof req.body === 'object') {
+      for (var key in req.body) {
+        if(req.body.hasOwnProperty(key)) {
+          uploadItem[key] = req.body[key]; 
+        }
+      }
+    }
 	  
-	  distributeFile(queryFormulatorURL, 
-      {"f": "storeQueryItem", "session": sid}, //Not used with CERTH MQF
-      uploadItem, 
-      externalCallback
-    );
+	  distributeFile(callParams, uploadItem, externalCallback);
 	}
 	
 	//Check if we have sketch data as query item
@@ -916,11 +930,14 @@ var queryItem = function(req, res) {
     var dataBuffer = new Buffer(base64Data, 'base64');
     
     //Set the temporary information about the created file
-    uploadItem['path']    = tmpPath + "/" + req.body.name;
-    uploadItem['name']    = req.body.name; 
-    uploadItem['type']    = 'image/png';
-    uploadItem['subtype'] = req.body.subtype;
-    uploadItem['size']    = dataBuffer.length;
+    uploadItem['path']     = tmpPath + "/" + req.body.name;
+    uploadItem['name']     = req.body.name; 
+    uploadItem['fileName'] = req.body.name; //For Exalead MQF
+    uploadItem['type']     = 'image/png';
+    uploadItem['fileType'] = 'image/png'; //For Exalead MQF
+    uploadItem['subtype']  = req.body.subtype;
+    uploadItem['size']     = dataBuffer.length;
+    uploadItem['fileSize'] = dataBuffer.length; //For Exalead MQF
     
     fs.writeFile(uploadItem.path, dataBuffer, function(error) {
       if(error) {
@@ -929,12 +946,7 @@ var queryItem = function(req, res) {
         return;
       }
       
-      distributeFile(
-        queryFormulatorURL, 
-        {"f": "storeQueryItem", "session": sid}, //Not used with CERTH MQF
-        uploadItem, 
-        externalCallback
-      );
+      distributeFile(callParams, uploadItem, externalCallback);
     });
 	}
 	

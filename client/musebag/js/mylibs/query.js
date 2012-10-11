@@ -7,12 +7,19 @@ define("mylibs/query",
   ],
   function(config,results,loader) {
 
-  var queryTypes = {
+  var queryItemTypes = {
     'Text'   : 'Text',
     'Image'  : 'ImageType',
     'Video'  : 'VideoType',
     'Audio'  : 'SoundType',
     'Threed' : 'Object3D'
+  };
+  
+  var queryItemSubTypes = {
+    'Rhythm'   : 'rhythm',
+    'Sketch'   : 'sketch',
+    'Emotion'  : 'emotion',
+    'Location' : 'Location'
   };
 
   var allowedTypes = {
@@ -78,21 +85,21 @@ define("mylibs/query",
 
       //Add appropriate opening tags depending on the query item type
       switch(type) {
-        case queryTypes.Text  :
+        case queryItemTypes.Text  :
           //If an object is provided for text type, then meta data is added to the text
           //or overlay it with an provided image
           tokenHtml += data.image ? '<img src="' + data.image + '" title="' + data.text + '"' : '<span';
           break;
-        case queryTypes.Image :
-          tokenHtml += '<img src="' + (data.path ? data.path : '') + '" alt="' + data.name + '"';
+        case queryItemTypes.Image :
+          tokenHtml += '<img src="' + (data.path ? data.path : '') + '" alt="' + data.name + '" title="' + data.name + '"';
           break;
-        case queryTypes.Audio :
+        case queryItemTypes.Audio :
           tokenHtml += '<audio src="' + (data.path ? data.path : '') + '" title="' + data.name + '" controls="controls"';
           break;
-        case queryTypes.Video :
+        case queryItemTypes.Video :
           tokenHtml += '<video src="' + (data.path ? data.path : '') + '" title="' + data.name + '" controls="controls"';
           break;
-        case queryTypes.Threed:
+        case queryItemTypes.Threed:
           tokenHtml += '<canvas width="60" height="25" title="' + data.name + '"';
           break;
       }
@@ -107,19 +114,19 @@ define("mylibs/query",
       }
       //Add appropriate closing characters or tags
       switch(type) {
-        case queryTypes.Text  :
+        case queryItemTypes.Text  :
           tokenHtml += data.image ? ' />' : '>' + data.text + '</span>';
           break;
-        case queryTypes.Image :
+        case queryItemTypes.Image :
           tokenHtml += ' />';
           break;
-        case queryTypes.Audio :
+        case queryItemTypes.Audio :
           tokenHtml += '>No audio preview.</audio>';
           break;
-        case queryTypes.Video :
+        case queryItemTypes.Video :
           tokenHtml += '>No video preview.</video>';
           break;
-        case queryTypes.Threed:
+        case queryItemTypes.Threed:
           tokenHtml += '></canvas>"';
           break;
       }
@@ -143,7 +150,7 @@ define("mylibs/query",
       return false;
     }
 
-    if($queryItem.attr('data-type') === queryTypes.Image) {
+    if($queryItem.attr('data-type') === queryItemTypes.Image) {
       $queryItem.attr('alt',data.name);
     } else {
       $queryItem.attr('title',data.name);
@@ -178,7 +185,10 @@ define("mylibs/query",
       }
     }
   };
-
+  
+  // Sotiris: add extra object to pass in form data (used to designate that an uploaded audio file is a rhythm file)
+  // Jonas: moved extra information to individual file object, but also added it to the generic
+  // formData
   var uploadFile = function(file, id, callback) {
 
     //Create upload bar
@@ -196,6 +206,14 @@ define("mylibs/query",
       if(queryId) {
         formData.append('queryId', queryId);
       }
+      
+      //Check for extra meta information, based on data tags
+      for(var key in file) {
+        if(key.indexOf('data-') > -1) {
+          formData.append(key.replace('data-',''), file[key]) ;
+        }
+      }
+
     } catch(e) {
       console.error('Browser does not support the creation of FormData! Exiting...');
       return;
@@ -243,11 +261,13 @@ define("mylibs/query",
       }
 
       //Check if there's a need for special treatment of 3D content
-      if($('#' + id).attr('data-type') === queryTypes.Threed) {
+      if($('#' + id).attr('data-type') === queryItemTypes.Threed) {
         //for 3D first check if an preview image is available
         if(fileInfo.preview) {
           //draw the preview image on the 3D canvas
-          var context = $('#' + id).get(0).getContext('2d');
+          var canvas = $('#' + id).get(0) ;
+		      var context = canvas.getContext('2d');
+          
           if(context) {
             var img = new Image ;
             img.onload = function() {
@@ -304,7 +324,7 @@ define("mylibs/query",
       // Form data
       data: formData,
       //Options to tell JQuery not to process data or worry about content-type
-      cache: false,
+   //   cache: false,
       contentType: false,
       processData: false,
       dataType: "text"
@@ -325,20 +345,20 @@ define("mylibs/query",
    *             - It can represent a file information object which contains information about an
    *               already existing file
    *             - It can contain an event object including a files object which provide binary
-   *               data for uploading and generating query items.
+   *               data for uploading and generating query items. Further
    * @param type The type of the payload data for the element can be one of the types defined in field @reference types
    * @param callback a function which is called after the query item(s) are successfully generated
    *
    */
   var addItems = function(data,type,callback) {
-
+    
     //Basic vars for query item generation
     var id = 'queryItem' + itemCount;
     var tokenHtml = '';
 
     //a text item can be added directly via the token input...
     //no file upload needed
-    if(type === queryTypes.Text) {
+    if(type === queryItemTypes.Text) {
 
       //Generate token html for query item
       createItem(id,type,data);
@@ -358,21 +378,34 @@ define("mylibs/query",
         var files = [data];
       } else {
         //Data is an event object
-        var files = data.files || data.target.files || data.dataTransfer.files;
+        var files = data.files || data.target.files || data.dataTransfer.files;      
       }
 
       //Test if browser supports the File API
       if (typeof files !== 'undefined') {
         //iterate through the (uploaded) files
         for (var i=0; i < files.length; i++) {
+          if ( files[i]["data-subtype"] === "recording")
+          {
+          	 createItem(id,type,files[i]);
+          	 return id ;
+          }
           //test if current file is allowed to be uploaded
-          if(isAllowedExtension(files[i].name,type)) {
-
+          else if(isAllowedExtension(files[i].name,type)) {
+            //check if extra additional data is provided via file upload
+            //and add it to each file for html item creation
+            if(data.extra) {
+              for (var key in data.extra) {
+                if(data.extra.hasOwnProperty(key)) {
+                  files[i]['data-' + key] = data.extra[key]; 
+                }
+              }
+            }
             //Create the query item token for the search bar
             createItem(id,type,files[i]);
 
             //Use the file reader API to display the uploaded data before it was actually uploaded
-            if(type !== queryTypes.Threed && typeof FileReader !== 'undefined') {
+            if(type !== queryItemTypes.Threed && typeof FileReader !== 'undefined') {
 
               var dataToken = document.getElementById(id),
 
@@ -415,6 +448,8 @@ define("mylibs/query",
     if(typeof callback === 'function') {
       callback(files);
     }
+    
+    return id ;
   };
 
   var updateItem = function(id,event,type,callback) {
@@ -442,7 +477,7 @@ define("mylibs/query",
     var remainingInput = $(".token-input-list-isearch li input").val();
     //Tokenize remaining input
     if (remainingInput) {
-      addItems(remainingInput,queryTypes.Text);
+      addItems(remainingInput,queryItemTypes.Text);
     }
 
     //get all elements of the query
@@ -506,10 +541,10 @@ define("mylibs/query",
 
           queryItem.Type     = queryToken.attr('data-type');
           queryItem.RealType = queryToken.attr('data-subtype') || '';
-          queryItem.Name     = queryToken.attr('alt');
+          queryItem.Name     = queryToken.attr('title');
           queryItem.Content  = queryToken.attr('src');
-		      queryItem.Token    = queryToken.attr('data-token') ;
-		      queryItem.Url 	   = queryToken.attr('data-url');
+		      queryItem.Token    = queryToken.attr('data-token') || queryToken.attr('src');
+		      queryItem.Url 	   = queryToken.attr('data-url') || queryToken.attr('src');
 		  
           console.log('found file item with name ' + queryItem.Name);
           queryJson.fileItems.push(queryItem);
@@ -539,7 +574,7 @@ define("mylibs/query",
       //1. process file items
       for(var i in json.fileItems) {
        
-        if(json.fileItems[i].Type === queryTypes.Text) {
+        if(json.fileItems[i].Type === queryItemTypes.Text) {
           data = json.fileItems[i].Content;
         } else {
           data = { 
@@ -568,7 +603,7 @@ define("mylibs/query",
           'data-subtype' : 'Emotion'
         };
         //Generate token html for query item
-        createItem('queryItem' + itemCount,queryTypes.Text,data);
+        createItem('queryItem' + itemCount,queryItemTypes.Text,data);
         itemCount++;
       }
       
@@ -580,7 +615,7 @@ define("mylibs/query",
           'data-subtype' : 'Location'
         };
         //Generate token html for query item
-        createItem('queryItem' + itemCount,queryTypes.Text,data);
+        createItem('queryItem' + itemCount,queryItemTypes.Text,data);
         itemCount++;
       }
       
@@ -593,7 +628,7 @@ define("mylibs/query",
           'data-duration' : json.rhythm.duration
         };
         //Generate token html for query item
-        createItem('queryItem' + itemCount,queryTypes.Text,data);
+        createItem('queryItem' + itemCount,queryItemTypes.Text,data);
         itemCount++;
       }
     }
@@ -608,19 +643,19 @@ define("mylibs/query",
         var item = json.fileItems[i];
         var itemHtml = '';
         switch(item.Type) {
-          case queryTypes.Text  :
+          case queryItemTypes.Text  :
             itemHtml += '<p>' + item.Content + '</p>';
             break;
-          case queryTypes.Image :
+          case queryItemTypes.Image :
             itemHtml += '<img src="' + item.Content + '" alt="' + item.Name + '" data-type="' + item.Type + '"';
             break;
-          case queryTypes.Audio :
+          case queryItemTypes.Audio :
             itemHtml += '<audio src="' + item.Content + '" title="' + item.Name + '" controls="controls">No audio preview.</audio>';
             break;
-          case queryTypes.Video :
+          case queryItemTypes.Video :
             itemHtml += '<video src="' + item.Content + '" title="' + item.Name + '" controls="controls">No video preview.</video>';
             break;
-          case queryTypes.Threed:
+          case queryItemTypes.Threed:
             itemHtml += '<canvas width="60" height="25" title="' + item.Name + '"></canvas>';
             break;
         }
@@ -741,7 +776,8 @@ define("mylibs/query",
   };
 
   return {
-    types           : queryTypes,
+    types           : queryItemTypes,
+    subtypes        : queryItemSubTypes,
     queryId         : queryId,
     addItems        : addItems,
     updateItem      : updateItem,
