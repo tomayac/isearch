@@ -1,13 +1,13 @@
 define("mylibs/headerMenu", [
     "mylibs/config",
     "mylibs/profile",
-  /*  "mylibs/cofind",*/
+    "mylibs/cofind",
     "mylibs/tags",
+    "mylibs/query",
     "mylibs/loader",
     "libs/jquery.select-to-autocomplete"
   ],
-//  function(config, profile, cofind, tags, loader) {
-  function(config, profile, tags, loader) {
+  function(config, profile, cofind, tags, query, loader) {
     
     //Defines all header menu panels and generic functions to control them
     var panels = {
@@ -45,6 +45,49 @@ define("mylibs/headerMenu", [
         $("#messages").show(200);
       }
     }; 
+    
+    var setSearchHistory = function() {
+      //get user search history
+      profile.getHistory(function(history){
+        //Create history table
+        if(typeof history === 'object') {
+          
+          if(!history.historydata) {
+            return;
+          }
+          
+          var historyTable = '<table><tbody>';
+          
+          for(var index in history.historydata) {
+            var entry = history.historydata[index];
+            var historyQuery = JSON.parse(entry.query);
+            var queryDate = historyQuery.datetime.substr(0,historyQuery.datetime.lastIndexOf('T'));
+            
+            var entryHtml = '<tr><td>' + queryDate + '</td><td><ul class="token-input-list-isearch">';
+            entryHtml += query.getQueryHtml(historyQuery);
+            entryHtml += '</ul></td><td><button id="q-' + entry.queryId + '" data-index="' + parseInt(index) + '"><img src="img/search-icon.png" alt="use" title="Use this query for search..."></button></td></tr>';
+            historyTable += entryHtml;
+          } 
+        
+          console.dir(history);
+          historyTable += '</tbody></table>';
+          
+          $('#searchHistory').html(historyTable);
+          
+          $('#searchHistory button').off('click').on('click',function(e){
+            e.preventDefault();
+            try {
+              var entry = JSON.parse(history.historydata[$(this).attr('data-index')].query);
+              query.setQuery(entry);
+            } catch(e) {
+              console.error('Cannot set query because of invalid history query data.');
+            }
+            panels.profile.hide(config.constants.slideDownAnimationTime);
+            return false;
+          });
+        }
+      });
+    };
     
     var initSettingsPanel = function() {
      
@@ -92,20 +135,13 @@ define("mylibs/headerMenu", [
          panels          : panels,
          messageCallback : sendNotifyMessage  
       };      
-  //    if (cofind) cofind.setup(cofindOptions);
-  
-      //get user tags from pTag component
-      tags.getUserTags(profile.get('userId'));
-      //get user search history
-      profile.getHistory(function(history){
-        //Create history table
-        var historyTable = '<table><tr><th>Date</th><th>Query</th><th></th></tr>';
-        
-        
-        console.dir(history);
-        historyTable += '</table>';
-      });
+      if (cofind) cofind.setup(cofindOptions);
       
+      //get user tags from pTag component
+      tags.setUserTags(profile.get('userId'));
+      
+      setSearchHistory();
+          
       //init settings form based on user profile data
       initSettingsPanel();
       
@@ -184,13 +220,16 @@ define("mylibs/headerMenu", [
       
       var postData ;
 	  
-	  if ( config.constants.useOldAuthentication )
-	  {
-      	 postData = {email: panels.login.find("#email").val() || '',
-                         pw: panels.login.find("#pw").val()    || ''};
+  	  if ( config.constants.useOldAuthentication )
+  	  {
+      	 postData = {
+      	   'email': panels.login.find("#email").val() || '',
+           'pw'   : panels.login.find("#pw").val()    || ''
+         };
+         
+      } else {
+	       postData = {'token': token};
       }
-      else
-	      var postData = {token: token};
       
       //Send it to the server
       $.ajax({
@@ -320,7 +359,7 @@ define("mylibs/headerMenu", [
         } else {
           panels.hide(config.constants.slideDownAnimationTime);
           panels.settings.show(config.constants.slideDownAnimationTime);
-        $("#button-global-settings").addClass('active');
+          $("#button-global-settings").addClass('active');
           $("body").one("click", function() {
             panels.hide(config.constants.slideDownAnimationTime);
           });
@@ -331,6 +370,7 @@ define("mylibs/headerMenu", [
   
       panels.settings.click(function(event) {
         event.stopPropagation();
+        return false;
       });
       
       $("#button-login-settings").on('click touchstart',function(event){
@@ -358,14 +398,16 @@ define("mylibs/headerMenu", [
             panels.hide(config.constants.slideDownAnimationTime);
             panels.profile.show(config.constants.slideUpAnimationTime);
             $("#button-login-settings").addClass('active');
-            /*$("body").one("click", function() {
-              panels.hide(constants.slideDownAnimationTime);
-            });*/
+            $("body").on("click", function(e) {
+              if($(e.target).parents('div.settings-panel').length < 1 && !$(e.target).is('div.settings-panel')) {
+                panels.hide(config.constants.slideDownAnimationTime);
+                $("body").off("click");
+              }
+            });
           }
         }
         
-        event.stopPropagation();
-        
+        event.stopPropagation();     
         return false ;
       });
       
@@ -392,36 +434,34 @@ define("mylibs/headerMenu", [
     				
     				var onSumbit = function() {
     					var fields = $(this).serialize();
-	    					
+      					
     					$.ajax({
-    							type: 'POST',
-				    			url: config.constants.userRegisterServerUrl,
-				    			data: fields,
-   								success: function(data) {
-    								frm.html(data) ;
-    							
-    								$('form', frm).submit(onSumbit) ; 
-    							}
-    						}) ;			
-	    					
-						return false;
-	    			} ;
+    						type: 'POST',
+  			    		url: config.constants.userRegisterServerUrl,
+  			    		data: fields,
+   							success: function(data) {
+    							frm.html(data) ;
+    							$('form', frm).submit(onSumbit) ; 
+    						}
+    					});			
+      					
+  					  return false;
+      			};
     				    			
-	     			frm.dialog(
-	     					{ 	modal: true, 
-	     						title: "Registration", 
-	     						width: 800, 
-	     						height: 400,
-	     						autoOpen: false,
-                                maxHeight: 400,
-	     					}).dialog('open');
-	     					
-	     				$('form', frm).submit(onSumbit) ; 
+       			frm.dialog({ 	
+       			  modal: true, 
+       				title: "Registration", 
+       				width: 800, 
+       				height: 400,
+       				autoOpen: false,
+              maxHeight: 400,
+       			}).dialog('open');
+       					
+       			$('form', frm).submit(onSumbit) ; 
 			    }
-			   
-		  });
+		    });
 	  
-	  }) ;
+	    });
     
       //Listen to keypress click to change settings
       $("#global-settings form").keypress(function(event) {
@@ -467,9 +507,18 @@ define("mylibs/headerMenu", [
   
     }; //End of init()
     
+    /**
+     * Updates specific regions of the header menu (i.e. the search history) without
+     * the need of a whole page reload.
+     */
+    var update = function() {
+      setSearchHistory();
+    };
+    
     //Public functions and fields
     return {
-      init : init
+      init : init,
+      update : update,
     };
   
   } //End main function

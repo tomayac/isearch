@@ -32,6 +32,12 @@ define("mylibs/profile", ["libs/modernizr.min"], function(){
           if(!data.error) {
             profile = data;
             setForm(profile);
+            
+            //If we have login data, store eventually temporarily stored history data in user profile 
+            updateHistory({},function(success) { 
+              console.log('Search history saved on profile init: ' + success);
+            });
+            
             ok = true;
           } else {
             console.log(data.error);
@@ -50,7 +56,7 @@ define("mylibs/profile", ["libs/modernizr.min"], function(){
       setForm(profile);
       ok = true;
     }
-    console.dir(profile);
+    //console.dir(profile);
     return ok;
   } ;
   
@@ -185,7 +191,6 @@ define("mylibs/profile", ["libs/modernizr.min"], function(){
         type: "GET",
         url: historyServerUrl,
         success: function(data) {          
-          console.log(data);
           try {
             data = JSON.parse(data);
             if(typeof callback === 'function') {

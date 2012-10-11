@@ -539,9 +539,9 @@ define("mylibs/queryMenu",
         $('#rhythmDrop').uiiface({
           events : 'drop',
           callback : function(event){
-            pictureIcon.addClass('uploading');
+            rhythmIcon.addClass('uploading');
             query.addItems(event.originalEvent,query.types.Audio,function(fileInfo) {
-              pictureIcon.removeClass('uploading');
+              rhythmIcon.removeClass('uploading');
             });
             reset();
           }
@@ -551,7 +551,7 @@ define("mylibs/queryMenu",
         $('#rhythmUpload').change(function(event) {
 
           query.addItems(event,query.types.Audio,function(fileInfo) {
-            pictureIcon.removeClass('uploading');
+            rhythmIcon.removeClass('uploading');
           });
 
           event.preventDefault();
@@ -923,7 +923,7 @@ define("mylibs/queryMenu",
        * Jonas: added search result i-search logo, which also deals as home button
        */
       if($('#resultLogo').length === 0) {
-        $("#query").prepend('<a href="/" title="Restart I-SEARCH" id="resultLogo"><img src="img/logo-result.png"/></a>');
+        $("#query").prepend('<a href="' + $('#queryUseCase li.enabled a').attr('href') + '" title="Restart I-SEARCH" id="resultLogo"><img src="img/logo-result.png"/></a>');
         $("#query ul").addClass('resultView');
         $("#query-submit").addClass('resultView');    
       }
@@ -934,8 +934,7 @@ define("mylibs/queryMenu",
      */
     var setupQueryOptions = function() {
       
-      var pathArray = window.location.pathname.split( '/' );
-      var uc = pathArray[pathArray.length-1];
+      var uc = config.getUrlUseCase();
       
       var setOptionVisibility = function(uc) {
         
@@ -949,6 +948,7 @@ define("mylibs/queryMenu",
             $('.query-composition li[data-mode="image"]').hide();
             $('.query-composition li[data-mode="sketch"]').hide();
             $('.query-composition li[data-mode="3d"]').hide();
+            config.updateConfig('uc1');
             break;
           case 'furniture' :
             $('#queryUseCase li:eq(2)').removeClass().addClass('enabled');
@@ -956,6 +956,7 @@ define("mylibs/queryMenu",
             $('.query-composition li[data-mode="rhythm"]').hide();
             $('.query-composition li[data-mode="video"]').hide();
             $('.query-composition li[data-mode="emotion"]').hide();
+            config.updateConfig('uc3');
             break;
           case 'video' :
             $('#queryUseCase li:eq(3)').removeClass().addClass('enabled');
@@ -964,12 +965,14 @@ define("mylibs/queryMenu",
             $('.query-composition li[data-mode="3d"]').hide();
             $('.query-composition li[data-mode="sketch"]').hide();
             $('.query-composition li[data-mode="emotion"]').hide();
+            config.updateConfig('uc6');
             break;
           default :
             $('#queryUseCase li:eq(0)').removeClass().addClass('enabled');
             $('.query-composition li[data-mode="rhythm"]').hide();
             $('.query-composition li[data-mode="video"]').hide();
             $('.query-composition li[data-mode="emotion"]').hide();
+            config.updateConfig('uc6');
             break;
         }
       };

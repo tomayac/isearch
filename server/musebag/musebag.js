@@ -717,10 +717,10 @@ var updateProfileHistory = function(req, res) {
       var storeURL = config.apcPath + 'resources/historydatas/updateSearchHistory';
       
       var callData = {
-          "userid" : sessionStore.user.userId,
+          "userId" : sessionStore.user.userId,
           "query"  : { 
             'id'    : queryData.query.id,
-            'rucod' : queryData.query.json
+            'rucod' : JSON.stringify(queryData.query.json)
           },
           "items"  :  queryData.result.relevant
       };
@@ -733,10 +733,8 @@ var updateProfileHistory = function(req, res) {
       .postJson(storeURL, callData)
       .on('success', function(data,response) {
         //Check if result is ok
-        console.log('history save data:');
-        console.log(data);
-        if(data.error) {
-          console.log(data.error);
+        if(response.statusCode != 201) {
+          console.log('Error during history update with code: ' + response.statusCode);
         } else {
           console.log('History entry for query with index '+ index +' has been saved.');
         }
@@ -771,7 +769,7 @@ var query = function(req, res) {
   //Get the actual queryId
   var queryId = getQueryId(req);
   //Get the right session storage (depending on log in status - guest if not, user if yes)
-  //Second parameter determines if we get a copy of the session storage or the original
+  //Second parameter determines if we get a copy of the session storage or the original object
   var sessionStore = getSessionStore(req,false);
   //Url of MQF component
   var queryFormulatorURL = config.mqfPath + 'mqf.php?index='; //'submitQuery/';

@@ -99,12 +99,16 @@ define("mylibs/visualization/TagManager", [], function() {
 		}
 		else
 		{
-		    var data = {
-      			"queryId" : queryId,  
-			    "item" : {  
-		        "id": doc.coid,
-        		"tags" : doc.tags
-      		}
+		  doc.tags.filter(function(val) {
+		    return !val ? false : true;
+		  });
+
+		  var data = {
+       	"queryId" : queryId,  
+			  "item" : {  
+		      "id"   : doc.coid,
+          "tags" : doc.tags
+      	}
     	};
     
     	if(doc.relevant) {

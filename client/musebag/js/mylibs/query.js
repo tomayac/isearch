@@ -63,7 +63,7 @@ define("mylibs/query",
    * Creates an query item token within the token input
    */
   var createItem = function(id,type,data) {
-
+    
     var tokenHtml = '';
 
     //Generate token html for query item
@@ -84,16 +84,16 @@ define("mylibs/query",
           tokenHtml += data.image ? '<img src="' + data.image + '" title="' + data.text + '"' : '<span';
           break;
         case queryTypes.Image :
-          tokenHtml += '<img src="" alt="' + data.name + '"';
+          tokenHtml += '<img src="' + (data.path ? data.path : '') + '" alt="' + data.name + '"';
           break;
         case queryTypes.Audio :
-          tokenHtml += '<audio src="" controls="controls"';
+          tokenHtml += '<audio src="' + (data.path ? data.path : '') + '" title="' + data.name + '" controls="controls"';
           break;
         case queryTypes.Video :
-          tokenHtml += '<video src="" controls="controls"';
+          tokenHtml += '<video src="' + (data.path ? data.path : '') + '" title="' + data.name + '" controls="controls"';
           break;
         case queryTypes.Threed:
-          tokenHtml += '<canvas width="60" height="25"';
+          tokenHtml += '<canvas width="60" height="25" title="' + data.name + '"';
           break;
       }
 
@@ -105,7 +105,6 @@ define("mylibs/query",
           tokenHtml += ' ' + key + '="' + data[key] + '"';
         }
       }
-
       //Add appropriate closing characters or tags
       switch(type) {
         case queryTypes.Text  :
@@ -353,7 +352,7 @@ define("mylibs/query",
         //Data is an ID for an Canvas element
         var files = getBase64File(data);
       } else if(typeof data === 'object' && data.path) {
-        //Data is an file information object which references an already exiting binary file
+        //Data is an file information object which references an already existing binary file
         //Format: { path : [url], name : [filename], type : [queryType], subtype : [sketch|recording|rythm], size : [bytes] }
         data.link = true;
         var files = [data];
@@ -509,8 +508,8 @@ define("mylibs/query",
           queryItem.RealType = queryToken.attr('data-subtype') || '';
           queryItem.Name     = queryToken.attr('alt');
           queryItem.Content  = queryToken.attr('src');
-		  queryItem.Token    = queryToken.attr('data-token') ;
-		  queryItem.Url 	 = queryToken.attr('data-url');
+		      queryItem.Token    = queryToken.attr('data-token') ;
+		      queryItem.Url 	   = queryToken.attr('data-url');
 		  
           console.log('found file item with name ' + queryItem.Name);
           queryJson.fileItems.push(queryItem);
@@ -526,6 +525,111 @@ define("mylibs/query",
     queryJson.bluetooth = 2;
 
     return queryJson;
+  };
+  
+  var setQuery = function(json) {
+    
+    $('#query-field').tokenInput("clear");
+    itemCount = 0; 
+    
+    if(typeof json === 'object') {
+      
+      var data = {};
+      
+      //1. process file items
+      for(var i in json.fileItems) {
+       
+        if(json.fileItems[i].Type === queryTypes.Text) {
+          data = json.fileItems[i].Content;
+        } else {
+          data = { 
+            'name' : json.fileItems[i].Name,
+            'path' : json.fileItems[i].Content,
+            'data-subtype' : json.fileItems[i].RealType,
+          }
+        }
+        //Generate token html for query item
+        createItem('queryItem' + itemCount,json.fileItems[i].Type,data);
+        itemCount++;
+      }
+      
+      //2. test for emotion in query
+      if(typeof json.emotion === 'object') {
+        
+        var value = (json.emotion.valence / 2) + 0.5;
+        
+        var div = $("#emotion-slider")[0];
+        slider = new SmileySlider(div);
+        slider.position(value);
+        var canvas = $("#emotion-slider canvas:first")[0];
+        var data = {
+          'image'        : canvas.toDataURL("image/png"), //if image if given, then it is used as replacement instead of showing the text value
+          'text'         : value,
+          'data-subtype' : 'Emotion'
+        };
+        //Generate token html for query item
+        createItem('queryItem' + itemCount,queryTypes.Text,data);
+        itemCount++;
+      }
+      
+      //3. test for location in query
+      if(json.location) {
+        var data = {
+          'image'        : 'img/fake/fake-geolocation.jpg', //if image if given, then it is used as replacement instead of showing the text value
+          'text'         : json.location,
+          'data-subtype' : 'Location'
+        };
+        //Generate token html for query item
+        createItem('queryItem' + itemCount,queryTypes.Text,data);
+        itemCount++;
+      }
+      
+      //4. test for rhythm in query
+      if(typeof json.rhythm === 'object') {
+        var data = {
+          'image'         : 'img/fake/fake-sound.jpg', //if image if given, then it is used as replacement instead of showing the text value
+          'text'          : json.rhythm.intervals.join(','),
+          'data-subtype'  : 'Rhythm',
+          'data-duration' : json.rhythm.duration
+        };
+        //Generate token html for query item
+        createItem('queryItem' + itemCount,queryTypes.Text,data);
+        itemCount++;
+      }
+    }
+  }
+  
+  var getQueryHtml = function(json) {
+    
+    var listHtml = '';
+    
+    if(typeof json === 'object') {
+      for(var i in json.fileItems) {
+        var item = json.fileItems[i];
+        var itemHtml = '';
+        switch(item.Type) {
+          case queryTypes.Text  :
+            itemHtml += '<p>' + item.Content + '</p>';
+            break;
+          case queryTypes.Image :
+            itemHtml += '<img src="' + item.Content + '" alt="' + item.Name + '" data-type="' + item.Type + '"';
+            break;
+          case queryTypes.Audio :
+            itemHtml += '<audio src="' + item.Content + '" title="' + item.Name + '" controls="controls">No audio preview.</audio>';
+            break;
+          case queryTypes.Video :
+            itemHtml += '<video src="' + item.Content + '" title="' + item.Name + '" controls="controls">No video preview.</video>';
+            break;
+          case queryTypes.Threed:
+            itemHtml += '<canvas width="60" height="25" title="' + item.Name + '"></canvas>';
+            break;
+        }
+        listHtml += '<li class="token-input-token-isearch">' + itemHtml + '</li>';
+      }
+    }
+    
+    return listHtml;
+    
   };
   
   var isValidQuery = function(query) {
@@ -642,6 +746,8 @@ define("mylibs/query",
     addItems        : addItems,
     updateItem      : updateItem,
     updateItemCount : updateItemCount,
+    getQueryHtml    : getQueryHtml,
+    setQuery        : setQuery,
     submit          : submit,
     reset           : reset
   };

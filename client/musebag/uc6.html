@@ -17,7 +17,7 @@
 <meta name="HandheldFriendly" content="True" />
 <meta name="MobileOptimized" content="320" />
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0; user-scalable=0;"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0"/>
 
 <!-- For iPhone 4 with high-resolution Retina display: -->
 <link rel="apple-touch-icon-precomposed" sizes="114x114"
@@ -123,7 +123,7 @@
         <ul>
           <li data-mode="sound"><a> <img src="img/icon-isearch-sound.png" alt="Sound" /> </a></li>
           <li data-mode="rhythm"><a> <img src="img/icon-isearch-rhythm.png" alt="Rhythm" /> </a></li>             
-          <li data-mode="picture"><a> <img src="img/icon-isearch-picture.png" alt="Picture" /> </a></li>
+          <li data-mode="picture"><a> <img src="img/icon-isearch-image.png" alt="Picture" /> </a></li>
           <li data-mode="video"><a> <img src="img/icon-isearch-video.png" alt="Video" /> </a></li>              
           <li data-mode="sketch"><a> <img src="img/icon-isearch-sketch.png" alt="Sketch" /> </a></li>
           <li data-mode="3d"><a> <img src="img/icon-isearch-3d.png" alt="3D" /> </a></li>
@@ -308,11 +308,11 @@
       <section class="tags"></section>
     </div>
 
-    <footer><button id="dummyHistorySave" name="HistorySave">HistorySave</button> &copy; 2011 I-SEARCH Project - All rights reserved </footer>
+    <footer>&copy; 2011 I-SEARCH Project - All rights reserved </footer>
   </div>
 
   <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=true&amp;v=3.2"></script>
-  <script type="text/javascript" src="js/local/uc6.js"></script>
+  <script type="text/javascript">urlSetKey = 'remote';</script>
   <!-- All the script dependencies will be managed with requireJS
        More info? Check http://requirejs.org -->
   <script data-main="js/main" src="js/libs/require-jquery.min.js"></script>     

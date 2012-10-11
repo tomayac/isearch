@@ -57,20 +57,20 @@ define("mylibs/tags", ["mylibs/config", "js/mylibs/visualization/ThumbContainer.
   
   	var media = null ;
   	
-  	for(var i=0 ; i<doc.media.length ; i++ )
-	{
-		var mediaObj = doc.media[i] ;
-		if ( mediaObj.type == mtype ) {
-			media = mediaObj ;
-			break ;
-		}
-	}
+    for(var i=0 ; i<doc.media.length ; i++ )
+  	{
+  		var mediaObj = doc.media[i] ;
+  		if ( mediaObj.type == mtype ) {
+  			media = mediaObj ;
+  			break ;
+  		}
+  	}
   	
-  	 var query = $('#query-field').val();
+  	var query = $('#query-field').val();
   	  
-  	  //Create the token for the search bar
-	 var id = "recommendItem" + recItemCount;
-	 var token = "";
+  	//Create the token for the search bar
+  	 var id = "recommendItem" + recItemCount;
+  	 var token = "";
       
      if ( mtype == "ImageType" ) {
      	token = '<img id="' + id + '" alt="" src="' + media.previews[0].url + '" ' +
@@ -79,34 +79,32 @@ define("mylibs/tags", ["mylibs/config", "js/mylibs/visualization/ThumbContainer.
    	 else if ( mtype == "VideoType") {
 	   	 token = '<img id="' + id + '" alt="" src="' + media.previews[0].url + '" ' +
      		'class="video" data-mode="VideoType" data-url="' + media.url + '" />';
-   	 
    	 }
    	 else if ( mtype == "Object3D") {
 	   	 token = '<img id="' + id + '" alt="" src="' + media.previews[0].url + '" ' +
-     		'class="3d" data-mode="Object3D" data-url="' + media.url + '" />';
-   	 
+     		'class="3d" data-mode="Object3D" data-url="' + media.url + '" />';   	 
    	 }
    	 else if ( mtype == "SoundType" ) {
    	 	token = '<audio controls="controls" id="' + id + '" ' + 
    	 	'class="audio" data-mode="SoundType" data-url="' + media.url + '" >';
    	 	   	 	
    	 	for ( var i=0 ; i<media.previews.length ; i++ )
-        {
-        	var url = media.previews[i].url ;
-        	var format = media.previews[i].format ;
+      {
+      	var url = media.previews[i].url ;
+      	var format = media.previews[i].format ;
         	
-			if (  (/audio/i).test(format) ) token += '<source src="' + url + '" type="' + format + '" />' ;
-        }
-   	 	
+      	if (  (/audio/i).test(format) ) {
+      	  token += '<source src="' + url + '" type="' + format + '" />' ;
+      	}
+      }   	 	
    	 	token += '</audio>' ;
    	 
-   	 }
-   	 
-
-      $("#query-field").tokenInput('add',{id: id,name: token});   
-      recItemCount ++ ;
+   	}
+   	
+    $("#query-field").tokenInput('add',{id: id,name: token});   
+    recItemCount++ ;
   
-  }
+  };
   
   var init = function() {
   
@@ -149,8 +147,8 @@ define("mylibs/tags", ["mylibs/config", "js/mylibs/visualization/ThumbContainer.
         */
         
     $(".tags a").click(function() {
-
-    /*
+      
+      /*
       var tagText = $(this).text();
       var query = $('#query-field').val();
       //Recommended tags will get a special behaviour for search, unlike normal text input
@@ -162,16 +160,16 @@ define("mylibs/tags", ["mylibs/config", "js/mylibs/visualization/ThumbContainer.
       var popup = $("<div/>").appendTo(document.body) ;
       
       var tagPos = $(this).offset() ;
-	  popup.dialog({
-		width: 400,
-		height: 120,
-		modal: true,
-		zIndex: 100,
-		closeOnEscape: true,
-		dialogClass: "itemrec",
-		position: [tagPos.left, tagPos.top+10],
-	    open: function ()
-        {
+      
+  	  popup.dialog({
+    		width: 400,
+    		height: 120,
+    		modal: true,
+    		zIndex: 100,
+    		closeOnEscape: true,
+    		dialogClass: "itemrec",
+    		position: [tagPos.left, tagPos.top+10],
+  	    open: function () {
         	var container = $(this) ;
         	var that = this ;
         	
@@ -181,31 +179,29 @@ define("mylibs/tags", ["mylibs/config", "js/mylibs/visualization/ThumbContainer.
       			var close = $("<a/>", { href:"javascript:void(0)", text: "close"}).appendTo(cont) ;
         		var icons = $("<div/>", { css: { width: "100%", height: "100%"}}).appendTo(cont);
         		
-        		
         		close.click(function() {
         			container.remove() ;
-        			return false ;
-        		
+        			return false ;	
         		}) ;
         		
-        		if ( data.length == 0 ) 
+        		if ( data.length == 0 ) { 
         			icons.html("<span>Sorry no recommendations</span>") ;
-        		else {
+        		} else {
         			var modalities = ["image", "3d", "video", "audio"] ;
-					var tc = new ThumbContainer(icons, data, {showMenu: false, navbarMode: "hidden", findSimilar:false, onClick: clickHandler}, { "modalities": modalities, filterBar: { "modalities": function() {return modalities;} }}) ;
-					tc.draw() ;
-				}
+      				var tc = new ThumbContainer(icons, data, {showMenu: false, navbarMode: "hidden", findSimilar:false, onClick: clickHandler}, { "modalities": modalities, filterBar: { "modalities": function() {return modalities;} }}) ;
+      				tc.draw() ;
+        		}
         	}) ;
-        	
+          	
         },     
-		close: function() {
-			//	docPreview.empty() ;
-			}
-		});
+        close: function() {
+          //docPreview.empty() ;
+  			}
+  	  });
       
       return false ;
-    });
-  };
+   });
+  }; //End init function
   
   var getTags = function() {
     return tags;
@@ -225,7 +221,7 @@ define("mylibs/tags", ["mylibs/config", "js/mylibs/visualization/ThumbContainer.
   };
   
   //Get tag recommendations for the user which is logged in
-  var getUserTags = function(userId) {
+  var setUserTags = function(userId) {
 
     //Ask for tag recommendations
     $.ajax({
@@ -274,6 +270,6 @@ define("mylibs/tags", ["mylibs/config", "js/mylibs/visualization/ThumbContainer.
     init: init,
     getTags: getTags, 
     getTokens: getTokens,
-    getUserTags : getUserTags
+    setUserTags : setUserTags
   };
 });

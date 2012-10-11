@@ -576,6 +576,9 @@ define("mylibs/cofind",
         options.panels.hide(animationTime);
         $("#cofind-settings").show(animationTime,function() { scrollChat(); });
         $("#button-cofind-settings").addClass('active');
+        $("body").one("click", function(e) {
+          options.panels.hide(animationTime);
+        });
       }
       event.stopPropagation();
     });

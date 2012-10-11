@@ -56,16 +56,6 @@ require([
               }, 200);
           });
           
-          //register global window close event, in order to store search history data
-          $(window).unload(function(e) {
-            console.log('Window unload...');
-            profile.updateHistory({},function(success) { 
-              console.log('Search history saved on window closed: ' + success);
-              window.location = ""; 
-            });
-            return false;
-          });
-          
           //Initializes the header with it's panels and setup all event handlers
           header.init();          
           
@@ -166,12 +156,15 @@ require([
     							}
     						}
     						
-    					} else {
-    					  // As soon as an new query is submitted, save any eventually previously existing queries 
-    					  // in the search history
-    					  profile.updateHistory({},function(success) { console.log('Search history saved on new query: ' + success); });
-    					  query.queryId = false;
     					}
+  					  
+    					// As soon as an new query is submitted, save any eventually previously existing queries 
+  					  // in the search history
+  					  profile.updateHistory({},function(success) {
+  					    console.log('Search history saved on new query: ' + success);
+  					    header.update();
+  					  });
+  					  query.queryId = false;
 
     					/**
     					 * @description submit function takes an refine options object for refining a search result
@@ -200,7 +193,6 @@ require([
 
     								//Remove the tags
     								$(".tags").hide();
-
     								//Remove the autosuggestions
     								$(".token-input-dropdown-isearch").hide();
 
