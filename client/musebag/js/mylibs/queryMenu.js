@@ -516,11 +516,28 @@ define("mylibs/queryMenu",
 
           Wami.setUploadCallback(function(data){
             var fileInfo = JSON.parse(data[0]);
-            query.addItems(fileInfo,query.types.Audio);
+            var id = query.addItems(fileInfo,query.types.Audio);
+           
+            
+           	//set the appropriate data tags for the html element
+			var ele = $('#' + id) ;
+
+			ele.removeAttr("src") ;
+			ele.attr("data-subtype", "audio") ;
+			
+			for ( var i=0 ; i<fileInfo.path.length ; i++ )
+			{
+				var url = fileInfo.path[i].url ;
+				var mime = fileInfo.path[i].mime ;
+
+				$('<source/>', { src: url, type: mime }).appendTo(ele) ;
+			}
+			
             pictureIcon.removeClass('uploading');
             reset();
           });
-
+          
+		  
           if($(this).text() === "Start") {
             $(this).text("Stop") ;
             Wami.startRecording(config.constants.fileUploadServer);
@@ -541,7 +558,7 @@ define("mylibs/queryMenu",
           callback : function(event){
             pictureIcon.addClass('uploading');
             query.addItems(event.originalEvent,query.types.Audio,function(fileInfo) {
-              pictureIcon.removeClass('uploading');
+              rhythmIcon.removeClass('uploading');
             });
             reset();
           }
@@ -551,8 +568,8 @@ define("mylibs/queryMenu",
         $('#rhythmUpload').change(function(event) {
 
           query.addItems(event,query.types.Audio,function(fileInfo) {
-            pictureIcon.removeClass('uploading');
-          });
+             rhythmIcon.removeClass('uploading');
+          }, { "subtype": "rhythm"});
 
           event.preventDefault();
           return false;
@@ -709,9 +726,26 @@ define("mylibs/queryMenu",
           Wami.startRecording(config.constants.fileUploadServer) ;
         } else {
           Wami.setUploadCallback(function(data){
-            console.log(data);
-            query.addItems(JSON.parse(data[0]),query.types.Audio);
+          
+            var fileInfo = JSON.parse(data[0]);
+            
+            var id = query.addItems(fileInfo,query.types.Audio);
+                
+                       
+           	//set the appropriate data tags for the html element
+			var ele = $('#' + id) ;
 
+			ele.removeAttr("src") ;
+			ele.attr("data-subtype", "rhythm") ;
+			
+			for ( var i=0 ; i<fileInfo.path.length ; i++ )
+			{
+				var url = fileInfo.path[i].url ;
+				var mime = fileInfo.path[i].mime ;
+
+				$('<source/>', { src: url, type: mime }).appendTo(ele) ;
+			}
+            
             reset();
           });
 

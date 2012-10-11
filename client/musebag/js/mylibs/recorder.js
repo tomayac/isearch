@@ -72,7 +72,7 @@ Wami.setup = function(options) {
 			onError : function(error) {
 				alert(error);
 			},
-			noSecurityCheck: true
+			noSecurityCheck: false
 			
 		};
 
@@ -130,9 +130,9 @@ Wami.setup = function(options) {
 		} else {
 			// Show any Flash settings panel you want:
 			// http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/system/SecurityPanel.html
-			Wami.showSecurity("privacy", "Wami.show", Wami
-					.nameCallback(_options.onSecurity), Wami
-					.nameCallback(_options.onError));
+		//	Wami.showSecurity("privacy", "Wami.show", Wami
+		//			.nameCallback(_options.onSecurity), Wami
+		//			.nameCallback(_options.onError));
 		}
 	}
 
@@ -151,7 +151,7 @@ Wami.setup = function(options) {
 			params.wmode = "transparent";
 		}
 
-		params.wmode = "transparent";
+	//	params.wmode = "transparent";
 		
 		if (typeof console !== 'undefined') {
 			flashVars.console = true;
@@ -196,6 +196,7 @@ Wami.setup = function(options) {
 
 	// Attach all the audio methods to the Wami namespace in the callback.
 	function delegateWamiAPI() {
+		console.log("in delegate");
 		var recorder = document.getElementById(_options.id);
 
 		function delegate(name) {
@@ -284,6 +285,6 @@ Wami.setUploadCallback = function(cb) {
 };
 
 Wami.setup({"swfUrl": "js/libs/Wami.swf", "id": "rwami"}) ;
-//Wami.setup({"swfUrl": "js/libs/Wami.swf", "id": "swami"}) ;
+Wami.setup({"swfUrl": "js/libs/Wami.swf", "id": "swami"}) ;
 window.Wami = Wami ;
 });

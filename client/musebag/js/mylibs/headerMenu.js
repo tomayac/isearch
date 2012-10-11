@@ -1,13 +1,13 @@
 define("mylibs/headerMenu", [
     "mylibs/config",
     "mylibs/profile",
-  /*  "mylibs/cofind",*/
+    "mylibs/cofind",
     "mylibs/tags",
     "mylibs/loader",
     "libs/jquery.select-to-autocomplete"
   ],
-//  function(config, profile, cofind, tags, loader) {
-  function(config, profile, tags, loader) {
+  function(config, profile, cofind, tags, loader) {
+//  function(config, profile, tags, loader) {
     
     //Defines all header menu panels and generic functions to control them
     var panels = {
@@ -92,7 +92,7 @@ define("mylibs/headerMenu", [
          panels          : panels,
          messageCallback : sendNotifyMessage  
       };      
-  //    if (cofind) cofind.setup(cofindOptions);
+      if (cofind) cofind.setup(cofindOptions);
   
       //get user tags from pTag component
       tags.getUserTags(profile.get('userId'));

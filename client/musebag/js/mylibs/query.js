@@ -179,8 +179,10 @@ define("mylibs/query",
       }
     }
   };
+  
+  // Sotiris: add extra object to pass in form data (used to designate that an uploaded audio file is a rhythm file)
 
-  var uploadFile = function(file, id, callback) {
+  var uploadFile = function(file, id, callback, extra) {
 
     //Create upload bar
     var $progressbar = $('<div class="progressBar"><p>0%</p></div>').appendTo('#' + id);
@@ -196,6 +198,11 @@ define("mylibs/query",
       }
       if(queryId) {
         formData.append('queryId', queryId);
+      }
+      
+      if ( extra ) {
+       	for ( key in extra )
+          formData.append(key, extra[key]) ;
       }
     } catch(e) {
       console.error('Browser does not support the creation of FormData! Exiting...');
@@ -248,7 +255,9 @@ define("mylibs/query",
         //for 3D first check if an preview image is available
         if(fileInfo.preview) {
           //draw the preview image on the 3D canvas
-          var context = $('#' + id).get(0).getContext('2d');
+          var canvas = $('#' + id).get(0) ;
+		  var context = canvas.getContext('2d');
+          
           if(context) {
             var img = new Image ;
             img.onload = function() {
@@ -305,7 +314,7 @@ define("mylibs/query",
       // Form data
       data: formData,
       //Options to tell JQuery not to process data or worry about content-type
-      cache: false,
+   //   cache: false,
       contentType: false,
       processData: false,
       dataType: "text"
@@ -331,7 +340,7 @@ define("mylibs/query",
    * @param callback a function which is called after the query item(s) are successfully generated
    *
    */
-  var addItems = function(data,type,callback) {
+  var addItems = function(data,type,callback, extra) {
 
     //Basic vars for query item generation
     var id = 'queryItem' + itemCount;
@@ -366,8 +375,13 @@ define("mylibs/query",
       if (typeof files !== 'undefined') {
         //iterate through the (uploaded) files
         for (var i=0; i < files.length; i++) {
+          if ( files[i]["data-subtype"] === "recording")
+          {
+          	 createItem(id,type,files[i]);
+          	 return id ;
+          }
           //test if current file is allowed to be uploaded
-          if(isAllowedExtension(files[i].name,type)) {
+          else if(isAllowedExtension(files[i].name,type)) {
 
             //Create the query item token for the search bar
             createItem(id,type,files[i]);
@@ -395,7 +409,7 @@ define("mylibs/query",
 
             if(!files[i].path) {
               //Upload file to server
-              uploadFile(files[i], id, i === (files.length -1) ? callback : null);
+              uploadFile(files[i], id, i === (files.length -1) ? callback : null, extra);
             } else {
               //all needed data is available, add it to query item
               setItemData(id, files[i]);
@@ -416,6 +430,8 @@ define("mylibs/query",
     if(typeof callback === 'function') {
       callback(files);
     }
+    
+    return id ;
   };
 
   var updateItem = function(id,event,type,callback) {
