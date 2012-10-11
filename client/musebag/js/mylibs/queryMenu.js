@@ -969,7 +969,16 @@ define("mylibs/queryMenu",
     var setupQueryOptions = function() {
       
       var pathArray = window.location.pathname.split( '/' );
-      var uc = pathArray[pathArray.length-1];
+      
+      var uc ;
+      
+      for ( var i=pathArray.length -1 ; i>=0 ; i--)
+      {
+      	if ( pathArray[i] != "" ) 	{
+	       uc = pathArray[i];
+	       break ;
+	    }
+      }
       
       var setOptionVisibility = function(uc) {
         
@@ -1008,8 +1017,14 @@ define("mylibs/queryMenu",
         }
       };
       
+      profile.set('settings',{'useCase' : config.constants.queryOptions.useCase});
+      
       //This is more or less a fallback so that the page does not need to be reloaded
       //as soon as a user switches to another use case
+      
+      // Sotiris: I comment this out for the moment. I believe page reloading is unavoidable and simpler to implement
+      // also users may want to visit /music url directly
+/*      
       $('#queryUseCase a').on('click', function(e){
         
         setOptionVisibility($(this).attr('href').substr(1));
@@ -1032,7 +1047,7 @@ define("mylibs/queryMenu",
         e.preventDefault();
         return false;
       });
-      
+      */
       //go on
       setOptionVisibility(uc);
     };
