@@ -299,6 +299,8 @@ define("mylibs/headerMenu", [
         initSettingsPanel();
       }
       
+       profile.set('settings',{'useCase' : config.constants.queryOptions.useCase});
+       
       //Initialize the authentication widget
       //----------------------------------------------------------
       // WARNING - very ugly code - janrain is baaad!
