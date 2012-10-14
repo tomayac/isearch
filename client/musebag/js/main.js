@@ -56,6 +56,9 @@ require([
               }, 200);
           });
           
+          //Register use case change
+          menu.setupQueryOptions();
+                            
           //Initializes the header with it's panels and setup all event handlers
           header.init();          
           
@@ -81,9 +84,7 @@ require([
           //$('nav > ul > li').uiiface('select');
           //$('#logo').uiiface('pan');
 
-          //Register use case change
-          menu.setupQueryOptions();
-          
+                    
           menu.attachEvents('query');
 
           //Behaviour of the menu (panels, etc)

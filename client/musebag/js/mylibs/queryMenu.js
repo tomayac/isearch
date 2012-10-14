@@ -978,6 +978,8 @@ define("mylibs/queryMenu",
       var uc = config.getUrlUseCase();
       
       var setOptionVisibility = function(uc) {
+      
+      
         
         $('#queryUseCase li').removeClass();
         $('.query-composition li').show();
@@ -1016,9 +1018,11 @@ define("mylibs/queryMenu",
             config.updateConfig('uc6');
             break;
         }
+        
+       	
       };
       
-      profile.set('settings',{'useCase' : config.constants.queryOptions.useCase});
+    // profile.set('settings',{'useCase' : config.constants.queryOptions.useCase});
       
       //This is more or less a fallback so that the page does not need to be reloaded
       //as soon as a user switches to another use case
@@ -1034,13 +1038,15 @@ define("mylibs/queryMenu",
       //    but if you think it's better to always reload, you can comment this out again
       $('#queryUseCase a').on('click', function(e){
         
-        setOptionVisibility($(this).attr('href').substr(1));
+        var uc = config.getUrlUseCase($(this).attr('href')) ;
         
-        switch($(this).attr('href')) {
-          case '/music' :
+        setOptionVisibility(uc);
+        
+        switch(uc) {
+          case 'music' :
             config.constants.queryOptions.useCase = 'uc1';
             break;
-          case '/furniture' : 
+          case 'furniture' : 
             config.constants.queryOptions.useCase = 'uc3';
             break;
           default:

@@ -9,7 +9,7 @@ define("mylibs/tags", ["mylibs/config", "js/mylibs/visualization/ThumbContainer.
   
   var fetchRecommendedMedia = function(tag, callback) {
   
-  		var mqfUrl = config.constants.queryFormulatorUrl || 'query' ;
+  		var mqfUrl = config.constants.queryUrl || 'query' ;
   		
   		mqfUrl += "&total=5&cls=1&tr=rand" ;
 	  
@@ -163,7 +163,7 @@ define("mylibs/tags", ["mylibs/config", "js/mylibs/visualization/ThumbContainer.
       
   	  popup.dialog({
     		width: 400,
-    		height: 120,
+    		height: 180,
     		modal: true,
     		zIndex: 100,
     		closeOnEscape: true,

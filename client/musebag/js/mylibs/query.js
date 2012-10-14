@@ -719,7 +719,7 @@ define("mylibs/query",
       console.log(query);
 
       //Send it to the server
-	    var mqfUrl = config.constants.queryFormulatorUrl || 'query';
+	    var mqfUrl = config.constants.queryUrl || 'query';
 
       $.ajax({
         type: "POST",

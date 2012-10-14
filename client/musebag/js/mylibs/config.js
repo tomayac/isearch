@@ -21,7 +21,7 @@ define("mylibs/config", [
       slideUpAnimationTime: 200,
       slideDownAnimationTime: 200,
       menuWidth: 470, //cf style.css for more explanations
-      useOldAuthentication: false,
+      useOldAuthentication: ( window.useOldAuthentication === true ) ? true : false,
 
       //Query parameters
   	  queryOptions: {
@@ -226,12 +226,21 @@ define("mylibs/config", [
       return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null;
     };
     
-    var getUrlUseCase = function() {
+    var getUrlUseCase = function(url_) {
       //attempt to get use case from document path, name or query parameter
       //define priority:
       //1. url path
-      var pathArray = window.location.pathname.split( '/' );
-      var uc = pathArray[pathArray.length-1];
+      //Sotiris: I have added an extra parameter to parse url from an href string
+      var url = url_ || window.location.pathname ;
+      var pathArray = url.split( '/' );
+      var pathArrayClean = [] ;
+      
+      // The pathArray may contain empty strings (maybe this is specific to Javascript implementation)
+     
+      for (var c=0 ; c<pathArray.length ; c++)
+      	if ( pathArray[c] != "") pathArrayClean.push(pathArray[c]) ;
+      	
+      var uc = pathArrayClean[pathArrayClean.length-1];
       //2. document name
       if(uc.lastIndexOf('.html') > -1) {
         uc = ucTranslator[uc.substring(0,uc.lastIndexOf('.html'))];
