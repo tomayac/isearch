@@ -12,7 +12,9 @@
  * Required node modules
  */
 var restler = require('restler'),
-    config  = require('./config');
+    redis   = require("redis"),
+    config  = require('./config'),
+    helper  = require('./helper');
 
 /**
  * Global variables
@@ -103,6 +105,29 @@ var getUserTagSet = function(req) {
  *  -----------------------------------------------------------------------------
  */
 
+var initGenericTagSet = function() {
+  client = redis.createClient();
+  client.on("error", function (err) {
+    console.log("Redis Error " + err);
+  });
+  client.on("connect", function () {
+    //Check if a general tag set is all ready created
+    client.hgetall("genericTagSet", function (err, obj) {
+      console.log('Generic tag set: ');
+      console.dir(obj);
+
+      //otherwise create it 
+      if(helper.isObjectEmpty(obj)) {
+        console.log('create initial generic tag set...');
+      }
+    });    
+  }); 
+};
+
+var updateGenericTagSet = function() {
+  console.log('updateGenericTagSet called...');
+};
+
 /**
  * tagRecommendations function
  * 
@@ -136,20 +161,25 @@ var tagRecommendations = function(req, res){
  * based on a user profile. A user ID as well as the textual parts of the user query 
  * needs to be provided.
  * 
- * @param request object containing get keys: userId, query, resultSetTags
+ * @param request object containing get keys: resultSetTags
  * @param repsonse object
  */
 var filterTags = function(req, res){
 	
-	var id = 1;
-	if(req.params.userid > 0 && req.params.userid <= 6) {
-		id = (req.params.userid-1);
-	} 
-	var userTags = tags[id];
-	var filterTags = [];
-	
+  console.log('filterTags function called...');
+  console.dir(req.query);
+  
+  var userKey = '';
+  
+  if(req.session.musebag.user.userId) {
+    userKey = req.session.musebag.user.userId.substr(0,req.session.musebag.user.userId.indexOf('@'));
+  } 
+  
+  var userTags = tags[userKey] ? tags[userKey] : tags['familie.etzold'];
+  var filterTags = [];
+  
 	for(var c=0; c < 6; c++) {
-		filterTags.push(userTags[Math.floor(Math.random()*(userTags.length + 1))]);
+		filterTags.push(userTags[Math.floor(Math.random()*(userTags.length))]);
 	}
 	
 	res.send(JSON.stringify(filterTags));
@@ -227,6 +257,8 @@ var implicitTags = function(req, res){
 };
 
 //Export all public available functions
+exports.initGenericTagSet        = initGenericTagSet;
+exports.updateGenericTagSet      = updateGenericTagSet;
 exports.tagRecommendations       = tagRecommendations;
 exports.filterTags               = filterTags;
 exports.resultTagRecommendations = resultTagRecommendations;

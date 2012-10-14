@@ -64,6 +64,7 @@ app.configure(function(){
   app.use(app.router);
   app.use(express.static(__dirname+'/../../client/musebag'));
   app.use(express.logger({ format: ':method :url' }));
+  app.enable('trust proxy');
 });
 
 app.configure('development', function(){
@@ -101,13 +102,16 @@ app.get(/\/(music|furniture|video)/ , musebag.setUseCase);
 console.log("Register pTag functions...");
 
 app.get  ('/ptag/tagRecommendations', ptag.tagRecommendations);
-app.get  ('/ptag/filterTags/:queryId/:resultSetTags', ptag.filterTags);
+app.get  ('/ptag/filterTags', ptag.filterTags);
 app.get  ('/ptag/resultTagRecommendations/:queryId/:resultItemTags', ptag.resultTagRecommendations);
 app.post ('/ptag/tag', ptag.tag);
 app.post ('/ptag/implicitTags', ptag.implicitTags);
 
 //Start listening
 app.listen(8081);
+
+//Initialize pTag generic tag set
+ptag.initGenericTagSet();
 
 //Start CoFind for collaborative search
 cofind.initialize(app,sess);

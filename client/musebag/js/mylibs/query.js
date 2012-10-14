@@ -543,8 +543,8 @@ define("mylibs/query",
           queryItem.RealType = queryToken.attr('data-subtype') || '';
           queryItem.Name     = queryToken.attr('title');
           queryItem.Content  = queryToken.attr('src');
-		      queryItem.Token    = queryToken.attr('data-token') || queryToken.attr('src');
-		      queryItem.Url 	   = queryToken.attr('data-url') || queryToken.attr('src');
+		      queryItem.Token    = queryToken.attr('data-token');
+		      queryItem.Url 	   = queryToken.attr('data-url');
 		  
           console.log('found file item with name ' + queryItem.Name);
           queryJson.fileItems.push(queryItem);

@@ -11,13 +11,12 @@ define("mylibs/visualization/TagManager", [], function() {
 			tagServerUrl = options.tagServerUrl ;
 		}
 		
-		filterTagUrl = options.filterTagUrl ||	tagServerUrl || 'ptag/filterTags'  ;
+		filterTagUrl = options.filterTagUrl ||	tagServerUrl || 'ptag/filterTags/'  ;
 		if ( tagServerUrl ) filterTagUrl += "&a=all" ;
 		
 		storeItemUrl = options.resultItemUrl || options.filterTagUrl || tagServerUrl ;
 		if ( tagServerUrl ) storeItemUrl += "&a=store" ;
-		
-		
+				
 		load() ;
 	};
 
@@ -30,13 +29,14 @@ define("mylibs/visualization/TagManager", [], function() {
 			var doc = docs[i] ;
 			data.push(doc.id) ;
 		}
-		
+
 		$.ajax({
 			type: 'GET',
 			url: filterTagUrl, //+ '&a=all',
 			data: { "tags":	JSON.stringify(data) },
 			success: function(data) {
-			
+			  console.log('got filter tags:');
+			 console.dir(data);
 				if ( !data ) return ;
 				
 				if ( data.error ) {
@@ -78,6 +78,9 @@ define("mylibs/visualization/TagManager", [], function() {
 					}
 				}
 			},
+			error: function(jqXHR, error, object) {
+        console.error("Error during filterTag request: " + error);
+      },
 			dataType: 'json'
 		});
 		

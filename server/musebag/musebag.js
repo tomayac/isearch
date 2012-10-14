@@ -15,6 +15,7 @@ var fs       = require('fs'),
     path     = require('path'),
     restler  = require('restler'),
     config   = require('./config'),
+    ptag     = require('./ptag'),
     wunder   = require('./wunderground');
 
 /**
@@ -734,6 +735,7 @@ var updateProfileHistory = function(req, res) {
           console.log('Error during history update with code: ' + response.statusCode);
         } else {
           console.log('History entry for query with index '+ index +' has been saved.');
+          ptag.updateGenericTagSet(callData);
         }
       })
       .on('fail', function(data,response) {
