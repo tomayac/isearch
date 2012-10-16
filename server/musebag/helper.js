@@ -26,7 +26,11 @@ var isNumber = function(n) {
 };
 
 var isObjectEmpty = function(obj) {
-  return typeof obj !== 'object' || Object.keys(obj).length === 0;
+  if(typeof obj !== 'object') {
+    return true; 
+  } else {
+    return Object.keys(obj).length === 0;
+  }
 };
 
 var clone = function(obj) {
