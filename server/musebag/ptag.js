@@ -255,6 +255,7 @@ var getGenericTagSet = function(req,callback) {
       //Check if a general tag set for this country is all ready created
       client.hgetall(country + 'TagSet', function (err, tagSet) {
         //if not: create it 
+        console.log('Error? ' + err);
         if(helper.isObjectEmpty(tagSet)) {
           console.log('create initial ' + country + ' tag set...');
           createGenericTagSet(country, function(error, tagSet) {
