@@ -26,6 +26,8 @@ var isNumber = function(n) {
 };
 
 var isObjectEmpty = function(obj) {
+  console.log(obj);
+  console.log(typeof obj);
   if(typeof obj !== 'object') {
     return true; 
   } else {
