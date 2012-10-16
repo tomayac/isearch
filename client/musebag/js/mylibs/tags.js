@@ -2,54 +2,40 @@
 * Class to represent the user tags
 */
 
-define("mylibs/tags", ["mylibs/config", "js/mylibs/visualization/ThumbContainer.js"], function(config){
+define("mylibs/tags", 
+  [
+    "mylibs/config",
+    "mylibs/query",
+    "js/mylibs/visualization/ThumbContainer.js"
+  ], 
+  function(config,query){
   
   var tags = []; 
   var recItemCount = 0 ;
   
   var fetchRecommendedMedia = function(tag, callback) {
   
-  		var mqfUrl = config.constants.queryUrl || 'query' ;
-  		
-  		mqfUrl += "&total=5&cls=1&tr=rand" ;
-	  
-		var now = new Date();
-		 
-		var query = { 
-			emotion: false, 
-			location: false, 
-			bluetooth: false, 
-			tags: [tag],
-		 	datetime  : now.getUTCFullYear() + '-' + ((now.getUTCMonth()+1) < 10 ? '0' + (now.getUTCMonth()+1) : (now.getUTCMonth()+1)) + '-' + (now.getUTCDate() < 10 ? '0' + now.getUTCDate() : now.getUTCDate()) + 'T' + (now.getUTCHours() < 10 ? '0' + now.getUTCHours() : now.getUTCHours()) + ':' + (now.getUTCMinutes() < 10 ? '0' + now.getUTCMinutes() : now.getMinutes()) + ':' + (now.getUTCSeconds() < 10 ? '0' + now.getUTCSeconds() : now.getUTCSeconds()) + '.000Z',
-		 	fileItems: [ {"Type":"Text","RealType":"Text","Name":"","Content":  tag }]
-		} ;
-				  
-    	$.ajax({
-    	    type: "POST",
-    	    crossDomain: true,
-    	    url:  mqfUrl,
-    	    contentType : "application/json; charset=utf-8",
-    	    dataType : "json",
-    	    data: JSON.stringify(query),
-    	    success: function(data) {
-    	      docs = [] ;
+		var recQuery = query.getEmptyQuery();
+		recQuery.tags = [tag];
+		recQuery.fileItems.push({
+		  "Type" : query.types.Text,
+		  "RealType" : query.types.Text,
+		  "Name" : "",
+		  "Content" : tag 
+		});
 		
-		  		for (var i=0 ; i<data.documentList.length ; i++ ) {
-  					var doc = data.documentList[i] ;
-		  			docs.push({ doc: doc }) ;
-			  	}
+		query.submit({'query' : recQuery}, function(result, data) {
+		  if(result) {
+		    docs = [] ;
+		    
+        for (var i=0 ; i<data.documentList.length ; i++ ) {
+          var doc = data.documentList[i] ;
+          docs.push({ doc: doc }) ;
+        }
 
-    	     	callback(docs) ;
-    	    },
-    	    error: function(jqXHR, error, object) {
-    	      data = {error: "the server gave me an invalid result."}; 
-    	    },
-    	    complete: function() {
-    	      $.event.trigger( "ajaxStop" );
-    	    }
-    	});
-      
-  
+        callback(docs) ;
+		  }
+		});  
   };
  
   
@@ -111,7 +97,8 @@ define("mylibs/tags", ["mylibs/config", "js/mylibs/visualization/ThumbContainer.
     //Formatting of the tags
     $('.tags a').each(function() {
       var $thisTag = $(this);
-      var fontSize = $thisTag.attr('data-rank');
+      //max: 3em
+      var fontSize = 1 + 2 * parseFloat($thisTag.attr('data-rank'));
       $thisTag.css('font-size', fontSize + 'em');
       $thisTag.css('margin-right', '0.4em');
     });
@@ -185,7 +172,7 @@ define("mylibs/tags", ["mylibs/config", "js/mylibs/visualization/ThumbContainer.
         		}) ;
         		
         		if ( data.length == 0 ) { 
-        			icons.html("<span>Sorry no recommendations</span>") ;
+        		  cont.html("<span>Sorry no recommendations</span>") ;
         		} else {
         			var modalities = ["image", "3d", "video", "audio"] ;
       				var tc = new ThumbContainer(icons, data, {showMenu: false, navbarMode: "hidden", findSimilar:false, onClick: clickHandler}, { "modalities": modalities, filterBar: { "modalities": function() {return modalities;} }}) ;
@@ -245,7 +232,7 @@ define("mylibs/tags", ["mylibs/config", "js/mylibs/visualization/ThumbContainer.
           //setting up the token input
           for(var t=0; t < data.length; t++) {
           	data[t].name = data[t].name + '';
-            html += '<a href="#" data-rank="' + data[t].relevance + '">' + data[t].name.replace(' ', '&nbsp;') + '</a>';
+            html += '<a href="#" data-rank="' + data[t].size + '">' + data[t].name.replace(' ', '&nbsp;') + '</a>';
             tags.push(data[t].name);
           }
             

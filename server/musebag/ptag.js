@@ -21,6 +21,7 @@ var restler = require('restler'),
  */
 var tagSetSize = 20;
 
+/*
 var tags = {
     'kojomisch'     : [['flight',1.0],['travel',1.5],['airplane',2.8],['sky',0.8],['rocket',1.0],['USA',0.9],['NASA',1.3],['space',1.8],['Apollo Program',1.2],['Saturn V',0.8],['Viking',1.0],['Space probes',1.8],['ISS',1.2]],
     'julia.ziemens' : [['trees',2.0],['nature',1.8],['enviromental landscaping',1.0],['green energy',1.5],['electric cars',0.6],['Renault',0.5],['tulip',0.7],['garden',1.0],['pine tree',1.2],['forest',0.9],['Kanada',2.0]],
@@ -29,10 +30,12 @@ var tags = {
     'tomac'         : [['WoW',3.0],['MMRPG Avatars',1.2],['Game avatar',1.5],['Knight',2.0],['Magican',2.5],['World of Warcraft',1.8],['Lost Chaos',1.0],['Forsaken World',0.8],['Elf',1.8],['Warrior',3.0],['Hunter avatar',2.2],['High level avatars',1.2],['Special characters',0.8]],
     'familie.etzold': [['shark',2.0],['fish',2.5],['dolphin',1.5],['Atlantic',1.0],['Fishing',0.8],['Diving',1.5],['dive license',0.6],['Pacific',1.5],['Hammerhead',2.0],['Hawaii',3.0],['Marlin',1.0],['Seahorse',1.8],['Best diving grounds',2.3]]
 };
+*/
 
+//Stores the redis client connection
 var client = null;
+//Stores client IPs with already retrieved countries
 var countryList = [];
-
 
 /**
  *  -----------------------------------------------------------------------------
@@ -72,6 +75,38 @@ var extractTags = function(queryData) {
   return tags;
 };
 
+/**
+ * Normalizes relevance values in given tag set based on maximum relevance.
+ * The normalized value is stored in tag set as 'size' property and can be
+ * directly used to express relevance by font size.
+ * 
+ * @param tagSet
+ * @returns tagSet with normalized relevance values as 'size' property
+ */
+var normalizeTagSet = function(tagSet) {
+  if(!tagSet || typeof tagSet !== 'object' || !(tagSet instanceof Array)) {
+    return tagSet;
+  }
+  
+  //Get maximum relevance in tag set
+  var maxRelevance = 1.0;
+  for(var t in tagSet) {
+    maxRelevance = Math.max(tagSet[t].relevance,maxRelevance);
+  }
+  //normalize relevance values
+  for(var t in tagSet) {
+    tagSet[t].size = (tagSet[t].relevance - 1.0) / (maxRelevance - 1.0);
+  }
+  
+  return tagSet;
+};
+
+/**
+ * 
+ * @param tag - the tag to add to the tag set
+ * @param tagSet - the current tag set
+ * @returns enhanced input tag set
+ */
 var addTag = function(tag,tagSet) {
 
   if(!tagSet || typeof tagSet !== 'object') {
@@ -101,6 +136,11 @@ var addTag = function(tag,tagSet) {
   return tagSet;
 };
 
+/**
+ * 
+ * @param tagSet - the tag set which should be sorted based on the relevance values
+ * @returns the relevance sorted tag set
+ */
 var sortTagSet = function(tagSet) {
   
   if(!tagSet || typeof tagSet !== 'object' || !(tagSet instanceof Array)) {
@@ -114,6 +154,13 @@ var sortTagSet = function(tagSet) {
   return tagSet;
 };
 
+/**
+ * 
+ * @param ip - the client ip address
+ * @param callback - function with error and country as parameters where 
+ * country is the origin country of the client IP address 
+ * @returns null
+ */
 var getClientCountry = function(ip,callback) {
 
   if(typeof callback !== 'function') {
@@ -151,6 +198,13 @@ var getClientCountry = function(ip,callback) {
   });
 };
 
+/**
+ * 
+ * @param country - the country for which the generic tag set should be created
+ * @param callback - function with error and tagSet as parmeters, tagSet would contain
+ * the created tagSet 
+ * @returns
+ */
 var createGenericTagSet = function(country,callback){
   
   if(typeof callback !== 'function') {
@@ -195,10 +249,9 @@ var getGenericTagSet = function(req,callback) {
   }
   
   var ip = req.header('x-forwarded-for') || req.connection.remoteAddress;
-  console.log('get client country:');
   getClientCountry(ip, function(error,country) {
     if(country) {
-      console.log(country);
+      console.log('get client country: ' + country);
       //Check if a general tag set for this country is all ready created
       client.hgetall(country + 'TagSet', function (err, tagSet) {
         //if not: create it 
@@ -289,6 +342,11 @@ var getUserTagSet = function(req,callback) {
  *  Public Functions
  *  -----------------------------------------------------------------------------
  */
+
+/**
+ * Initializes the pTag component.
+ * Mainly creates a connection to the redis store.
+ */
 var initialize = function() {
   client = redis.createClient();
   client.on('error', function (err) {
@@ -296,12 +354,21 @@ var initialize = function() {
   }); 
 };
 
+/**
+ * updateGenericTagSet update function
+ * 
+ * Updates the client's generic country tag set as soon
+ * as a query is finished by the user and queryData can be provided. 
+ * 
+ * @param req - the express or connect request object
+ * @param queryData - object containing all session saved query and result data
+ * @returns null;
+ */
 var updateGenericTagSet = function(req, queryData) {
   console.log('updateGenericTagSet called...');
   
   var tags = extractTags(queryData);
-  console.log('Tags extracted from query: ');
-  console.dir(tags);
+  
   if(tags.length > 0) {
     //Get current generic tag set
     getGenericTagSet(req, function(error, tagSet) {
@@ -343,7 +410,7 @@ var tagRecommendations = function(req, res){
 	  var userTags = [];
 	  
 	  if(!error) {
-	    userTags = JSON.stringify(tagSet.data.slice(0,tagSetSize));
+	    userTags = JSON.stringify(normalizeTagSet(tagSet.data.slice(0,tagSetSize)));
 	  } else {
 	    console.log('Error while retrieving tag recommendations: ' + error);
 	  } 

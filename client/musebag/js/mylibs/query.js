@@ -44,6 +44,20 @@ define("mylibs/query",
     return false;
   };
 
+  var getEmptyQueryObject = function() {
+    
+    var now = new Date();
+    
+    return {
+        fileItems : [],
+        emotion   : false,
+        datetime  : now.getUTCFullYear() + '-' + ((now.getUTCMonth()+1) < 10 ? '0' + (now.getUTCMonth()+1) : (now.getUTCMonth()+1)) + '-' + (now.getUTCDate() < 10 ? '0' + now.getUTCDate() : now.getUTCDate()) + 'T' + (now.getUTCHours() < 10 ? '0' + now.getUTCHours() : now.getUTCHours()) + ':' + (now.getUTCMinutes() < 10 ? '0' + now.getUTCMinutes() : now.getMinutes()) + ':' + (now.getUTCSeconds() < 10 ? '0' + now.getUTCSeconds() : now.getUTCSeconds()) + '.000Z',
+        location  : false,
+        rhythm    : false,
+        tags      : false
+    };
+  };
+
   var getBase64File = function(element) {
 
     var file = [];
@@ -462,16 +476,7 @@ define("mylibs/query",
 
   var getItems = function() {
 
-    var now = new Date();
-
-    var queryJson = {
-        fileItems : [],
-        emotion   : false,
-        datetime  : now.getUTCFullYear() + '-' + ((now.getUTCMonth()+1) < 10 ? '0' + (now.getUTCMonth()+1) : (now.getUTCMonth()+1)) + '-' + (now.getUTCDate() < 10 ? '0' + now.getUTCDate() : now.getUTCDate()) + 'T' + (now.getUTCHours() < 10 ? '0' + now.getUTCHours() : now.getUTCHours()) + ':' + (now.getUTCMinutes() < 10 ? '0' + now.getUTCMinutes() : now.getMinutes()) + ':' + (now.getUTCSeconds() < 10 ? '0' + now.getUTCSeconds() : now.getUTCSeconds()) + '.000Z',
-        location  : false,
-        rhythm    : false,
-        tags      : false
-    };
+    var queryJson = getEmptyQueryObject();
 
     //Check if the user has entered something which is not tokenized yet
     var remainingInput = $(".token-input-list-isearch li input").val();
@@ -689,25 +694,32 @@ define("mylibs/query",
   
   /**
    * 
-   * @param {Object} refineOptions
+   * @param {Object} options - can contain special keys (e.g. for refinement and similarity search)
+   * which are added to the query object, further if a key 'query' is defined, it will be used as
+   * query object instead of the data provided in the query field.
    * @param {Object} callback optional, if provided error and special result data is possible, 
    * otherwise only a valid result is pushed to the display function of the results module
    */
-  var submit = function(refineOptions, callback) {
+  var submit = function(options, callback) {
     
     var query = getItems();
     
-    if(typeof refineOptions === 'object') {
-      var keys = Object.keys(refineOptions);
-      for(var i in keys) {
-        if(keys[i] == 'similarTo') {
-          query = { 'similarTo' : refineOptions[keys[i]] };
-          break;
+    if(typeof options === 'object') {
+      
+      if(typeof options['query'] === 'object') {
+        query = options['query'];
+      } else {
+        var keys = Object.keys(options);
+        for(var i in keys) {
+          if(keys[i] == 'similarTo') {
+            query = { 'similarTo' : options[keys[i]] };
+            break;
+          }
+          query[keys[i]] = options[keys[i]];
         }
-        query[keys[i]] = refineOptions[keys[i]];
       }
     }
-  
+
     if(isValidQuery(query)) 
     { 
       //Add the queryId if available (means: if file items have been uploaded before)
@@ -782,6 +794,7 @@ define("mylibs/query",
     addItems        : addItems,
     updateItem      : updateItem,
     updateItemCount : updateItemCount,
+    getEmptyQuery   : getEmptyQueryObject,
     getQueryHtml    : getQueryHtml,
     setQuery        : setQuery,
     submit          : submit,
