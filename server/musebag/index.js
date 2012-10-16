@@ -110,8 +110,8 @@ app.post ('/ptag/implicitTags', ptag.implicitTags);
 //Start listening
 app.listen(8081);
 
-//Initialize pTag generic tag set
-ptag.initGenericTagSet();
+//Initialize pTag component
+ptag.initialize();
 
 //Start CoFind for collaborative search
 cofind.initialize(app,sess);

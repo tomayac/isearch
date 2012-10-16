@@ -2,10 +2,8 @@
  * Author: Arnaud Brousseau, Jonas Etzold, Sotiris Malassiotis
  *  
  */
-define("mylibs/config", [                     
-    "mylibs/profile"
-  ],
-  function(profile) {
+define("mylibs/config", [],
+  function() {
    // private use case translator
    var ucTranslator = {
      'uc1' : 'music',
@@ -233,16 +231,12 @@ define("mylibs/config", [
       //Sotiris: I have added an extra parameter to parse url from an href string
       var url = url_ || window.location.pathname ;
       var pathArray = url.split( '/' );
-      var pathArrayClean = [] ;
-      
       // The pathArray may contain empty strings (maybe this is specific to Javascript implementation)
-     
-      for (var c=0 ; c<pathArray.length ; c++)
-      	if ( pathArray[c] != "") pathArrayClean.push(pathArray[c]) ;
-      	
-      var uc = pathArrayClean[pathArrayClean.length-1];
+      var pathArray = pathArray.filter(Boolean);
+
+      var uc = pathArray.length > 0 ? pathArray[pathArray.length-1] : false;
       //2. document name
-      if(uc.lastIndexOf('.html') > -1) {
+      if(uc && uc.lastIndexOf('.html') > -1) {
         uc = ucTranslator[uc.substring(0,uc.lastIndexOf('.html'))];
       }
       //3. query parameter

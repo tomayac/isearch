@@ -2,12 +2,11 @@ define("mylibs/headerMenu", [
     "mylibs/config",
     "mylibs/profile",
     "mylibs/cofind",
-    "mylibs/tags",
     "mylibs/query",
     "mylibs/loader",
     "libs/jquery.select-to-autocomplete"
   ],
-  function(config, profile, cofind, tags, query, loader) {
+  function(config, profile, cofind, query, loader) {
     
     //Defines all header menu panels and generic functions to control them
     var panels = {
@@ -136,9 +135,6 @@ define("mylibs/headerMenu", [
          messageCallback : sendNotifyMessage  
       };      
       if (cofind) cofind.setup(cofindOptions);
-
-      //get user tags from pTag component
-      tags.setUserTags(profile.get('userId'));
       
       setSearchHistory();
           
@@ -173,7 +169,6 @@ define("mylibs/headerMenu", [
       $("#button-login-settings").find('a:first').text('Login');
       //Clearing query (quite silly to do that - turned off)
       //$("#query-field").tokenInput("clear");
-      $(".tags").html('');
       //Remove CoFind from GUI
       if ( cofind ) cofind.remove(profile.get('email'));
       

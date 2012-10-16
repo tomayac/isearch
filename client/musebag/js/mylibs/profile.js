@@ -5,7 +5,7 @@ String.prototype.capitalize = function() {
   return this.charAt(0).toUpperCase() + this.slice(1);
 };
 
-define("mylibs/profile", ["libs/modernizr.min"], function(){
+define("mylibs/profile", ["mylibs/tags","libs/modernizr.min"], function(tags){
 
   var profile = {};
   var profileServerUrl = 'profile/' ;
@@ -56,6 +56,10 @@ define("mylibs/profile", ["libs/modernizr.min"], function(){
       setForm(profile);
       ok = true;
     }
+    
+    //get user tags from pTag component
+    tags.setUserTags();
+    
     //console.dir(profile);
     return ok;
   } ;
@@ -74,6 +78,7 @@ define("mylibs/profile", ["libs/modernizr.min"], function(){
   
   var reset = function() {
     profile = {};
+    tags.reset();
   };
   
   var set = function(key,value,callback) {

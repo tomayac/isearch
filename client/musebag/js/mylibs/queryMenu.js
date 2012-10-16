@@ -978,9 +978,7 @@ define("mylibs/queryMenu",
       var uc = config.getUrlUseCase();
       
       var setOptionVisibility = function(uc) {
-      
-      
-        
+    
         $('#queryUseCase li').removeClass();
         $('.query-composition li').show();
         
@@ -1021,9 +1019,7 @@ define("mylibs/queryMenu",
         
        	
       };
-      
-    // profile.set('settings',{'useCase' : config.constants.queryOptions.useCase});
-      
+
       //This is more or less a fallback so that the page does not need to be reloaded
       //as soon as a user switches to another use case
       

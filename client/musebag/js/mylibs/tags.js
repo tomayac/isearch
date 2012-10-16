@@ -203,6 +203,11 @@ define("mylibs/tags", ["mylibs/config", "js/mylibs/visualization/ThumbContainer.
    });
   }; //End init function
   
+  var reset = function() {
+    tags = [];
+    $(".tags").html('');
+  };
+  
   var getTags = function() {
     return tags;
   };
@@ -221,7 +226,7 @@ define("mylibs/tags", ["mylibs/config", "js/mylibs/visualization/ThumbContainer.
   };
   
   //Get tag recommendations for the user which is logged in
-  var setUserTags = function(userId) {
+  var setUserTags = function() {
 
     //Ask for tag recommendations
     $.ajax({
@@ -236,12 +241,12 @@ define("mylibs/tags", ["mylibs/config", "js/mylibs/visualization/ThumbContainer.
           console.dir(data);
           tags = [];
           
-          //Create the tag cloud html for the user interface and store the retrieved tags
+          //Create the tag cloud html for the user interface and store the retrieved tags +
           //setting up the token input
           for(var t=0; t < data.length; t++) {
-          	data[t][0] = data[t][0] + '';
-            html += '<a href="#" data-rank="' + data[t][1] + '">' + data[t][0].replace(' ', '&nbsp;') + '</a>';
-            tags.push(data[t][0]);
+          	data[t].name = data[t].name + '';
+            html += '<a href="#" data-rank="' + data[t].relevance + '">' + data[t].name.replace(' ', '&nbsp;') + '</a>';
+            tags.push(data[t].name);
           }
             
           $(".tags").html(html);
@@ -269,6 +274,7 @@ define("mylibs/tags", ["mylibs/config", "js/mylibs/visualization/ThumbContainer.
   
   return {
     init: init,
+    reset: reset,
     getTags: getTags, 
     getTokens: getTokens,
     setUserTags : setUserTags

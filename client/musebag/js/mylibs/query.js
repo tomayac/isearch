@@ -16,9 +16,9 @@ define("mylibs/query",
   };
   
   var queryItemSubTypes = {
-    'Rhythm'   : 'rhythm',
-    'Sketch'   : 'sketch',
-    'Emotion'  : 'emotion',
+    'Rhythm'   : 'Rhythm',
+    'Sketch'   : 'Sketch',
+    'Emotion'  : 'Emotion',
     'Location' : 'Location'
   };
 
@@ -46,7 +46,7 @@ define("mylibs/query",
 
   var getBase64File = function(element) {
 
-    var file = new Array();
+    var file = [];
 
     try {
       //Create a file object for the actual canvas data

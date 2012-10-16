@@ -15,6 +15,7 @@ var fs       = require('fs'),
     path     = require('path'),
     restler  = require('restler'),
     config   = require('./config'),
+    helper   = require('./helper'),
     ptag     = require('./ptag'),
     wunder   = require('./wunderground');
 
@@ -93,15 +94,6 @@ var queryWeatherTpl = '<Weather>'
  *  Private Functions
  *  -----------------------------------------------------------------------------
  */
-
-var clone = function(obj) {
-  if (null == obj || "object" != typeof obj) return obj;
-  var copy = obj.constructor();
-  for (var attr in obj) {
-    if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
-  }
-  return copy;
-};
 
 var generateVideoLLDescriptors = function(fileInfo,extSessionId) {
   
@@ -310,79 +302,6 @@ var getQueryRucod = function(query,sessionId,sessionStore,callback) {
   }
 };
 
-var getSessionStore = function(req,asCopy) {
-  //Does a user is logged in?
-  if(!req.session.musebag) {
-    //If not create an guest session store
-    req.session.musebag = {
-      'user' : { 
-        'userId'   : 'guest',
-        'settings' : '{"maxNumResults" : 100, "clusterType" : "3D", "numClusters" : 5, "transMethod" : "rand"}'
-      },
-      'queries' : new Array(),
-      'querycount' : 0
-    };
-  };
-
-  return asCopy === true ? clone(req.session.musebag) : req.session.musebag;
-};
-
-var setSessionStore = function(req,store) {
-  try {
-    req.session.musebag = store;
-  } catch(e) {
-    console.error('Session store could not be set due to an error: ' + e.message);
-  }
-};
-
-var isGuest = function(req) {
-  //Does a user is logged in?
-  var sessionStore = getSessionStore(req,false);
-  
-  if(sessionStore.user.userId == 'guest') {
-    return true;
-  } else {
-    return false;
-  }
-};
-
-var getExternalSessionId = function(req) {  
-  if(req) {
-    var sessionStore = getSessionStore(req,false);
-    if(!sessionStore.user.extSessionId) {
-      var sid = req.sessionID.substring(req.sessionID.length-32,req.sessionID.length) + '-' + sessionStore.querycount;
-      //remove illegal characters
-      sid = sid.replace(/[|&;$%@"<>()+,\/]/g, '0');
-      sessionStore.extSessionId = sid;
-    } 
-    return sessionStore.extSessionId;
-  } 
-};
-
-var getQueryId = function(req) {
-  if(req) {
-    var sessionStore = getSessionStore(req,false);
-    if(req.body.queryId && sessionStore.queries[req.body.queryId]) {
-      return req.body.queryId;
-    } else {
-      return -1 + sessionStore.queries.push({
-        'query'  : null,        //storage for the query JSON object
-        'result' : {            //initial result object
-          'raw'      : null,
-          'relevant' : new Array()
-        } 
-      });
-    }
-  }
-};
-
-/**
- * a little but effective number test function
- */
-var isNumber = function(n) {
-  return !isNaN(parseFloat(n)) && isFinite(n);
-};
-
 /**
  *  -----------------------------------------------------------------------------
  *  Public Functions
@@ -415,7 +334,7 @@ var login = function(req, res){
     	res.send(JSON.stringify(msg));
     } else {
       //Collect initial user data
-      var sessionStore = getSessionStore(req,true);
+      var sessionStore = helper.getSessionStore(req,true);
       
       //Set real user data
       sessionStore.user.userId = data.profile.verifiedEmail;
@@ -482,7 +401,7 @@ var login = function(req, res){
 		    }
 		    
 		    //Store user data in session
-        setSessionStore(req,sessionStore);
+        helper.setSessionStore(req,sessionStore);
 		    
 		    //Return user data to client
         res.send(JSON.stringify(sessionStore.user));
@@ -522,7 +441,7 @@ var profile = function(req, res) {
   
 	var attrib = req.params.attrib;
 	//Get the right session storage (depending on log in status - guest if not, user if yes)
-	var sessionStore = getSessionStore(req,false);
+	var sessionStore = helper.getSessionStore(req,false);
 	
 	if(!sessionStore.user['userId'] || sessionStore.user['userId'] === 'guest') {
 	  res.send(JSON.stringify({
@@ -554,7 +473,7 @@ var setProfile = function(req, res) {
   //get post data
   var data = req.body.data;
   //Get the right session storage (depending on log in status - guest if not, user if yes)
-  var sessionStore = getSessionStore(req,false);
+  var sessionStore = helper.getSessionStore(req,false);
   //Does the requested profile attribute is available
   if(data) {
     
@@ -601,7 +520,7 @@ var setProfile = function(req, res) {
     }
     
     //set the changed temporary profile data to the session profile data
-    //setSessionStore(req,sessionStore);
+    //helper.setSessionStore(req,sessionStore);
     
     if(isGuest(req)) {
       //if it's a guest user we don't store the information in the profile (it is stored already in the session)
@@ -634,7 +553,7 @@ var setProfile = function(req, res) {
         sessionStore.user['state'] = 'member';
         console.log('Profile data sucessfully transmitted to personalisation web service.');
         //set the changed temporary profile data to the session profile data
-        //setSessionStore(req,sessionStore);
+        //helper.setSessionStore(req,sessionStore);
         //Notify client about success full save
         res.send(JSON.stringify(data));
       })
@@ -658,12 +577,12 @@ var getProfileHistory = function(req, res) {
   console.log("get profile history function called...");
   
   //Get the right session storage (depending on log in status - guest if not, user if yes)
-  var sessionStore = getSessionStore(req);
+  var sessionStore = helper.getSessionStore(req);
   
   var result = {};
   
   //Check if history update data is complete 
-  if(!isGuest(req)) {
+  if(!helper.isGuest(req)) {
     //Submit the query to authentication/personalisation component
     var getURL = config.apcPath + 'resources/historydatas/getSearchHistoryFor/'  + sessionStore.user.userId + '/limit/5';
     
@@ -695,7 +614,7 @@ var updateProfileHistory = function(req, res) {
   //get post data
   var data = req.body; 
   //Get the right session storage (depending on log in status - guest if not, user if yes)
-  var sessionStore = getSessionStore(req,false);
+  var sessionStore = helper.getSessionStore(req,false);
   var result = {};
   
   //Check what we got with this POST request
@@ -708,9 +627,11 @@ var updateProfileHistory = function(req, res) {
   //store queries which havn't been finished or have been interrupted in the past
   for(var index in sessionStore.queries) {
     var queryData = sessionStore.queries[index];
-
+    
+    ptag.updateGenericTagSet(req,queryData);
+    
     //Check if history update data is complete 
-    if(!isGuest(req) && queryData.query && queryData.result.relevant) {
+    if(!helper.isGuest(req) && queryData.query && queryData.result.relevant) {
       //Submit the query to authentication/personalisation component
       var storeURL = config.apcPath + 'resources/historydatas/updateSearchHistory';
       
@@ -735,7 +656,6 @@ var updateProfileHistory = function(req, res) {
           console.log('Error during history update with code: ' + response.statusCode);
         } else {
           console.log('History entry for query with index '+ index +' has been saved.');
-          ptag.updateGenericTagSet(callData);
         }
       })
       .on('fail', function(data,response) {
@@ -764,12 +684,12 @@ var query = function(req, res) {
   var data = req.body;
   console.log(data);
   //Get the external session id of the MQF
-  var extSessionId = getExternalSessionId(req);
+  var extSessionId = helper.getExternalSessionId(req);
   //Get the actual queryId
-  var queryId = getQueryId(req);
+  var queryId = helper.getQueryId(req);
   //Get the right session storage (depending on log in status - guest if not, user if yes)
   //Second parameter determines if we get a copy of the session storage or the original object
-  var sessionStore = getSessionStore(req,false);
+  var sessionStore = helper.getSessionStore(req,false);
   //Url of MQF component
   var queryFormulatorURL = config.mqfPath + 'mqf.php?index='; //'submitQuery/';
   
@@ -872,9 +792,9 @@ var queryItem = function(req, res) {
 	console.log("Queryitem function called...");
 	
   //Get the external service session id
-  var sid = getExternalSessionId(req);
+  var sid = helper.getExternalSessionId(req);
   //Get the actual queryId
-  var queryId = getQueryId(req);
+  var queryId = helper.getQueryId(req);
   
   //Callback function for external webservice calls
   var externalCallback = function(error,data) {
@@ -967,7 +887,7 @@ var addResultItem = function(req, res) {
   //get post data
   var data = req.body;  
   //Get the right session storage (depending on log in status - guest if not, user if yes)
-  var sessionStore = getSessionStore(req,false);
+  var sessionStore = helper.getSessionStore(req,false);
   
   //Check what we got with this POST request
   if(data.item && sessionStore.queries[data.queryId]) {    
@@ -1002,7 +922,7 @@ var deleteResultItem = function(req, res) {
   var data = req.body;
   
   //Get the right session storage (depending on log in status - guest if not, user if yes)
-  var sessionStore = getSessionStore(req,false);
+  var sessionStore = helper.getSessionStore(req,false);
   
   //Check what we got with this POST request
   if(data.item && sessionStore.queries[data.queryId]) { 
@@ -1023,7 +943,7 @@ var deleteResultItem = function(req, res) {
 var setUseCase = function(req, res) {
   console.log('set use case to ' + req.route.params[0]);
   
-  var sessionStore = getSessionStore(req,false);
+  var sessionStore = helper.getSessionStore(req,false);
   var settings = JSON.parse(sessionStore.user.settings);
   
   switch(req.route.params[0]) {
