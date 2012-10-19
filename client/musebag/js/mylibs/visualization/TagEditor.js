@@ -11,7 +11,33 @@ var p = TagEditor.prototype;
 
 p.create = function()
 {
-	
+  if(this.allTags.length < 1) {
+    this.ele.append('<p>No filter tags</p>');
+  } else {
+    for(var t = 0; t < this.allTags.length; t++)
+    {
+      var tag = this.allTags[t];
+      var that = this;
+      
+      var tagBox = $('<span/>', { "class": "tag", "data-rank" : tag.relevance, text: tag.name }).appendTo(this.ele);
+      
+      tagBox.toggle(function() {
+        that.tags.push($(this).text());
+        $(this).addClass('selected');
+        if(typeof that.callBack === 'function') {
+          that.callBack(that.tags);
+        }
+      }, function() {
+        that.tags.splice(that.tags.indexOf(tag.name),1);
+        $(this).removeClass('selected');
+        if(typeof that.callBack === 'function') {
+          that.callBack(that.tags);
+        }
+      });
+    }
+  }
+  //Original version
+	/*
 	var tagsDiv = $('<div/>', { "class": "tags-container" }).appendTo(this.ele) ;
 	
 	this.tagsContainer = tagsDiv ;
@@ -45,6 +71,7 @@ p.create = function()
    $(tagInput).focus(function(event) {
 		$(this).attr("value", "") ;
 	}) ;
+	*/
 /*
 	var tagsClear = $('<div/>', { "class": "tags-clear" }).appendTo(addTagDiv) ;
 		

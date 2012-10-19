@@ -17,10 +17,10 @@ define("mylibs/visualization/TagManager", [], function() {
 		storeItemUrl = options.resultItemUrl || options.filterTagUrl || tagServerUrl ;
 		if ( tagServerUrl ) storeItemUrl += "&a=store" ;
 				
-		load() ;
+		//load() ;
 	};
 
-	var load = function()	{
+	var load = function(callback)	{
 	
 		var data = [] ;
 		
@@ -36,7 +36,18 @@ define("mylibs/visualization/TagManager", [], function() {
 			data: { "tags":	JSON.stringify(data) },
 			success: function(data) {
 			  console.log('got filter tags:');
-			 console.dir(data);
+			  console.dir(data);
+			  
+			  if(!data || data.length < 1) {
+			    return;
+			  }
+			  
+			  //pTag always serves a sorted array of relevant tags back to the client
+			  sortedTags = data;
+			  if(typeof callback === 'function') {
+			    callback(sortedTags);
+			  }
+			  /*
 				if ( !data ) return ;
 				
 				if ( data.error ) {
@@ -77,6 +88,7 @@ define("mylibs/visualization/TagManager", [], function() {
 						sortedTagList.push(sortedTags[i].tag) ;
 					}
 				}
+				*/
 			},
 			error: function(jqXHR, error, object) {
         console.error("Error during filterTag request: " + error);
@@ -218,7 +230,8 @@ define("mylibs/visualization/TagManager", [], function() {
 	
 	return { 
 		docs: docs,
-		init: init, 
+		init: init,
+		load: load,
 		tags: sortedTagList,
 		store: store,
 		clear: clear,

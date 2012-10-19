@@ -10,6 +10,8 @@ define("mylibs/config", [],
      'uc3' : 'furniture',
      'uc6' : 'generic'
    };
+   // private url key selector
+   var urlSetKey = 'local';
   
    /**
     * Global configuration, the constants object includes all currently active settings 
@@ -210,7 +212,7 @@ define("mylibs/config", [],
       // in order to specify if all requests should be send to the local MuseBag server
       // or a remote server which deals as query formulator, tagging and user profile sever:
       // it can contain either "local" or "remote" as possible values.
-      var urlSetKey = window.urlSetKey; 
+      urlSetKey = window.urlSetKey || urlSetKey; 
       var newConfig = getUseCaseConfig(uc,urlSetKey);
       if(typeof newConfig === 'object') {
         //Reset modalities before updating it with UC specific config
@@ -222,6 +224,10 @@ define("mylibs/config", [],
     
     var getURLParameter = function(name) {
       return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null;
+    };
+    
+    var getUrlSetKey = function() {
+      return urlSetKey;
     };
     
     var getUrlUseCase = function(url_) {
@@ -251,6 +257,7 @@ define("mylibs/config", [],
     return {
       constants     : constants,
       getUrlUseCase : getUrlUseCase,
+      getUrlSetKey  : getUrlSetKey,
       updateConfig  : updateConfig,
       set           : set
     };

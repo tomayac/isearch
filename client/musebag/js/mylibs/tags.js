@@ -214,13 +214,13 @@ define("mylibs/tags",
   
   //Get tag recommendations for the user which is logged in
   var setUserTags = function() {
-
+  
     //Ask for tag recommendations
     $.ajax({
       type: "GET",
       url: config.constants.tagRecomUrl,
       success: function(data) {
-        
+
         try {
           data = JSON.parse(data);
           

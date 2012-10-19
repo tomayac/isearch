@@ -20,8 +20,8 @@ var restler = require('restler'),
  * Global variables
  */
 var tagSetSize = 20;
+var filterTagSetSize = 10;
 
-/*
 var tags = {
     'kojomisch'     : [['flight',1.0],['travel',1.5],['airplane',2.8],['sky',0.8],['rocket',1.0],['USA',0.9],['NASA',1.3],['space',1.8],['Apollo Program',1.2],['Saturn V',0.8],['Viking',1.0],['Space probes',1.8],['ISS',1.2]],
     'julia.ziemens' : [['trees',2.0],['nature',1.8],['enviromental landscaping',1.0],['green energy',1.5],['electric cars',0.6],['Renault',0.5],['tulip',0.7],['garden',1.0],['pine tree',1.2],['forest',0.9],['Kanada',2.0]],
@@ -30,7 +30,6 @@ var tags = {
     'tomac'         : [['WoW',3.0],['MMRPG Avatars',1.2],['Game avatar',1.5],['Knight',2.0],['Magican',2.5],['World of Warcraft',1.8],['Lost Chaos',1.0],['Forsaken World',0.8],['Elf',1.8],['Warrior',3.0],['Hunter avatar',2.2],['High level avatars',1.2],['Special characters',0.8]],
     'familie.etzold': [['shark',2.0],['fish',2.5],['dolphin',1.5],['Atlantic',1.0],['Fishing',0.8],['Diving',1.5],['dive license',0.6],['Pacific',1.5],['Hammerhead',2.0],['Hawaii',3.0],['Marlin',1.0],['Seahorse',1.8],['Best diving grounds',2.3]]
 };
-*/
 
 //Stores the redis client connection
 var client = null;
@@ -105,9 +104,10 @@ var normalizeTagSet = function(tagSet) {
  * 
  * @param tag - the tag to add to the tag set
  * @param tagSet - the current tag set
+ * @param relevance - a user defined relevance for the given tag
  * @returns enhanced input tag set
  */
-var addTag = function(tag,tagSet) {
+var addTag = function(tag,tagSet,relevance) {
 
   if(!tagSet || typeof tagSet !== 'object') {
     tagSet = [];
@@ -129,7 +129,7 @@ var addTag = function(tag,tagSet) {
   if(!exists) {
     tagSet.push({
       'name' : tag,
-      'relevance' : 1.0
+      'relevance' : relevance || 1.0
     });
   }
   
@@ -141,15 +141,24 @@ var addTag = function(tag,tagSet) {
  * @param tagSet - the tag set which should be sorted based on the relevance values
  * @returns the relevance sorted tag set
  */
-var sortTagSet = function(tagSet) {
+var sortTagSet = function(tagSet,sortBy) {
   
   if(!tagSet || typeof tagSet !== 'object' || !(tagSet instanceof Array)) {
     return tagSet;
   }
   
-  tagSet.sort(function(a,b) { 
-    return parseFloat(b.relevance) - parseFloat(a.relevance);
-  });
+  if(!sortBy || sortBy === 'relevance') {
+    tagSet.sort(function(a,b) { 
+      return parseFloat(b.relevance) - parseFloat(a.relevance);
+    });
+  } else if (sortBy === 'name') {
+    tagSet.sort(function(a, b){
+      var nameA = a.name.toLowerCase(), nameB=b.name.toLowerCase();
+      if (nameA < nameB) { return -1; } 
+      if (nameA > nameB) { return  1; }
+      return 0; //default return value (no sorting)
+     });
+  }
   
   return tagSet;
 };
@@ -255,7 +264,6 @@ var getGenericTagSet = function(req,callback) {
       //Check if a general tag set for this country is all ready created
       client.hgetall(country + 'TagSet', function (err, tagSet) {
         //if not: create it 
-        console.log('Error? ' + err);
         if(helper.isObjectEmpty(tagSet)) {
           console.log('create initial ' + country + ' tag set...');
           createGenericTagSet(country, function(error, tagSet) {
@@ -339,6 +347,67 @@ var getUserTagSet = function(req,callback) {
 };
 
 /**
+ * 
+ * @param result
+ * @returns
+ */
+var getResultTags = function(result) {
+  
+  var resultTagSet = [];
+  
+  if(!result || typeof result !== 'object') {
+    return resultTagSet;
+  }
+  
+  try {
+    for(var i=0; i < result.documentList.length; i++) {
+      var docTags = result.documentList[i].tags;
+      for(var t=0; t < docTags.length; t++) {
+        resultTagSet = addTag(docTags[t],resultTagSet);
+      }
+    }
+    resultTagSet = sortTagSet(resultTagSet);
+  } catch(e) {
+    console.log('Error during getResultTags: ' + e.toString());
+  }
+  return resultTagSet;
+};
+
+/**
+ * 
+ * @param resultTags
+ * @param userTags
+ * @returns filterTags
+ */
+var getFilterTags = function(resultTags, userTags) {
+  
+  var filterTags = [];
+  
+  if(resultTags.length < 1 || userTags.length < 1) {
+    return filterTags;
+  }
+  
+  for(var u=0; u < userTags.length; u++) {
+    for(var r=0; r < resultTags.length; r++) {
+      if(userTags[u].name.toLowerCase() === resultTags[r].name.toLowerCase()) {
+        filterTags = addTag(userTags[u].name,filterTags,userTags[u].relevance + resultTags[r].relevance);
+      }
+    }
+  }
+  
+  if(filterTags.length < filterTagSetSize) {
+    for(var r=0; r < resultTags.length; r++) {
+      filterTags = addTag(resultTags[r].name,filterTags);
+      if(filterTags.length === filterTagSetSize) {
+        break;
+      }
+    }
+  }
+  
+  return sortTagSet(filterTags);
+};
+
+/**
  *  -----------------------------------------------------------------------------
  *  Public Functions
  *  -----------------------------------------------------------------------------
@@ -380,8 +449,7 @@ var updateGenericTagSet = function(req, queryData) {
         tagSet.data = addTag(tags[t],tagSet.data);
       }
       tagSet.data = sortTagSet(tagSet.data);
-      console.log('new tag set:');
-      console.dir(tagSet);
+      
       //Save the new tag set to the redis store
       client.hmset(tagSet.name, 'tags', JSON.stringify(tagSet.data),function(err, obj) {
         if(err) {
@@ -411,12 +479,12 @@ var tagRecommendations = function(req, res){
 	  var userTags = [];
 	  
 	  if(!error) {
-	    userTags = JSON.stringify(normalizeTagSet(tagSet.data.slice(0,tagSetSize)));
+	    userTags = normalizeTagSet(sortTagSet(tagSet.data.slice(0,tagSetSize),'name'));
 	  } else {
 	    console.log('Error while retrieving tag recommendations: ' + error);
 	  } 
 	  
-	  res.send(userTags);
+	  res.send(JSON.stringify(userTags));
   };
 	
 	if(helper.isGuest(req)) {
@@ -452,22 +520,29 @@ var tagRecommendations = function(req, res){
 var filterTags = function(req, res){
 	
   console.log('filterTags function called...');
-  console.dir(req.query);
+
+  var sessionStore = helper.getSessionStore(req,false);
+  var resultTags = getResultTags(sessionStore.queries[sessionStore.queries.length-1].result.raw);
   
-  var userKey = '';
+  var callback = function(error, tagSet) {
+    
+    var filterTags = [];
+      
+    if(!error) {
+      filterTags = getFilterTags(resultTags,tagSet.data);
+      filterTags = filterTags.slice(0,8);
+    } else {
+      console.log('Error while retrieving filter tags: ' + error);
+    } 
+    
+    res.send(JSON.stringify(filterTags));
+  };
   
-  if(req.session.musebag.user.userId) {
-    userKey = req.session.musebag.user.userId.substr(0,req.session.musebag.user.userId.indexOf('@'));
-  } 
-  
-  var userTags = tags[userKey] ? tags[userKey] : tags['familie.etzold'];
-  var filterTags = [];
-  
-	for(var c=0; c < 6; c++) {
-		filterTags.push(userTags[Math.floor(Math.random()*(userTags.length))]);
-	}
-	
-	res.send(JSON.stringify(filterTags));
+  if(helper.isGuest(req)) {
+    getGenericTagSet(req,callback);
+  } else {
+    getUserTagSet(req,callback);
+  }
 };
 
 /**

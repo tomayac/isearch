@@ -808,9 +808,10 @@ p.redraw = function(contentWidth, contentHeight)
 		var itemCount = 0 ;
 		for(var i=0 ; i< this.thumbs.length; i++)
 		{
-			var item = this.thumbs[i] ;	
-			if ( item.doc.filtered === true ) continue ;
-			if ( ThumbContainer.modalFilter(item.doc, this.ctx.filterBar.modalities()) == true ) continue ;
+			var item = this.thumbs[i] ;
+			console.dir(item.doc);
+			if ( item.doc.filtered ) continue ;
+			if ( ThumbContainer.modalFilter(item.doc, this.ctx.filterBar.modalities()) === true ) continue ;
 			itemCount++ ;
 		}
 			
@@ -823,7 +824,7 @@ p.redraw = function(contentWidth, contentHeight)
 		this.offset = this.pageCount * Math.floor(this.offset / this.pageCount) ;	
 	
 
-		for( var i=this.offset ; i<Math.min(this.offset + this.pageCount, itemCount) ; i++ )
+		for( var i=this.offset ; i<Math.min(this.offset + this.pageCount, this.thumbs.length) ; i++ )
 //		for( var i=0 ; i<this.thumbs.length ; i++ )		
 		{	
 			var item = this.thumbs[i] ;	

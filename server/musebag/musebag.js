@@ -506,7 +506,7 @@ var setProfile = function(req, res) {
       } else {
 
         //Set the profile attribute to the new value as long as it is a logged in user
-        if(sessionStore.user[attrib] !== data[attrib] && !isGuest(req)) {
+        if(sessionStore.user[attrib] !== data[attrib] && !helper.isGuest(req)) {
           sessionStore.user[attrib] = data[attrib];
           changed = true;
         }
@@ -522,7 +522,7 @@ var setProfile = function(req, res) {
     //set the changed temporary profile data to the session profile data
     //helper.setSessionStore(req,sessionStore);
     
-    if(isGuest(req)) {
+    if(helper.isGuest(req)) {
       //if it's a guest user we don't store the information in the profile (it is stored already in the session)
       res.send(JSON.stringify({info : 'guest'}));
       return;

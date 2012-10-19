@@ -29,8 +29,6 @@ define("mylibs/queryMenu",
     };
 
     var adjust = function() {
-      console.log('entered adjust function');
-
       //Fix canvas width and height in HTML
       //(it appears that CSS is not enough)
       //See http://www.whatwg.org/specs/web-apps/current-work/multipage/the-canvas-element.html#attr-canvas-width for more info
@@ -50,6 +48,35 @@ define("mylibs/queryMenu",
       } else {
         //removeControls();
         removeSlider( menu );
+      }
+      
+      //adjust submit button 
+      if($('#query').hasClass('resultView')) {
+        var submitRight = $('#query').innerWidth() - $('.token-input-list-isearch').outerWidth();
+        $('#query-submit').css('right',submitRight);
+      } 
+      
+      //adjust result query composition menu
+      if($('nav.resultView').length) {
+        
+        //Query composition area with modality panels
+        var compLeft = $('ul.resultView').offset().left + 3;
+        if($(window).width() > $('#container').outerWidth()) {
+          compLeft -= (($('#container').outerWidth(true) - $('#container').innerWidth()) / 2);
+        }
+        var cssObj = {
+          'margin-left' : compLeft,
+          'width' : $('.token-input-list-isearch').outerWidth() - 8
+        };
+        $('.query-composition').css(cssObj);
+        $('.panel.resultView').css(cssObj);
+        
+        //adjust menu trigger button
+        if($('.query-composition li.active').length) {
+          $('#menuTrigger').css('top','0em');
+        } else {
+          $('#menuTrigger').css('top','0.6em');
+        }
       }
     };
 
@@ -108,7 +135,6 @@ define("mylibs/queryMenu",
       } else {
         $canvas.attr('width',400);
         $canvas.attr('height',270);
-        console.log("width to 400 and height to 270");
       }
     };
 
@@ -735,23 +761,22 @@ define("mylibs/queryMenu",
           Wami.setUploadCallback(function(data){
           
             var fileInfo = JSON.parse(data[0]);
-            
             var id = query.addItems(fileInfo,query.types.Audio);
                 
                        
            	//set the appropriate data tags for the html element
-			var ele = $('#' + id) ;
-
-			ele.removeAttr("src") ;
-			ele.attr("data-subtype", "rhythm") ;
-			
-			for ( var i=0 ; i<fileInfo.path.length ; i++ )
-			{
-				var url = fileInfo.path[i].url ;
-				var mime = fileInfo.path[i].mime ;
-
-				$('<source/>', { src: url, type: mime }).appendTo(ele) ;
-			}
+      			var ele = $('#' + id) ;
+      
+      			ele.removeAttr("src") ;
+      			ele.attr("data-subtype", "rhythm") ;
+      			
+      			for ( var i=0 ; i<fileInfo.path.length ; i++ )
+      			{
+      				var url = fileInfo.path[i].url ;
+      				var mime = fileInfo.path[i].mime ;
+      
+      				$('<source/>', { src: url, type: mime }).appendTo(ele) ;
+      			}
             
             reset();
           });
@@ -932,8 +957,8 @@ define("mylibs/queryMenu",
           if(!$(".query-composition").is(":visible")) {
             $(".query-composition").addClass('resultView');
             $('#menuTrigger').css({
-              'margin' : '0 auto 0 50%',
-              'top'    : '-0.1em'
+              'margin' : '0 auto 0 49%',
+              'top'    : '0.7em'
             });  
           } else {
             $('.panel').hide();
@@ -944,11 +969,12 @@ define("mylibs/queryMenu",
            
           $(".query-composition").slideToggle(200,function(){
             if($(this).is(":visible")) {
+              adjust();             
               $("#menuTrigger").text('Close options');
             } else {
               $('#menuTrigger').css({
-               'margin' : '0 auto 1em 50%',
-               'top'    : '-0.3em' 
+               'margin' : '0 auto 1em 49%',
+               'top'    : '0.8em' 
               });
               
               $("#menuTrigger").text('Open options');
@@ -964,9 +990,12 @@ define("mylibs/queryMenu",
        * Jonas: added search result i-search logo, which also deals as home button
        */
       if($('#resultLogo').length === 0) {
-        $("#query").prepend('<a href="' + $('#queryUseCase li.enabled a').attr('href') + '" title="Restart I-SEARCH" id="resultLogo"><img src="img/logo-result.png"/></a>');
+        $("#queryContainer").prepend('<div id="queryLogo"><a href="' + $('#queryUseCase li.enabled a').attr('href') + '" title="Restart I-SEARCH"><img src="img/logo-result.png"/></a></div>');
+        $("#query").addClass('resultView');
         $("#query ul").addClass('resultView');
-        $("#query-submit").addClass('resultView');    
+        $("#query-submit").addClass('resultView'); 
+        //Adjust menu again, since we added the logo in front of the search bar
+        setTimeout(adjust,300);   
       }
     };
     

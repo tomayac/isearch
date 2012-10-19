@@ -714,18 +714,24 @@ header img {
  * Begin of query input and assembling styles
  */
 
-#resultLogo {
-  display: inline-block;
-  position: relative;
-  margin-left: 5%; 
-}
-
-#resultLogo img {
-  height: 5em;
-}
-
 #queryContainer {
   position: relative;
+  margin: 0 auto 30px auto;
+  width: 90%;
+}
+
+#queryLogo {
+  display: inline-block;
+  position: relative;
+  width: 140px;
+}
+
+#queryLogo a {
+  padding-left: 2.5em;
+}
+
+#queryLogo a img {
+  height: 5em;
 }
 
 #queryUseCase {
@@ -761,8 +767,19 @@ header img {
 
 #query {
 	position: relative;
-  margin-bottom: 30px;
-  padding: 0 0 10px 0;
+	margin: 0;
+  padding: 0;
+}
+
+#query.resultView {
+  display: inline-block;
+  left: 20px;
+  
+  margin: 0;
+  padding: 0;
+  
+  width: 80%;
+  vertical-align: top;
 }
 
 #query.over{
@@ -790,12 +807,12 @@ header img {
 
 #query-submit:hover {
 	border: 1px solid #999;
-  background-color: #CFA;
+  background-color: #ddf3dc;
   color: #222;
 }
 
 #query-submit.resultView {
-  top: 0.5em;
+  top: 0.8em;
   right: 6%;
 }
 
@@ -819,8 +836,8 @@ header img {
 
 #query ul.token-input-list-isearch.resultView {
   display: inline-block;
-  width: 80%;
-  margin: 0.5em auto 0 2.5%;
+  width: 95%;
+  margin: 0.8em 0 0 0;
   vertical-align: top;
 }
 
@@ -995,8 +1012,9 @@ nav {
 }
 
 nav.resultView {
-  width: 80%;
-  margin: -0.3em auto 0 13.6%;
+  width: 68.2%;
+  top: 0.7em;
+  margin: -0.3em 0 0 16%;
   border: 1px solid #b1b1b1;
   border-top: none;
   
@@ -1073,12 +1091,14 @@ nav a img {
 #menuTrigger {
   display: block;
   position: relative;
+  top: 1.2em;
   z-index: 0;
   
   width: 10%;
+  min-width: 100px;
   height: 2em;
   
-  margin: -0.3em auto 1em 50%;
+  margin: -0.3em auto 1em 49%;
   padding: 4px;
   
   background-color: #e0e0e0;
@@ -1111,7 +1131,7 @@ nav a img {
 
 .panel.resultView {
   width: 80%;
-  margin: -2px auto 0 13.7%;
+  margin: 0.8em auto 0 13.7%;
 } 
 
 .panel .instruction {
@@ -1347,18 +1367,116 @@ footer {
 }
 
 #visualization-container {
+	position: relative;
+	width: 90%;
+  height: 600px;
 	margin: auto;
 	margin-top: 10px;
-	width: 78%;
-	height: 600px;
-	/* border: 1px solid red;  For debugging purposes */
-	position: relative;
 	padding: 10px;
+	
+	/* border: 1px solid red;  For debugging purposes */
 }
 
+#visualization-menu {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  
+  width: 140px; 
+  padding: 5px;
+}
+
+#visualization-menu .group {
+  display: block; 
+  width: 100%;
+}
+
+#visualization-menu .group h4 {
+  display: block;
+  padding: 0 0 5px 0;
+  border-bottom: 1px solid #ccc;
+  margin-top: 0.8em;
+  
+  font-weight: bold;
+  color: #567470;
+}
+
+#visualization-menu .group .optionsHeader {
+  display: block;
+  
+  font-weight: normal;
+  font-variant: small-caps;
+  margin-top: 0.4em;
+  padding: 0 0 0.1em 0;
+  
+  border: 0;
+  border-bottom: 1px dotted #eee;
+  
+  background: none;
+  width: 100%;
+}
+
+#visualization-menu .group .optionsHeader .ui-button-text {
+  padding: 0 2.1em 0.1em 0.5em;
+  font-size: 0.9em;
+  font-weight: normal;
+  text-align: left;
+}
+
+#visualization-menu .group .options {
+  margin: 0.5em 0 1em 0;
+}
+
+#visualization-menu .group .options .ui-button {
+  display: block;
+  text-align: left;
+  margin-bottom: 0.2em;
+  border: none;
+  background: none;
+  width: 100%;
+}
+
+#visualization-menu .group .options .ui-button .ui-button-text {
+  padding: .4em 1em .4em 3em;
+  font-size: 0.8em;
+  font-weight: normal;
+}
+
+#visualization-menu .group #filter-tag-editor span.tag {
+  background: #fff;
+  border: 1px solid #ccd9CC;
+  border-radius: 2px 2px 2px 2px;
+  color: #638421;
+  display: inline-block;
+  font-size: 0.9em;
+  margin-bottom: 4px;
+  margin-right: 4px;
+  padding: 5px;
+  text-decoration: none;
+}
+
+#visualization-menu .group .options .ui-state-active,
+#visualization-menu .group #filter-tag-editor span.selected {
+  background: #e6edc3;
+}
+
+#visualization-menu .group button.ui-state-hover,
+#visualization-menu .group .options .ui-state-hover,
+#visualization-menu .group #filter-tag-editor span.tag:hover {
+  background: #ddf3dc;
+}
+
+#visualization-area {
+  position: absolute; 
+  left: 170px;
+  right: 0; 
+  top: 20px;
+  bottom: 0;
+}
 
 /* mstVisualizer */
-
+/*
 #visualization-container
 {
 	position: relative;
@@ -1366,7 +1484,7 @@ footer {
 	height: 565px;
 	margin-top: 35px;
 }
-
+*/
 #visualization-container #drawing
 {
 	float: left;
@@ -1598,7 +1716,25 @@ div.rhythm canvas {
  */
 
 /*768px ______________________________ */
-@media only screen and (min-width: 481px) {
+@media only screen and (max-width: 800px) {
+  
+  #queryLogo {
+    width: auto;
+  }
+  
+  #queryLogo a {
+    padding: 0;
+  }
+  
+  #query-submit {
+    width: 60px;
+  }
+  
+  #menuTrigger {
+    margin: 0 auto;
+    top: 1.2em;
+  }
+  
   .results #flash-container {
     width: 70%;
   }

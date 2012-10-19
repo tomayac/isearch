@@ -1,75 +1,30 @@
 define("mylibs/visualization/FilterBar",  ["mylibs/location"], 
-    function(location) {
+  function(location) {
 
 	var tagManager = null ;
 	var currentTags = [], tagsButtons, filterTags = [], modalFilter = [] ;
-	var callback, ele, docs, modalities, modaloptions  ;
+	var callback, ele, docs, modalities, modaloptions, setToggleCallback  ;
 	
-	var init = function(ele_, options, tagManager_, docs_, callback_)
+	var init = function(ele_, options, tagManager_, docs_, toggleCallback_, callback_)
 	{
 		ele = ele_ ;
 		callback = callback_ ;
 		tagManager = tagManager_ ;
 		docs = docs_ ;
 		modaloptions = options.modalities ;
+		setToggleCallback  = toggleCallback_;
 		
 		update() ;
 	} ;
 	
 	var update = function() 
-	{
-		
+	{		
 		$(ele).empty() ;
-			
-		mediaDiv = $('<div/>', {"class": "formitem", css: { "display": "table-cell", "vertical-align": "middle", "width": "230px"}}).appendTo(ele) ;
-		$('<span/>', { css: { "display": "table-cell", "vertical-align": "middle", "padding-right": "5px"},  text: "Media:" } ).appendTo(mediaDiv) ;
-		mediaButtons = $('<div/>', { css: { display: "table-cell" } } ).appendTo(mediaDiv) ;
-			
-		// build buttons for each modality
 		
-		var btns = [] ;
-		
-		
-		var item = $("<input/>", { type: "radio", name: "modal-radio", id: "modal-item-all", "checked": "checked"  }).appendTo(mediaButtons) ;
-		var label = $("<label/>", { "for": "modal-item-all", text: "all" }).appendTo(mediaButtons) ;
-		item.button() ;
-		item.click(function() {
-						
-				filter() ;
-				rerank() ;
-					
-			});
-			
-		for ( var mod in modaloptions )
-		{
-			var modality = modaloptions[mod] ;
-			
-			var item = $("<input/>", { type: "radio", name: "modal-radio", id: "modal-item-" + mod  }).appendTo(mediaButtons) ;
-			var label = $("<label/>", { "for": "modal-item-" + mod, text: modality.label }).appendTo(mediaButtons) ;
-			
-			/*if ( $.inArray(mod, modalFilter) != -1 ) */
-		//	item.attr("checked", "checked") ;
-			modalFilter.push(mod) ;
-			
-			item.button( {text: false,  "icons": {primary:'ui-icon-media-' + mod}}) ;
-			
-			btns.push(item) ;
-			
-			item.click(function() {
-						
-				filter() ;
-				rerank() ;
-					
-			});
-		
-		}
-		
-		
-		// draw the sort by buttons
-		
-		var sortbyDiv = $('<div/>', {"class": "formitem", css: { "display": "table-cell", "vertical-align": "middle", "width": "200px"}}).appendTo(ele) ;
-		$('<span/>', { css: { "display": "table-cell", "vertical-align": "middle", "padding-right": "5px"},  text: "Sort by:" } ).appendTo(sortbyDiv) ;
-		var sortbyButtons = $('<div/>', { css: { display: "table-cell" } } ).appendTo(sortbyDiv) ;
+		// draw the sort by buttons		
+		var sortbyDiv = $('<div/>', {"class": "group"}).appendTo(ele) ;
+		$('<h4/>', {text: "Sort by" }).appendTo(sortbyDiv) ;
+		var sortbyButtons = $('<div/>', {"class": "options"}).appendTo(sortbyDiv) ;
 		
 		/**
 		 * Triantafillos:
@@ -79,19 +34,19 @@ define("mylibs/visualization/FilterBar",  ["mylibs/location"],
 		$("<label/>", { "for": "sortby-relevance", text: "Relevance" }).appendTo(sortbyButtons);
 		$("<input/>", { type: "radio", name:"sortby", id: "sortby-relevance", "checked": "checked" })
 		.appendTo(sortbyButtons)
-		.button( {text: false,  "icons": {primary:'ui-icon-sortby-relevance'}});
+		.button( {"icons": {primary:'ui-icon-sortby-relevance'}});
 		
 		// sort by time button
 		$("<label/>", { "for": "sortby-time", text: "Time" }).appendTo(sortbyButtons) ;
 		$("<input/>", { type: "radio", name:"sortby",  id: "sortby-time"  })
 		.appendTo(sortbyButtons)
-		.button( {text: false,  "icons": {primary:'ui-icon-sortby-time'}});
+		.button( {"icons": {primary:'ui-icon-sortby-time'}});
 		
 		// sort by location button
 		$("<label/>", { "for": "sortby-location", text: "Location" }).appendTo(sortbyButtons);
 		$("<input/>", { type: "radio", name:"sortby", id: "sortby-location"  })
 		.appendTo(sortbyButtons) 
-		.button( {text: false,  "icons": {primary:'ui-icon-sortby-location'}});
+		.button( {"icons": {primary:'ui-icon-sortby-location'}});
 		
 		$('[name=sortby]').click(function(event) {
 		  event.preventDefault();
@@ -100,30 +55,74 @@ define("mylibs/visualization/FilterBar",  ["mylibs/location"],
 		  return false;
 	    });
 		
-		sortbyButtons.buttonset() ;
+		//sortbyButtons.buttonset() ;
+    
+    var filterDiv = $('<div/>', {'class': 'group'}).appendTo(ele) ;
+    $('<h4/>', { text: 'Filter by' } ).appendTo(filterDiv) ;
+    
+    //Filter by media
+    var mediaHeader = $('<button/>', { 'class' : 'optionsHeader', text: 'Media' } ).appendTo(filterDiv) ;
+    mediaHeader.button({'icons': {secondary:'ui-icon-triangle-1-e'}});
+    var mediaButtons = $('<div/>', {'class' : 'options'}).appendTo(filterDiv) ;
+      
+    // build buttons for each modality
+    var btns = [] ; 
+    var item = $("<input/>", { type: "radio", name: "modal-radio", id: "modal-item-all", "checked": "checked"  }).appendTo(mediaButtons) ;
+    var label = $("<label/>", { "for": "modal-item-all", text: "all" }).appendTo(mediaButtons) ;
+    item.button() ;
+    item.click(function() {
+      filter() ;
+      rerank() ;
+    });
+      
+    for ( var mod in modaloptions )
+    {
+      var modality = modaloptions[mod] ;
+      
+      var item = $("<input/>", { type: "radio", name: "modal-radio", id: "modal-item-" + mod  }).appendTo(mediaButtons) ;
+      var label = $("<label/>", { "for": "modal-item-" + mod, text: modality.label }).appendTo(mediaButtons) ;
+      
+      /*if ( $.inArray(mod, modalFilter) != -1 ) */
+      //  item.attr("checked", "checked") ;
+      modalFilter.push(mod) ;
+      
+      item.button( {"icons": {primary:'ui-icon-media-' + mod}}) ;
+      
+      btns.push(item) ;
+      
+      item.click(function() {      
+        filter() ;
+        rerank() ;      
+      });
+    }
 		
+    setToggleCallback(mediaHeader,mediaButtons);
+    
 		// draw tag filter bar
-		var tags = currentTags = tagManager.tags ;
+    var tagHeader = $('<button/>', { 'class' : 'optionsHeader', text: 'Tags' } ).appendTo(filterDiv) ;
+    tagHeader.button({'icons': {secondary:'ui-icon-triangle-1-e'}});
+		var tagContainer = $('<div/>', { id: 'filter-tag-editor', 'class' : 'options' }).appendTo(filterDiv) ;
 		
-		tagsDiv = $('<div/>', {"class": "formitem", css: { "display": "table-cell", "vertical-align": "middle"}}).appendTo(ele) ;
-		$('<span/>', { css: { "display": "table-cell", "vertical-align": "middle", "padding-right": "5px"},  text: "Tags:" } ).appendTo(tagsDiv) ;
-		tagEditorDiv = $('<div/>', { id: "filter-tag-editor", css: { display: "table-cell" } }).appendTo(tagsDiv) ;
-		
-		var tagEditor = new TagEditor(tagEditorDiv, [], tags, function() {
-		
-			filterTags = [] ;
-			
-			for( tag in this.tags )	{	
-				if ( this.tags[tag] == 2 ) 	filterTags.push(tag) ;
-			}
-						
-			filter() ;
-			rerank() ;
-			
+		tagManager.load(function(tags) {
+		  var tagEditor = new TagEditor(tagContainer, [], tags, function(fTags) {
+	      
+	      filterTags = fTags || [];
+
+	      //Original version
+	      /*
+	      filterTags = [] ;
+	      
+	      for( tag in this.tags ) { 
+	        if ( this.tags[tag] == 2 )  filterTags.push(tag) ;
+	      }
+	      */    
+	      filter() ;
+	      rerank() ;
+	      
+	    }) ;
 		}) ;
 		
-		
-		
+		setToggleCallback(tagHeader,tagContainer);
 	};
 	
 	var filter = function()
@@ -132,45 +131,35 @@ define("mylibs/visualization/FilterBar",  ["mylibs/location"],
 		
 		if ( filterTags.length == 0 ) 
 		{
-			for(var i=0 ; i<docs.length ; i++ )
+			for(var i=0 ; i<docs.length ; i++ ) {
 				docs[i].filtered = false ;
+			}
 		}
 		else
 		{
-			for(var i=0 ; i<docs.length ; i++ )
+			for(var i=0 ; i<docs.length ; i++ ) {
 				docs[i].filtered = true ;
-		
+			}
 			for( var i=0 ; i<docs.length ; i++ )
 			{
-				var doc = docs[i] ;
-				
-				if ( !doc.tags) continue ;
-					
-				var filtered = false ;
-				
+				if ( !docs[i].tags) continue ;
+
 				for(var j=0 ; j<filterTags.length ; j++ )
-				{
-					var tag = filterTags[j] ;
-						
+				{	
 					var found = false ;
-					for( var k=0 ; k<doc.tags.length ; k++ )
+					for( var k=0 ; k<docs[i].tags.length ; k++ )
 					{
-						if ( doc.tags[k] != null) 
+						if ( docs[i].tags[k] != null) 
 						{
-							if ( tag.toLowerCase() == doc.tags[k].toLowerCase() ) {
-								found = true ;
+							if (filterTags[j].toLowerCase() === docs[i].tags[k].toLowerCase()) {
+							  console.log(filterTags[j].toLowerCase() + ' - ' + docs[i].tags[k].toLowerCase());
+							  console.log('hello');
+							  docs[i].filtered = false;
 								break ;
 							}
 						}
 					}
-						
-					if (  !found ) { 
-						filtered = true ;
-						break ;
-					}
-				}
-				
-				doc.filtered = filtered ;
+				}			
 			}
 			
 		}	
@@ -189,8 +178,7 @@ define("mylibs/visualization/FilterBar",  ["mylibs/location"],
 		var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
 		var d = R * c;
 		
-		return d ;
-	
+		return d ;	
 	};
 	
 	var rerank = function()
@@ -233,11 +221,10 @@ define("mylibs/visualization/FilterBar",  ["mylibs/location"],
 					
 				}) ;
 		}
-	}
+	};
 	
 	var modalities = function()
 	{
-
 		var modalFilter = [] ;
 		
 		if ( $('#modal-item-all').attr('checked') == 'checked' )
@@ -258,17 +245,14 @@ define("mylibs/visualization/FilterBar",  ["mylibs/location"],
 			
 			}
 		}
-		
-		
+	
 		return modalFilter ;
 	};
   
-   return {
-	tags: filterTags,
-	modalities: modalities,
+  return {
+	  tags: filterTags,
+	  modalities: modalities,
     init: init,
-	update: update
+	  update: update
   };
-  
-  
-}) 
+}); 

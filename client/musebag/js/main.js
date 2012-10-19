@@ -23,7 +23,6 @@ var SimileAjax_urlPrefix = "js/libs/timeline_2.3.0/timeline_ajax/" ;
 
 require([
      "jquery",
-     "mylibs/config",
      "mylibs/queryMenu",
      "mylibs/headerMenu",
      "mylibs/tags",
@@ -36,16 +35,13 @@ require([
      "libs/smiley-slider",
      "http://widget-cdn.rpxnow.com/js/lib/isearch/engage.js"
     ], 
-    function($, config, menu, header, tags, results, query, profile, loader) {
+    function($, menu, header, tags, results, query, profile, loader) {
 
       $(function() {
 
         console.log('In the start function');
 
         $(document).ready(function(){
-
-          //Resizing of the menu on load and when window resizes
-          menu.adjust();
 
           var resizeTimer;
 
@@ -81,9 +77,12 @@ require([
             }
           });
           
+          //UIIFace tests
           //$('nav > ul > li').uiiface('select');
           //$('#logo').uiiface('pan');
-
+          
+          //Resizing of the menu on load and when window resizes
+          menu.adjust();
                     
           menu.attachEvents('query');
 
@@ -98,12 +97,17 @@ require([
                 menu.showPanel($(this));
                 $(this).addClass('active');
               }
+              
+              menu.adjust();
             }
           });
 
           //Close button of the panel
           $('.panel footer a').click(function(){
-            $('.panel').slideUp(200);
+            $('.panel').slideUp(200,function() {
+              menu.reset();
+              menu.adjust();
+            });
           });
 
           loader.create() ;
@@ -174,6 +178,7 @@ require([
     					query.submit( { 'relevant' : relevant },
     						function(result, data)
     						{
+    					  
     					    if (result)
     							{
     							  /**

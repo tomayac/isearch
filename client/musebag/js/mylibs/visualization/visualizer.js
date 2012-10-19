@@ -88,145 +88,159 @@ define("mylibs/visualization/visualizer",
 		{
 			ctx.modalities.push(mod) ;
 		}
-					
+		
+		var setToogleCallback = function($header,$buttons) {
+		  var callback = function() {
+	      if($(this).is(":hidden")) {
+	        $header.button("option", {
+	          icons: { secondary:'ui-icon-triangle-1-e' }
+	        });
+	      } else {
+	        $header.button("option", {
+	          icons: { secondary:'ui-icon-triangle-1-s' }
+	        });
+	      }
+	    };
+	    
+	    $buttons.hide();
+	    $header.click(function(e) {
+	      $buttons.slideToggle(200,callback);
+      });
+		};
+		
+		
+    // create result menu 
+    menuPane = $("<div/>").attr('id', 'visualization-menu').appendTo(element); 
+		
 		// create a filter pane on the top if requested
 		var filterPane = null ;
 		
 		if ( options.showFilterPane )
 		{
-			filterPane = $(
-			"<div/>", 
-				{ css: 
-					{ 
-						position: "absolute", 
-						top: 0,
-						bottom: "50px",
-						height: 50,
-						display: "table",
-						left: "10px",
-						right: "10px" 
-					} 
-				}
-			).appendTo(element) ;
-			
-			filterBar.init(filterPane, options.filterBar, tagManager, results.docs, function() {
+			filterBar.init(menuPane, options.filterBar, tagManager, results.docs, setToogleCallback, function() {
 				redraw(config.constants.visOptions);
 			}) ;	
 		}
 		
-		// create main visualisation area		
-		visPane = $("<div/>", 
-			{ css: 
-				{ 
-					position: "absolute", 
-					left: "10px",
-					right: "0px",	
-					top: ( options.showFilterPane ) ? 50 : 0,
-					bottom: 50
-				} 
-			}
-		).appendTo(element) ;
-		
-		// create menu on the bottom		
-		menuPane = $("<div/>", 
-			{ css: 
-				{ 
-					position: "absolute", 
-					height: "40px",
-					bottom: 0,
-					left: "10px",
-					right: "10px"
-					
-				} 
-			}
-		).appendTo(element) ;
-
 		var hasHierarchy = ( results.clusters.children.length > 1 );
-		var menuPaneHtml = '<form id="vis-options" style="padding-top: 5px">'  ;
+		
+		var viewDiv = $('<div/>', {"class": "group"}).appendTo(menuPane) ;
+    $('<h4/>', { text: "View Options" } ).appendTo(viewDiv);
+		
+		//var menuPaneHtml = '<form id="vis-options" style="padding-top: 5px">'  ;
 		
 		if ( hasHierarchy && options.methods && options.methods.length > 1 ) 
 		{
-			menuPaneHtml +=	'<div class="formitem"><span style="margin-right: 5px;">Method</span><div id="method-buttons" style="display:inline;">'  ;
+	    var methodHeader = $('<button/>', { 'class' : 'optionsHeader', text: 'Method' } ).appendTo(viewDiv) ;
+	    methodHeader.button({'icons': {secondary:'ui-icon-triangle-1-e'}});
+	    var methodButtons = $('<div/>', {'class' : 'options'}).appendTo(viewDiv) ;
+	    
+			//menuPaneHtml +=	'<div class="formitem"><span style="margin-right: 5px;">Method</span><div id="method-buttons" style="display:inline;">'  ;
 
 			for (var idx in options.methods )
 			{
 				switch ( options.methods[idx] )
 				{
 					case "classic":
-						menuPaneHtml +=	'<input type="radio" name="method" id="vis-classic"/><label for="vis-classic">Classic</label>' ;
+					  methodButtons.append('<input type="radio" name="method" id="vis-classic"/><label for="vis-classic">Classic</label>');
+					  //menuPaneHtml += '<input type="radio" name="method" id="vis-classic"/><label for="vis-classic">Classic</label>';
 						break ;
 					case "hpanel":
-						menuPaneHtml +=	'<input type="radio" name="method" id="vis-hpanel"/><label for="vis-hpanel">HPanel</label>'  ;
+					  methodButtons.append('<input type="radio" name="method" id="vis-hpanel"/><label for="vis-hpanel">HPanel</label>');
 						break ;
 					case "htree":
-						menuPaneHtml += '<input type="radio" name="method" id="vis-htree"/><label for="vis-htree">Hyperbolic Tree</label>' ;
+					  methodButtons.append('<input type="radio" name="method" id="vis-htree"/><label for="vis-htree">Hyperbolic Tree</label>');
 						break ;
 					case "tmap":
-						menuPaneHtml +=	'<input type="radio" name="method" id="vis-tmap"/><label for="vis-tmap">Treemap</label>' ;
+					  methodButtons.append('<input type="radio" name="method" id="vis-tmap"/><label for="vis-tmap">Treemap</label>');
 						break ;
 				}
-			}			
-				
-			menuPaneHtml += '</div></div>' ;
+			}	
+			
+			setToogleCallback(methodHeader,methodButtons);
 		}
+    
+		var sizeHeader = $('<button/>', { 'class' : 'optionsHeader', text: 'Preview Size' } ).appendTo(viewDiv) ;
+		sizeHeader.button({'icons': {secondary:'ui-icon-triangle-1-e'}});
+    var sizeButtons = $('<div/>', {'class' : 'options'}).appendTo(viewDiv) ;
 		
-		menuPaneHtml +=	 '<div class="formitem"><span style="margin-right: 5px;">Icon Size</span><div id="ts-buttons" style="display:inline;">'
+    sizeButtons.append('<label for="ts64">Small</label><input type="radio" name="ts" id="ts64"/>');
+    sizeButtons.append('<label for="ts96">Medium</label><input type="radio" name="ts" id="ts96"/>');
+    sizeButtons.append('<label for="ts128">Large</label><input type="radio" name="ts" id="ts128"/>');
+    
+    setToogleCallback(sizeHeader,sizeButtons);
+    
+		/*menuPaneHtml +=	 '<div class="formitem"><span style="margin-right: 5px;">Icon Size</span><div id="ts-buttons" style="display:inline;">'
 			+	'<label for="ts64">Small</label><input type="radio" name="ts" id="ts64"/>'
 			+ 	'<label for="ts96">Medium</label><input type="radio" name="ts" id="ts96"/>'
 			+	'<label for="ts128">Large</label><input type="radio" name="ts" id="ts128"/>'
 			+	'</div></div>';
-		
+		*/
+    
 		if ( options.thumbOptions.iconArrangeMethods && options.thumbOptions.iconArrangeMethods.length > 1 )
 		{
-			menuPaneHtml +=	 '<div class="formitem"><span style="margin-right: 5px;">Layout</span><div id="arrange-buttons" style="display:inline;">';
+		  var layoutHeader = $('<button/>', { 'class' : 'optionsHeader', text: 'Layout' } ).appendTo(viewDiv) ;
+		  layoutHeader.button({'icons': {secondary:'ui-icon-triangle-1-e'}});
+	    var layoutButtons = $('<div/>', {"class" : "options"}).appendTo(viewDiv) ;
+		  //menuPaneHtml +=	 '<div class="formitem"><span style="margin-right: 5px;">Layout</span><div id="arrange-buttons" style="display:inline;">';
 						
 			for (var idx in options.thumbOptions.iconArrangeMethods )
 			{
 				switch ( options.thumbOptions.iconArrangeMethods[idx] )
 				{
 					case "grid":
-						menuPaneHtml +=	'<input type="radio" name="ia" id="ia-grid"/><label for="ia-grid">Grid</label>' ;
+					  layoutButtons.append('<input type="radio" name="ia" id="ia-grid"/><label for="ia-grid">Grid</label>');
+					  //menuPaneHtml +=	'<input type="radio" name="ia" id="ia-grid"/><label for="ia-grid">Grid</label>' ;
 						break ;
 					case "smart":
-						menuPaneHtml += '<input type="radio" name="ia" id="ia-smart"/><label for="ia-smart">Smart</label>' ;
+					  layoutButtons.append('<input type="radio" name="ia" id="ia-smart"/><label for="ia-smart">Smart</label>');
+						//menuPaneHtml += '<input type="radio" name="ia" id="ia-smart"/><label for="ia-smart">Smart</label>' ;
 						break ;
 					case "smart-grid":
-						menuPaneHtml +=	'<input type="radio" name="ia" id="ia-smart-grid"/><label for="ia-smart-grid">Smart Grid</label>' ;
+					  layoutButtons.append('<input type="radio" name="ia" id="ia-smart-grid"/><label for="ia-smart-grid">Smart Grid</label>');
+						//menuPaneHtml +=	'<input type="radio" name="ia" id="ia-smart-grid"/><label for="ia-smart-grid">Smart Grid</label>' ;
 						break ;
 					case "list":
-						menuPaneHtml +=	'<input type="radio" name="ia" id="ia-list"/><label for="ia-list">List</label>' ;
+					  layoutButtons.append('<input type="radio" name="ia" id="ia-list"/><label for="ia-list">List</label>');
+						//menuPaneHtml +=	'<input type="radio" name="ia" id="ia-list"/><label for="ia-list">List</label>' ;
 						break ;
 				}
-				
 			}
 			
-			menuPaneHtml +=	'</div></div>' ;
+			setToogleCallback(layoutHeader,layoutButtons);
+			//menuPaneHtml +=	'</div></div>' ;
 		}
 		
 		if ( options.thumbOptions.navModes && options.thumbOptions.navModes.length > 1 ) 
 		{
-			menuPaneHtml +=	'<div class="formitem" style="float: right"><span style="margin-right: 5px;">Navigation Mode</span><div id="nav-buttons" style="display:inline;">' ;
+		  var navModeHeader = $('<button/>', { 'class' : 'optionsHeader', text: 'Nav Mode' } ).appendTo(viewDiv) ;
+		  navModeHeader.button({'icons': {secondary:'ui-icon-triangle-1-e'}});
+      var navModeButtons = $('<div/>', {'class' : 'options'}).appendTo(viewDiv) ;
+		  //menuPaneHtml +=	'<div class="formitem" style="float: right"><span style="margin-right: 5px;">Navigation Mode</span><div id="nav-buttons" style="display:inline;">' ;
 			
 			for (var idx in options.thumbOptions.navModes )
 			{
 				switch ( options.thumbOptions.navModes[idx] )
 				{
 					case "browse":
-						menuPaneHtml +=	'<input type="radio" name="nav" id="nav-browse"/><label for="nav-browse">Browse</label>' ;
+					  navModeButtons.append('<input type="radio" name="nav" id="nav-browse"/><label for="nav-browse">Browse</label>');
+						//menuPaneHtml +=	'<input type="radio" name="nav" id="nav-browse"/><label for="nav-browse">Browse</label>' ;
 						break ;
 					case "feedback":
-						menuPaneHtml += '<input type="radio" name="nav" id="nav-feedback"/><label for="nav-feedback">Feedback</label>' ; 
+					  navModeButtons.append('<input type="radio" name="nav" id="nav-feedback"/><label for="nav-feedback">Feedback</label>');
+						//menuPaneHtml += '<input type="radio" name="nav" id="nav-feedback"/><label for="nav-feedback">Feedback</label>' ; 
 						break ;
 				}
 				
 			}
 			
-			menuPaneHtml +=	'</div></div>' ;
+			setToogleCallback(navModeHeader,navModeButtons);
+			//menuPaneHtml +=	'</div></div>' ;
 		}
 		
-		menuPaneHtml +=	'</form>';
+		//menuPaneHtml +=	'</form>';
 			
-		menuPane.html(menuPaneHtml) ;
+		//menuPane.html(menuPaneHtml);
 		
 		// menu handlers
 		$('#vis-' + config.constants.visOptions.method, menuPane).attr('checked', true);
@@ -234,26 +248,29 @@ define("mylibs/visualization/visualizer",
 		$('#ia-' + config.constants.visOptions.thumbOptions.iconArrange, menuPane).attr('checked', true);
 		$('#nav-' + config.constants.visOptions.thumbOptions.navMode, menuPane).attr('checked', true);
 				
-		$("#method-buttons", menuPane).buttonset(
-			$('#vis-classic', menuPane).button( {text: false,  "icons": {primary:'ui-icon-method-classic'}}),
-			$('#vis-hpanel', menuPane).button( {text: false,  "icons": {primary:'ui-icon-method-hpanel'}}),
-			$('#vis-htree', menuPane).button( {text: false,  "icons": {primary:'ui-icon-method-htree'}}),
-			$('#vis-tmap', menuPane).button( {text: false,  "icons": {primary:'ui-icon-method-tmap'}})
-		) ;
+		//$("#method-buttons", menuPane).buttonset(
+			$('#vis-classic', menuPane).button( {"icons": {primary:'ui-icon-method-classic'}});
+			$('#vis-hpanel', menuPane).button( {"icons": {primary:'ui-icon-method-hpanel'}});
+			$('#vis-htree', menuPane).button( {"icons": {primary:'ui-icon-method-htree'}});
+			$('#vis-tmap', menuPane).button( {"icons": {primary:'ui-icon-method-tmap'}});
+		//) ;
 		
-		$("#ts-buttons", menuPane).buttonset(
-			$('#ts64', menuPane).button( {text: false,  "icons": {primary:'ui-icon-thumbs-small'}}),
-			$('#ts96', menuPane).button( {text: false,  "icons": {primary:'ui-icon-thumbs-medium'}}),
-			$('#ts128', menuPane).button( {text: false,  "icons": {primary:'ui-icon-thumbs-large'}})
-		) ;
+		//$("#ts-buttons", menuPane).buttonset(
+			$('#ts64', menuPane).button( {"icons": {primary:'ui-icon-thumbs-small'}});
+			$('#ts96', menuPane).button( {"icons": {primary:'ui-icon-thumbs-medium'}});
+			$('#ts128', menuPane).button( {"icons": {primary:'ui-icon-thumbs-large'}});
+		//) ;
 		
-		$("#arrange-buttons", menuPane).buttonset(
-			$('#ia-grid', menuPane).button( {text: false,  "icons": {primary:'ui-icon-layout-grid'}}),
-			$('#ia-smart', menuPane).button( {text: false,  "icons": {primary:'ui-icon-layout-smart'}}),
-			$('#ia-smart-grid', menuPane).button( {text: false,  "icons": {primary:'ui-icon-layout-smart-grid'}})
-		) ;
+		//$("#arrange-buttons", menuPane).buttonset(
+			$('#ia-grid', menuPane).button( {"icons": {primary:'ui-icon-layout-grid'}});
+			$('#ia-smart', menuPane).button( {"icons": {primary:'ui-icon-layout-smart'}});
+			$('#ia-smart-grid', menuPane).button( {"icons": {primary:'ui-icon-layout-smart-grid'}});
+			$('#ia-list', menuPane).button();
+		//) ;
 		
-		$("#nav-buttons", menuPane).buttonset() ;
+		//$("#nav-buttons", menuPane).buttonset() ;
+			$('#nav-browse', menuPane).button();
+			$('#nav-feedback', menuPane).button();
 		
 		var that = this ;
 		
@@ -280,6 +297,9 @@ define("mylibs/visualization/visualizer",
 								
 			setThumbOptions({navMode: nav}) ;
 		}) ;
+		
+	  // create main visualisation area   
+    visPane = $("<div/>").attr('id', 'visualization-area').appendTo(element);
 		
 		// context menu	
 		var cm = $('<div style="display:none" id="vis-context-menu">\
