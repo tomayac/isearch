@@ -52,7 +52,7 @@ define("mylibs/queryMenu",
       
       //adjust submit button 
       if($('#query').hasClass('resultView')) {
-        var submitRight = $('#query').innerWidth() - $('.token-input-list-isearch').outerWidth();
+        var submitRight = $('#query').innerWidth() - $('#query ul.token-input-list-isearch').outerWidth();
         $('#query-submit').css('right',submitRight);
       } 
       
@@ -62,11 +62,11 @@ define("mylibs/queryMenu",
         //Query composition area with modality panels
         var compLeft = $('ul.resultView').offset().left + 3;
         if($(window).width() > $('#container').outerWidth()) {
-          compLeft -= (($('#container').outerWidth(true) - $('#container').innerWidth()) / 2);
+          compLeft -= (($(window).width() - $('#container').innerWidth()) / 2);
         }
         var cssObj = {
           'margin-left' : compLeft,
-          'width' : $('.token-input-list-isearch').outerWidth() - 8
+          'width' : $('#query ul.token-input-list-isearch').outerWidth() - 8
         };
         $('.query-composition').css(cssObj);
         $('.panel.resultView').css(cssObj);
@@ -989,7 +989,7 @@ define("mylibs/queryMenu",
       /**
        * Jonas: added search result i-search logo, which also deals as home button
        */
-      if($('#resultLogo').length === 0) {
+      if($('#queryLogo').length === 0) {
         $("#queryContainer").prepend('<div id="queryLogo"><a href="' + $('#queryUseCase li.enabled a').attr('href') + '" title="Restart I-SEARCH"><img src="img/logo-result.png"/></a></div>');
         $("#query").addClass('resultView');
         $("#query ul").addClass('resultView');

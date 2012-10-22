@@ -48,6 +48,13 @@ var extractTags = function(queryData) {
   if(typeof queryData !== 'object') {
     return tags;
   }
+  
+  //Make sure to not include tags from search queries were
+  //no results have been found
+  if(queryData.result.raw.documentList.length < 1) {
+    return tags;
+  }
+  
   //Get tags from query
   if(queryData.query.json) {
     if(queryData.query.json.tags) {
@@ -311,28 +318,32 @@ var getUserTagSet = function(req,callback) {
   }
   
   var sessionStore = helper.getSessionStore(req,false);
+  var userId = sessionStore.user.userId;
+  var getAllQueryTagsUrl = config.apcPath + 'resources/tags/tagsFor/' + userId + '/query/all';
   
   //Check if a user tag set is already created for this user
-  if(sessionStore.user.tagSet) {
-    return sessionStore.user.tagSet;
-  } else {
+  if(!sessionStore.user.tagSet) {
     //if not create it
-    var userId = sessionStore.user.userId;
-    var getAllQueryTagsUrl = config.apcPath + 'resources/tags/tagsFor/' + userId + '/query/all';
-
     restler
     .get(getAllQueryTagsUrl)
-    .on('success', function(data,response) {         
-      if(data && data.tag) {
-        console.dir(data.tag);
+    .on('success', function(data,response) {
+      if(data && data.tags) {
         var userTagSet = [];
-        for(var t in data.tag) {
-          userTagSet = addTag(data.tag[t].tagText,userTagSet);
+        for(var t in data.tags) {
+          //Skip two letter tags
+          if(data.tags[t].tagText.length < 3) {
+            continue;
+          }     
+          //Skip short number tags
+          if(!isNaN(parseFloat(data.tags[t].tagText)) && isFinite(data.tags[t].tagText)) {
+            continue;
+          }
+          //calculate tag relevance
+          var relevance = 1 + (0.2 * (parseInt(data.tags[t].tagFreq) - 1));
+          userTagSet = addTag(data.tags[t].tagText,userTagSet,relevance);
         }
         //Store user tag set in session for later use
-        sessionStore.user.tagSet = userTagSet;
-        console.dir(userTagSet);
-        callback(null,{ 'name' : userId, 'data' : userTagSet});
+        sessionStore.user.tagSet = sortTagSet(userTagSet);
       } else {
         callback('Malformed or empty data during tag retrieval ' + userId,null);
       }
@@ -344,6 +355,8 @@ var getUserTagSet = function(req,callback) {
       callback('pTag: Error ' + data.toString() + ' during query tags retrieval for ' + userId,null);
     }); 
   }
+  
+  callback(null,{ 'name' : userId, 'data' : sessionStore.user.tagSet});
 };
 
 /**
@@ -530,7 +543,6 @@ var filterTags = function(req, res){
       
     if(!error) {
       filterTags = getFilterTags(resultTags,tagSet.data);
-      filterTags = filterTags.slice(0,8);
     } else {
       console.log('Error while retrieving filter tags: ' + error);
     } 

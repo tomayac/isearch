@@ -42,7 +42,6 @@ var DEFAULT_SETTINGS = {
     },
 
     tokenFormatter: function(item) {
-      console.log(item);
       var string = item[this.propertyToSearch];
       return "<li><p>" + (this.enableHTML ? string : _escapeHTML(string)) + "</p></li>";
     },
@@ -608,6 +607,10 @@ $.TokenList = function (input, url_or_data, settings) {
 
     // Add a token to the token list based on user input
     function add_token (item) {
+        if(!item) {
+          return;
+        }
+        
         var callback = $(input).data("settings").onAdd;
 
         // See if the token already exists and select it if we don't want duplicates
@@ -950,7 +953,6 @@ $.TokenList = function (input, url_or_data, settings) {
                 $.ajax(ajax_params);
             } else if($(input).data("settings").local_data) {
                 // Do the search through local data
-                console.dir($(input).data("settings").local_data);
                 var results = $.grep($(input).data("settings").local_data, function (row) {
                     return row[$(input).data("settings").propertyToSearch].toLowerCase().indexOf(query.toLowerCase()) > -1;
                 });

@@ -809,7 +809,7 @@ p.redraw = function(contentWidth, contentHeight)
 		for(var i=0 ; i< this.thumbs.length; i++)
 		{
 			var item = this.thumbs[i] ;
-			console.dir(item.doc);
+		
 			if ( item.doc.filtered ) continue ;
 			if ( ThumbContainer.modalFilter(item.doc, this.ctx.filterBar.modalities()) === true ) continue ;
 			itemCount++ ;

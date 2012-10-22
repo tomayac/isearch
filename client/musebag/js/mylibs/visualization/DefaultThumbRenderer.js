@@ -76,7 +76,9 @@ p.render = function(item, container, options)
 			"border-style": "solid", "border-width": "0px " + tm + "px " + tm + "px 0px", "border-color": "#afafaf" }}).appendTo(container) ;
 		var img = $('<div/>', { "docid": docid, css: { position: "absolute", left: 0,  top: 0, width: w - tm - tm, height: h - tm - tm,
 "border": "1px solid black"		}  }).appendTo(container) ;
-		img.thumb(ThumbContainer.selectThumbUrl(item.doc, options.selected)) ;
+		if(img.thumb) {
+		  img.thumb(ThumbContainer.selectThumbUrl(item.doc, options.selected)) ;
+		}
 		this.img = img ;
 	}
 	
