@@ -45,13 +45,13 @@ var extractTags = function(queryData) {
   
   var tags = [];
   
-  if(typeof queryData !== 'object') {
+  if(typeof queryData !== 'object' || !queryData.result.raw) {
     return tags;
   }
   
   //Make sure to not include tags from search queries were
   //no results have been found
-  if(queryData.result.raw.documentList.length < 1) {
+  if(!queryData.result.raw.documentList.length < 1) {
     return tags;
   }
   
