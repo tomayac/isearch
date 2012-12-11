@@ -226,7 +226,9 @@ var createGenericTagSet = function(country,callback){
     if(data && data.tags) {
       var genericTagSet = [];
       for(var t in data.tags) {
-        genericTagSet = addTag(data.tags[t].tagText,genericTagSet);
+        //calculate tag relevance
+        var relevance = 1 + (0.2 * (parseInt(data.tags[t].tagFreq) - 1));
+        genericTagSet = addTag(data.tags[t].tagText,genericTagSet,relevance);
       }
       genericTagSet = sortTagSet(genericTagSet);
       
@@ -262,7 +264,7 @@ var getGenericTagSet = function(req,callback) {
       //Check if a general tag set for this country is all ready created
       client.hgetall(country + 'TagSet', function (err, tagSet) {
         //if not: create it 
-        if(helper.isObjectEmpty(tagSet)) {
+        //if(helper.isObjectEmpty(tagSet)) {
           console.log('create initial ' + country + ' tag set...');
           createGenericTagSet(country, function(error, tagSet) {
             if(!error) {
@@ -280,7 +282,7 @@ var getGenericTagSet = function(req,callback) {
             }
           });
         //otherwise: parse it from redis store
-        } else {
+        /*} else {
           console.log('got tags from redis database.');
           try{
             tagSet = JSON.parse(tagSet.tags);
@@ -289,6 +291,7 @@ var getGenericTagSet = function(req,callback) {
           }
           callback(null,{'name' : country + 'TagSet', 'data' : tagSet});
         }
+        */
       }); //end hgetall
     } else {
       callback('Client country could not be detected. (' + error + ')',{});
