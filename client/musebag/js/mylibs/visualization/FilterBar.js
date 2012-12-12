@@ -152,8 +152,6 @@ define("mylibs/visualization/FilterBar",  ["mylibs/location"],
 						if ( docs[i].tags[k] != null) 
 						{
 							if (filterTags[j].toLowerCase() === docs[i].tags[k].toLowerCase()) {
-							  console.log(filterTags[j].toLowerCase() + ' - ' + docs[i].tags[k].toLowerCase());
-							  console.log('hello');
 							  docs[i].filtered = false;
 								break ;
 							}

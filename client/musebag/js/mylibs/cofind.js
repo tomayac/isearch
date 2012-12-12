@@ -503,6 +503,9 @@ define("mylibs/cofind",
         var item = {};
         if(resultSet.docs) {
           for(var r=0; r < resultSet.docs.length; r++) {
+            if(!resultSet.docs[r].coid) {
+              resultSet.docs[r].coid = resultSet.docs[r].id; 
+            }
             if(resultSet.docs[r].coid == ui.draggable.attr('docid')) {
 
               item.id = resultSet.docs[r].coid;

@@ -1338,7 +1338,7 @@ footer {
 .bottom-overlay .item {
   position: relative;
   width: 100px;
-  height: 80px;
+  height: 90px;
   bottom: -2px;
   display: inline-block;
   overflow: hidden;
@@ -1352,6 +1352,7 @@ footer {
   border-top-left-radius: 4px;
   border: 1px solid #999;
   max-width: 100px;
+  max-height: 90px;
 }
 
 .highlight {

@@ -14,7 +14,7 @@ p.render = function(item, container, options)
 	var w = $(container).width() ;
 	var h = $(container).height() ;
 	if ( options.hover ) this.hover = options.hover ;
-	else this.hover = true ;
+	else this.hover = false ;
 	
 	var img = $('<div/>', { css: { border: "1px solid black", position: "absolute", left: tm, top: tm, width: w - tm - tm, height: h - tm - tm }  }).appendTo(container);	
 } ;
@@ -49,7 +49,7 @@ p.render = function(item, container, options)
 		
 	var visBox = options.viewport ;
 	if ( options.hover ) this.hover = options.hover ;
-	else this.hover = true ;
+	else this.hover = false ;
 	
 	this.onSimilar = options.onSimilar ;
 	this.docPreviewMode = options.docPreview ;
@@ -83,9 +83,9 @@ p.render = function(item, container, options)
 	}
 	
 		
-	$(img).draggable({opacity: '0.7', cursor: 'move', containment: 'body', helper: function(e) {
+	$(img).draggable({opacity: '0.7', cursor: 'move', helper: function(e) {
 			
-		var helper = $('<div/>', { css: { width: w , height: h, "z-index": 150  }  }) ;
+		var helper = $('<div/>', { css: { position : 'absolute', width: w , height: h, "z-index": 1000  }  }) ;
 		helper.thumb(ThumbContainer.selectThumbUrl(item.doc, options.modalities)) ;
 		return helper ;
 	

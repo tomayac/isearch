@@ -335,13 +335,21 @@ var login = function(req, res){
     } else {
       //Collect initial user data
       var sessionStore = helper.getSessionStore(req,true);
-      
       //Set real user data
+      if(!data.profile.verifiedEmail) {
+        data.profile.verifiedEmail = data.profile.preferredUsername + '@' + data.profile.providerName.toLowerCase() + '.com';
+        if(data.profile.displayName) {
+          var nameArray = data.profile.displayName.split(' ');
+          data.profile.name.givenName = nameArray[0];
+          data.profile.name.familyName = nameArray[1];
+        }
+      }
+        
       sessionStore.user.userId = data.profile.verifiedEmail;
       sessionStore.user.name = data.profile.name.givenName || '';
       sessionStore.user.familyname = data.profile.name.familyName || '';
       sessionStore.user.email = data.profile.verifiedEmail;
-      sessionStore.user.username = data.profile.displayName || '';
+      sessionStore.user.username = data.profile.preferredUsername || '';
       
 			//Test if the user is known by the personalisation component
 			var checkUrl = config.apcPath + 'resources/users/profileFor/' + sessionStore.user.userId + '/withRole/Consumer';

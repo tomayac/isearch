@@ -20,7 +20,7 @@ var restler = require('restler'),
  * Global variables
  */
 var tagSetSize = 20;
-var filterTagSetSize = 10;
+var filterTagSetSize = 12;
 
 //Stores the redis client connection
 var client = null;
@@ -247,9 +247,9 @@ var createGenericTagSet = function(country,callback){
 
 /**
  * Retrieves a country specific generic tag set 
- * @param req
- * @param callback
- * @returns generic tag set
+ * @param {Object} req
+ * @param {Function} callback
+ * @returns {Object[]} generic tag set
  */
 var getGenericTagSet = function(req,callback) {
   
@@ -264,7 +264,7 @@ var getGenericTagSet = function(req,callback) {
       //Check if a general tag set for this country is all ready created
       client.hgetall(country + 'TagSet', function (err, tagSet) {
         //if not: create it 
-        //if(helper.isObjectEmpty(tagSet)) {
+        if(helper.isObjectEmpty(tagSet)) {
           console.log('create initial ' + country + ' tag set...');
           createGenericTagSet(country, function(error, tagSet) {
             if(!error) {
@@ -282,7 +282,7 @@ var getGenericTagSet = function(req,callback) {
             }
           });
         //otherwise: parse it from redis store
-        /*} else {
+        } else {
           console.log('got tags from redis database.');
           try{
             tagSet = JSON.parse(tagSet.tags);
@@ -291,7 +291,6 @@ var getGenericTagSet = function(req,callback) {
           }
           callback(null,{'name' : country + 'TagSet', 'data' : tagSet});
         }
-        */
       }); //end hgetall
     } else {
       callback('Client country could not be detected. (' + error + ')',{});
@@ -338,6 +337,7 @@ var getUserTagSet = function(req,callback) {
         }
         //Store user tag set in session for later use
         sessionStore.user.tagSet = sortTagSet(userTagSet);
+        callback(null,{ 'name' : userId, 'data' : sessionStore.user.tagSet});
       } else {
         callback('Malformed or empty data during tag retrieval ' + userId,null);
       }
@@ -348,9 +348,9 @@ var getUserTagSet = function(req,callback) {
     .on('error', function(data,response) {
       callback('pTag: Error ' + data.toString() + ' during query tags retrieval for ' + userId,null);
     }); 
+  } else {
+    callback(null,{ 'name' : userId, 'data' : sessionStore.user.tagSet});
   }
-  
-  callback(null,{ 'name' : userId, 'data' : sessionStore.user.tagSet});
 };
 
 /**
@@ -397,7 +397,7 @@ var getFilterTags = function(resultTags, userTags) {
   for(var u=0; u < userTags.length; u++) {
     for(var r=0; r < resultTags.length; r++) {
       if(userTags[u].name.toLowerCase() === resultTags[r].name.toLowerCase()) {
-        filterTags = addTag(userTags[u].name,filterTags,userTags[u].relevance + resultTags[r].relevance);
+        filterTags = addTag(userTags[u].name, filterTags, userTags[u].relevance + resultTags[r].relevance);
       }
     }
   }
@@ -529,14 +529,17 @@ var filterTags = function(req, res){
   console.log('filterTags function called...');
 
   var sessionStore = helper.getSessionStore(req,false);
-  var resultTags = getResultTags(sessionStore.queries[sessionStore.queries.length-1].result.raw);
+  var resultTags = [];
+  if(sessionStore.queries[sessionStore.queries.length-1]) {
+    resultTags = getResultTags(sessionStore.queries[sessionStore.queries.length-1].result.raw);
+  }
   
   var callback = function(error, tagSet) {
     
     var filterTags = [];
       
     if(!error) {
-      filterTags = getFilterTags(resultTags,tagSet.data);
+      filterTags = getFilterTags(resultTags,tagSet.data).slice(0,filterTagSetSize);
     } else {
       console.log('Error while retrieving filter tags: ' + error);
     } 
