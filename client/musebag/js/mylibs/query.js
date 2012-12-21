@@ -35,7 +35,7 @@ define("mylibs/query",
   var isAllowedExtension = function(fileName, type) {
     var ext = (-1 !== fileName.indexOf('.')) ? fileName.replace(/.*[.]/, '').toLowerCase() : '';
 
-    if (!allowedTypes[type].length){return false;}
+    if (!allowedTypes[type]) { return false; }
 
     for (var i=0; i<allowedTypes[type].length; i++){
       if (allowedTypes[type][i].toLowerCase() == ext){ return true;}
@@ -791,6 +791,7 @@ define("mylibs/query",
     types           : queryItemTypes,
     subtypes        : queryItemSubTypes,
     queryId         : queryId,
+    isAllowedExtension : isAllowedExtension,
     addItems        : addItems,
     updateItem      : updateItem,
     updateItemCount : updateItemCount,

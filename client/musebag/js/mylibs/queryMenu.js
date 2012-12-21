@@ -5,12 +5,13 @@ define("mylibs/queryMenu",
     "mylibs/location",
     "mylibs/query",
     "mylibs/queryTools",
+    "mylibs/results",
     "mylibs/recorder",
     "mylibs/jquery.uiiface",
     "mylibs/jquery.swipePanel",
     "libs/progress-polyfill.min"
   ],
-  function(config, profile, location, query, queryTools) {
+  function(config, profile, location, query, queryTools, results) {
   
     var hasGetUserMedia = function hasGetUserMedia() {
       // Note: Opera builds are unprefixed.
@@ -201,37 +202,55 @@ define("mylibs/queryMenu",
     var handledEvents = {
 
       query: function() {
-        $('#query').uiiface({
+        $('#query ul').uiiface({
           events : 'drop',
           callback : function(event){
             console.log(event);
             var e = event.originalEvent;
-            var files = e.files || e.target.files || e.dataTransfer.files;
-            var types = {};
+            var files = [];
+            try {
+              files = e.files || e.target.files || e.dataTransfer.files;
+              
+              var types = {};
 
-            var getAllowedType = function (name) {
-              for (var type in query.allowedTypes) {
-                if (query.isAllowedExtension(files[i].name, type)) {
-                  return type;
+              var getAllowedType = function (name) {
+                for (var type in query.types) {
+                  if (query.isAllowedExtension(name, query.types[type])) {
+                    return query.types[type];
+                  }
+                }
+                return null;
+              };
+  
+              for (var i=0; i<files.length; ++i) {
+                var type = getAllowedType(files[i].name);
+                if (type) {
+                  types[type] = types[type] || [];
+                  types[type].push(files[i]);
                 }
               }
-              return null;
-            };
-
-            for (var i=0; i<files.length; ++i) {
-              var type = getAllowedType(files[i].name);
-              if (type) {
-                types[type] = types[type] || [];
-                types[type].push(files[i]);
+  
+              for (var type in types) {
+                query.addItems({files:types[type]}, type);
               }
+              
+            } catch(e) { 
+              console.log('No uploadable file was found in drop event. Assume drop of already existing query item...') 
+              //{ path : [url], name : [filename], type : [queryType], subtype : [sketch|recording|rythm], size : [bytes] }
+              var resultItem = results.get(event.ui.draggable.attr('docid'),true);
+              var file = {
+                path : resultItem.media.preview.url,
+                name : resultItem.media.preview.url.substr(resultItem.media.preview.url.lastIndexOf('/')+1),
+                type : resultItem.media.type,
+                'data-coid' : resultItem.coid
+              };
+              query.addItems(file,resultItem.media.type);
             }
-
-            for (var type in types) {
-              query.addItems({files:types[type]}, type, function (fileInfo) {
-                //do something?
-              });
-            }
+ 
+            event.preventDefault();
+            return false;
           }
+          
         });
       },
 

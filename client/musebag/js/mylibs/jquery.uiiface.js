@@ -83,40 +83,72 @@ define("mylibs/uiiface-v1",
           },
           'drop'      : {
             'mouse'    : { 'events' : 'drop dragenter dragleave', 'context' : 'this' },
-            'handler'  : function(event) {
+            'handler'  : function(event, ui) {
+              event.preventDefault();
+              
               switch(event.type) {
                 case 'dragenter' :
-                  var elem = $(event.currentTarget);
+                  var elem = $(event.target);
                   var count = elem.data('dragenter-count');
                   count = (count || 0) + 1;
                   elem.data('dragenter-count', count);
                   if (count === 1) {
+                    $(event.currentTarget).addClass("over");
                     elem.addClass('over');
+                    elem.css({
+                      'border' : '1px solid #999',
+                      'background-color' : '#CFA',
+                      'color': '#222'
+                    });
                   }
                   break;
                 case 'dragleave' :
-                  var elem = $(event.currentTarget);
+                  var elem = $(event.target);
                   var count = elem.data('dragenter-count');
                   --count;
                   elem.data('dragenter-count', count);
                   if (!count) {
+                    $(event.currentTarget).removeClass("over");
                     elem.removeClass('over');
+                    elem.removeAttr('style');
                   }
                   break;
                 case 'drop' :
                   //check if there is an custom handler which should be called for this event
-                  event.preventDefault();
-                  var elem = $(event.currentTarget);
+                  var elem = $(event.target);
                   elem.data('dragenter-count', 0);
                   elem.removeClass('over');
-                  $(event.target).removeClass("over");
+                  elem.removeAttr('style');
+                  $(event.currentTarget).removeClass("over");
                   if(typeof event.data.customHandler === 'function') {
+                    if(ui) {
+                      event.ui = ui;
+                    }
                     event.data.customHandler.apply(this, [event]);
                   }
                   break;
               }
+              
+              event.stopPropagation();
+              return false;
             },
-            'internalHandlerCall': true
+            'internalHandlerCall': true,
+            'additionalInit' : function(element,handler,customHandler) {
+              //If jquery ui is used than make sure to also register UI droppable events
+              //in order to work with UIIFace
+              if($(element).droppable) {
+                $(element).droppable({
+                  over : function(e,ui) {
+                    e.type = 'dragenter';
+                    handler.apply(this,[e,ui]);
+                  },
+                  out  : function(e,ui) {
+                    e.type = 'dragleave';
+                    handler.apply(this,[e,ui]);
+                  }
+                });
+              }
+            }
           },
           'pan'       : {
             'trigger'    : { 'events' : 'down move up', 'context' : 'this' },
@@ -281,9 +313,14 @@ define("mylibs/uiiface-v1",
             handler = self.options.callback;
           }
         }
+        
+        //execute additional initialization for event if desired by event configuration
+        if(eventDefinition.additionalInit && typeof eventDefinition.additionalInit === 'function') {
+          eventDefinition.additionalInit.apply(this,[self.element, handler, customHandler]);
+        }
+        
         //always assign custom event to element for reference
         $(self.element).on(event, { customHandler : customHandler }, handler);
-
         var getEventElement = function(element) {
           var foundItem = false;
 

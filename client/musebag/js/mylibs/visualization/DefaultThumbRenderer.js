@@ -84,8 +84,12 @@ p.render = function(item, container, options)
 	
 		
 	$(img).draggable({opacity: '0.7', cursor: 'move', helper: function(e) {
-			
-		var helper = $('<div/>', { css: { position : 'absolute', width: w , height: h, "z-index": 1000  }  }) ;
+		
+	  if(!$('#draghelper').length) {
+	    $('<div/>', { css: { position : 'absolute', width: w , height: h, "z-index": 1000  }, id : 'draghelper'  }).appendTo('body');
+	  }
+	  
+	  var helper = $('#draghelper');
 		helper.thumb(ThumbContainer.selectThumbUrl(item.doc, options.modalities)) ;
 		return helper ;
 	
@@ -514,7 +518,7 @@ p.doShowTooltip = function(thumb, container, visBox)
 	else 	
 		tooltip.css("top", wh-tth-2);	
 
-		console.log(posx + ' ' + posy) ;
+		//console.log(posx + ' ' + posy) ;
 	tooltip.fadeIn('fast') ;	
 
 };	

@@ -180,6 +180,7 @@ p.createCanvas = function()	{
 	
 	$(this.thumbViewport).droppable({
 		drop: function(e, ui) {
+		  console.log(e);
 		var draggable = ui.draggable;
 			console.log( 'The square with ID "' + draggable.attr('docid') + '" was dropped onto me!' );
 		}

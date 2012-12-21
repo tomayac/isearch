@@ -901,6 +901,7 @@ li.token-input-token-isearch  audio,
 li.token-input-token-isearch  video {
   position: relative;
   border: 1px solid #aaa;
+  max-height: 30px;
 }
 
 li.token-input-token-isearch .progressBar {
