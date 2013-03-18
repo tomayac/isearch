@@ -110,7 +110,7 @@ exports.get = function(req, res) {
  * CoFetch getCat method
  */
 exports.getCat = function(req, res) {
-  var serverURL = "http://gdv.fh-erfurt.de/modeldb/?do=getCategoryPaths";
+  var serverURL = "http://gdv-svn.informatik.hs-fulda.de/modeldb/?do=getCategoryPaths";
   
   restler
   .get(serverURL)
