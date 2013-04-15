@@ -410,7 +410,7 @@ Fetch.prototype.get = function(keyword, categoryPath, index, automatic, callback
                 youtubeQuery += queryAdjustment[contentObject.Category];
               } 
               //Get videos for content object
-              youtube.fetchVideo(youtubeQuery, 1, 1, this);
+              youtube.fetchVideo(youtubeQuery, 0, 1, this);
             },
             function getVideoData(error,data) {
               //Be sure to have data before going on

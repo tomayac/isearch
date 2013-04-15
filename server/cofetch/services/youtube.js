@@ -84,10 +84,10 @@ var fetchVideo = function(query, geo, page, callback) {
   
   //check if we search for videos with geolocation
   if(geo === 1) {
-    //If we want geotagged videos
-    youtubeURL += '&location=';
+    //If we want geotagged videos (somehow the location support of the youtube api is gone...)
+    //youtubeURL += '&location=';
   }
-  console.log(youtubeURL);
+  //console.log(youtubeURL);
   
   restler
   .get(youtubeURL, {
